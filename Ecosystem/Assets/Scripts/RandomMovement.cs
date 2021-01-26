@@ -1,34 +1,42 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RandomMovement : MonoBehaviour
 {
-    [SerializeField] private CharacterController controller;
+  [SerializeField] private CharacterController controller;
 
-    // Start is called before the first frame update
-    void Start()
-    {
+  [SerializeField] private FoodDetector foodDetector;
 
-    }
+  private Food _foodTarget;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
 
-        var newPos = new Vector3(Random.Range(-1,2), 0, Random.Range(-1,2)) * Time.deltaTime;
-        
-        controller.Move(newPos);
-    }
+  // Start is called before the first frame update
+  private void Start()
+  {
+    foodDetector.OnFoodFoundListeners += OnFoodFound;
+  }
 
-    private Transform GetClosestFood()
-    {
-        
+  // Update is called once per frame
+  private void Update()
+  {
+    //var newPos = new Vector3(Random.Range(-1, 2), 0, Random.Range(-1, 2)) * Time.deltaTime;
 
-        return null;
-    }
+    //controller.Move(newPos);
 
+    if (_foodTarget == null) return;
+
+    var direction = (_foodTarget.transform.position - transform.position).normalized;
+    controller.Move(direction * 10 * Time.deltaTime);
+  }
+
+  private Transform GetClosestFood()
+  {
+    return null;
+  }
+
+  private void OnFoodFound(Food food)
+  {
+    _foodTarget = food;
+    Debug.Log(food.transform.position);
+    Debug.Log("omnomnom");
+  }
 }
-
-   
