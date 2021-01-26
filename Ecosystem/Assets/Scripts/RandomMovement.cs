@@ -7,6 +7,7 @@ public class RandomMovement : MonoBehaviour
   [SerializeField] private FoodDetector foodDetector;
 
   private Food _foodTarget;
+  [SerializeField] private int movementSpeed;
 
 
   // Start is called before the first frame update
@@ -25,7 +26,8 @@ public class RandomMovement : MonoBehaviour
     if (_foodTarget == null) return;
 
     var direction = (_foodTarget.transform.position - transform.position).normalized;
-    controller.Move(direction * 10 * Time.deltaTime);
+    controller.Move(direction * movementSpeed * Time.deltaTime);
+    transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
   }
 
   private Transform GetClosestFood()
