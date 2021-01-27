@@ -27,7 +27,11 @@ public class RandomMovement : MonoBehaviour
     //controller.Move(newPos);
 
     if (_foodTarget == null) return;
-
+    if (Distance(_foodTarget) < 2)
+    {
+      foodDetector.Eat(_foodTarget);
+    }
+      
     var direction = (_foodTarget.transform.position - transform.position).normalized;
     controller.Move(direction * movementSpeed * Time.deltaTime);
     transform.rotation = Quaternion.LookRotation(direction, Vector3.up);

@@ -22,4 +22,10 @@ public class FoodDetector : MonoBehaviour
       OnFoodFoundListeners?.Invoke(_availableFoods);
     }
   }
+
+  public void Eat(Food food)
+  {
+    _availableFoods.Remove(food);
+    Destroy(food.gameObject);
+  }
 }
