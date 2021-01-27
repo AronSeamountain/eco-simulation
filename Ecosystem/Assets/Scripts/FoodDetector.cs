@@ -1,20 +1,25 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class FoodDetector : MonoBehaviour
-
-
 {
-  public delegate void OnFoodFound(Food food);
+  public delegate void OnFoodFound(List<Food> food);
 
   public OnFoodFound OnFoodFoundListeners;
 
-  private void OnTriggerEnter(Collider other)
+  private List<Food> _availableFoods = new List<Food>();
+  
+  private void OnTriggerStay(Collider other)
   {
-    Debug.Log(other);
     if (other.GetComponent<Food>() is Food food)
     {
-      Debug.Log("Hittade mat :D");
-      OnFoodFoundListeners?.Invoke(food);
+      Debug.Log("Det finns mat :D" + food);
+      if (!_availableFoods.Contains(food))
+      {
+        _availableFoods.Add(food); 
+      }
+      
+      OnFoodFoundListeners?.Invoke(_availableFoods);
     }
   }
 }
