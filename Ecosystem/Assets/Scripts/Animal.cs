@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -76,7 +76,7 @@ public sealed class Animal : MonoBehaviour
   /// <param name="food">The food to eat.</param>
   private void Eat(Food food)
   {
-    movement.Target = null;
+    movement.Stop();
     FoodEatenListeners?.Invoke(food);
     Destroy(food.gameObject);
   }

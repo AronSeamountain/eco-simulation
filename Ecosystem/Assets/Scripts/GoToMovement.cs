@@ -22,6 +22,11 @@ public sealed class GoToMovement : MonoBehaviour
     }
   }
 
+  public void Stop()
+  {
+    Target = null;
+  }
+  
   private bool HasTarget { get; set; }
 
   private void Start()

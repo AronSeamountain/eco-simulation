@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -24,10 +24,9 @@ public sealed class FoodManager : MonoBehaviour
 
   private void OnFoodFound(Food food)
   {
-    if (food.GetComponent<Food>() is Food f)
-      if (!_availableFoods.Contains(f)) // Check if already aware of the food.
+    if (!_availableFoods.Contains(food)) // Check if already aware of the food.
       {
-        _availableFoods.Add(f);
+        _availableFoods.Add(food);
         KnownFoodLocationsChangedListeners?.Invoke(_availableFoods);
       }
   }
