@@ -10,15 +10,9 @@ public sealed class Animal : MonoBehaviour
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
-  private Food _foodTarget;
 
   private IState _currentState = new WanderState();
-
-  /// <summary>
-  ///   Gets invoked when the animal eats a food.
-  /// </summary>
-  /// <param name="food">The food that was eaten.</param>
-  private delegate void FoodEaten(Food food);
+  private Food _foodTarget;
 
   private FoodEaten FoodEatenListeners;
 
@@ -28,21 +22,13 @@ public sealed class Animal : MonoBehaviour
   /// </summary>
   private bool HasFoodTarget => _foodTarget != null;
 
+  public bool IsMoving => movement.HasTarget;
+
   private void Start()
   {
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     FoodEatenListeners += foodManager.OnFoodEaten;
     _currentState.Enter(this);
-  }
-
-  private void OnKnownFoodLocationsChanged(IList<Food> foods)
-  {
-    return;
-    if (foods == null || !foods.Any()) return;
-
-    var closestFood = GetClosestFood(foods);
-    movement.Target = closestFood.transform.position;
-    _foodTarget = closestFood;
   }
 
   private void Update()
@@ -54,11 +40,22 @@ public sealed class Animal : MonoBehaviour
       _currentState = newState;
       _currentState.Enter(this);
     }
+
     return;
     if (!HasFoodTarget) return;
 
     if (Distance(_foodTarget) < 2)
       Eat(_foodTarget);
+  }
+
+  private void OnKnownFoodLocationsChanged(IList<Food> foods)
+  {
+    return;
+    if (foods == null || !foods.Any()) return;
+
+    var closestFood = GetClosestFood(foods);
+    movement.Target = closestFood.transform.position;
+    _foodTarget = closestFood;
   }
 
   /// <summary>
@@ -80,7 +77,7 @@ public sealed class Animal : MonoBehaviour
   /// <returns>The distance to the provided food.</returns>
   private float Distance(Food food)
   {
-    return (food.transform.position - this.transform.position).magnitude;
+    return (food.transform.position - transform.position).magnitude;
   }
 
   /// <summary>
@@ -94,10 +91,8 @@ public sealed class Animal : MonoBehaviour
     Destroy(food.gameObject);
   }
 
-  public bool IsMoving => movement.HasTarget;
-
   /// <summary>
-  /// Moves the Animal 
+  ///   Moves the Animal
   /// </summary>
   /// <param name="pos">The position to go to</param>
   public void GoTo(Vector3 pos)
@@ -105,4 +100,10 @@ public sealed class Animal : MonoBehaviour
     Debug.Log("lala Land");
     movement.Target = pos;
   }
+
+  /// <summary>
+  ///   Gets invoked when the animal eats a food.
+  /// </summary>
+  /// <param name="food">The food that was eaten.</param>
+  private delegate void FoodEaten(Food food);
 }

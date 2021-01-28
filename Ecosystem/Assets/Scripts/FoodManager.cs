@@ -6,14 +6,14 @@ using UnityEngine;
 /// </summary>
 public sealed class FoodManager : MonoBehaviour
 {
-  [SerializeField] private FoodDetector foodDetector;
-  private readonly IList<Food> _availableFoods = new List<Food>();
-
   /// <summary>
   ///   Gets invoked when the known food locations are changed.
   /// </summary>
   /// <param name="food">A list of all the known food sources.</param>
   public delegate void KnownFoodLocationsChanged(IList<Food> food);
+
+  [SerializeField] private FoodDetector foodDetector;
+  private readonly IList<Food> _availableFoods = new List<Food>();
 
   public KnownFoodLocationsChanged KnownFoodLocationsChangedListeners;
 
@@ -25,10 +25,10 @@ public sealed class FoodManager : MonoBehaviour
   private void OnFoodFound(Food food)
   {
     if (!_availableFoods.Contains(food)) // Check if already aware of the food.
-      {
-        _availableFoods.Add(food);
-        KnownFoodLocationsChangedListeners?.Invoke(_availableFoods);
-      }
+    {
+      _availableFoods.Add(food);
+      KnownFoodLocationsChangedListeners?.Invoke(_availableFoods);
+    }
   }
 
   public void OnFoodEaten(Food food)

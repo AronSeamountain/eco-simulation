@@ -21,26 +21,35 @@ public sealed class GoToMovement : MonoBehaviour
       HasTarget = true;
     }
   }
-  
-  public void Stop()
-  {
-    HasTarget = false;
-  }
-  
+
+  /// <summary>
+  ///   Whether the movement is currently in pursuit of travelling to a point.
+  /// </summary>
   public bool HasTarget { get; set; }
-  
+
   private void Update()
   {
     if (!HasTarget) return;
 
-    if ((Target - transform.position).magnitude < 1)
+    // Check if arrived
+    var hasArrived = (Target - transform.position).magnitude < 1;
+    if (hasArrived)
     {
       Stop();
       return;
     }
-    
+
+    // Move
     var direction = (Target - transform.position).normalized;
     controller.Move(direction * (movementSpeed * Time.deltaTime));
     transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+  }
+
+  /// <summary>
+  ///   Stops the movement to the vector.
+  /// </summary>
+  public void Stop()
+  {
+    HasTarget = false;
   }
 }
