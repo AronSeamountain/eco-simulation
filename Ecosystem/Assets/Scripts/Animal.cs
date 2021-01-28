@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AnimalStates;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,8 @@ public sealed class Animal : MonoBehaviour
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   private Food _foodTarget;
+
+  private IState _currentState = new WanderState();
 
   /// <summary>
   ///   Gets invoked when the animal eats a food.
@@ -29,19 +32,29 @@ public sealed class Animal : MonoBehaviour
   {
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     FoodEatenListeners += foodManager.OnFoodEaten;
+    _currentState.Enter(this);
   }
 
   private void OnKnownFoodLocationsChanged(IList<Food> foods)
   {
+    return;
     if (foods == null || !foods.Any()) return;
 
     var closestFood = GetClosestFood(foods);
-    movement.Target = closestFood.transform;
+    movement.Target = closestFood.transform.position;
     _foodTarget = closestFood;
   }
 
   private void Update()
   {
+    var newState = _currentState.Execute(this);
+    if (newState != _currentState)
+    {
+      _currentState.Exit(this);
+      _currentState = newState;
+      _currentState.Enter(this);
+    }
+    return;
     if (!HasFoodTarget) return;
 
     if (Distance(_foodTarget) < 2)
@@ -79,5 +92,17 @@ public sealed class Animal : MonoBehaviour
     movement.Stop();
     FoodEatenListeners?.Invoke(food);
     Destroy(food.gameObject);
+  }
+
+  public bool IsMoving => movement.HasTarget;
+
+  /// <summary>
+  /// Moves the Animal 
+  /// </summary>
+  /// <param name="pos">The position to go to</param>
+  public void Goto(Vector3 pos)
+  {
+    Debug.Log("lala Land");
+    movement.Target = pos;
   }
 }
