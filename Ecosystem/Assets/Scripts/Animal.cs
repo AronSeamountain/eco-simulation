@@ -100,7 +100,7 @@ public sealed class Animal : MonoBehaviour
   /// Moves the Animal 
   /// </summary>
   /// <param name="pos">The position to go to</param>
-  public void Goto(Vector3 pos)
+  public void GoTo(Vector3 pos)
   {
     Debug.Log("lala Land");
     movement.Target = pos;
