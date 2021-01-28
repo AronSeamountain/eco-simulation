@@ -1,31 +1,24 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class FoodDetector : MonoBehaviour
+/// <summary>
+///   Scans for food and calls a delegate when food is found.
+/// </summary>
+public sealed class FoodDetector : MonoBehaviour
 {
-  public delegate void OnFoodFound(List<Food> food);
-
-  public OnFoodFound OnFoodFoundListeners;
-
-  private List<Food> _availableFoods = new List<Food>();
+  public FoodFound FoodFoundListeners;
   
-  private void OnTriggerStay(Collider other)
+  /// <summary>
+  ///   Gets invoked when a food is found.
+  /// </summary>
+  /// <param name="food">The found that was just found.</param>
+  public delegate void FoodFound(Food food);
+
+  private void OnTriggerEnter(Collider other)
   {
     if (other.GetComponent<Food>() is Food food)
     {
-      Debug.Log("Det finns mat :D" + food);
-      if (!_availableFoods.Contains(food))
-      {
-        _availableFoods.Add(food); 
-      }
-      
-      OnFoodFoundListeners?.Invoke(_availableFoods);
+      FoodFoundListeners?.Invoke(food);
     }
-  }
-
-  public void Eat(Food food)
-  {
-    _availableFoods.Remove(food);
-    Destroy(food.gameObject);
   }
 }
