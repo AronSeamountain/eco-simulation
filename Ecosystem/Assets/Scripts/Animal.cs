@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using AnimalStates;
 using UnityEngine;
 
@@ -10,17 +9,10 @@ public sealed class Animal : MonoBehaviour
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
-
-  private IState _currentState = new WanderState();
-  private Food _foodTarget;
-
+  private IState _currentState;
   private FoodEaten FoodEatenListeners;
-
-  /// <summary>
-  ///   Whether the animal has a food target.
-  ///   TODO: Should be converted to a plain bool like in GoTo movement. Null comparision is expensive.
-  /// </summary>
-  private bool HasFoodTarget => _foodTarget != null;
+  public IState PursueFoodState;
+  public IState WanderState;
 
   public bool IsMoving => movement.HasTarget;
 
@@ -28,6 +20,11 @@ public sealed class Animal : MonoBehaviour
   {
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     FoodEatenListeners += foodManager.OnFoodEaten;
+
+    WanderState = new WanderState();
+    PursueFoodState = new PursueFoodState();
+    _currentState = WanderState;
+
     _currentState.Enter(this);
   }
 
@@ -40,51 +37,18 @@ public sealed class Animal : MonoBehaviour
       _currentState = newState;
       _currentState.Enter(this);
     }
-
-    return;
-    if (!HasFoodTarget) return;
-
-    if (Distance(_foodTarget) < 2)
-      Eat(_foodTarget);
   }
 
   private void OnKnownFoodLocationsChanged(IList<Food> foods)
   {
-    return;
-    if (foods == null || !foods.Any()) return;
-
-    var closestFood = GetClosestFood(foods);
-    movement.Target = closestFood.transform.position;
-    _foodTarget = closestFood;
-  }
-
-  /// <summary>
-  ///   Returns the food in the provided list that is the closest to the game object. Returns null if foods is null.
-  /// </summary>
-  /// <param name="foods">The list of foods to search from.</param>
-  /// <returns>The closest food.</returns>
-  private Food GetClosestFood(ICollection<Food> foods)
-  {
-    if (foods.Count < 0) return null;
-
-    return foods.OrderBy(Distance).First();
-  }
-
-  /// <summary>
-  ///   Gets the distance from the game animal to the provided food.
-  /// </summary>
-  /// <param name="food">The food to check distance to.</param>
-  /// <returns>The distance to the provided food.</returns>
-  private float Distance(Food food)
-  {
-    return (food.transform.position - transform.position).magnitude;
+    // TODO: Remove me?
   }
 
   /// <summary>
   ///   Eats the provided food. Removes it.
   /// </summary>
   /// <param name="food">The food to eat.</param>
-  private void Eat(Food food)
+  public void Eat(Food food)
   {
     movement.Stop();
     FoodEatenListeners?.Invoke(food);
@@ -97,8 +61,17 @@ public sealed class Animal : MonoBehaviour
   /// <param name="pos">The position to go to</param>
   public void GoTo(Vector3 pos)
   {
-    Debug.Log("lala Land");
     movement.Target = pos;
+  }
+
+  public IList<Food> GetKnownFoods()
+  {
+    return foodManager.KnownFoodLocations;
+  }
+
+  public void StopMoving()
+  {
+    movement.Stop();
   }
 
   /// <summary>

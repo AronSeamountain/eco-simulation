@@ -13,9 +13,9 @@ public sealed class FoodManager : MonoBehaviour
   public delegate void KnownFoodLocationsChanged(IList<Food> food);
 
   [SerializeField] private FoodDetector foodDetector;
-  private readonly IList<Food> _availableFoods = new List<Food>();
 
   public KnownFoodLocationsChanged KnownFoodLocationsChangedListeners;
+  public IList<Food> KnownFoodLocations { get; } = new List<Food>();
 
   private void Start()
   {
@@ -24,10 +24,10 @@ public sealed class FoodManager : MonoBehaviour
 
   private void OnFoodFound(Food food)
   {
-    if (!_availableFoods.Contains(food)) // Check if already aware of the food.
+    if (!KnownFoodLocations.Contains(food)) // Check if already aware of the food.
     {
-      _availableFoods.Add(food);
-      KnownFoodLocationsChangedListeners?.Invoke(_availableFoods);
+      KnownFoodLocations.Add(food);
+      KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
     }
   }
 
@@ -35,7 +35,7 @@ public sealed class FoodManager : MonoBehaviour
   {
     if (food == null) return;
 
-    _availableFoods.Remove(food);
-    KnownFoodLocationsChangedListeners?.Invoke(_availableFoods);
+    KnownFoodLocations.Remove(food);
+    KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
   }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace AnimalStates
 {
@@ -30,12 +31,16 @@ namespace AnimalStates
 
     public void Exit(Animal animal)
     {
+      animal.StopMoving();
     }
 
     public IState Execute(Animal animal)
     {
-      var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
+      // Enter pursue food state.
+      if (animal.GetKnownFoods().Any())
+        return animal.PursueFoodState;
 
+      var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
       if (shouldMoveToNewPos)
       {
         GoToClosePoint(animal);
