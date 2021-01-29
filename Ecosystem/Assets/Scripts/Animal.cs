@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
@@ -12,8 +13,7 @@ public sealed class Animal : MonoBehaviour
   [SerializeField] private FoodManager foodManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
-  public IState PursueFoodState;
-  public IState WanderState;
+  private IList<IState> _states;
 
   public bool IsMoving => movement.HasTarget;
 
@@ -31,21 +31,23 @@ public sealed class Animal : MonoBehaviour
   {
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     _foodEatenListeners += foodManager.OnFoodEaten;
+    _states = new List<IState>
+    {
+      new PursueFoodState(),
+      new WanderState()
+    };
 
-    WanderState = new WanderState();
-    PursueFoodState = new PursueFoodState();
-    _currentState = WanderState;
-
+    _currentState = GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter(this);
   }
 
   private void Update()
   {
     var newState = _currentState.Execute(this);
-    if (newState != _currentState)
+    if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
     {
       _currentState.Exit(this);
-      _currentState = newState;
+      _currentState = GetCorrelatingState(newState);
       _currentState.Enter(this);
     }
   }
@@ -78,6 +80,20 @@ public sealed class Animal : MonoBehaviour
   public void GoTo(Vector3 pos)
   {
     movement.Target = pos;
+  }
+
+  /// <summary>
+  ///   Gets the state with the provided state enum.
+  /// </summary>
+  /// <param name="stateEnum">The state to get the state instance from.</param>
+  /// <returns>The state correlating to the state enum.</returns>
+  /// <exception cref="ArgumentOutOfRangeException">If the animal has no state for the provided state enum.</exception>
+  private IState GetCorrelatingState(AnimalState stateEnum)
+  {
+    var state = _states.First(s => s.GetStateEnum() == stateEnum);
+    if (state != null) return state;
+
+    throw new ArgumentOutOfRangeException(nameof(state), stateEnum, null);
   }
 
   public void StopMoving()

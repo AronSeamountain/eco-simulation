@@ -16,6 +16,11 @@ namespace AnimalStates
     /// </summary>
     private bool HasFoodTarget => _foodTarget != null;
 
+    public AnimalState GetStateEnum()
+    {
+      return AnimalState.PursueFood;
+    }
+
     public void Enter(Animal animal)
     {
       _foodTarget = GetClosestFood(animal);
@@ -24,18 +29,18 @@ namespace AnimalStates
         animal.GoTo(_foodTarget.transform.position);
     }
 
-    public IState Execute(Animal animal)
+    public AnimalState Execute(Animal animal)
     {
-      if (!HasFoodTarget) return animal.WanderState;
+      if (!HasFoodTarget) return AnimalState.Wander;
 
       var distance = Distance(animal.transform.position, _foodTarget.transform.position);
       if (distance < 2)
       {
         animal.Eat(_foodTarget);
-        return animal.WanderState;
+        return AnimalState.Wander;
       }
 
-      return this;
+      return AnimalState.PursueFood;
     }
 
     public void Exit(Animal animal)
