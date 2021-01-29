@@ -51,8 +51,8 @@ public sealed class Animal : MonoBehaviour
   public void Eat(Food food)
   {
     movement.Stop();
-    FoodEatenListeners?.Invoke(food);
-    Destroy(food.gameObject);
+    _foodEatenListeners?.Invoke(food);
+    food.Consume();
   }
 
   /// <summary>
