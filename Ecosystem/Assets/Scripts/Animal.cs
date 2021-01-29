@@ -25,7 +25,7 @@ public sealed class Animal : MonoBehaviour
   /// <summary>
   ///   Returns a list of the foods that the animal knows of.
   /// </summary>
-  public IList<Food> KnownFoods => foodManager.KnownFoodLocations;
+  public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
 
   private void Start()
   {
@@ -57,7 +57,7 @@ public sealed class Animal : MonoBehaviour
   ///   provided list.
   /// </summary>
   /// <param name="foods">The list of known foods.</param>
-  private void OnKnownFoodLocationsChanged(IList<Food> foods)
+  private void OnKnownFoodLocationsChanged(IReadOnlyCollection<Food> foods)
   {
     KnowsFoodLocation = foods.Any();
   }
