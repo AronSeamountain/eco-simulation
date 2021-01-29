@@ -22,6 +22,11 @@ public sealed class Animal : MonoBehaviour
   /// </summary>
   public bool KnowsFoodLocation { get; private set; }
 
+  /// <summary>
+  ///   Returns a list of the foods that the animal knows of.
+  /// </summary>
+  public IList<Food> KnownFoods => foodManager.KnownFoodLocations;
+
   private void Start()
   {
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
@@ -46,7 +51,8 @@ public sealed class Animal : MonoBehaviour
   }
 
   /// <summary>
-  ///   Gets called when the list of known foods are changed. Sets the KnownFoodLocation to true if there is any foods in the provided list.
+  ///   Gets called when the list of known foods are changed. Sets the KnownFoodLocation to true if there is any foods in the
+  ///   provided list.
   /// </summary>
   /// <param name="foods">The list of known foods.</param>
   private void OnKnownFoodLocationsChanged(IList<Food> foods)
@@ -73,11 +79,6 @@ public sealed class Animal : MonoBehaviour
   {
     movement.Target = pos;
   }
-
-  /// <summary>
-  ///   Returns a list of the foods that the animal knows of.
-  /// </summary>
-  public IList<Food> KnownFoods => foodManager.KnownFoodLocations;
 
   public void StopMoving()
   {
