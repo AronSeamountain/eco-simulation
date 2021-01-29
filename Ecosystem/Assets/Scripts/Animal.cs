@@ -10,11 +10,9 @@ public sealed class Animal : MonoBehaviour
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
-
   private IState _currentState = new WanderState();
   private Food _foodTarget;
-
-  private FoodEaten FoodEatenListeners;
+  private FoodEaten _foodEatenListeners;
 
   /// <summary>
   ///   Whether the animal has a food target.
@@ -27,7 +25,7 @@ public sealed class Animal : MonoBehaviour
   private void Start()
   {
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
-    FoodEatenListeners += foodManager.OnFoodEaten;
+    _foodEatenListeners += foodManager.OnFoodEaten;
     _currentState.Enter(this);
   }
 
@@ -87,7 +85,7 @@ public sealed class Animal : MonoBehaviour
   private void Eat(Food food)
   {
     movement.Stop();
-    FoodEatenListeners?.Invoke(food);
+    _foodEatenListeners?.Invoke(food);
     Destroy(food.gameObject);
   }
 
