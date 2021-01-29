@@ -50,7 +50,7 @@ namespace AnimalStates
     /// <returns>The closest food.</returns>
     private Food GetClosestFood(Animal animal)
     {
-      var foods = animal.GetKnownFoods();
+      var foods = animal.KnownFoods;
       if (foods.Count < 0) return null;
 
       var animalPos = animal.transform.position;

@@ -37,7 +37,7 @@ namespace AnimalStates
     public IState Execute(Animal animal)
     {
       // Enter pursue food state.
-      if (animal.GetKnownFoods().Any())
+      if (animal.KnowsFoodLocation)
         return animal.PursueFoodState;
 
       var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;

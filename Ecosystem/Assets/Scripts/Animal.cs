@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using AnimalStates;
 using UnityEngine;
 
@@ -10,16 +11,21 @@ public sealed class Animal : MonoBehaviour
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   private IState _currentState;
-  private FoodEaten FoodEatenListeners;
+  private FoodEaten _foodEatenListeners;
   public IState PursueFoodState;
   public IState WanderState;
 
   public bool IsMoving => movement.HasTarget;
 
+  /// <summary>
+  ///   Whether the animal knows about a food location.
+  /// </summary>
+  public bool KnowsFoodLocation { get; private set; }
+
   private void Start()
   {
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
-    FoodEatenListeners += foodManager.OnFoodEaten;
+    _foodEatenListeners += foodManager.OnFoodEaten;
 
     WanderState = new WanderState();
     PursueFoodState = new PursueFoodState();
@@ -39,9 +45,13 @@ public sealed class Animal : MonoBehaviour
     }
   }
 
+  /// <summary>
+  ///   Gets called when the list of known foods are changed. Sets the KnownFoodLocation to true if there is any foods in the provided list.
+  /// </summary>
+  /// <param name="foods">The list of known foods.</param>
   private void OnKnownFoodLocationsChanged(IList<Food> foods)
   {
-    // TODO: Remove me?
+    KnowsFoodLocation = foods.Any();
   }
 
   /// <summary>
@@ -64,10 +74,10 @@ public sealed class Animal : MonoBehaviour
     movement.Target = pos;
   }
 
-  public IList<Food> GetKnownFoods()
-  {
-    return foodManager.KnownFoodLocations;
-  }
+  /// <summary>
+  ///   Returns a list of the foods that the animal knows of.
+  /// </summary>
+  public IList<Food> KnownFoods => foodManager.KnownFoodLocations;
 
   public void StopMoving()
   {
