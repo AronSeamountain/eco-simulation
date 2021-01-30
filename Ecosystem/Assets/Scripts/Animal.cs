@@ -23,22 +23,26 @@ public sealed class Animal : MonoBehaviour
   public bool KnowsFoodLocation { get; private set; }
 
   /// <summary>
-  ///   Returns a list of the foods that the animal knows of.
+  ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
 
   private void Start()
   {
-    foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
-    _foodEatenListeners += foodManager.OnFoodEaten;
+    // Setup states
+    var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {
-      new PursueFoodState(),
+      pursueFoodState,
       new WanderState()
     };
-
     _currentState = GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter(this);
+
+    // Listen to food events
+    foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
+    foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
+    _foodEatenListeners += foodManager.OnFoodEaten;
   }
 
   private void Update()

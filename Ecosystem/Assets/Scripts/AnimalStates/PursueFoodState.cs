@@ -1,20 +1,17 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AnimalStates
 {
   /// <summary>
-  ///   A state for pursuing a single piece of food.
+  ///   An animal state that chases the closest food the animal is aware of. Enters wander state when the animal isn't aware
+  ///   of any food sources.
   /// </summary>
   public sealed class PursueFoodState : IState
   {
     private Food _foodTarget;
-
-    /// <summary>
-    ///   Whether the animal has a food target.
-    ///   TODO: Should be converted to a plain bool like in GoTo movement. Null comparision is expensive.
-    /// </summary>
-    private bool HasFoodTarget => _foodTarget != null;
+    private bool _knownFoodTargetsChanged;
 
     public AnimalState GetStateEnum()
     {
@@ -23,21 +20,27 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
-      _foodTarget = GetClosestFood(animal);
-
-      if (_foodTarget != null)
-        animal.GoTo(_foodTarget.transform.position);
     }
 
     public AnimalState Execute(Animal animal)
     {
-      if (!HasFoodTarget) return AnimalState.Wander;
+      // A new food source has been found. Change the food target to the closest food.
+      if (_knownFoodTargetsChanged)
+      {
+        _knownFoodTargetsChanged = false;
+        _foodTarget = GetClosestFood(animal);
+        if (_foodTarget != null) animal.GoTo(_foodTarget.transform.position);
+      }
 
-      var distance = Distance(animal.transform.position, _foodTarget.transform.position);
-      if (distance < 2)
+      // No food -> Enter wander state
+      if (_foodTarget == null) return AnimalState.Wander;
+
+      // Eat the current food if it can be reached.
+      var reachesFood = Distance(animal.transform.position, _foodTarget.transform.position) < 2;
+      if (reachesFood)
       {
         animal.Eat(_foodTarget);
-        return AnimalState.Wander;
+        _foodTarget = null;
       }
 
       return AnimalState.PursueFood;
@@ -45,18 +48,17 @@ namespace AnimalStates
 
     public void Exit(Animal animal)
     {
-      _foodTarget = null;
     }
 
     /// <summary>
-    ///   Returns the closest food the animal knows about. Returns null if animal is null or it knows no foods.
+    ///   Returns the closest food the animal knows about. Returns null if it knows no foods.
     /// </summary>
     /// <param name="animal">The animal.</param>
     /// <returns>The closest food.</returns>
     private Food GetClosestFood(Animal animal)
     {
       var foods = animal.KnownFoods;
-      if (foods.Count < 0) return null;
+      if (!foods.Any()) return null;
 
       var animalPos = animal.transform.position;
       return foods.OrderBy(f => Distance(animalPos, f.transform.position)).First();
@@ -71,6 +73,15 @@ namespace AnimalStates
     private float Distance(Vector3 point1, Vector3 point2)
     {
       return (point1 - point2).magnitude;
+    }
+
+    /// <summary>
+    ///   Lets the state know that there is potentially a closer food.
+    /// </summary>
+    /// <param name="foods">The set of foods the animals knows of.</param>
+    public void OnKnownFoodLocationsChanged(IEnumerable<Food> foods)
+    {
+      _knownFoodTargetsChanged = true;
     }
   }
 }
