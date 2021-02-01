@@ -8,7 +8,7 @@ namespace Logger
   {
     //private IList<LoggableColumn> _loggableColumns;
     private const string Delimiter = ",";
-    private const string Path = "Assets/test.txt";
+    private const string Path = "Assets/Logs/TestLog.txt";
 
     static DataLogger()
     {
