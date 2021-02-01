@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 
 namespace Logger
 {
   public sealed class DataLogger
   {
-    //private IList<LoggableColumn> _loggableColumns;
     private const string Delimiter = ",";
     private const string Path = "Assets/Logs/TestLog.txt";
+    private readonly IList<LoggableColumn> _loggableColumns;
 
     static DataLogger()
     {
@@ -17,7 +17,11 @@ namespace Logger
 
     private DataLogger()
     {
-      // _loggableColumns = new List<LoggableColumn>();
+      _loggableColumns = new List<LoggableColumn>
+      {
+        new LoggableColumn("day", (day, animals) => day.ToString()),
+        new LoggableColumn("amount", (day, animals) => animals.Count.ToString())
+      };
     }
 
     public static DataLogger Instance { get; } = new DataLogger();
@@ -38,28 +42,27 @@ namespace Logger
 
     private void AppendHeader()
     {
+      var headerNames = _loggableColumns.Select(column => column.ColumnName).ToList();
+      var header = string.Join(Delimiter, headerNames);
+
       var writer = File.AppendText(Path);
-      writer.WriteLine("day" + Delimiter + "amount");
+      writer.WriteLine(header);
       writer.Close();
     }
 
-    public void Snapshot(int day, IList<Animal> animals)
+    public void Snapshot(int day, IReadOnlyCollection<Animal> animals)
     {
-      var amount = animals.Count;
-
       var writer = File.AppendText(Path);
-      writer.WriteLine(day + Delimiter + amount);
+      writer.WriteLine(CreateRow(day, animals));
       writer.Close();
     }
 
-    private string CreateRow()
+    private string CreateRow(int day, IReadOnlyCollection<Animal> animals)
     {
-      var sb = new StringBuilder();
-      sb.Append("first column");
-      sb.Append(Delimiter);
-      sb.Append("second column");
-
-      return sb.ToString();
+      // TODO: Could be converted to a string builder to enhance performance if we log often.
+      var values = _loggableColumns.Select(column => column.GetValue(day, animals)).ToList();
+      var row = string.Join(Delimiter, values);
+      return row;
     }
   }
 }
