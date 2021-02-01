@@ -7,7 +7,7 @@ namespace Logger
   public sealed class DataLogger
   {
     private const string Delimiter = ",";
-    private const string Path = "Assets/Logs/TestLog.txt";
+    private const string Path = "Assets/Logs/TestLog.csv";
     private readonly IList<LoggableColumn> _loggableColumns;
 
     static DataLogger()
