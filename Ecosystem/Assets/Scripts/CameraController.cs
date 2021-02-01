@@ -13,6 +13,20 @@ public class CameraController : MonoBehaviour
     private Vector3 _previousMousePos;
     private bool _yToggle = true;
     private Vector3 _target;
+    
+    [SerializeField]
+    private Transform target;
+    // The distance in the x-z plane to the target
+    [SerializeField]
+    private float distance = 10.0f;
+    // the height we want the camera to be above the target
+    [SerializeField]
+    private float height = 5.0f;
+
+    [SerializeField]
+    private float rotationDamping;
+    [SerializeField]
+    private float heightDamping;
 
 
     // Update is called once per frame
@@ -21,6 +35,7 @@ public class CameraController : MonoBehaviour
         OrdinaryMovement();
         RotationalMovement();
         ClickObject();
+
     }
 
     void OrdinaryMovement()
@@ -90,49 +105,66 @@ public class CameraController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit target = new RaycastHit();
+            RaycastHit hitTarget = new RaycastHit();
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out target))
+            if (Physics.Raycast(ray, out hitTarget))
             {
-                // Check if arrived
-                /*var hasArrived = (target.transform.position - camera.transform.position).magnitude < 10;
-                if (!hasArrived)
+                target = hitTarget.transform;
+                if (target.parent != null)
                 {
-                    var direction = (target.transform.position - transform.position).normalized;
-
-                    camera.transform.position += direction * (movementSpeed * Time.deltaTime);
-                    transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
-                }*/
-                _target = target.transform.position;
-
+                    target = target.parent;
+                }
             }
         }
 
-        var hasArrived = (Target - transform.position).magnitude < 10;
+        var hasArrived = (target.position - transform.position).magnitude < distance + 1;
         if (!hasArrived)
         {
-            var direction = (Target - transform.position).normalized;
+            var direction = (target.position - transform.position).normalized;
             cameraController.Move(direction * (movementSpeed * Time.deltaTime));
             transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
         }
-
-        // Move
-
-
-    }
-
-    public Vector3 Target
-    {
-        get => _target;
-        set
+        else
         {
-            _target = value;
-            HasTarget = true;
+            if (!target)
+                return;
+
+            // Calculate the current rotation angles
+            var wantedRotationAngle = target.eulerAngles.y;
+            var wantedHeight = target.position.y + height;
+
+            var currentRotationAngle = transform.eulerAngles.y;
+            var currentHeight = transform.position.y;
+
+            // Damp the rotation around the y-axis
+            currentRotationAngle = Mathf.LerpAngle(currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
+
+            // Damp the height
+            currentHeight = Mathf.Lerp(currentHeight, wantedHeight, heightDamping * Time.deltaTime);
+
+            // Convert the angle into a rotation
+            var currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+
+            // Set the position of the camera on the x-z plane to:
+            // distance meters behind the target
+            transform.position = target.position;
+            transform.position -= currentRotation * Vector3.forward * distance;
+            
+
+            // Set the height of the camera
+            transform.position = new Vector3(transform.position.x ,currentHeight , transform.position.z);
+
+            // Always look at the target
+            transform.LookAt(target);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            camera.Reset();
+            target = null;
         }
     }
 
-    public bool HasTarget { get; set; }
-
-
+    
 }

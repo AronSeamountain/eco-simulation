@@ -386,6 +386,8 @@ GameObject:
   - component: {fileID: 1835390854}
   - component: {fileID: 1835390853}
   - component: {fileID: 1835390852}
+  - component: {fileID: 1835390856}
+  - component: {fileID: 1835390855}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -458,6 +460,44 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 40.229, y: 0, z: 0}
+--- !u!114 &1835390855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835390851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a0120478066f1541ac8d3c09661d0b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera: {fileID: 1835390853}
+  cameraController: {fileID: 1835390856}
+  movementSpeed: 10
+  target: {fileID: 0}
+  distance: 10
+  height: 10
+  rotationDamping: 0
+  heightDamping: 0
+--- !u!143 &1835390856
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835390851}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1873753496
 GameObject:
   m_ObjectHideFlags: 0
