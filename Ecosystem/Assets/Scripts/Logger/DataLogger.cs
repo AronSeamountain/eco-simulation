@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Logger
 {
+  /// <summary>
+  ///   Singleton logger class that logs the world.
+  /// </summary>
   public sealed class DataLogger
   {
     private const string Delimiter = ",";
@@ -26,6 +29,9 @@ namespace Logger
 
     public static DataLogger Instance { get; } = new DataLogger();
 
+    /// <summary>
+    ///   Removes all the content from the file.
+    /// </summary>
     private void Clear()
     {
       File.WriteAllText(Path, string.Empty);
@@ -45,16 +51,12 @@ namespace Logger
       var headerNames = _loggableColumns.Select(column => column.ColumnName).ToList();
       var header = string.Join(Delimiter, headerNames);
 
-      var writer = File.AppendText(Path);
-      writer.WriteLine(header);
-      writer.Close();
+      AppendRow(header);
     }
 
     public void Snapshot(int day, IReadOnlyCollection<Animal> animals)
     {
-      var writer = File.AppendText(Path);
-      writer.WriteLine(CreateRow(day, animals));
-      writer.Close();
+      AppendRow(CreateRow(day, animals));
     }
 
     private string CreateRow(int day, IReadOnlyCollection<Animal> animals)
@@ -63,6 +65,17 @@ namespace Logger
       var values = _loggableColumns.Select(column => column.GetValue(day, animals)).ToList();
       var row = string.Join(Delimiter, values);
       return row;
+    }
+
+    /// <summary>
+    ///   Appends a string on a new row.
+    /// </summary>
+    /// <param name="row">The string to append.</param>
+    private void AppendRow(string row)
+    {
+      var writer = File.AppendText(Path);
+      writer.WriteLine(row);
+      writer.Close();
     }
   }
 }
