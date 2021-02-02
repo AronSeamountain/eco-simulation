@@ -40,6 +40,8 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
+      animal.HydrationSaturationTicker();
+
       // Enter pursue food state.
       if (animal.KnowsFoodLocation && animal.IsHungry)
         return AnimalState.PursueFood;

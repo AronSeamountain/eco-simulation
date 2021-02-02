@@ -19,6 +19,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   private const int ThirstyHydrationLevel = 50;
 
+  private const int SaturationDecreasePerUnit = 1;
+  private const int HydrationDecreasePerUnit = 1;
+
+  /// <summary>
+  ///   The amount of time that a "unit" is in.
+  /// </summary>
+  private const float UnitTimeSeconds = 0.5f;
+
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   private IState _currentState;
@@ -26,6 +34,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   private int _hydration;
   private int _saturation;
   private IList<IState> _states;
+  private float _unitTicker;
 
   public bool IsMoving => movement.HasTarget;
 
@@ -62,7 +71,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     // Food and hydration
     _saturation = 25; // Temporary
     _hydration = 25;
-  }  
+  }
 
   private void Update()
   {
@@ -93,6 +102,22 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void Eat(int saturation)
   {
     _saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
+  }
+
+  /// <summary>
+  ///   Decrease hydration and saturation over time.
+  /// </summary>
+  public void HydrationSaturationTicker()
+  {
+    _unitTicker += Time.deltaTime;
+    if (_unitTicker >= UnitTimeSeconds)
+    {
+      _unitTicker = 0;
+      _saturation -= SaturationDecreasePerUnit;
+      _hydration -= HydrationDecreasePerUnit;
+    }
+
+    Debug.Log("Saturation: " + _saturation + ", Hydration: " + _hydration);
   }
 
   /// <summary>
