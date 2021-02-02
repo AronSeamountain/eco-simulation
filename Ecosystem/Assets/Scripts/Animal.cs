@@ -12,7 +12,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// <summary>
   ///   The value for which the animal is considered hungry.
   /// </summary>
-  private const int HungryNourishmentLevel = 50;
+  private const int HungrySaturationLevel = 50;
 
   /// <summary>
   ///   The value for which the animal is considered thirsty.
@@ -24,7 +24,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private int _hydration;
-  private int _nourishment;
+  private int _saturation;
   private IList<IState> _states;
 
   public bool IsMoving => movement.HasTarget;
@@ -39,7 +39,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
 
-  public bool IsHungry => GetNourishment() <= HungryNourishmentLevel;
+  public bool IsHungry => GetSaturation() <= HungrySaturationLevel;
   public bool IsThirsty => GetHydration() <= ThirstyHydrationLevel;
 
   private void Start()
@@ -60,7 +60,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _foodEatenListeners += foodManager.OnFoodEaten;
 
     // Food and hydration
-    _nourishment = 100; // Temporary
+    _saturation = 100; // Temporary
     _hydration = 100;
   }
 
@@ -85,14 +85,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _hydration += Mathf.Clamp(hydration, 0, int.MaxValue);
   }
 
-  public int GetNourishment()
+  public int GetSaturation()
   {
-    return _nourishment;
+    return _saturation;
   }
 
-  public void Eat(int hydration)
+  public void Eat(int saturation)
   {
-    _nourishment += Mathf.Clamp(hydration, 0, int.MaxValue);
+    _saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
   }
 
   /// <summary>
@@ -106,12 +106,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   }
 
   /// <summary>
-  ///   Eats the provided food. Removes it.
+  ///   Eats the provided food (removes its saturation). Removes it.
   /// </summary>
   /// <param name="food">The food to eat.</param>
   public void Eat(Food food)
   {
     movement.Stop();
+    Eat(food.Saturation);
     _foodEatenListeners?.Invoke(food);
     food.Consume();
   }

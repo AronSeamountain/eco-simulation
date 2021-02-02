@@ -4,14 +4,14 @@
 public interface ICanEat
 {
   /// <summary>
-  ///   Gets the amount of nourishment the entity has.
+  ///   Gets the amount of saturation the entity has.
   /// </summary>
-  /// <returns>The amount of nourishment the entity has.</returns>
-  int GetNourishment();
+  /// <returns>The amount of saturation the entity has.</returns>
+  int GetSaturation();
 
   /// <summary>
-  ///   Adds the amount of nourishment to the entity.
+  ///   Adds the amount of saturation to the entity.
   /// </summary>
-  /// <param name="nourishment">The amount of nourishment to add to the entity, must be in the range [0, Max Integer Value].</param>
-  void Eat(int nourishment);
+  /// <param name="saturation">The amount of saturation to add to the entity, must be in the range [0, Max Integer Value].</param>
+  void Eat(int saturation);
 }
