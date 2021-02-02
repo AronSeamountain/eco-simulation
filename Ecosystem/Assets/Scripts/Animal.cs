@@ -9,32 +9,12 @@ using UnityEngine;
 /// </summary>
 public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 {
-  /// <summary>
-  ///   The value for which the animal is considered hungry.
-  /// </summary>
-  private const int HungrySaturationLevel = 50;
-
-  /// <summary>
-  ///   The value for which the animal is considered thirsty.
-  /// </summary>
-  private const int ThirstyHydrationLevel = 50;
-
-  private const int SaturationDecreasePerUnit = 1;
-  private const int HydrationDecreasePerUnit = 1;
-
-  /// <summary>
-  ///   The amount of time that a "unit" is in.
-  /// </summary>
-  private const float UnitTimeSeconds = 0.5f;
-
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
-  private int _hydration;
-  private int _saturation;
+  private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
-  private float _unitTicker;
 
   public bool IsMoving => movement.HasTarget;
 
@@ -48,11 +28,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
 
-  public bool IsHungry => GetSaturation() <= HungrySaturationLevel;
-  public bool IsThirsty => GetHydration() <= ThirstyHydrationLevel;
+  public bool IsHungry => _nourishmentDelegate.IsHungry;
+  public bool IsThirsty => _nourishmentDelegate.IsThirsty;
 
   private void Start()
   {
+    _nourishmentDelegate = new NourishmentDelegate();
+
     // Setup states
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
@@ -69,8 +51,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _foodEatenListeners += foodManager.OnFoodEaten;
 
     // Food and hydration
-    _saturation = 25; // Temporary
-    _hydration = 25;
+    _nourishmentDelegate.Hydration = 25; // Temporary
+    _nourishmentDelegate.Saturation = 25;
   }
 
   private void Update()
@@ -86,22 +68,22 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   public int GetHydration()
   {
-    return _hydration;
+    return _nourishmentDelegate.Hydration;
   }
 
   public void Drink(int hydration)
   {
-    _hydration += Mathf.Clamp(hydration, 0, int.MaxValue);
+    _nourishmentDelegate.Hydration += Mathf.Clamp(hydration, 0, int.MaxValue);
   }
 
   public int GetSaturation()
   {
-    return _saturation;
+    return _nourishmentDelegate.Saturation;
   }
 
   public void Eat(int saturation)
   {
-    _saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
+    _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
   }
 
   /// <summary>
@@ -109,15 +91,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   public void HydrationSaturationTicker()
   {
-    _unitTicker += Time.deltaTime;
-    if (_unitTicker >= UnitTimeSeconds)
-    {
-      _unitTicker = 0;
-      _saturation -= SaturationDecreasePerUnit;
-      _hydration -= HydrationDecreasePerUnit;
-    }
-
-    Debug.Log("Saturation: " + _saturation + ", Hydration: " + _hydration);
+    _nourishmentDelegate.Tick(Time.deltaTime);
+    Debug.Log("Saturation: " + _nourishmentDelegate.Saturation + ", Hydration: " + _nourishmentDelegate.Hydration);
   }
 
   /// <summary>
