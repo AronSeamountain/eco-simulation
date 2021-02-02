@@ -306,6 +306,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &946591338 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2943484383253803422, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 2448027378535805416}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1745732635
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -475,11 +481,7 @@ MonoBehaviour:
   camera: {fileID: 1835390853}
   cameraController: {fileID: 1835390856}
   movementSpeed: 10
-  target: {fileID: 0}
-  distance: 10
-  height: 10
-  rotationDamping: 0
-  heightDamping: 0
+  target: {fileID: 946591338}
 --- !u!143 &1835390856
 CharacterController:
   m_ObjectHideFlags: 0

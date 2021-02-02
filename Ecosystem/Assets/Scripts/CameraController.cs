@@ -23,7 +23,6 @@ public class CameraController : MonoBehaviour
 
   private Vector3 _previousMousePos;
   private Vector3 _target;
-  private bool _yToggle = true;
 
   private void Start()
   {
@@ -39,29 +38,28 @@ public class CameraController : MonoBehaviour
     ClickObject();
   }
 
+  /// <summary>
+  /// Camera movement using WASD or arrow keys. Travel up and down the y-axis using Z and X.
+  /// </summary>
   private void OrdinaryMovement()
   {
     var direction = new Vector3(0, 0, 0);
 
-    //WASD-movement as well as arrows
-    if (Input.GetKey("w") || Input.GetKey("up")) direction += _cameraTransform.forward;
-
-    if (Input.GetKey("s") || Input.GetKey("down")) direction -= _cameraTransform.forward;
-
-    if (Input.GetKey("a") || Input.GetKey("left")) direction -= _cameraTransform.right;
-
-    if (Input.GetKey("d") || Input.GetKey("right")) direction += _cameraTransform.right;
-
-    //travel up and down the y-axis using space, press left shift once to change direction.
-    if (Input.GetKeyDown("left shift")) _yToggle = !_yToggle;
-    if (Input.GetKey("space"))
+    if (Input.GetButton("Horizontal"))
     {
-      if (_yToggle)
-        direction.y += 1;
-      else
-        direction.y -= 1;
+      direction += Input.GetAxis("Horizontal") * Time.deltaTime * movementSpeed * _cameraTransform.right ;
     }
 
+    if (Input.GetButton("Vertical"))
+    {
+      direction += Input.GetAxis("Vertical") * Time.deltaTime * movementSpeed * _cameraTransform.forward;
+    }
+
+    if (Input.GetButton("CameraY"))
+    {
+      direction.y += Input.GetAxis("CameraY") * Time.deltaTime * 1;
+    }
+    
     direction.Normalize();
     _cameraTransform.position += direction * (movementSpeed * Time.deltaTime);
   }
@@ -87,7 +85,7 @@ public class CameraController : MonoBehaviour
   /// </summary>
   private void ClickObject()
   {
-    if (Input.GetMouseButtonDown(0))
+    if (Input.GetButton("Fire1"))
     {
       var hitTarget = new RaycastHit();
       var ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -141,7 +139,7 @@ public class CameraController : MonoBehaviour
       transform.LookAt(target);
     }
 
-    if (Input.GetKeyDown(KeyCode.Escape))
+    if (Input.GetButton("Cancel"))
     {
       camera.Reset();
       target = null;
