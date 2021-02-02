@@ -9,12 +9,22 @@ using UnityEngine;
 /// </summary>
 public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 {
+  /// <summary>
+  ///   The value for which the animal is considered hungry.
+  /// </summary>
+  private const int HungryNourishmentLevel = 50;
+
+  /// <summary>
+  ///   The value for which the animal is considered thirsty.
+  /// </summary>
+  private const int ThirstyHydrationLevel = 50;
+
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
-  private int _foodPoints;
   private int _hydration;
+  private int _nourishment;
   private IList<IState> _states;
 
   public bool IsMoving => movement.HasTarget;
@@ -28,6 +38,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
+
+  public bool IsHungry => GetNourishment() <= HungryNourishmentLevel;
+  public bool IsThirsty => GetHydration() <= ThirstyHydrationLevel;
 
   private void Start()
   {
@@ -47,7 +60,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _foodEatenListeners += foodManager.OnFoodEaten;
 
     // Food and hydration
-    _foodPoints = 100;
+    _nourishment = 100; // Temporary
     _hydration = 100;
   }
 
@@ -74,12 +87,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   public int GetNourishment()
   {
-    return _foodPoints;
+    return _nourishment;
   }
 
   public void Eat(int hydration)
   {
-    _foodPoints += Mathf.Clamp(hydration, 0, int.MaxValue);
+    _nourishment += Mathf.Clamp(hydration, 0, int.MaxValue);
   }
 
   /// <summary>
