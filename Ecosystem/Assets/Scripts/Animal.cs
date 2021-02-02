@@ -11,6 +11,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
+  [SerializeField] private WaterManager waterManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
@@ -30,7 +31,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
 
-  public Water ClosestKnownWater => foodManager.ClosestKnownWater;
+  public Water ClosestKnownWater => waterManager.ClosestKnownWater;
 
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
@@ -57,7 +58,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _foodEatenListeners += foodManager.OnFoodEaten;
     
     //listen to water events
-    foodManager.WaterUpdateListeners += OnWaterLocationChanged;
+    waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }
 
   private void OnWaterLocationChanged(Water water)

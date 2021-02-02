@@ -40,6 +40,6 @@ public class PursueWaterState : IState
 
   public void Exit(Animal animal)
   {
-    throw new System.NotImplementedException();
+      Debug.Log("EXIT PURSUE WATER");
   }
 }
