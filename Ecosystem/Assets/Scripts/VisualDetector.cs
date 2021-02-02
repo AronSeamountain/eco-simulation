@@ -3,7 +3,7 @@
 /// <summary>
 ///   Scans for food and calls a delegate when food is found.
 /// </summary>
-public sealed class FoodDetector : MonoBehaviour
+public sealed class VisualDetector : MonoBehaviour
 {
   /// <summary>
   ///   Gets invoked when a food is found.

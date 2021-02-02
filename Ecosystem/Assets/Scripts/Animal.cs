@@ -11,6 +11,7 @@ public sealed class Animal : MonoBehaviour
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
+  [SerializeField] private WaterManager waterManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private IList<IState> _states;
@@ -29,7 +30,7 @@ public sealed class Animal : MonoBehaviour
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
 
-  public Water ClosestKnownWater => foodManager.ClosestKnownWater;
+  public Water ClosestKnownWater => waterManager.ClosestKnownWater;
 
   private void Start()
   {
@@ -51,7 +52,7 @@ public sealed class Animal : MonoBehaviour
     _foodEatenListeners += foodManager.OnFoodEaten;
     
     //listen to water events
-    foodManager.WaterUpdateListeners += OnWaterLocationChanged;
+    waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }
 
   private void OnWaterLocationChanged(Water water)
