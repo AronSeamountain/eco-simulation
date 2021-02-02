@@ -10,7 +10,7 @@ public sealed class VisualDetector : MonoBehaviour
   /// </summary>
   /// <param name="food">The found that was just found.</param>
   public delegate void FoodFound(Food food);
-  
+
   /// <summary>
   ///   Gets invoked when water is found.
   /// </summary>

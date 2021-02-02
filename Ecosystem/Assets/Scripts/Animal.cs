@@ -23,7 +23,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   ///   Whether the animal knows about a food location.
   /// </summary>
   public bool KnowsFoodLocation { get; private set; }
-  
+
   public bool KnowsWaterLocation { get; private set; }
 
   /// <summary>
@@ -56,14 +56,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
     _foodEatenListeners += foodManager.OnFoodEaten;
-    
+
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
-  }
-
-  private void OnWaterLocationChanged(Water water)
-  {
-    KnowsWaterLocation = !(water == null);
   }
 
   private void Update()
@@ -95,6 +90,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void Eat(int saturation)
   {
     _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
+  }
+
+  private void OnWaterLocationChanged(Water water)
+  {
+    KnowsWaterLocation = !(water == null);
   }
 
   /// <summary>

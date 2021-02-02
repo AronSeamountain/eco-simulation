@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 ///   Takes care of finding and managing foods.
@@ -15,14 +13,11 @@ public sealed class FoodManager : MonoBehaviour
   /// <param name="food">A list of all the known food sources.</param>
   public delegate void KnownFoodLocationsChanged(IReadOnlyCollection<Food> food);
 
-  
-
   [SerializeField] private VisualDetector visualDetector;
   private IList<Food> _knownFoodLocations;
   public KnownFoodLocationsChanged KnownFoodLocationsChangedListeners;
   public IReadOnlyList<Food> KnownFoodLocations => new ReadOnlyCollection<Food>(_knownFoodLocations);
 
- 
   private void Start()
   {
     _knownFoodLocations = new List<Food>();
@@ -37,8 +32,6 @@ public sealed class FoodManager : MonoBehaviour
     KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
   }
 
-
-  
   public void OnFoodEaten(Food food)
   {
     if (food == null) return;

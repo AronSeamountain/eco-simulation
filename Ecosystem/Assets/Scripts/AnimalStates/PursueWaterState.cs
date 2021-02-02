@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using AnimalStates;
+﻿using AnimalStates;
 using UnityEngine;
 
 public class PursueWaterState : IState
@@ -35,13 +33,11 @@ public class PursueWaterState : IState
 
     animal.GoTo(position);
 
-
     return AnimalState.PursueWater;
   }
 
-
   public void Exit(Animal animal)
   {
-      Debug.Log("EXIT PURSUE WATER");
+    Debug.Log("EXIT PURSUE WATER");
   }
 }
