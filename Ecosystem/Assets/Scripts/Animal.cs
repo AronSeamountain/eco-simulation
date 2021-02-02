@@ -60,9 +60,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _foodEatenListeners += foodManager.OnFoodEaten;
 
     // Food and hydration
-    _saturation = 100; // Temporary
-    _hydration = 100;
-  }
+    _saturation = 25; // Temporary
+    _hydration = 25;
+  }  
 
   private void Update()
   {
