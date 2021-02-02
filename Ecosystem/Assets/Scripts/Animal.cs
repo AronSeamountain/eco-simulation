@@ -7,12 +7,14 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour
+public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
+  private int _foodPoints;
+  private int _hydration;
   private IList<IState> _states;
 
   public bool IsMoving => movement.HasTarget;
@@ -43,6 +45,10 @@ public sealed class Animal : MonoBehaviour
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
     _foodEatenListeners += foodManager.OnFoodEaten;
+
+    // Food and hydration
+    _foodPoints = 100;
+    _hydration = 100;
   }
 
   private void Update()
@@ -54,6 +60,26 @@ public sealed class Animal : MonoBehaviour
       _currentState = GetCorrelatingState(newState);
       _currentState.Enter(this);
     }
+  }
+
+  public int GetHydration()
+  {
+    return _hydration;
+  }
+
+  public void Drink(int hydration)
+  {
+    _hydration += Mathf.Clamp(hydration, 0, int.MaxValue);
+  }
+
+  public int GetNourishment()
+  {
+    return _foodPoints;
+  }
+
+  public void Eat(int hydration)
+  {
+    _foodPoints += Mathf.Clamp(hydration, 0, int.MaxValue);
   }
 
   /// <summary>
