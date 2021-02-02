@@ -21,28 +21,42 @@ public sealed class Animal : MonoBehaviour
   ///   Whether the animal knows about a food location.
   /// </summary>
   public bool KnowsFoodLocation { get; private set; }
+  
+  public bool KnowsWaterLocation { get; private set; }
 
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
 
+  public Water ClosestKnownWater => foodManager.ClosestKnownWater;
+
   private void Start()
   {
     // Setup states
+    var pursueWaterState = new PursueWaterState();
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {
+      pursueWaterState,
       pursueFoodState,
       new WanderState()
     };
-    _currentState = GetCorrelatingState(AnimalState.Wander);
+    _currentState = GetCorrelatingState(AnimalState.PursueWater);
     _currentState.Enter(this);
 
     // Listen to food events
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
     _foodEatenListeners += foodManager.OnFoodEaten;
+    
+    //listen to water events
+    foodManager.WaterUpdateListeners += OnWaterLocationChanged;
+  }
+
+  private void OnWaterLocationChanged(Water water)
+  {
+    KnowsWaterLocation = !(water == null);
   }
 
   private void Update()
@@ -103,6 +117,11 @@ public sealed class Animal : MonoBehaviour
   public void StopMoving()
   {
     movement.Stop();
+  }
+
+  public void Drink(Water water)
+  {
+    Debug.Log("Slurp!");
   }
 
   /// <summary>
