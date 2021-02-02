@@ -6,6 +6,12 @@
   public interface IState
   {
     /// <summary>
+    ///   Gets the animal state enum.
+    /// </summary>
+    /// <returns>The animal state enum.</returns>
+    AnimalState GetStateEnum();
+
+    /// <summary>
     ///   Setups the state.
     /// </summary>
     /// <param name="animal">The animal of the state.</param>
@@ -15,7 +21,7 @@
     ///   Gets called for every frame, should be used as Unitys Update() method.
     /// </summary>
     /// <param name="animal">The animal of the state.</param>
-    IState Execute(Animal animal);
+    AnimalState Execute(Animal animal);
 
     /// <summary>
     ///   Exits the state and cleans up after itself.

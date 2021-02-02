@@ -25,7 +25,7 @@ public sealed class GoToMovement : MonoBehaviour
   /// <summary>
   ///   Whether the movement is currently in pursuit of travelling to a point.
   /// </summary>
-  public bool HasTarget { get; set; }
+  public bool HasTarget { get; private set; }
 
   private void Update()
   {

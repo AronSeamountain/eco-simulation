@@ -22,6 +22,11 @@ namespace AnimalStates
     /// </summary>
     private float _timeIdled;
 
+    public AnimalState GetStateEnum()
+    {
+      return AnimalState.Wander;
+    }
+
     public void Enter(Animal animal)
     {
       GoToClosePoint(animal);
@@ -30,12 +35,16 @@ namespace AnimalStates
 
     public void Exit(Animal animal)
     {
+      animal.StopMoving();
     }
 
-    public IState Execute(Animal animal)
+    public AnimalState Execute(Animal animal)
     {
-      var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
+      // Enter pursue food state.
+      if (animal.KnowsFoodLocation)
+        return AnimalState.PursueFood;
 
+      var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
       if (shouldMoveToNewPos)
       {
         GoToClosePoint(animal);
@@ -47,7 +56,7 @@ namespace AnimalStates
         _timeIdled += Time.deltaTime;
       }
 
-      return this;
+      return AnimalState.Wander;
     }
 
     /// <summary>
