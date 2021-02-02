@@ -49,10 +49,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
     _foodEatenListeners += foodManager.OnFoodEaten;
-
-    // Food and hydration
-    _nourishmentDelegate.Hydration = 25; // Temporary
-    _nourishmentDelegate.Saturation = 25;
   }
 
   private void Update()

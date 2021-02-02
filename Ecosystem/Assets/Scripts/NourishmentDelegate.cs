@@ -23,11 +23,21 @@ public sealed class NourishmentDelegate
 
   private float _unitTicker;
 
+  public NourishmentDelegate()
+  {
+    Saturation = 25;
+    Hydration = 25;
+  }
+
   public int Saturation { get; set; }
   public int Hydration { get; set; }
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
 
+  /// <summary>
+  ///   Slowly decrease hunger and thirst with time.
+  /// </summary>
+  /// <param name="deltaTime">The time since last frame.</param>
   public void Tick(float deltaTime)
   {
     _unitTicker += deltaTime;
