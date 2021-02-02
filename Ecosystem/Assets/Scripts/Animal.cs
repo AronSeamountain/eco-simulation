@@ -7,12 +7,13 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour
+public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
+  private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
 
   public bool IsMoving => movement.HasTarget;
@@ -27,8 +28,13 @@ public sealed class Animal : MonoBehaviour
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
 
+  public bool IsHungry => _nourishmentDelegate.IsHungry;
+  public bool IsThirsty => _nourishmentDelegate.IsThirsty;
+
   private void Start()
   {
+    _nourishmentDelegate = new NourishmentDelegate();
+
     // Setup states
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
@@ -56,6 +62,35 @@ public sealed class Animal : MonoBehaviour
     }
   }
 
+  public int GetHydration()
+  {
+    return _nourishmentDelegate.Hydration;
+  }
+
+  public void Drink(int hydration)
+  {
+    _nourishmentDelegate.Hydration += Mathf.Clamp(hydration, 0, int.MaxValue);
+  }
+
+  public int GetSaturation()
+  {
+    return _nourishmentDelegate.Saturation;
+  }
+
+  public void Eat(int saturation)
+  {
+    _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
+  }
+
+  /// <summary>
+  ///   Decrease hydration and saturation over time.
+  /// </summary>
+  public void HydrationSaturationTicker()
+  {
+    _nourishmentDelegate.Tick(Time.deltaTime);
+    Debug.Log("Saturation: " + _nourishmentDelegate.Saturation + ", Hydration: " + _nourishmentDelegate.Hydration);
+  }
+
   /// <summary>
   ///   Gets called when the list of known foods are changed. Sets the KnownFoodLocation to true if there is any foods in the
   ///   provided list.
@@ -67,12 +102,13 @@ public sealed class Animal : MonoBehaviour
   }
 
   /// <summary>
-  ///   Eats the provided food. Removes it.
+  ///   Eats the provided food (removes its saturation). Removes it.
   /// </summary>
   /// <param name="food">The food to eat.</param>
   public void Eat(Food food)
   {
     movement.Stop();
+    Eat(food.Saturation);
     _foodEatenListeners?.Invoke(food);
     food.Consume();
   }
