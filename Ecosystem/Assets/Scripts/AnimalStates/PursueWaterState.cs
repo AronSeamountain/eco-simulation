@@ -18,6 +18,7 @@ public class PursueWaterState : IState
 
   public AnimalState Execute(Animal animal)
   {
+    if (!animal.IsThirsty) return AnimalState.Wander;
     if (!animal.KnowsWaterLocation) return AnimalState.Wander;
 
     _waterTarget = animal.ClosestKnownWater;

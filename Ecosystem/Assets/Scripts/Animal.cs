@@ -49,7 +49,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
       pursueFoodState,
       new WanderState()
     };
-    _currentState = GetCorrelatingState(AnimalState.PursueWater);
+    _currentState = GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter(this);
 
     // Listen to food events
@@ -158,7 +158,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   public void Drink(Water water)
   {
-    Debug.Log("Slurp!");
+    _nourishmentDelegate.Hydration += Mathf.Clamp(30, 0, int.MaxValue);
   }
 
   /// <summary>
