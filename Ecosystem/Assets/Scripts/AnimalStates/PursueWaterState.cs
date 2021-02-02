@@ -29,6 +29,7 @@ public class PursueWaterState : IState
     if (reachesWater)
     {
       animal.Drink(_waterTarget);
+      return AnimalState.Wander;
     }
 
     animal.GoTo(position);
