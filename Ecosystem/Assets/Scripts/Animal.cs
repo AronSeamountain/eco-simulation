@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
@@ -6,85 +7,108 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour
+public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
-  private IState _currentState = new WanderState();
+  private IState _currentState;
   private FoodEaten _foodEatenListeners;
-  private Food _foodTarget;
-
-  /// <summary>
-  ///   Whether the animal has a food target.
-  ///   TODO: Should be converted to a plain bool like in GoTo movement. Null comparision is expensive.
-  /// </summary>
-  private bool HasFoodTarget => _foodTarget != null;
+  private NourishmentDelegate _nourishmentDelegate;
+  private IList<IState> _states;
 
   public bool IsMoving => movement.HasTarget;
 
+  /// <summary>
+  ///   Whether the animal knows about a food location.
+  /// </summary>
+  public bool KnowsFoodLocation { get; private set; }
+
+  /// <summary>
+  ///   Returns a collection of the foods that the animal is aware of.
+  /// </summary>
+  public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
+
+  public bool IsHungry => _nourishmentDelegate.IsHungry;
+  public bool IsThirsty => _nourishmentDelegate.IsThirsty;
+
   private void Start()
   {
-    foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
-    _foodEatenListeners += foodManager.OnFoodEaten;
+    _nourishmentDelegate = new NourishmentDelegate();
+
+    // Setup states
+    var pursueFoodState = new PursueFoodState();
+    _states = new List<IState>
+    {
+      pursueFoodState,
+      new WanderState()
+    };
+    _currentState = GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter(this);
+
+    // Listen to food events
+    foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
+    foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
+    _foodEatenListeners += foodManager.OnFoodEaten;
   }
 
   private void Update()
   {
     var newState = _currentState.Execute(this);
-    if (newState != _currentState)
+    if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
     {
       _currentState.Exit(this);
-      _currentState = newState;
+      _currentState = GetCorrelatingState(newState);
       _currentState.Enter(this);
     }
-
-    return;
-    if (!HasFoodTarget) return;
-
-    if (Distance(_foodTarget) < 2)
-      Eat(_foodTarget);
   }
 
-  private void OnKnownFoodLocationsChanged(IList<Food> foods)
+  public int GetHydration()
   {
-    return;
-    if (foods == null || !foods.Any()) return;
+    return _nourishmentDelegate.Hydration;
+  }
 
-    var closestFood = GetClosestFood(foods);
-    movement.Target = closestFood.transform.position;
-    _foodTarget = closestFood;
+  public void Drink(int hydration)
+  {
+    _nourishmentDelegate.Hydration += Mathf.Clamp(hydration, 0, int.MaxValue);
+  }
+
+  public int GetSaturation()
+  {
+    return _nourishmentDelegate.Saturation;
+  }
+
+  public void Eat(int saturation)
+  {
+    _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
   }
 
   /// <summary>
-  ///   Returns the food in the provided list that is the closest to the game object. Returns null if foods is null.
+  ///   Decrease hydration and saturation over time.
   /// </summary>
-  /// <param name="foods">The list of foods to search from.</param>
-  /// <returns>The closest food.</returns>
-  private Food GetClosestFood(ICollection<Food> foods)
+  public void HydrationSaturationTicker()
   {
-    if (foods.Count < 0) return null;
-
-    return foods.OrderBy(Distance).First();
+    _nourishmentDelegate.Tick(Time.deltaTime);
+    Debug.Log("Saturation: " + _nourishmentDelegate.Saturation + ", Hydration: " + _nourishmentDelegate.Hydration);
   }
 
   /// <summary>
-  ///   Gets the distance from the game animal to the provided food.
+  ///   Gets called when the list of known foods are changed. Sets the KnownFoodLocation to true if there is any foods in the
+  ///   provided list.
   /// </summary>
-  /// <param name="food">The food to check distance to.</param>
-  /// <returns>The distance to the provided food.</returns>
-  private float Distance(Food food)
+  /// <param name="foods">The list of known foods.</param>
+  private void OnKnownFoodLocationsChanged(IReadOnlyCollection<Food> foods)
   {
-    return (food.transform.position - transform.position).magnitude;
+    KnowsFoodLocation = foods.Any();
   }
 
   /// <summary>
-  ///   Eats the provided food. Removes it.
+  ///   Eats the provided food (removes its saturation). Removes it.
   /// </summary>
   /// <param name="food">The food to eat.</param>
-  private void Eat(Food food)
+  public void Eat(Food food)
   {
     movement.Stop();
+    Eat(food.Saturation);
     _foodEatenListeners?.Invoke(food);
     food.Consume();
   }
@@ -95,8 +119,26 @@ public sealed class Animal : MonoBehaviour
   /// <param name="pos">The position to go to</param>
   public void GoTo(Vector3 pos)
   {
-    Debug.Log("lala Land");
     movement.Target = pos;
+  }
+
+  /// <summary>
+  ///   Gets the state with the provided state enum.
+  /// </summary>
+  /// <param name="stateEnum">The state to get the state instance from.</param>
+  /// <returns>The state correlating to the state enum.</returns>
+  /// <exception cref="ArgumentOutOfRangeException">If the animal has no state for the provided state enum.</exception>
+  private IState GetCorrelatingState(AnimalState stateEnum)
+  {
+    var state = _states.First(s => s.GetStateEnum() == stateEnum);
+    if (state != null) return state;
+
+    throw new ArgumentOutOfRangeException(nameof(state), stateEnum, null);
+  }
+
+  public void StopMoving()
+  {
+    movement.Stop();
   }
 
   /// <summary>
