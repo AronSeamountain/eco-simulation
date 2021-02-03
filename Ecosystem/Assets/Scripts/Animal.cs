@@ -11,8 +11,8 @@ public sealed class Animal : MonoBehaviour
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   private IState _currentState = new WanderState();
-  private Food _foodTarget;
   private FoodEaten _foodEatenListeners;
+  private Food _foodTarget;
 
   /// <summary>
   ///   Whether the animal has a food target.
