@@ -2,7 +2,7 @@
     "name": "CameraControls",
     "maps": [
         {
-            "name": "FreeMovement",
+            "name": "CameraMovement",
             "id": "a2d4f9a9-2666-4d79-acf6-473892af4188",
             "actions": [
                 {
@@ -25,6 +25,22 @@
                     "name": "CancelTarget",
                     "type": "Button",
                     "id": "481897ee-1166-4e61-a621-329ab7ce3350",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "StartRotate",
+                    "type": "Button",
+                    "id": "e4bc9521-0404-4e6c-9591-2d8d3182184d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "EndRotate",
+                    "type": "Button",
+                    "id": "440097d6-cd83-431e-a9ba-fa1d7d6fe663",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -144,7 +160,7 @@
                 {
                     "name": "",
                     "id": "7c5e2028-64bf-4897-8b54-9bafcd820bcc",
-                    "path": "<Mouse>/press",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
@@ -160,6 +176,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "CancelTarget",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e8f854a8-f55a-4da8-864d-4a078e7268cb",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StartRotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "66d288d4-5bcf-45f5-8662-b7e3a10d28f2",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EndRotate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

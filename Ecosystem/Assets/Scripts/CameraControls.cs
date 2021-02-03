@@ -9,12 +9,14 @@ using Object = UnityEngine.Object;
 
 public class CameraControls : IInputActionCollection, IDisposable
 {
-  // FreeMovement
-  private readonly InputActionMap m_FreeMovement;
-  private readonly InputAction m_FreeMovement_CancelTarget;
-  private readonly InputAction m_FreeMovement_Movement;
-  private readonly InputAction m_FreeMovement_Selecting;
-  private IFreeMovementActions m_FreeMovementActionsCallbackInterface;
+  // CameraMovement
+  private readonly InputActionMap m_CameraMovement;
+  private readonly InputAction m_CameraMovement_CancelTarget;
+  private readonly InputAction m_CameraMovement_EndRotate;
+  private readonly InputAction m_CameraMovement_Movement;
+  private readonly InputAction m_CameraMovement_Selecting;
+  private readonly InputAction m_CameraMovement_StartRotate;
+  private ICameraMovementActions m_CameraMovementActionsCallbackInterface;
 
   public CameraControls()
   {
@@ -22,7 +24,7 @@ public class CameraControls : IInputActionCollection, IDisposable
     ""name"": ""CameraControls"",
     ""maps"": [
         {
-            ""name"": ""FreeMovement"",
+            ""name"": ""CameraMovement"",
             ""id"": ""a2d4f9a9-2666-4d79-acf6-473892af4188"",
             ""actions"": [
                 {
@@ -45,6 +47,22 @@ public class CameraControls : IInputActionCollection, IDisposable
                     ""name"": ""CancelTarget"",
                     ""type"": ""Button"",
                     ""id"": ""481897ee-1166-4e61-a621-329ab7ce3350"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""StartRotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""e4bc9521-0404-4e6c-9591-2d8d3182184d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""EndRotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""440097d6-cd83-431e-a9ba-fa1d7d6fe663"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -164,7 +182,7 @@ public class CameraControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7c5e2028-64bf-4897-8b54-9bafcd820bcc"",
-                    ""path"": ""<Mouse>/press"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
@@ -182,21 +200,45 @@ public class CameraControls : IInputActionCollection, IDisposable
                     ""action"": ""CancelTarget"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8f854a8-f55a-4da8-864d-4a078e7268cb"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartRotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""66d288d4-5bcf-45f5-8662-b7e3a10d28f2"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndRotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
     ],
     ""controlSchemes"": []
 }");
-    // FreeMovement
-    m_FreeMovement = asset.FindActionMap("FreeMovement", true);
-    m_FreeMovement_Movement = m_FreeMovement.FindAction("Movement", true);
-    m_FreeMovement_Selecting = m_FreeMovement.FindAction("Selecting", true);
-    m_FreeMovement_CancelTarget = m_FreeMovement.FindAction("CancelTarget", true);
+    // CameraMovement
+    m_CameraMovement = asset.FindActionMap("CameraMovement", true);
+    m_CameraMovement_Movement = m_CameraMovement.FindAction("Movement", true);
+    m_CameraMovement_Selecting = m_CameraMovement.FindAction("Selecting", true);
+    m_CameraMovement_CancelTarget = m_CameraMovement.FindAction("CancelTarget", true);
+    m_CameraMovement_StartRotate = m_CameraMovement.FindAction("StartRotate", true);
+    m_CameraMovement_EndRotate = m_CameraMovement.FindAction("EndRotate", true);
   }
 
   public InputActionAsset asset { get; }
-  public FreeMovementActions FreeMovement => new FreeMovementActions(this);
+  public CameraMovementActions CameraMovement => new CameraMovementActions(this);
 
   public void Dispose()
   {
@@ -242,22 +284,24 @@ public class CameraControls : IInputActionCollection, IDisposable
     asset.Disable();
   }
 
-  public struct FreeMovementActions
+  public struct CameraMovementActions
   {
     private readonly CameraControls m_Wrapper;
 
-    public FreeMovementActions(CameraControls wrapper)
+    public CameraMovementActions(CameraControls wrapper)
     {
       m_Wrapper = wrapper;
     }
 
-    public InputAction Movement => m_Wrapper.m_FreeMovement_Movement;
-    public InputAction Selecting => m_Wrapper.m_FreeMovement_Selecting;
-    public InputAction CancelTarget => m_Wrapper.m_FreeMovement_CancelTarget;
+    public InputAction Movement => m_Wrapper.m_CameraMovement_Movement;
+    public InputAction Selecting => m_Wrapper.m_CameraMovement_Selecting;
+    public InputAction CancelTarget => m_Wrapper.m_CameraMovement_CancelTarget;
+    public InputAction StartRotate => m_Wrapper.m_CameraMovement_StartRotate;
+    public InputAction EndRotate => m_Wrapper.m_CameraMovement_EndRotate;
 
     public InputActionMap Get()
     {
-      return m_Wrapper.m_FreeMovement;
+      return m_Wrapper.m_CameraMovement;
     }
 
     public void Enable()
@@ -272,27 +316,33 @@ public class CameraControls : IInputActionCollection, IDisposable
 
     public bool enabled => Get().enabled;
 
-    public static implicit operator InputActionMap(FreeMovementActions set)
+    public static implicit operator InputActionMap(CameraMovementActions set)
     {
       return set.Get();
     }
 
-    public void SetCallbacks(IFreeMovementActions instance)
+    public void SetCallbacks(ICameraMovementActions instance)
     {
-      if (m_Wrapper.m_FreeMovementActionsCallbackInterface != null)
+      if (m_Wrapper.m_CameraMovementActionsCallbackInterface != null)
       {
-        Movement.started -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnMovement;
-        Movement.performed -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnMovement;
-        Movement.canceled -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnMovement;
-        Selecting.started -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnSelecting;
-        Selecting.performed -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnSelecting;
-        Selecting.canceled -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnSelecting;
-        CancelTarget.started -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnCancelTarget;
-        CancelTarget.performed -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnCancelTarget;
-        CancelTarget.canceled -= m_Wrapper.m_FreeMovementActionsCallbackInterface.OnCancelTarget;
+        Movement.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
+        Movement.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
+        Movement.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
+        Selecting.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
+        Selecting.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
+        Selecting.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
+        CancelTarget.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
+        CancelTarget.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
+        CancelTarget.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
+        StartRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
+        StartRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
+        StartRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
+        EndRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
+        EndRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
+        EndRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
       }
 
-      m_Wrapper.m_FreeMovementActionsCallbackInterface = instance;
+      m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
       if (instance != null)
       {
         Movement.started += instance.OnMovement;
@@ -304,14 +354,22 @@ public class CameraControls : IInputActionCollection, IDisposable
         CancelTarget.started += instance.OnCancelTarget;
         CancelTarget.performed += instance.OnCancelTarget;
         CancelTarget.canceled += instance.OnCancelTarget;
+        StartRotate.started += instance.OnStartRotate;
+        StartRotate.performed += instance.OnStartRotate;
+        StartRotate.canceled += instance.OnStartRotate;
+        EndRotate.started += instance.OnEndRotate;
+        EndRotate.performed += instance.OnEndRotate;
+        EndRotate.canceled += instance.OnEndRotate;
       }
     }
   }
 
-  public interface IFreeMovementActions
+  public interface ICameraMovementActions
   {
     void OnMovement(InputAction.CallbackContext context);
     void OnSelecting(InputAction.CallbackContext context);
     void OnCancelTarget(InputAction.CallbackContext context);
+    void OnStartRotate(InputAction.CallbackContext context);
+    void OnEndRotate(InputAction.CallbackContext context);
   }
 }

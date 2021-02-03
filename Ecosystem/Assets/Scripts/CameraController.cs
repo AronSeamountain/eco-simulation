@@ -13,23 +13,24 @@ public sealed class CameraController : MonoBehaviour
   /// </summary>
   private const float Height = 5.0f;
 
-  private const float RotationDamping = 1;
-  private const float HeightDamping = 1;
   private const float RotationSpeed = 10;
-  [SerializeField] private Camera camera;
-  [SerializeField] private CharacterController cameraController;
-  [SerializeField] private int movementSpeed;
-  [SerializeField] private Transform target;
+  private const float PanningSpeed = 100;
+  private const int MovementSpeed = 10;
+  [SerializeField] private Camera mainCamera;
   private Transform _cameraTransform;
   private CameraControls _controls;
   private Vector3 _previousMousePos;
-  private Vector3 _target;
+  private bool _rotate;
+  private Transform _target;
+
 
   private void Awake()
   {
     _controls = new CameraControls();
-    _controls.FreeMovement.Selecting.performed += OnSelect;
-    _controls.FreeMovement.CancelTarget.performed += OnCancelTarget;
+    _controls.CameraMovement.Selecting.performed += OnSelect;
+    _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
+    _controls.CameraMovement.StartRotate.performed += OnStartRotate;
+    _controls.CameraMovement.EndRotate.performed += OnEndRotate;
   }
 
   private void Start()
@@ -37,13 +38,12 @@ public sealed class CameraController : MonoBehaviour
     _cameraTransform = transform;
   }
 
-  // Update is called once per frame
   private void Update()
   {
     Move();
-    Rotate();
     Follow();
     LookAt();
+    Rotate();
   }
 
   private void OnEnable()
@@ -56,18 +56,46 @@ public sealed class CameraController : MonoBehaviour
     _controls.Disable();
   }
 
+  private void OnStartRotate(InputAction.CallbackContext context)
+  {
+    //rotational movement using right mouse button
+    _rotate = true;
+    _previousMousePos = mainCamera.ScreenToViewportPoint(GetMousePos());
+  }
+
+  private void Rotate()
+  {
+    if (_rotate)
+    {
+      var mousePos = GetMousePos();
+      var mouseDirection = _previousMousePos - mainCamera.ScreenToViewportPoint(mousePos);
+
+      _cameraTransform.Rotate(new Vector3(1, 0, 0), mouseDirection.y * 180 * PanningSpeed * Time.deltaTime);
+      _cameraTransform.Rotate(new Vector3(0, 1, 0), -mouseDirection.x * 180 * PanningSpeed * Time.deltaTime,
+        Space.World);
+
+      _previousMousePos = mainCamera.ScreenToViewportPoint(mousePos);
+    }
+  }
+
+  private void OnEndRotate(InputAction.CallbackContext obj)
+  {
+    _rotate = false;
+  }
+
+
   private void OnCancelTarget(InputAction.CallbackContext obj)
   {
-    target = null;
+    _target = null;
   }
 
   private void OnSelect(InputAction.CallbackContext context)
   {
     RaycastHit hitTarget;
-    var ray = camera.ScreenPointToRay(GetMousePos());
+    var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
     if (Physics.Raycast(ray, out hitTarget))
-      target = hitTarget.transform;
+      _target = hitTarget.transform;
   }
 
   private Vector2 GetMousePos()
@@ -75,12 +103,14 @@ public sealed class CameraController : MonoBehaviour
     return Mouse.current.position.ReadValue();
   }
 
+  
   private void LookAt()
   {
-    if (target == null) return;
-    var dirToObj = (target.position - transform.position).normalized;
+    if (_target == null) return;
+    var dirToObj = (_target.position - _cameraTransform.position).normalized;
     var desiredRotation = Quaternion.LookRotation(dirToObj, Vector3.up);
-    transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, RotationSpeed * Time.deltaTime);
+    _cameraTransform.rotation =
+      Quaternion.Slerp(_cameraTransform.rotation, desiredRotation, RotationSpeed * Time.deltaTime);
   }
 
   /// <summary>
@@ -88,79 +118,32 @@ public sealed class CameraController : MonoBehaviour
   /// </summary>
   private void Move()
   {
-    var input = _controls.FreeMovement.Movement.ReadValue<Vector2>();
+    if (_target)
+      return;
+
+    var input = _controls.CameraMovement.Movement.ReadValue<Vector2>();
     var direction = new Vector3();
     direction += input.x * _cameraTransform.right;
     direction += input.y * _cameraTransform.forward;
-    _cameraTransform.position += direction * (movementSpeed * Time.deltaTime);
+    _cameraTransform.position += direction * (MovementSpeed * Time.deltaTime);
   }
 
-  private void Rotate()
-  {
-    //rotational movement using right mouse button
-    if (false) _previousMousePos = camera.ScreenToViewportPoint(new Vector3());
-
-    if (false)
-    {
-      var mousePos = GetMousePos();
-      var mouseDirection = _previousMousePos - camera.ScreenToViewportPoint(mousePos);
-
-      _cameraTransform.Rotate(new Vector3(1, 0, 0), mouseDirection.y * 180);
-      _cameraTransform.Rotate(new Vector3(0, 1, 0), -mouseDirection.x * 180, Space.World);
-
-      _previousMousePos = camera.ScreenToViewportPoint(mousePos);
-    }
-  }
 
   /// <summary>
   ///   Camera zooms in on a clicked object
   /// </summary>
   private void Follow()
   {
-    if (!target) return;
+    if (!_target) return;
 
-    var targetFront = target.forward;
-    var d1 = (target.position - _cameraTransform.position).normalized * Distance;
-    var d2 = target.position - targetFront * Distance + new Vector3(0, Height);
-    var desiredPosition = d2;
+    var targetFront = _target.forward;
+    var desiredPosition = _target.position - targetFront * Distance + new Vector3(0, Height);
 
     var hasArrived = (desiredPosition - _cameraTransform.position).magnitude <= 0.1f;
     if (!hasArrived)
     {
       var direction = (desiredPosition - _cameraTransform.position).normalized;
-      _cameraTransform.position += direction * (movementSpeed * Time.deltaTime);
-    }
-
-    return;
-    {
-      return;
-      // Calculate the current rotation angles
-      var wantedRotationAngle = target.eulerAngles.y;
-      var wantedHeight = target.position.y + Height;
-
-      var currentRotationAngle = transform.eulerAngles.y;
-      var currentHeight = transform.position.y;
-
-      // Damp the rotation around the y-axis
-      currentRotationAngle =
-        Mathf.LerpAngle(currentRotationAngle, wantedRotationAngle, RotationDamping * Time.deltaTime);
-
-      // Damp the height
-      currentHeight = Mathf.Lerp(currentHeight, wantedHeight, HeightDamping * Time.deltaTime);
-
-      // Convert the angle into a rotation
-      var currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
-
-      // Set the position of the camera on the x-z plane to:
-      // distance meters behind the target
-      transform.position = target.position;
-      transform.position -= currentRotation * Vector3.forward * Distance;
-
-      // Set the height of the camera
-      transform.position = new Vector3(transform.position.x, currentHeight, transform.position.z);
-
-      // Always look at the target
-      transform.LookAt(target);
+      _cameraTransform.position += direction * (MovementSpeed * Time.deltaTime);
     }
   }
 }
