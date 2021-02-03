@@ -5,22 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
-using Object = UnityEngine.Object;
 
-public class CameraControls : IInputActionCollection, IDisposable
+public class @CameraControls : IInputActionCollection, IDisposable
 {
-  // CameraMovement
-  private readonly InputActionMap m_CameraMovement;
-  private readonly InputAction m_CameraMovement_CancelTarget;
-  private readonly InputAction m_CameraMovement_EndRotate;
-  private readonly InputAction m_CameraMovement_Movement;
-  private readonly InputAction m_CameraMovement_Selecting;
-  private readonly InputAction m_CameraMovement_StartRotate;
-  private ICameraMovementActions m_CameraMovementActionsCallbackInterface;
-
-  public CameraControls()
-  {
-    asset = InputActionAsset.FromJson(@"{
+    public InputActionAsset asset { get; }
+    public @CameraControls()
+    {
+        asset = InputActionAsset.FromJson(@"{
     ""name"": ""CameraControls"",
     ""maps"": [
         {
@@ -228,148 +219,129 @@ public class CameraControls : IInputActionCollection, IDisposable
     ],
     ""controlSchemes"": []
 }");
-    // CameraMovement
-    m_CameraMovement = asset.FindActionMap("CameraMovement", true);
-    m_CameraMovement_Movement = m_CameraMovement.FindAction("Movement", true);
-    m_CameraMovement_Selecting = m_CameraMovement.FindAction("Selecting", true);
-    m_CameraMovement_CancelTarget = m_CameraMovement.FindAction("CancelTarget", true);
-    m_CameraMovement_StartRotate = m_CameraMovement.FindAction("StartRotate", true);
-    m_CameraMovement_EndRotate = m_CameraMovement.FindAction("EndRotate", true);
-  }
-
-  public InputActionAsset asset { get; }
-  public CameraMovementActions CameraMovement => new CameraMovementActions(this);
-
-  public void Dispose()
-  {
-    Object.Destroy(asset);
-  }
-
-  public InputBinding? bindingMask
-  {
-    get => asset.bindingMask;
-    set => asset.bindingMask = value;
-  }
-
-  public ReadOnlyArray<InputDevice>? devices
-  {
-    get => asset.devices;
-    set => asset.devices = value;
-  }
-
-  public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
-
-  public bool Contains(InputAction action)
-  {
-    return asset.Contains(action);
-  }
-
-  public IEnumerator<InputAction> GetEnumerator()
-  {
-    return asset.GetEnumerator();
-  }
-
-  IEnumerator IEnumerable.GetEnumerator()
-  {
-    return GetEnumerator();
-  }
-
-  public void Enable()
-  {
-    asset.Enable();
-  }
-
-  public void Disable()
-  {
-    asset.Disable();
-  }
-
-  public struct CameraMovementActions
-  {
-    private readonly CameraControls m_Wrapper;
-
-    public CameraMovementActions(CameraControls wrapper)
-    {
-      m_Wrapper = wrapper;
+        // CameraMovement
+        m_CameraMovement = asset.FindActionMap("CameraMovement", throwIfNotFound: true);
+        m_CameraMovement_Movement = m_CameraMovement.FindAction("Movement", throwIfNotFound: true);
+        m_CameraMovement_Selecting = m_CameraMovement.FindAction("Selecting", throwIfNotFound: true);
+        m_CameraMovement_CancelTarget = m_CameraMovement.FindAction("CancelTarget", throwIfNotFound: true);
+        m_CameraMovement_StartRotate = m_CameraMovement.FindAction("StartRotate", throwIfNotFound: true);
+        m_CameraMovement_EndRotate = m_CameraMovement.FindAction("EndRotate", throwIfNotFound: true);
     }
 
-    public InputAction Movement => m_Wrapper.m_CameraMovement_Movement;
-    public InputAction Selecting => m_Wrapper.m_CameraMovement_Selecting;
-    public InputAction CancelTarget => m_Wrapper.m_CameraMovement_CancelTarget;
-    public InputAction StartRotate => m_Wrapper.m_CameraMovement_StartRotate;
-    public InputAction EndRotate => m_Wrapper.m_CameraMovement_EndRotate;
-
-    public InputActionMap Get()
+    public void Dispose()
     {
-      return m_Wrapper.m_CameraMovement;
+        UnityEngine.Object.Destroy(asset);
+    }
+
+    public InputBinding? bindingMask
+    {
+        get => asset.bindingMask;
+        set => asset.bindingMask = value;
+    }
+
+    public ReadOnlyArray<InputDevice>? devices
+    {
+        get => asset.devices;
+        set => asset.devices = value;
+    }
+
+    public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
+
+    public bool Contains(InputAction action)
+    {
+        return asset.Contains(action);
+    }
+
+    public IEnumerator<InputAction> GetEnumerator()
+    {
+        return asset.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 
     public void Enable()
     {
-      Get().Enable();
+        asset.Enable();
     }
 
     public void Disable()
     {
-      Get().Disable();
+        asset.Disable();
     }
 
-    public bool enabled => Get().enabled;
-
-    public static implicit operator InputActionMap(CameraMovementActions set)
+    // CameraMovement
+    private readonly InputActionMap m_CameraMovement;
+    private ICameraMovementActions m_CameraMovementActionsCallbackInterface;
+    private readonly InputAction m_CameraMovement_Movement;
+    private readonly InputAction m_CameraMovement_Selecting;
+    private readonly InputAction m_CameraMovement_CancelTarget;
+    private readonly InputAction m_CameraMovement_StartRotate;
+    private readonly InputAction m_CameraMovement_EndRotate;
+    public struct CameraMovementActions
     {
-      return set.Get();
+        private @CameraControls m_Wrapper;
+        public CameraMovementActions(@CameraControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_CameraMovement_Movement;
+        public InputAction @Selecting => m_Wrapper.m_CameraMovement_Selecting;
+        public InputAction @CancelTarget => m_Wrapper.m_CameraMovement_CancelTarget;
+        public InputAction @StartRotate => m_Wrapper.m_CameraMovement_StartRotate;
+        public InputAction @EndRotate => m_Wrapper.m_CameraMovement_EndRotate;
+        public InputActionMap Get() { return m_Wrapper.m_CameraMovement; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CameraMovementActions set) { return set.Get(); }
+        public void SetCallbacks(ICameraMovementActions instance)
+        {
+            if (m_Wrapper.m_CameraMovementActionsCallbackInterface != null)
+            {
+                @Movement.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
+                @Selecting.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
+                @Selecting.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
+                @Selecting.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
+                @CancelTarget.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
+                @CancelTarget.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
+                @CancelTarget.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
+                @StartRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
+                @StartRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
+                @StartRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
+                @EndRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
+                @EndRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
+                @EndRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
+            }
+            m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
+                @Selecting.started += instance.OnSelecting;
+                @Selecting.performed += instance.OnSelecting;
+                @Selecting.canceled += instance.OnSelecting;
+                @CancelTarget.started += instance.OnCancelTarget;
+                @CancelTarget.performed += instance.OnCancelTarget;
+                @CancelTarget.canceled += instance.OnCancelTarget;
+                @StartRotate.started += instance.OnStartRotate;
+                @StartRotate.performed += instance.OnStartRotate;
+                @StartRotate.canceled += instance.OnStartRotate;
+                @EndRotate.started += instance.OnEndRotate;
+                @EndRotate.performed += instance.OnEndRotate;
+                @EndRotate.canceled += instance.OnEndRotate;
+            }
+        }
     }
-
-    public void SetCallbacks(ICameraMovementActions instance)
+    public CameraMovementActions @CameraMovement => new CameraMovementActions(this);
+    public interface ICameraMovementActions
     {
-      if (m_Wrapper.m_CameraMovementActionsCallbackInterface != null)
-      {
-        Movement.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
-        Movement.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
-        Movement.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMovement;
-        Selecting.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
-        Selecting.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
-        Selecting.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnSelecting;
-        CancelTarget.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
-        CancelTarget.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
-        CancelTarget.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
-        StartRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
-        StartRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
-        StartRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
-        EndRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
-        EndRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
-        EndRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
-      }
-
-      m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
-      if (instance != null)
-      {
-        Movement.started += instance.OnMovement;
-        Movement.performed += instance.OnMovement;
-        Movement.canceled += instance.OnMovement;
-        Selecting.started += instance.OnSelecting;
-        Selecting.performed += instance.OnSelecting;
-        Selecting.canceled += instance.OnSelecting;
-        CancelTarget.started += instance.OnCancelTarget;
-        CancelTarget.performed += instance.OnCancelTarget;
-        CancelTarget.canceled += instance.OnCancelTarget;
-        StartRotate.started += instance.OnStartRotate;
-        StartRotate.performed += instance.OnStartRotate;
-        StartRotate.canceled += instance.OnStartRotate;
-        EndRotate.started += instance.OnEndRotate;
-        EndRotate.performed += instance.OnEndRotate;
-        EndRotate.canceled += instance.OnEndRotate;
-      }
+        void OnMovement(InputAction.CallbackContext context);
+        void OnSelecting(InputAction.CallbackContext context);
+        void OnCancelTarget(InputAction.CallbackContext context);
+        void OnStartRotate(InputAction.CallbackContext context);
+        void OnEndRotate(InputAction.CallbackContext context);
     }
-  }
-
-  public interface ICameraMovementActions
-  {
-    void OnMovement(InputAction.CallbackContext context);
-    void OnSelecting(InputAction.CallbackContext context);
-    void OnCancelTarget(InputAction.CallbackContext context);
-    void OnStartRotate(InputAction.CallbackContext context);
-    void OnEndRotate(InputAction.CallbackContext context);
-  }
 }

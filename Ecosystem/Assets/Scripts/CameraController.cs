@@ -23,7 +23,6 @@ public sealed class CameraController : MonoBehaviour
   private bool _rotate;
   private Transform _target;
 
-
   private void Awake()
   {
     _controls = new CameraControls();
@@ -31,6 +30,7 @@ public sealed class CameraController : MonoBehaviour
     _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
     _controls.CameraMovement.StartRotate.performed += OnStartRotate;
     _controls.CameraMovement.EndRotate.performed += OnEndRotate;
+    _controls.CameraMovement.Movement.performed += OnMovement;
   }
 
   private void Start()
@@ -56,39 +56,49 @@ public sealed class CameraController : MonoBehaviour
     _controls.Disable();
   }
 
-  private void OnStartRotate(InputAction.CallbackContext context)
+  private void OnMovement(InputAction.CallbackContext _)
+  {
+    // Dont lock onto a target on manual movement
+    _target = null;
+  }
+
+  private void OnStartRotate(InputAction.CallbackContext _)
   {
     _rotate = true;
     _previousMousePos = mainCamera.ScreenToViewportPoint(GetMousePos());
+    Cursor.visible = false;
   }
 
   private void Rotate()
   {
-    if (_rotate)
-    {
-      var mousePos = GetMousePos();
-      var mouseDirection = _previousMousePos - mainCamera.ScreenToViewportPoint(mousePos);
+    if (!_rotate) return;
 
-      _cameraTransform.Rotate(new Vector3(1, 0, 0), mouseDirection.y * 180 * PanningSpeed * Time.deltaTime);
-      _cameraTransform.Rotate(new Vector3(0, 1, 0), -mouseDirection.x * 180 * PanningSpeed * Time.deltaTime,
-        Space.World);
+    var mousePos = GetMousePos();
+    var mouseDirection = _previousMousePos - mainCamera.ScreenToViewportPoint(mousePos);
 
-      _previousMousePos = mainCamera.ScreenToViewportPoint(mousePos);
-    }
+    _cameraTransform.Rotate(
+      new Vector3(1, 0, 0), mouseDirection.y * 180 * PanningSpeed * Time.deltaTime
+    );
+
+    _cameraTransform.Rotate(
+      new Vector3(0, 1, 0), -mouseDirection.x * 180 * PanningSpeed * Time.deltaTime, Space.World
+    );
+
+    _previousMousePos = mainCamera.ScreenToViewportPoint(mousePos);
   }
 
-  private void OnEndRotate(InputAction.CallbackContext obj)
+  private void OnEndRotate(InputAction.CallbackContext _)
   {
     _rotate = false;
+    Cursor.visible = true;
   }
 
-
-  private void OnCancelTarget(InputAction.CallbackContext obj)
+  private void OnCancelTarget(InputAction.CallbackContext _)
   {
     _target = null;
   }
 
-  private void OnSelect(InputAction.CallbackContext context)
+  private void OnSelect(InputAction.CallbackContext _)
   {
     RaycastHit hitTarget;
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
@@ -102,7 +112,6 @@ public sealed class CameraController : MonoBehaviour
     return Mouse.current.position.ReadValue();
   }
 
-  
   private void LookAt()
   {
     if (_target == null) return;
@@ -117,8 +126,7 @@ public sealed class CameraController : MonoBehaviour
   /// </summary>
   private void Move()
   {
-    if (_target)
-      return;
+    if (_target) return;
 
     var input = _controls.CameraMovement.Movement.ReadValue<Vector2>();
     var direction = new Vector3();
@@ -126,7 +134,6 @@ public sealed class CameraController : MonoBehaviour
     direction += input.y * _cameraTransform.forward;
     _cameraTransform.position += direction * (MovementSpeed * Time.deltaTime);
   }
-
 
   /// <summary>
   ///   Camera zooms in on a clicked object
