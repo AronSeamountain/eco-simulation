@@ -58,7 +58,6 @@ public sealed class CameraController : MonoBehaviour
 
   private void OnStartRotate(InputAction.CallbackContext context)
   {
-    //rotational movement using right mouse button
     _rotate = true;
     _previousMousePos = mainCamera.ScreenToViewportPoint(GetMousePos());
   }
