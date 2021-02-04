@@ -17,12 +17,6 @@ public class WaterManager : MonoBehaviour
     {
         visualDetector.WaterFoundListeners += OnWaterFound;
     } 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
     private void OnWaterFound(Water water)
     {
         if (water == null) return;
