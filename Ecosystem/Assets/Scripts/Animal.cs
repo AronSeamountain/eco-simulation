@@ -158,7 +158,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   public void Drink(Water water)
   {
-     Drink(water.Hydration);
+    Drink(water.Hydration);
   }
 
   /// <summary>
