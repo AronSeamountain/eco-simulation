@@ -94,7 +94,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void OnWaterLocationChanged(Water water)
   {
-    KnowsWaterLocation = !(water == null);
+    KnowsWaterLocation = (water != null);
   }
 
   /// <summary>
