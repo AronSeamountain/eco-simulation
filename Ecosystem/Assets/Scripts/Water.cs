@@ -4,15 +4,6 @@ using UnityEngine;
 
 public class Water : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField] private int hydration;
+    public int Hydration => hydration;
 }
