@@ -33,7 +33,7 @@ public sealed class GoToMovement : MonoBehaviour
     if (!HasTarget) return;
 
     // Check if arrived
-    var hasArrived = Vector3Util.getDistanceBetween2Points(Target, transform.position) < 1;
+    var hasArrived = Vector3Util.isInRange(Target, transform.position,1);
     if (hasArrived)
     {
       Stop();

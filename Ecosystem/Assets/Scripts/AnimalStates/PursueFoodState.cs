@@ -41,7 +41,7 @@ namespace AnimalStates
       if (_foodTarget == null) return AnimalState.Wander;
 
       // Eat the current food if it can be reached.
-      var reachesFood = Vector3Util.getDistanceBetween2GameObjects(animal.gameObject, _foodTarget.gameObject) < 2;
+      var reachesFood = Vector3Util.isInRange(animal.gameObject, _foodTarget.gameObject, 2);
       if (reachesFood)
       {
         animal.Eat(_foodTarget);
@@ -65,7 +65,7 @@ namespace AnimalStates
       var foods = animal.KnownFoods;
       if (!foods.Any()) return null;
 
-      return foods.OrderBy(f => Vector3Util.getDistanceBetween2GameObjects(animal.gameObject, f.gameObject)).First();
+      return foods.OrderBy(f => Vector3Util.getDistance(animal.gameObject, f.gameObject)).First();
     }
 
     /// <summary>
