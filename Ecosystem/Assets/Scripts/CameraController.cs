@@ -14,12 +14,11 @@ public sealed class CameraController : MonoBehaviour
   private const float Height = 5.0f;
 
   private const float RotationSpeed = 10;
-  private const float PanningSpeed = 100;
+  private const float ViewSpeed = 10;
   private const int MovementSpeed = 10;
   [SerializeField] private Camera mainCamera;
   private Transform _cameraTransform;
   private CameraControls _controls;
-  private Vector3 _previousMousePos;
   private bool _rotate;
   private Transform _target;
 
@@ -64,33 +63,33 @@ public sealed class CameraController : MonoBehaviour
 
   private void OnStartRotate(InputAction.CallbackContext _)
   {
+    _target = null;
     _rotate = true;
-    _previousMousePos = mainCamera.ScreenToViewportPoint(GetMousePos());
     Cursor.visible = false;
+    Cursor.lockState = CursorLockMode.Locked;
   }
 
   private void Rotate()
   {
     if (!_rotate) return;
 
-    var mousePos = GetMousePos();
-    var mouseDirection = _previousMousePos - mainCamera.ScreenToViewportPoint(mousePos);
+    var deltaMouse = _controls.CameraMovement.View.ReadValue<Vector2>();
+    deltaMouse *= -1; // Flip
 
     _cameraTransform.Rotate(
-      new Vector3(1, 0, 0), mouseDirection.y * 180 * PanningSpeed * Time.deltaTime
+      new Vector3(1, 0, 0), deltaMouse.y * ViewSpeed * Time.deltaTime
     );
 
     _cameraTransform.Rotate(
-      new Vector3(0, 1, 0), -mouseDirection.x * 180 * PanningSpeed * Time.deltaTime, Space.World
+      new Vector3(0, 1, 0), -deltaMouse.x * ViewSpeed * Time.deltaTime, Space.World
     );
-
-    _previousMousePos = mainCamera.ScreenToViewportPoint(mousePos);
   }
 
   private void OnEndRotate(InputAction.CallbackContext _)
   {
     _rotate = false;
     Cursor.visible = true;
+    Cursor.lockState = CursorLockMode.None;
   }
 
   private void OnCancelTarget(InputAction.CallbackContext _)

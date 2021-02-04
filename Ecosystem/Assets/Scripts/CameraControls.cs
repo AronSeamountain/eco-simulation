@@ -57,6 +57,14 @@ public class @CameraControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""View"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""93ebb323-4738-4986-9621-f6be66d7bcfb"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -213,6 +221,17 @@ public class @CameraControls : IInputActionCollection, IDisposable
                     ""action"": ""EndRotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""48fca672-9762-45ff-8bce-f5a978764b35"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""View"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -226,6 +245,7 @@ public class @CameraControls : IInputActionCollection, IDisposable
         m_CameraMovement_CancelTarget = m_CameraMovement.FindAction("CancelTarget", throwIfNotFound: true);
         m_CameraMovement_StartRotate = m_CameraMovement.FindAction("StartRotate", throwIfNotFound: true);
         m_CameraMovement_EndRotate = m_CameraMovement.FindAction("EndRotate", throwIfNotFound: true);
+        m_CameraMovement_View = m_CameraMovement.FindAction("View", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -280,6 +300,7 @@ public class @CameraControls : IInputActionCollection, IDisposable
     private readonly InputAction m_CameraMovement_CancelTarget;
     private readonly InputAction m_CameraMovement_StartRotate;
     private readonly InputAction m_CameraMovement_EndRotate;
+    private readonly InputAction m_CameraMovement_View;
     public struct CameraMovementActions
     {
         private @CameraControls m_Wrapper;
@@ -289,6 +310,7 @@ public class @CameraControls : IInputActionCollection, IDisposable
         public InputAction @CancelTarget => m_Wrapper.m_CameraMovement_CancelTarget;
         public InputAction @StartRotate => m_Wrapper.m_CameraMovement_StartRotate;
         public InputAction @EndRotate => m_Wrapper.m_CameraMovement_EndRotate;
+        public InputAction @View => m_Wrapper.m_CameraMovement_View;
         public InputActionMap Get() { return m_Wrapper.m_CameraMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -313,6 +335,9 @@ public class @CameraControls : IInputActionCollection, IDisposable
                 @EndRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
                 @EndRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
                 @EndRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
+                @View.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnView;
+                @View.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnView;
+                @View.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnView;
             }
             m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -332,6 +357,9 @@ public class @CameraControls : IInputActionCollection, IDisposable
                 @EndRotate.started += instance.OnEndRotate;
                 @EndRotate.performed += instance.OnEndRotate;
                 @EndRotate.canceled += instance.OnEndRotate;
+                @View.started += instance.OnView;
+                @View.performed += instance.OnView;
+                @View.canceled += instance.OnView;
             }
         }
     }
@@ -343,5 +371,6 @@ public class @CameraControls : IInputActionCollection, IDisposable
         void OnCancelTarget(InputAction.CallbackContext context);
         void OnStartRotate(InputAction.CallbackContext context);
         void OnEndRotate(InputAction.CallbackContext context);
+        void OnView(InputAction.CallbackContext context);
     }
 }
