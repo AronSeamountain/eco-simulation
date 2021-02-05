@@ -11,6 +11,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
+  [SerializeField] private WaterManager waterManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
@@ -23,10 +24,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   public bool KnowsFoodLocation { get; private set; }
 
+  public bool KnowsWaterLocation { get; private set; }
+
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
   public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
+
+  public Water ClosestKnownWater => waterManager.ClosestKnownWater;
 
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
@@ -36,9 +41,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _nourishmentDelegate = new NourishmentDelegate();
 
     // Setup states
+    var pursueWaterState = new PursueWaterState();
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {
+      pursueWaterState,
       pursueFoodState,
       new WanderState()
     };
@@ -49,6 +56,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
     _foodEatenListeners += foodManager.OnFoodEaten;
+
+    //listen to water events
+    waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }
 
   private void Update()
@@ -80,6 +90,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void Eat(int saturation)
   {
     _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
+  }
+
+  private void OnWaterLocationChanged(Water water)
+  {
+    KnowsWaterLocation = (water != null);
   }
 
   /// <summary>
@@ -139,6 +154,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void StopMoving()
   {
     movement.Stop();
+  }
+
+  public void Drink(Water water)
+  {
+    Drink(water.Hydration);
   }
 
   /// <summary>
