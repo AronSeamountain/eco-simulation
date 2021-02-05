@@ -94,7 +94,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void OnWaterLocationChanged(Water water)
   {
-    KnowsWaterLocation = !(water == null);
+    KnowsWaterLocation = (water != null);
   }
 
   /// <summary>
@@ -158,7 +158,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   public void Drink(Water water)
   {
-    _nourishmentDelegate.Hydration += Mathf.Clamp(30, 0, int.MaxValue);
+    Drink(water.Hydration);
   }
 
   /// <summary>

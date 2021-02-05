@@ -1,5 +1,6 @@
 ﻿using AnimalStates;
 using UnityEngine;
+using Utils;
 
 public class PursueWaterState : IState
 {
@@ -16,21 +17,22 @@ public class PursueWaterState : IState
 
   public AnimalState Execute(Animal animal)
   {
+    animal.HydrationSaturationTicker();
     if (!animal.IsThirsty) return AnimalState.Wander;
     if (!animal.KnowsWaterLocation) return AnimalState.Wander;
 
     _waterTarget = animal.ClosestKnownWater;
     if (_waterTarget == null) return AnimalState.Wander;
 
-    var position = _waterTarget.transform.position;
 
-    var reachesWater = (animal.transform.position - position).magnitude < 2;
+    var reachesWater = Vector3Util.isInRange(animal.gameObject, _waterTarget.gameObject, 2);
     if (reachesWater)
     {
       animal.Drink(_waterTarget);
       return AnimalState.Wander;
     }
 
+    var position = _waterTarget.transform.position;
     animal.GoTo(position);
 
     return AnimalState.PursueWater;
