@@ -41,13 +41,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _nourishmentDelegate = new NourishmentDelegate();
 
     // Setup states
-    var pursueWaterState = new PursueWaterState();
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {
-      pursueWaterState,
-      pursueFoodState,
-      new WanderState()
+      new WanderState(),
+      new PursueWaterState(),
+      pursueFoodState
     };
     _currentState = GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter(this);
@@ -94,7 +93,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void OnWaterLocationChanged(Water water)
   {
-    KnowsWaterLocation = (water != null);
+    KnowsWaterLocation = water != null;
   }
 
   /// <summary>
@@ -103,7 +102,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void HydrationSaturationTicker()
   {
     _nourishmentDelegate.Tick(Time.deltaTime);
-    Debug.Log("Saturation: " + _nourishmentDelegate.Saturation + ", Hydration: " + _nourishmentDelegate.Hydration);
   }
 
   /// <summary>

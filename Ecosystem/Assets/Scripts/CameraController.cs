@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using Utils;
 
 public sealed class CameraController : MonoBehaviour
 {
@@ -144,7 +145,7 @@ public sealed class CameraController : MonoBehaviour
     var targetFront = _target.forward;
     var desiredPosition = _target.position - targetFront * Distance + new Vector3(0, Height);
 
-    var hasArrived = (desiredPosition - _cameraTransform.position).magnitude <= 0.1f;
+    var hasArrived = Vector3Util.InRange(desiredPosition, _cameraTransform.position, 0.1f);
     if (!hasArrived)
     {
       var direction = (desiredPosition - _cameraTransform.position).normalized;
