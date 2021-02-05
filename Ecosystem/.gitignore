@@ -1,4 +1,3 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/unity
 # Edit at https://www.toptal.com/developers/gitignore?templates=unity
 
@@ -72,3 +71,10 @@ InitTestScene*.unity
 
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
+
+### Logs (Custom) ###
+Assets/Logs/*.txt
+Assets/Logs/*.txt.meta
+
+Assets/Logs/*.csv
+Assets/Logs/*.csv.meta
