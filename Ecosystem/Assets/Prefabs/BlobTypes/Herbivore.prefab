@@ -215,6 +215,7 @@ GameObject:
   - component: {fileID: 7836581106720980516}
   - component: {fileID: 4206817655424769507}
   - component: {fileID: 9054329623236228661}
+  - component: {fileID: -7191508722750619209}
   m_Layer: 0
   m_Name: Herbivore
   m_TagString: Untagged
@@ -346,6 +347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movement: {fileID: 7836581106720980516}
   foodManager: {fileID: 9054329623236228661}
+  waterManager: {fileID: -7191508722750619209}
 --- !u!114 &9054329623236228661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,7 +360,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8ed6799756146048a91cdc666817a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foodDetector: {fileID: 6676771930684006156}
+  visualDetector: {fileID: 6676771930684006156}
+--- !u!114 &-7191508722750619209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908545354356688046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualDetector: {fileID: 6676771930684006156}
 --- !u!1 &8549692996899621243
 GameObject:
   m_ObjectHideFlags: 0

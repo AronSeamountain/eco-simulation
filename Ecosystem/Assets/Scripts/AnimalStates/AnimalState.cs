@@ -3,6 +3,7 @@
   public enum AnimalState
   {
     Wander,
-    PursueFood
+    PursueFood,
+    PursueWater
   }
 }

@@ -13,7 +13,7 @@ public sealed class FoodManager : MonoBehaviour
   /// <param name="food">A list of all the known food sources.</param>
   public delegate void KnownFoodLocationsChanged(IReadOnlyCollection<Food> food);
 
-  [SerializeField] private FoodDetector foodDetector;
+  [SerializeField] private VisualDetector visualDetector;
   private IList<Food> _knownFoodLocations;
   public KnownFoodLocationsChanged KnownFoodLocationsChangedListeners;
   public IReadOnlyList<Food> KnownFoodLocations => new ReadOnlyCollection<Food>(_knownFoodLocations);
@@ -21,7 +21,7 @@ public sealed class FoodManager : MonoBehaviour
   private void Start()
   {
     _knownFoodLocations = new List<Food>();
-    foodDetector.FoodFoundListeners += OnFoodFound;
+    visualDetector.FoodFoundListeners += OnFoodFound;
   }
 
   private void OnFoodFound(Food food)

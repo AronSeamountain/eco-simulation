@@ -42,6 +42,10 @@ namespace AnimalStates
     {
       animal.HydrationSaturationTicker();
 
+      // Enter pursue water state
+      if (animal.KnowsWaterLocation && animal.IsThirsty)
+        return AnimalState.PursueWater;
+
       // Enter pursue food state.
       if (animal.KnowsFoodLocation && animal.IsHungry)
         return AnimalState.PursueFood;

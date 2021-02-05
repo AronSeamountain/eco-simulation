@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils;
 
 /// <summary>
 ///   A movement that moves towards transform.
@@ -32,7 +33,7 @@ public sealed class GoToMovement : MonoBehaviour
     if (!HasTarget) return;
 
     // Check if arrived
-    var hasArrived = (Target - transform.position).magnitude < 1;
+    var hasArrived = Vector3Util.isInRange(Target, transform.position,1);
     if (hasArrived)
     {
       Stop();

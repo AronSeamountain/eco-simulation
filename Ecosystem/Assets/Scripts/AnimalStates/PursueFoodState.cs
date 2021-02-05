@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
 namespace AnimalStates
 {
@@ -40,7 +41,7 @@ namespace AnimalStates
       if (_foodTarget == null) return AnimalState.Wander;
 
       // Eat the current food if it can be reached.
-      var reachesFood = Distance(animal.transform.position, _foodTarget.transform.position) < 2;
+      var reachesFood = Vector3Util.isInRange(animal.gameObject, _foodTarget.gameObject, 2);
       if (reachesFood)
       {
         animal.Eat(_foodTarget);
@@ -64,19 +65,7 @@ namespace AnimalStates
       var foods = animal.KnownFoods;
       if (!foods.Any()) return null;
 
-      var animalPos = animal.transform.position;
-      return foods.OrderBy(f => Distance(animalPos, f.transform.position)).First();
-    }
-
-    /// <summary>
-    ///   Gets the distance between two points.
-    /// </summary>
-    /// <param name="point1">The first point.</param>
-    /// <param name="point2">The second point.</param>
-    /// <returns>The distance between two points.</returns>
-    private float Distance(Vector3 point1, Vector3 point2)
-    {
-      return (point1 - point2).magnitude;
+      return foods.OrderBy(f => Vector3Util.getDistance(animal.gameObject, f.gameObject)).First();
     }
 
     /// <summary>
