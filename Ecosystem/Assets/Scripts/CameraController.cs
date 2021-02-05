@@ -7,19 +7,21 @@ public sealed class CameraController : MonoBehaviour
   /// <summary>
   ///   The distance in the x-z plane to the target
   /// </summary>
-  private const float Distance = 10.0f;
+  private const int Distance = 30;
 
   /// <summary>
   ///   The height we want the camera to be above the target
   /// </summary>
-  private const float Height = 5.0f;
+  private const int Height = 15;
 
-  private const float RotationSpeed = 10;
-  private const float ViewSpeed = 10;
-  private const int MovementSpeed = 10;
+  private const int RotationSpeed = 10;
+  private const int ViewSpeed = 10;
+  private const int Acceleration = 40;
+  private const int FlyMovementSpeed = 10;
   [SerializeField] private Camera mainCamera;
   private Transform _cameraTransform;
   private CameraControls _controls;
+  private float _followSpeed;
   private bool _rotate;
   private Transform _target;
 
@@ -58,13 +60,14 @@ public sealed class CameraController : MonoBehaviour
 
   private void OnMovement(InputAction.CallbackContext _)
   {
-    // Dont lock onto a target on manual movement
     _target = null;
+    _followSpeed = 0;
   }
 
   private void OnStartRotate(InputAction.CallbackContext _)
   {
     _target = null;
+    _followSpeed = 0;
     _rotate = true;
     Cursor.visible = false;
     Cursor.lockState = CursorLockMode.Locked;
@@ -96,6 +99,7 @@ public sealed class CameraController : MonoBehaviour
   private void OnCancelTarget(InputAction.CallbackContext _)
   {
     _target = null;
+    _followSpeed = 0;
   }
 
   private void OnSelect(InputAction.CallbackContext _)
@@ -132,7 +136,7 @@ public sealed class CameraController : MonoBehaviour
     var direction = new Vector3();
     direction += input.x * _cameraTransform.right;
     direction += input.y * _cameraTransform.forward;
-    _cameraTransform.position += direction * (MovementSpeed * Time.deltaTime);
+    _cameraTransform.position += direction * (FlyMovementSpeed * Time.deltaTime);
   }
 
   /// <summary>
@@ -145,11 +149,16 @@ public sealed class CameraController : MonoBehaviour
     var targetFront = _target.forward;
     var desiredPosition = _target.position - targetFront * Distance + new Vector3(0, Height);
 
-    var hasArrived = Vector3Util.InRange(desiredPosition, _cameraTransform.position, 0.1f);
-    if (!hasArrived)
+    var hasArrived = Vector3Util.InRange(desiredPosition, _cameraTransform.position, 5f);
+    if (hasArrived)
     {
+      _followSpeed = 0;
+    }
+    else
+    {
+      _followSpeed += Acceleration * Time.deltaTime;
       var direction = (desiredPosition - _cameraTransform.position).normalized;
-      _cameraTransform.position += direction * (MovementSpeed * Time.deltaTime);
+      _cameraTransform.position += direction * (_followSpeed * Time.deltaTime);
     }
   }
 }
