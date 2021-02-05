@@ -14,5 +14,4 @@ public class Card : MonoBehaviour
     int hunger = _animal.GetSaturation();
     int thirst = _animal.GetHydration();
   }
-
 }

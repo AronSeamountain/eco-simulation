@@ -3,6 +3,10 @@
 /// </summary>
 public sealed class NourishmentDelegate
 {
+  public delegate void NourishmentChanged();
+
+  public NourishmentChanged NourishmentChangedListeners;
+  
   /// <summary>
   ///   The value for which the animal is considered hungry.
   /// </summary>
@@ -27,12 +31,14 @@ public sealed class NourishmentDelegate
   {
     Saturation = 25;
     Hydration = 25;
+    MaxHydration = 50;
   }
 
   public int Saturation { get; set; }
   public int Hydration { get; set; }
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
+  public int MaxHydration { get;}
 
   /// <summary>
   ///   Slowly decrease hunger and thirst with time.
@@ -46,6 +52,7 @@ public sealed class NourishmentDelegate
       _unitTicker = 0;
       Saturation -= SaturationDecreasePerUnit;
       Hydration -= HydrationDecreasePerUnit;
+      NourishmentChangedListeners?.Invoke();
     }
   }
 }

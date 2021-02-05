@@ -4,10 +4,8 @@ using UnityEngine.InputSystem;
 public class DisplayCharacterStats : MonoBehaviour
 {
   [SerializeField] private Camera mainCamera;
-  [SerializeField] private Animal animal;
   private StatsCardUi _card;
   private CameraControls _controls;
-  private Transform _target;
 
   private void Awake()
   {
@@ -36,9 +34,12 @@ public class DisplayCharacterStats : MonoBehaviour
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
     if (Physics.Raycast(ray, out hitTarget))
-      _target = hitTarget.transform;
-    //if (_target != animal.transform) return; // does not work
-    DisplayStats(_target);
+    {
+      if (hitTarget.transform.GetComponent<Animal>() is Animal animal)
+      {
+        animal.ShowStats = true;
+      }
+    }
   }
 
   private Vector2 GetMousePos()

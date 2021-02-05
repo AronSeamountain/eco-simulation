@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 ///   A very basic animal that searches for food.
@@ -12,10 +13,25 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
+  [SerializeField] private Text text;
+  [SerializeField] private Slider slider;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
+  private bool _showStats;
+  
+
+  public bool ShowStats
+  {
+    get => _showStats;
+    set
+    {
+      _showStats = value;
+      text.enabled = ShowStats;
+    }
+  }
+
 
   public bool IsMoving => movement.HasTarget;
 
@@ -38,7 +54,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void Start()
   {
+    
+    ShowStats = false;
     _nourishmentDelegate = new NourishmentDelegate();
+    UpdateStats();
+    _nourishmentDelegate.NourishmentChangedListeners += UpdateStats;
 
     // Setup states
     var pursueWaterState = new PursueWaterState();
@@ -69,6 +89,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
       _currentState.Exit(this);
       _currentState = GetCorrelatingState(newState);
       _currentState.Enter(this);
+      
     }
   }
 
@@ -103,7 +124,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void HydrationSaturationTicker()
   {
     _nourishmentDelegate.Tick(Time.deltaTime);
-    Debug.Log("Saturation: " + _nourishmentDelegate.Saturation + ", Hydration: " + _nourishmentDelegate.Hydration);
+    
   }
 
   /// <summary>
@@ -166,4 +187,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   /// <param name="food">The food that was eaten.</param>
   private delegate void FoodEaten(Food food);
+  
+  private void UpdateStats()
+  {
+    slider.value = GetHydration()/(float)_nourishmentDelegate.MaxHydration;
+  }
 }
