@@ -23,7 +23,11 @@ namespace Logger
       _loggableColumns = new List<LoggableColumn>
       {
         new LoggableColumn("day", (day, animals) => day.ToString()),
-        new LoggableColumn("amount", (day, animals) => animals.Count.ToString())
+        new LoggableColumn("amount", (day, animals) => animals.Count.ToString()),
+        new LoggableColumn(
+          "saturation", (day, animals) => (animals.Sum(animal => animal.GetSaturation()) / animals.Count).ToString()
+        ),
+        new LoggableColumn("hydration", (day, animals) => animals.Count.ToString())
       };
     }
 
