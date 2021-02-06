@@ -7,12 +7,12 @@ public sealed class CameraController : MonoBehaviour
   /// <summary>
   ///   The distance in the x-z plane to the target
   /// </summary>
-  private const int Distance = 30;
+  private const int Distance = 5;
 
   /// <summary>
   ///   The height we want the camera to be above the target
   /// </summary>
-  private const int Height = 15;
+  private const int Height = 5;
 
   private const int RotationSpeed = 10;
   private const int ViewSpeed = 10;
