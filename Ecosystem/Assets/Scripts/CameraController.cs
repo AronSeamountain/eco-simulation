@@ -149,20 +149,7 @@ public sealed class CameraController : MonoBehaviour
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
     if (Physics.Raycast(ray, out hitTarget))
-    {
       Target = hitTarget.transform;
-
-      if (Target)
-      {
-        Debug.Log("ADD OUTLINE");
-        var noOutline = !Target.gameObject.GetComponent<Outline>();
-        if (noOutline)
-        {
-          var outline = Target.gameObject.AddComponent<Outline>();
-          outline.OutlineMode = Outline.Mode.OutlineAll;
-        }
-      }
-    }
   }
 
   private Vector2 GetMousePos()
