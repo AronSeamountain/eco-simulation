@@ -28,6 +28,32 @@ public sealed class CameraController : MonoBehaviour
   private Transform _target;
   private int MovementSpeed => _moveFast ? FastFlyMovementSpeed : FlyMovementSpeed;
 
+  private Transform Target
+  {
+    get => _target;
+    set
+    {
+      if (_target == value) return;
+
+      // Remove old outline from current target
+      if (_target && _target.GetComponent<Outline>() is Outline oldOutline)
+        Destroy(oldOutline);
+
+      // Set new target
+      _target = value;
+
+      // Add outline to new target
+      if (Target)
+      {
+        var hasOutline = Target.GetComponent<Outline>() != null;
+        if (hasOutline) return;
+
+        var outline = Target.gameObject.AddComponent<Outline>();
+        outline.OutlineWidth = 7f;
+      }
+    }
+  }
+
   private void Awake()
   {
     _controls = new CameraControls();
@@ -73,7 +99,7 @@ public sealed class CameraController : MonoBehaviour
 
   private void OnMovement(InputAction.CallbackContext _)
   {
-    _target = null;
+    Target = null;
     _followSpeed = 0;
   }
 
@@ -82,7 +108,7 @@ public sealed class CameraController : MonoBehaviour
     if (context.started)
     {
       _rotate = true;
-      _target = null;
+      Target = null;
       _followSpeed = 0;
       Cursor.visible = false;
       Cursor.lockState = CursorLockMode.Locked;
@@ -113,7 +139,7 @@ public sealed class CameraController : MonoBehaviour
 
   private void OnCancelTarget(InputAction.CallbackContext _)
   {
-    _target = null;
+    Target = null;
     _followSpeed = 0;
   }
 
@@ -123,7 +149,20 @@ public sealed class CameraController : MonoBehaviour
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
     if (Physics.Raycast(ray, out hitTarget))
-      _target = hitTarget.transform;
+    {
+      Target = hitTarget.transform;
+
+      if (Target)
+      {
+        Debug.Log("ADD OUTLINE");
+        var noOutline = !Target.gameObject.GetComponent<Outline>();
+        if (noOutline)
+        {
+          var outline = Target.gameObject.AddComponent<Outline>();
+          outline.OutlineMode = Outline.Mode.OutlineAll;
+        }
+      }
+    }
   }
 
   private Vector2 GetMousePos()
@@ -133,8 +172,8 @@ public sealed class CameraController : MonoBehaviour
 
   private void LookAt()
   {
-    if (_target == null) return;
-    var dirToObj = (_target.position - _cameraTransform.position).normalized;
+    if (!Target) return;
+    var dirToObj = (Target.position - _cameraTransform.position).normalized;
     var desiredRotation = Quaternion.LookRotation(dirToObj, Vector3.up);
     _cameraTransform.rotation =
       Quaternion.Slerp(_cameraTransform.rotation, desiredRotation, RotationSpeed * Time.deltaTime);
@@ -145,7 +184,7 @@ public sealed class CameraController : MonoBehaviour
   /// </summary>
   private void Move()
   {
-    if (_target) return;
+    if (Target) return;
 
     var input = _controls.CameraMovement.Movement.ReadValue<Vector2>();
     var direction = new Vector3();
@@ -159,10 +198,10 @@ public sealed class CameraController : MonoBehaviour
   /// </summary>
   private void Follow()
   {
-    if (!_target) return;
+    if (!Target) return;
 
-    var targetFront = _target.forward;
-    var desiredPosition = _target.position - targetFront * Distance + new Vector3(0, Height);
+    var targetFront = Target.forward;
+    var desiredPosition = Target.position - targetFront * Distance + new Vector3(0, Height);
 
     var hasArrived = Vector3Util.InRange(desiredPosition, _cameraTransform.position, 5f);
     if (hasArrived)
