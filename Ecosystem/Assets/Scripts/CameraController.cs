@@ -18,21 +18,26 @@ public sealed class CameraController : MonoBehaviour
   private const int ViewSpeed = 10;
   private const int Acceleration = 40;
   private const int FlyMovementSpeed = 10;
+  private const int FastFlyMovementSpeed = 30;
   [SerializeField] private Camera mainCamera;
   private Transform _cameraTransform;
   private CameraControls _controls;
   private float _followSpeed;
+  private bool _moveFast;
   private bool _rotate;
   private Transform _target;
+  private int MovementSpeed => _moveFast ? FastFlyMovementSpeed : FlyMovementSpeed;
 
   private void Awake()
   {
     _controls = new CameraControls();
     _controls.CameraMovement.Selecting.performed += OnSelect;
     _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
-    _controls.CameraMovement.StartRotate.performed += OnStartRotate;
-    _controls.CameraMovement.EndRotate.performed += OnEndRotate;
+    _controls.CameraMovement.Rotate.started += OnRotate;
+    _controls.CameraMovement.Rotate.canceled += OnRotate;
     _controls.CameraMovement.Movement.performed += OnMovement;
+    _controls.CameraMovement.MoveFast.started += OnMoveFast;
+    _controls.CameraMovement.MoveFast.canceled += OnMoveFast;
   }
 
   private void Start()
@@ -58,19 +63,36 @@ public sealed class CameraController : MonoBehaviour
     _controls.Disable();
   }
 
+  private void OnMoveFast(InputAction.CallbackContext context)
+  {
+    if (context.started)
+      _moveFast = true;
+    else if (context.canceled)
+      _moveFast = false;
+  }
+
   private void OnMovement(InputAction.CallbackContext _)
   {
     _target = null;
     _followSpeed = 0;
   }
 
-  private void OnStartRotate(InputAction.CallbackContext _)
+  private void OnRotate(InputAction.CallbackContext context)
   {
-    _target = null;
-    _followSpeed = 0;
-    _rotate = true;
-    Cursor.visible = false;
-    Cursor.lockState = CursorLockMode.Locked;
+    if (context.started)
+    {
+      _rotate = true;
+      _target = null;
+      _followSpeed = 0;
+      Cursor.visible = false;
+      Cursor.lockState = CursorLockMode.Locked;
+    }
+    else if (context.canceled)
+    {
+      _rotate = false;
+      Cursor.visible = true;
+      Cursor.lockState = CursorLockMode.None;
+    }
   }
 
   private void Rotate()
@@ -87,13 +109,6 @@ public sealed class CameraController : MonoBehaviour
     _cameraTransform.Rotate(
       new Vector3(0, 1, 0), -deltaMouse.x * ViewSpeed * Time.deltaTime, Space.World
     );
-  }
-
-  private void OnEndRotate(InputAction.CallbackContext _)
-  {
-    _rotate = false;
-    Cursor.visible = true;
-    Cursor.lockState = CursorLockMode.None;
   }
 
   private void OnCancelTarget(InputAction.CallbackContext _)
@@ -136,7 +151,7 @@ public sealed class CameraController : MonoBehaviour
     var direction = new Vector3();
     direction += input.x * _cameraTransform.right;
     direction += input.y * _cameraTransform.forward;
-    _cameraTransform.position += direction * (FlyMovementSpeed * Time.deltaTime);
+    _cameraTransform.position += direction * (MovementSpeed * Time.deltaTime);
   }
 
   /// <summary>
