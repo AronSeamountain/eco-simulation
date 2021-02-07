@@ -7,7 +7,7 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
+public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
@@ -92,9 +92,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
   }
 
+  public void Tick()
+  {
+    _nourishmentDelegate.Tick();
+  }
+
   private void OnWaterLocationChanged(Water water)
   {
-    KnowsWaterLocation = (water != null);
+    KnowsWaterLocation = water != null;
   }
 
   /// <summary>
@@ -102,8 +107,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   public void HydrationSaturationTicker()
   {
-    _nourishmentDelegate.Tick(Time.deltaTime);
-    Debug.Log("Saturation: " + _nourishmentDelegate.Saturation + ", Hydration: " + _nourishmentDelegate.Hydration);
+    _nourishmentDelegate.Tick();
   }
 
   /// <summary>
