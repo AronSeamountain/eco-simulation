@@ -40,7 +40,7 @@ public sealed class CameraController : MonoBehaviour
         Destroy(oldOutline);
 
       // Set new target
-      _target = value;
+      _target = value ? value.root : null;
 
       // Add outline to new target
       if (Target)
