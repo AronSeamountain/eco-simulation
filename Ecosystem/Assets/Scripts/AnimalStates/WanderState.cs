@@ -60,6 +60,9 @@ namespace AnimalStates
         _timeIdled += Time.deltaTime;
       }
 
+      if (Random.Range(0, 10f) <= 0.005f)
+        return AnimalState.Birth;
+
       return AnimalState.Wander;
     }
 

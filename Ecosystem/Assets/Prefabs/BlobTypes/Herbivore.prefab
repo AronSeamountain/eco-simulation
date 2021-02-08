@@ -1236,6 +1236,7 @@ MonoBehaviour:
   movement: {fileID: 7836581106720980516}
   foodManager: {fileID: 9054329623236228661}
   waterManager: {fileID: -7191508722750619209}
+  childPrefab: {fileID: 4908545354356688046}
 --- !u!114 &9054329623236228661
 MonoBehaviour:
   m_ObjectHideFlags: 0

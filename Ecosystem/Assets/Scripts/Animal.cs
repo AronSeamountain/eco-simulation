@@ -16,6 +16,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
+  [SerializeField] private GameObject childPrefab;
+
+  public delegate void ChildSpawned(Animal child);
+
+  public ChildSpawned ChildSpawnedListeners;
 
   public bool IsMoving => movement.HasTarget;
 
@@ -50,7 +55,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     {
       pursueWaterState,
       pursueFoodState,
-      new WanderState()
+      new WanderState(),
+      new BirthState()
     };
     _currentState = GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter(this);
@@ -158,6 +164,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Drink(Water water)
   {
     Drink(water.Hydration);
+  }
+
+  public void SpawnChild()
+  {
+    var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
+    ChildSpawnedListeners?.Invoke(child);
   }
 
   /// <summary>
