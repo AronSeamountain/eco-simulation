@@ -3,24 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
 public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
+  public delegate void ChildSpawned(Animal child);
+
+  /// <summary>
+  ///   The probability in the range [0, 1] whether the animal will give birth.
+  /// </summary>
+  [SerializeField] [Range(0f, 1f)] private float birthProbabilityPerUnit;
+
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
+  [SerializeField] private GameObject childPrefab;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
-  [SerializeField] private GameObject childPrefab;
-
-  public delegate void ChildSpawned(Animal child);
 
   public ChildSpawned ChildSpawnedListeners;
+  public bool ShouldBirth { get; private set; }
 
   public bool IsMoving => movement.HasTarget;
 
@@ -103,6 +110,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void Tick()
   {
+    ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
     _nourishmentDelegate.Tick();
   }
 
@@ -170,6 +178,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
     ChildSpawnedListeners?.Invoke(child);
+    ShouldBirth = false;
   }
 
   /// <summary>

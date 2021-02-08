@@ -1237,6 +1237,7 @@ MonoBehaviour:
   foodManager: {fileID: 9054329623236228661}
   waterManager: {fileID: -7191508722750619209}
   childPrefab: {fileID: 4908545354356688046}
+  birthProbabilityPerUnit: 0.05
 --- !u!114 &9054329623236228661
 MonoBehaviour:
   m_ObjectHideFlags: 0
