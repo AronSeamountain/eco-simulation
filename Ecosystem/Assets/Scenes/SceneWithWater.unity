@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deedc081df08e474495d338fe8fe268d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialEntities: 1
+  initialEntities: 2
   animalPrefab: {fileID: 4908545354356688046, guid: bf200501b32dda54c93cca32e5f22aba,
     type: 3}
 --- !u!4 &1736290192
