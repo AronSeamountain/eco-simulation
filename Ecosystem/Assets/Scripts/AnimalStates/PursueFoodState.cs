@@ -25,8 +25,6 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      animal.HydrationSaturationTicker();
-
       if (!animal.IsHungry) return AnimalState.Wander;
 
       // A new food source has been found. Change the food target to the closest food.

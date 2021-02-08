@@ -103,14 +103,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   }
 
   /// <summary>
-  ///   Decrease hydration and saturation over time.
-  /// </summary>
-  public void HydrationSaturationTicker()
-  {
-    _nourishmentDelegate.Tick();
-  }
-
-  /// <summary>
   ///   Gets called when the list of known foods are changed. Sets the KnownFoodLocation to true if there is any foods in the
   ///   provided list.
   /// </summary>

@@ -17,7 +17,6 @@ public class PursueWaterState : IState
 
   public AnimalState Execute(Animal animal)
   {
-    animal.HydrationSaturationTicker();
     if (!animal.IsThirsty) return AnimalState.Wander;
     if (!animal.KnowsWaterLocation) return AnimalState.Wander;
 
