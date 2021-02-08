@@ -102,10 +102,7 @@ public sealed class CameraController : MonoBehaviour
     RaycastHit hitTarget;
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
-    if (Physics.Raycast(ray, out hitTarget))
-    {
-      _target = hitTarget.transform;
-    }
+    if (Physics.Raycast(ray, out hitTarget)) _target = hitTarget.transform;
   }
 
   private Vector2 GetMousePos()

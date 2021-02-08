@@ -13,25 +13,24 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
-  [SerializeField] private Text text;
-  [SerializeField] private Slider slider;
+  //[SerializeField] private Text text;
+  [SerializeField] private Slider hydrationSlider;
+  [SerializeField] private Slider saturationSlider;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
   private bool _showStats;
   
-
   public bool ShowStats
   {
     get => _showStats;
     set
     {
       _showStats = value;
-      text.enabled = ShowStats;
+      //text.enabled = ShowStats;
     }
   }
-
 
   public bool IsMoving => movement.HasTarget;
 
@@ -190,6 +189,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   
   private void UpdateStats()
   {
-    slider.value = GetHydration()/(float)_nourishmentDelegate.MaxHydration;
+    hydrationSlider.value = GetHydration()/ (float) _nourishmentDelegate.MaxHydration;
+    saturationSlider.value = GetSaturation() / (float) _nourishmentDelegate.MaxSaturation;
   }
 }
