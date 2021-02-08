@@ -25,10 +25,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
-
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
-
   public bool IsMoving => movement.HasTarget;
 
   /// <summary>
