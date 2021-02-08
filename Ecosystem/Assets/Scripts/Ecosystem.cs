@@ -10,19 +10,19 @@ public sealed class Ecosystem : MonoBehaviour
   private const float UnitTimeSeconds = 0.5f;
 
   private const float UnitsPerDay = 2;
+  [SerializeField] private int initialEntities = 1;
+  [SerializeField] private GameObject animalPrefab;
+  private IList<Animal> _animals;
   private int _days;
   private DataLogger _logger;
   private Tick _tickListeners;
   private float _unitsPassed;
   private float _unitTicker;
-  private IList<Animal> _animals;
 
   private void Start()
   {
     _animals = new List<Animal>();
-    var animalsInScene = FindObjectsOfType<Animal>(); // Animals should be added via code
-    foreach (var animal in animalsInScene)
-      _animals.Add(animal);
+    SpawnAndAddInitialAnimals();
 
     _logger = DataLogger.Instance;
     _logger.InitializeLogging();
@@ -38,6 +38,24 @@ public sealed class Ecosystem : MonoBehaviour
     UpdateTick();
   }
 
+  /// <summary>
+  ///   Spawns animals and adds them to the list of animals.
+  /// </summary>
+  private void SpawnAndAddInitialAnimals()
+  {
+    const float spawnSquareHalfWidth = 10f;
+    for (var i = 0; i < initialEntities; i++)
+    {
+      var randomPos = new Vector3(
+        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
+        1.5f,
+        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
+      );
+      var animal = Instantiate(animalPrefab, randomPos, Quaternion.identity).GetComponent<Animal>();
+      _animals.Add(animal);
+    }
+  }
+
   private void UpdateTick()
   {
     _unitTicker += Time.deltaTime;
@@ -46,13 +64,13 @@ public sealed class Ecosystem : MonoBehaviour
     {
       _unitTicker = 0;
       _unitsPassed++;
+      _tickListeners?.Invoke();
 
       if (_unitsPassed >= UnitsPerDay)
       {
         _unitsPassed = 0;
         _days++;
 
-        _tickListeners?.Invoke();
         _logger.Snapshot(_days, _animals);
       }
     }

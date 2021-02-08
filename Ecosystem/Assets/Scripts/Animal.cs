@@ -36,10 +36,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
 
-  private void Start()
+  private void Awake()
   {
     _nourishmentDelegate = new NourishmentDelegate();
+  }
 
+  private void Start()
+  {
     // Setup states
     var pursueWaterState = new PursueWaterState();
     var pursueFoodState = new PursueFoodState();

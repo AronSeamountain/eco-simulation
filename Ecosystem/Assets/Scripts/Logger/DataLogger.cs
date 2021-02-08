@@ -29,10 +29,20 @@ namespace Logger
           animals.Count.ToString()
         ),
         new LoggableColumn("saturation", (day, animals) =>
-          (animals.Sum(animal => animal.GetSaturation()) / animals.Count).ToString()
+          {
+            if (animals.Any())
+              return (animals.Sum(animal => animal.GetSaturation()) / animals.Count).ToString();
+
+            return 0.ToString();
+          }
         ),
         new LoggableColumn("hydration", (day, animals) =>
-          (animals.Sum(animal => animal.GetHydration()) / animals.Count).ToString()
+          {
+            if (animals.Any())
+              return (animals.Sum(animal => animal.GetHydration()) / animals.Count).ToString();
+
+            return 0.ToString();
+          }
         )
       };
     }
