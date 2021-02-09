@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Foods;
+using UnityEngine;
 
 /// <summary>
 ///   Scans for food and calls a delegate when food is found.

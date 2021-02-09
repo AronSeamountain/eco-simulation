@@ -32,4 +32,8 @@ public sealed class NourishmentDelegate : ITickable
     Saturation -= SaturationDecreasePerUnit;
     Hydration -= HydrationDecreasePerUnit;
   }
+
+  public void DayTick()
+  {
+  }
 }

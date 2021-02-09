@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Foods;
 using Logger;
 using UnityEngine;
 
@@ -15,18 +16,22 @@ public sealed class Ecosystem : MonoBehaviour
   [SerializeField] private GameObject animalPrefab;
   [SerializeField] private GameObject plantPrefab;
   private IList<Animal> _animals;
-  private IList<Food> _plants;
   private int _days;
+
+  private DayTick _dayTickListeners;
+
   private DataLogger _logger;
+  private IList<Plant> _plants;
   private Tick _tickListeners;
   private float _unitsPassed;
   private float _unitTicker;
+
 
   private void Start()
   {
     _animals = new List<Animal>();
     SpawnAndAddInitialAnimals();
-    _plants = new List<Food>();
+    _plants = new List<Plant>();
     SpawnAndAddInitialPlants();
 
     _logger = DataLogger.Instance;
@@ -34,6 +39,8 @@ public sealed class Ecosystem : MonoBehaviour
 
     foreach (var animal in _animals)
       _tickListeners += animal.Tick;
+
+    foreach (var plant in _plants) _dayTickListeners += plant.DayTick;
 
     _logger.Snapshot(0, _animals);
   }
@@ -73,10 +80,11 @@ public sealed class Ecosystem : MonoBehaviour
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
       );
       Debug.Log("SPAWNED PLANT");
-      var plant = Instantiate(plantPrefab, randomPos, Quaternion.identity).GetComponent<Food>();
+      var plant = Instantiate(plantPrefab, randomPos, Quaternion.identity).GetComponent<Plant>();
       _plants.Add(plant);
     }
   }
+
   private void UpdateTick()
   {
     _unitTicker += Time.deltaTime;
@@ -98,4 +106,6 @@ public sealed class Ecosystem : MonoBehaviour
   }
 
   private delegate void Tick();
+
+  private delegate void DayTick();
 }

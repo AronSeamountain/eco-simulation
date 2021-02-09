@@ -1,7 +1,5 @@
-﻿namespace DefaultNamespace
+﻿public enum FoodType
 {
-  public enum FoodType
-  {
-    Plant,Meat  
-  }
+  Plant,
+  Meat
 }

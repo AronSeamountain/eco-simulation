@@ -1,44 +1,46 @@
-﻿using AnimalStates;
-using UnityEngine;
+﻿using UnityEngine;
 using Utils;
 
-public sealed class PursueWaterState : IState
+namespace AnimalStates
 {
-  private Water _waterTarget;
-
-  public AnimalState GetStateEnum()
+  public sealed class PursueWaterState : IState
   {
-    return AnimalState.PursueWater;
-  }
+    private Water _waterTarget;
 
-  public void Enter(Animal animal)
-  {
-  }
-
-  public AnimalState Execute(Animal animal)
-  {
-    if (!animal.IsThirsty) return AnimalState.Wander;
-    if (!animal.KnowsWaterLocation) return AnimalState.Wander;
-
-    _waterTarget = animal.ClosestKnownWater;
-    if (_waterTarget == null) return AnimalState.Wander;
-
-
-    var reachesWater = Vector3Util.InRange(animal.gameObject, _waterTarget.gameObject, 2);
-    if (reachesWater)
+    public AnimalState GetStateEnum()
     {
-      animal.Drink(_waterTarget);
-      return AnimalState.Wander;
+      return AnimalState.PursueWater;
     }
 
-    var position = _waterTarget.transform.position;
-    animal.GoTo(position);
+    public void Enter(Animal animal)
+    {
+    }
 
-    return AnimalState.PursueWater;
-  }
+    public AnimalState Execute(Animal animal)
+    {
+      if (!animal.IsThirsty) return AnimalState.Wander;
+      if (!animal.KnowsWaterLocation) return AnimalState.Wander;
 
-  public void Exit(Animal animal)
-  {
-    Debug.Log("EXIT PURSUE WATER");
+      _waterTarget = animal.ClosestKnownWater;
+      if (_waterTarget == null) return AnimalState.Wander;
+
+
+      var reachesWater = Vector3Util.InRange(animal.gameObject, _waterTarget.gameObject, 2);
+      if (reachesWater)
+      {
+        animal.Drink(_waterTarget);
+        return AnimalState.Wander;
+      }
+
+      var position = _waterTarget.transform.position;
+      animal.GoTo(position);
+
+      return AnimalState.PursueWater;
+    }
+
+    public void Exit(Animal animal)
+    {
+      Debug.Log("EXIT PURSUE WATER");
+    }
   }
 }

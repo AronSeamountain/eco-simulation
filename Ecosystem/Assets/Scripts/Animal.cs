@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
+using Foods;
 using UnityEngine;
 
 /// <summary>
@@ -96,9 +97,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void Tick()
   {
-
     _nourishmentDelegate.Tick();
+  }
 
+  public void DayTick()
+  {
   }
 
   private void OnWaterLocationChanged(Water water)
