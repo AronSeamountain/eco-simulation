@@ -16,6 +16,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
+  public int _health;
 
   public bool IsMoving => movement.HasTarget;
 
@@ -38,6 +39,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void Start()
   {
+    _health = 100;
     _nourishmentDelegate = new NourishmentDelegate();
 
     // Setup states
