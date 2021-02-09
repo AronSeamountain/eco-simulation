@@ -15,7 +15,7 @@ public sealed class Ecosystem : MonoBehaviour
   [SerializeField] private GameObject animalPrefab;
   [SerializeField] private GameObject plantPrefab;
   private IList<Animal> _animals;
-  private IList<Plant> _plants;
+  private IList<Food> _plants;
   private int _days;
   private DataLogger _logger;
   private Tick _tickListeners;
@@ -26,7 +26,7 @@ public sealed class Ecosystem : MonoBehaviour
   {
     _animals = new List<Animal>();
     SpawnAndAddInitialAnimals();
-    _plants = new List<Plant>();
+    _plants = new List<Food>();
     SpawnAndAddInitialPlants();
 
     _logger = DataLogger.Instance;
@@ -73,7 +73,7 @@ public sealed class Ecosystem : MonoBehaviour
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
       );
       Debug.Log("SPAWNED PLANT");
-      var plant = Instantiate(plantPrefab, randomPos, Quaternion.identity).GetComponent<Plant>();
+      var plant = Instantiate(plantPrefab, randomPos, Quaternion.identity).GetComponent<Food>();
       _plants.Add(plant);
     }
   }

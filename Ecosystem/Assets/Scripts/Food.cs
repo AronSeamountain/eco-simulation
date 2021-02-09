@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace;
+using UnityEngine;
 
 public sealed class Food : MonoBehaviour, IEatable
 {
   [SerializeField] private int saturation;
+  [SerializeField] private FoodType foodType;
 
   public int Saturation()
   {
@@ -12,5 +14,10 @@ public sealed class Food : MonoBehaviour, IEatable
   public void Consume()
   {
     Destroy(gameObject);
+  }
+
+  public FoodType FoodType()
+  {
+    return foodType;
   }
 }
