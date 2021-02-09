@@ -2,7 +2,7 @@
 using UnityEngine;
 using Utils;
 
-public class PursueWaterState : IState
+public sealed class PursueWaterState : IState
 {
   private Water _waterTarget;
 
@@ -24,7 +24,7 @@ public class PursueWaterState : IState
     if (_waterTarget == null) return AnimalState.Wander;
 
 
-    var reachesWater = Vector3Util.isInRange(animal.gameObject, _waterTarget.gameObject, 2);
+    var reachesWater = Vector3Util.InRange(animal.gameObject, _waterTarget.gameObject, 2);
     if (reachesWater)
     {
       animal.Drink(_waterTarget);

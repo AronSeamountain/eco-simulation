@@ -43,17 +43,9 @@ public class @CameraControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""StartRotate"",
+                    ""name"": ""Rotate"",
                     ""type"": ""Button"",
                     ""id"": ""e4bc9521-0404-4e6c-9591-2d8d3182184d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""EndRotate"",
-                    ""type"": ""Button"",
-                    ""id"": ""440097d6-cd83-431e-a9ba-fa1d7d6fe663"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -65,6 +57,14 @@ public class @CameraControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""MoveFast"",
+                    ""type"": ""Button"",
+                    ""id"": ""398919cc-1577-4bc1-afee-32f30f9d65fd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold""
                 }
             ],
             ""bindings"": [
@@ -204,21 +204,10 @@ public class @CameraControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""e8f854a8-f55a-4da8-864d-4a078e7268cb"",
                     ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""StartRotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""66d288d4-5bcf-45f5-8662-b7e3a10d28f2"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": ""Press(behavior=1)"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""EndRotate"",
+                    ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -232,6 +221,17 @@ public class @CameraControls : IInputActionCollection, IDisposable
                     ""action"": ""View"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""18d7cc31-e7a5-4b60-931b-e92a9bec1100"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveFast"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -243,9 +243,9 @@ public class @CameraControls : IInputActionCollection, IDisposable
         m_CameraMovement_Movement = m_CameraMovement.FindAction("Movement", throwIfNotFound: true);
         m_CameraMovement_Selecting = m_CameraMovement.FindAction("Selecting", throwIfNotFound: true);
         m_CameraMovement_CancelTarget = m_CameraMovement.FindAction("CancelTarget", throwIfNotFound: true);
-        m_CameraMovement_StartRotate = m_CameraMovement.FindAction("StartRotate", throwIfNotFound: true);
-        m_CameraMovement_EndRotate = m_CameraMovement.FindAction("EndRotate", throwIfNotFound: true);
+        m_CameraMovement_Rotate = m_CameraMovement.FindAction("Rotate", throwIfNotFound: true);
         m_CameraMovement_View = m_CameraMovement.FindAction("View", throwIfNotFound: true);
+        m_CameraMovement_MoveFast = m_CameraMovement.FindAction("MoveFast", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -298,9 +298,9 @@ public class @CameraControls : IInputActionCollection, IDisposable
     private readonly InputAction m_CameraMovement_Movement;
     private readonly InputAction m_CameraMovement_Selecting;
     private readonly InputAction m_CameraMovement_CancelTarget;
-    private readonly InputAction m_CameraMovement_StartRotate;
-    private readonly InputAction m_CameraMovement_EndRotate;
+    private readonly InputAction m_CameraMovement_Rotate;
     private readonly InputAction m_CameraMovement_View;
+    private readonly InputAction m_CameraMovement_MoveFast;
     public struct CameraMovementActions
     {
         private @CameraControls m_Wrapper;
@@ -308,9 +308,9 @@ public class @CameraControls : IInputActionCollection, IDisposable
         public InputAction @Movement => m_Wrapper.m_CameraMovement_Movement;
         public InputAction @Selecting => m_Wrapper.m_CameraMovement_Selecting;
         public InputAction @CancelTarget => m_Wrapper.m_CameraMovement_CancelTarget;
-        public InputAction @StartRotate => m_Wrapper.m_CameraMovement_StartRotate;
-        public InputAction @EndRotate => m_Wrapper.m_CameraMovement_EndRotate;
+        public InputAction @Rotate => m_Wrapper.m_CameraMovement_Rotate;
         public InputAction @View => m_Wrapper.m_CameraMovement_View;
+        public InputAction @MoveFast => m_Wrapper.m_CameraMovement_MoveFast;
         public InputActionMap Get() { return m_Wrapper.m_CameraMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -329,15 +329,15 @@ public class @CameraControls : IInputActionCollection, IDisposable
                 @CancelTarget.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
                 @CancelTarget.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
                 @CancelTarget.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnCancelTarget;
-                @StartRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
-                @StartRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
-                @StartRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnStartRotate;
-                @EndRotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
-                @EndRotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
-                @EndRotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnEndRotate;
+                @Rotate.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnRotate;
+                @Rotate.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnRotate;
+                @Rotate.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnRotate;
                 @View.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnView;
                 @View.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnView;
                 @View.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnView;
+                @MoveFast.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMoveFast;
+                @MoveFast.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMoveFast;
+                @MoveFast.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMoveFast;
             }
             m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -351,15 +351,15 @@ public class @CameraControls : IInputActionCollection, IDisposable
                 @CancelTarget.started += instance.OnCancelTarget;
                 @CancelTarget.performed += instance.OnCancelTarget;
                 @CancelTarget.canceled += instance.OnCancelTarget;
-                @StartRotate.started += instance.OnStartRotate;
-                @StartRotate.performed += instance.OnStartRotate;
-                @StartRotate.canceled += instance.OnStartRotate;
-                @EndRotate.started += instance.OnEndRotate;
-                @EndRotate.performed += instance.OnEndRotate;
-                @EndRotate.canceled += instance.OnEndRotate;
+                @Rotate.started += instance.OnRotate;
+                @Rotate.performed += instance.OnRotate;
+                @Rotate.canceled += instance.OnRotate;
                 @View.started += instance.OnView;
                 @View.performed += instance.OnView;
                 @View.canceled += instance.OnView;
+                @MoveFast.started += instance.OnMoveFast;
+                @MoveFast.performed += instance.OnMoveFast;
+                @MoveFast.canceled += instance.OnMoveFast;
             }
         }
     }
@@ -369,8 +369,8 @@ public class @CameraControls : IInputActionCollection, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnSelecting(InputAction.CallbackContext context);
         void OnCancelTarget(InputAction.CallbackContext context);
-        void OnStartRotate(InputAction.CallbackContext context);
-        void OnEndRotate(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
         void OnView(InputAction.CallbackContext context);
+        void OnMoveFast(InputAction.CallbackContext context);
     }
 }
