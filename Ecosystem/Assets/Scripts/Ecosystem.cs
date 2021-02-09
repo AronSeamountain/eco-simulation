@@ -12,7 +12,9 @@ public sealed class Ecosystem : MonoBehaviour
   private const float UnitsPerDay = 2;
   [SerializeField] private int initialEntities = 1;
   [SerializeField] private GameObject animalPrefab;
+  [SerializeField] private GameObject plantPrefab;
   private IList<Animal> _animals;
+  private IList<Plant> _plants;
   private int _days;
   private DataLogger _logger;
   private Tick _tickListeners;
@@ -23,6 +25,8 @@ public sealed class Ecosystem : MonoBehaviour
   {
     _animals = new List<Animal>();
     SpawnAndAddInitialAnimals();
+    
+    SpawnAndAddInitialPlants();
 
     _logger = DataLogger.Instance;
     _logger.InitializeLogging();
@@ -56,6 +60,20 @@ public sealed class Ecosystem : MonoBehaviour
     }
   }
 
+  private void SpawnAndAddInitialPlants()//TODO fix
+  {
+    const float spawnSquareHalfWidth = 10f;
+    for (var i = 0; i < initialEntities; i++)
+    {
+      var randomPos = new Vector3(
+        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
+        1.5f,
+        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
+      );
+      var plant = Instantiate(plantPrefab, randomPos, Quaternion.identity).GetComponent<Plant>();
+      _plants.Add(plant);
+    }
+  }
   private void UpdateTick()
   {
     _unitTicker += Time.deltaTime;
