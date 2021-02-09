@@ -123,7 +123,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Eat(Food food)
   {
     movement.Stop();
-    Eat(food.Saturation);
+    Eat(food.Saturation());
     _foodEatenListeners?.Invoke(food);
     food.Consume();
   }
