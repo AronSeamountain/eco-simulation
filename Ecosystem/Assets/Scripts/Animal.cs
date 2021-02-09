@@ -175,6 +175,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void UpdateStats()
   {
+    saturationSlider.gameObject.SetActive(ShowStats);
+    hydrationSlider.gameObject.SetActive(ShowStats);
+    healthBar.gameObject.SetActive(ShowStats);
     hydrationSlider.value = GetHydration() / (float) _nourishmentDelegate.MaxHydration;
     saturationSlider.value = GetSaturation() / (float) _nourishmentDelegate.MaxSaturation;
   }

@@ -5,11 +5,21 @@ public class DisplayCharacterStats : MonoBehaviour
 {
   [SerializeField] private Camera mainCamera;
   private CameraControls _controls;
+  private Animal _target;
 
   private void Awake()
   {
     _controls = new CameraControls();
     _controls.CameraMovement.Selecting.performed += ClickedChar;
+    _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
+    _controls.CameraMovement.StartRotate.performed += OnCancelTarget;
+    _controls.CameraMovement.Movement.performed += OnCancelTarget;
+  }
+
+  private void OnCancelTarget(InputAction.CallbackContext obj)
+  {
+    _target.ShowStats = false;
+    _target = null;
   }
 
   private void OnEnable()
@@ -33,7 +43,11 @@ public class DisplayCharacterStats : MonoBehaviour
 
     if (Physics.Raycast(ray, out hitTarget))
       if (hitTarget.transform.GetComponent<Animal>() is Animal animal)
+      {
         animal.ShowStats = true;
+        _target = animal;
+      }
+        
   }
 
   private Vector2 GetMousePos()
