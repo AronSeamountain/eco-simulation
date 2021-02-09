@@ -3,7 +3,7 @@ import glob
 import pandas as pd
 import plotly.express as px
 
-file_name = 'data_log.csv'
+file_name = 'log.csv'
 text_files = glob.glob("./**/" + file_name, recursive = True)
 
 if not text_files:
@@ -14,6 +14,6 @@ full_path = text_files[0]
 # Plot
 df = pd.read_csv(full_path)
 #fig = px.line(df, x = 'day', y = 'value', title='My Cool Graph')
-fig = px.scatter_3d(df, x='day', y='value', z='kg', color='height')
+fig = px.scatter_3d(df, x='day', y='amount', z='saturation', color='hydration')
 
 fig.show()

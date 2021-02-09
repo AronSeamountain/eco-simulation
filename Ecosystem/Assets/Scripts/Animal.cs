@@ -7,7 +7,7 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
+public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
@@ -36,10 +36,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
 
-  private void Start()
+  private void Awake()
   {
     _nourishmentDelegate = new NourishmentDelegate();
+  }
 
+  private void Start()
+  {
     // Setup states
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
@@ -91,17 +94,16 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
   }
 
+  public void Tick()
+  {
+
+    _nourishmentDelegate.Tick();
+
+  }
+
   private void OnWaterLocationChanged(Water water)
   {
     KnowsWaterLocation = water != null;
-  }
-
-  /// <summary>
-  ///   Decrease hydration and saturation over time.
-  /// </summary>
-  public void HydrationSaturationTicker()
-  {
-    _nourishmentDelegate.Tick(Time.deltaTime);
   }
 
   /// <summary>
