@@ -10,7 +10,8 @@ public sealed class Ecosystem : MonoBehaviour
   private const float UnitTimeSeconds = 0.5f;
 
   private const float UnitsPerDay = 2;
-  [SerializeField] private int initialEntities = 1;
+  [SerializeField] private int initialAnimals = 1;
+  [SerializeField] private int initialPlants = 4;
   [SerializeField] private GameObject animalPrefab;
   [SerializeField] private GameObject plantPrefab;
   private IList<Animal> _animals;
@@ -25,7 +26,7 @@ public sealed class Ecosystem : MonoBehaviour
   {
     _animals = new List<Animal>();
     SpawnAndAddInitialAnimals();
-    
+    _plants = new List<Plant>();
     SpawnAndAddInitialPlants();
 
     _logger = DataLogger.Instance;
@@ -48,7 +49,7 @@ public sealed class Ecosystem : MonoBehaviour
   private void SpawnAndAddInitialAnimals()
   {
     const float spawnSquareHalfWidth = 10f;
-    for (var i = 0; i < initialEntities; i++)
+    for (var i = 0; i < initialAnimals; i++)
     {
       var randomPos = new Vector3(
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
@@ -60,16 +61,18 @@ public sealed class Ecosystem : MonoBehaviour
     }
   }
 
-  private void SpawnAndAddInitialPlants()//TODO fix
+  private void SpawnAndAddInitialPlants()
   {
     const float spawnSquareHalfWidth = 10f;
-    for (var i = 0; i < initialEntities; i++)
+    Debug.Log("Plants " + initialPlants);
+    for (var i = 0; i < initialPlants; i++)
     {
       var randomPos = new Vector3(
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
         1.5f,
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
       );
+      Debug.Log("SPAWNED PLANT");
       var plant = Instantiate(plantPrefab, randomPos, Quaternion.identity).GetComponent<Plant>();
       _plants.Add(plant);
     }
