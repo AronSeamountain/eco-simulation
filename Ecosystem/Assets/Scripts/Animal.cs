@@ -13,24 +13,19 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
-  //[SerializeField] private Text text;
   [SerializeField] private Slider hydrationSlider;
   [SerializeField] private Slider saturationSlider;
+  /// <summary>
+  ///   Health bar not used at the moment.
+  /// </summary>
+  [SerializeField] private Slider healthBar;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
-  private bool _showStats;
-  
-  public bool ShowStats
-  {
-    get => _showStats;
-    set
-    {
-      _showStats = value;
-      //text.enabled = ShowStats;
-    }
-  }
+  private const int Health = 100;
+
+  public bool ShowStats { get; set; }
 
   public bool IsMoving => movement.HasTarget;
 
@@ -53,7 +48,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void Start()
   {
-    
     ShowStats = false;
     _nourishmentDelegate = new NourishmentDelegate();
     UpdateStats();
@@ -88,7 +82,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
       _currentState.Exit(this);
       _currentState = GetCorrelatingState(newState);
       _currentState.Enter(this);
-      
     }
   }
 
@@ -114,7 +107,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void OnWaterLocationChanged(Water water)
   {
-    KnowsWaterLocation = (water != null);
+    KnowsWaterLocation = water != null;
   }
 
   /// <summary>
@@ -123,7 +116,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void HydrationSaturationTicker()
   {
     _nourishmentDelegate.Tick(Time.deltaTime);
-    
   }
 
   /// <summary>
@@ -181,15 +173,15 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     Drink(water.Hydration);
   }
 
+  private void UpdateStats()
+  {
+    hydrationSlider.value = GetHydration() / (float) _nourishmentDelegate.MaxHydration;
+    saturationSlider.value = GetSaturation() / (float) _nourishmentDelegate.MaxSaturation;
+  }
+
   /// <summary>
   ///   Gets invoked when the animal eats a food.
   /// </summary>
   /// <param name="food">The food that was eaten.</param>
   private delegate void FoodEaten(Food food);
-  
-  private void UpdateStats()
-  {
-    hydrationSlider.value = GetHydration()/ (float) _nourishmentDelegate.MaxHydration;
-    saturationSlider.value = GetSaturation() / (float) _nourishmentDelegate.MaxSaturation;
-  }
 }

@@ -355,7 +355,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-9962
+  m_Name: pb_Mesh-1272
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -786,6 +786,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2145740241 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3933511420556985886, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 2448027378535805416}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2448027378535805416
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -793,6 +805,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 25453954165491346, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1197174237443806308, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
       propertyPath: m_Mesh
@@ -878,6 +895,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3933511420556985886, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Text
+      value: '
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4206817655424769507, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 2145740241}
     - target: {fileID: 4865815848461791069, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
       propertyPath: m_Mesh
@@ -887,6 +916,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Capsule
+      objectReference: {fileID: 0}
+    - target: {fileID: 6600703920796307892, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6600703920796307892, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6755641810370984611, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
@@ -907,6 +946,16 @@ PrefabInstance:
         type: 3}
       propertyPath: movementSpeed
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8177264030069367713, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9147844714415377622, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9164101030897492896, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
