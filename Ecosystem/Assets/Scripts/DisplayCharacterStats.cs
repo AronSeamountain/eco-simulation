@@ -44,6 +44,7 @@ public class DisplayCharacterStats : MonoBehaviour
     if (Physics.Raycast(ray, out hitTarget))
       if (hitTarget.transform.GetComponent<Animal>() is Animal animal)
       {
+        if (_target) OnCancelTarget(_);
         animal.ShowStats = true;
         _target = animal;
       }
