@@ -10,20 +10,22 @@ using UnityEngine.UI;
 /// </summary>
 public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 {
+  private const int Health = 100;
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private Slider hydrationSlider;
   [SerializeField] private Slider saturationSlider;
+
   /// <summary>
   ///   Health bar not used at the moment.
   /// </summary>
   [SerializeField] private Slider healthBar;
+
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
-  private const int Health = 100;
 
   public bool ShowStats { get; set; }
 

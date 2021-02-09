@@ -16,12 +16,6 @@ public class DisplayCharacterStats : MonoBehaviour
     _controls.CameraMovement.Movement.performed += OnCancelTarget;
   }
 
-  private void OnCancelTarget(InputAction.CallbackContext obj)
-  {
-    _target.ShowStats = false;
-    _target = null;
-  }
-
   private void OnEnable()
   {
     _controls.Enable();
@@ -30,6 +24,12 @@ public class DisplayCharacterStats : MonoBehaviour
   private void OnDisable()
   {
     _controls.Disable();
+  }
+
+  private void OnCancelTarget(InputAction.CallbackContext obj)
+  {
+    if (_target) _target.ShowStats = false;
+    _target = null;
   }
 
   /// <summary>
@@ -47,7 +47,6 @@ public class DisplayCharacterStats : MonoBehaviour
         animal.ShowStats = true;
         _target = animal;
       }
-        
   }
 
   private Vector2 GetMousePos()
