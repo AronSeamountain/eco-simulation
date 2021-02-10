@@ -8,7 +8,7 @@ namespace Foods
     private const int DaysAsSeed = 5;
     private const int GrowthPerDay = 10;
     private int _ageInDays;
-    private IPlantState _currentState;
+    private IGenericState<Plant, PlantState> _currentState;
     private StateMachineContainer<Plant, PlantState> _stateContainer;
     public int MaxSaturation { get; } = 100;
 
@@ -34,7 +34,7 @@ namespace Foods
       if (_currentState.GetStateEnum() != nextState)
       {
         _currentState.Exit(this);
-        _currentState = (IPlantState) _stateContainer.GetCorrelatingState(nextState);
+        _currentState = _stateContainer.GetCorrelatingState(nextState);
         _currentState.Enter(this);
       }
     }
@@ -45,7 +45,7 @@ namespace Foods
 
     public void DayTick()
     {
-      _currentState.DayTick(this);
+      //_currentState.DayTick(this);
       Debug.Log("DAY-tick works");
     }
 
