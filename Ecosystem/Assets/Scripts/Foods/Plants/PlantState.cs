@@ -1,4 +1,4 @@
-﻿namespace Foods
+﻿namespace Foods.Plants
 {
   public enum PlantState
   {

@@ -1,8 +1,6 @@
-﻿
-
-namespace Foods
+﻿namespace Foods.Plants.PlantStates
 {
-  public class SeedState : IPlantState
+  public sealed class SeedState : IGenericState<Plant, PlantState>
   {
     public PlantState GetStateEnum()
     {
@@ -11,6 +9,7 @@ namespace Foods
 
     public void Enter(Plant plant)
     {
+      plant.SetSeedMaterial();
     }
 
     public PlantState Execute(Plant plant)
@@ -21,11 +20,6 @@ namespace Foods
 
     public void Exit(Plant plant)
     {
-    }
-
-    public void DayTick(Plant plant)
-    {
-      plant.IncreaseAge();
     }
   }
 }

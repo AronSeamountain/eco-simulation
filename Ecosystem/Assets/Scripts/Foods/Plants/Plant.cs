@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
+using Foods.Plants.PlantStates;
 using UnityEngine;
 
-namespace Foods
+namespace Foods.Plants
 {
   public sealed class Plant : Food, ITickable
   {
     private const int DaysAsSeed = 5;
     private const int GrowthPerDay = 10;
+    [SerializeField] private Material seedMaterial;
+    [SerializeField] private Material growingMaterial;
+    [SerializeField] private Material matureMaterial;
     private int _ageInDays;
     private IGenericState<Plant, PlantState> _currentState;
     private StateMachine<Plant, PlantState> _stateMachine;
@@ -16,16 +20,15 @@ namespace Foods
 
     private void Start()
     {
-      var seedState = new SeedState();
-      _currentState = seedState;
-
       var states = new List<IGenericState<Plant, PlantState>>
       {
-        seedState,
+        new SeedState(),
         new GrowState(),
         new MatureState()
       };
       _stateMachine = new StateMachine<Plant, PlantState>(states);
+      _currentState = _stateMachine.GetCorrelatingState(PlantState.Seed);
+      _currentState.Enter(this);
     }
 
     private void Update()
@@ -45,20 +48,39 @@ namespace Foods
 
     public void DayTick()
     {
-      //_currentState.DayTick(this);
-      Debug.Log("DAY-tick works");
-    }
-
-    public void Grow()
-    {
-      saturation += GrowthPerDay;
-      Debug.Log("PLANTS ARE GROWING - saturation " + saturation);
-    }
-
-    public void IncreaseAge()
-    {
+      // TODO: This is NOT final!!!! Should be in the state machine somehow.
       _ageInDays++;
-      if (_ageInDays >= DaysAsSeed) ShouldGrow = true;
+      if (_ageInDays >= DaysAsSeed)
+      {
+        ShouldGrow = true;
+      }
+
+      if (ShouldGrow)
+      {
+        saturation += GrowthPerDay;
+        Debug.Log("PLANTS ARE GROWING - saturation " + saturation);
+      }
+    }
+
+    public void SetSeedMaterial()
+    {
+      SetXMaterial(seedMaterial);
+    }
+
+    public void SetGrowingMaterial()
+    {
+      SetXMaterial(growingMaterial);
+    }
+
+    public void SetMatureMaterial()
+    {
+      SetXMaterial(matureMaterial);
+    }
+
+    private void SetXMaterial(Material material)
+    {
+      var mesh = GetComponent<MeshRenderer>();
+      mesh.material = material;
     }
   }
 }

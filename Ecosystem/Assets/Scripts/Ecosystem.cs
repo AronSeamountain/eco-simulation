@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Foods;
+using Foods.Plants;
 using Logger;
 using UnityEngine;
 
@@ -26,19 +26,24 @@ public sealed class Ecosystem : MonoBehaviour
 
   private void Start()
   {
+    // Lists
     _animals = new List<Animal>();
     SpawnAndAddInitialAnimals();
     _plants = new List<Plant>();
     SpawnAndAddInitialPlants();
 
-    _logger = DataLogger.Instance;
-    _logger.InitializeLogging();
-
     foreach (var animal in _animals)
       _tickListeners += animal.Tick;
 
-    foreach (var plant in _plants) _dayTickListeners += plant.DayTick;
+    foreach (var plant in _plants)
+    {
+      if (!plant) Debug.Log("yo");
+      _dayTickListeners += plant.DayTick;
+    }
 
+    // Logger
+    _logger = DataLogger.Instance;
+    _logger.InitializeLogging();
     _logger.Snapshot(0, _animals);
   }
 

@@ -1,9 +1,6 @@
-﻿using System;
-
-
-namespace Foods
+﻿namespace Foods.Plants.PlantStates
 {
-  public class GrowState : IPlantState
+  public sealed class GrowState : IGenericState<Plant, PlantState>
   {
     public PlantState GetStateEnum()
     {
@@ -12,7 +9,7 @@ namespace Foods
 
     public void Enter(Plant plant)
     {
-      plant.Saturation();
+      plant.SetGrowingMaterial();
     }
 
     public PlantState Execute(Plant plant)
@@ -24,12 +21,6 @@ namespace Foods
 
     public void Exit(Plant plant)
     {
-      throw new NotImplementedException();
-    }
-
-    public void DayTick(Plant plant)
-    {
-      plant.Grow();
     }
   }
 }
