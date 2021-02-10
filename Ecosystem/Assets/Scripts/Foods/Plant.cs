@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Foods
 {
-  public class Plant : Food, ITickable
+  public sealed class Plant : Food, ITickable
   {
     private const int DaysAsSeed = 5;
     private const int GrowthPerDay = 10;
