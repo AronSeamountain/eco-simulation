@@ -15,8 +15,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private NourishmentDelegate _nourishmentDelegate;
+  private HealthDelegate _healthDelegate;
   private IList<IState> _states;
-  public int _health;
 
   public bool IsMoving => movement.HasTarget;
 
@@ -39,8 +39,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void Start()
   {
-    _health = 100;
     _nourishmentDelegate = new NourishmentDelegate();
+    _healthDelegate = new HealthDelegate();
 
     // Setup states
     var pursueFoodState = new PursueFoodState();
@@ -64,10 +64,10 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   }
 
   private void Update()
-  {  //for debugging purposes
-    _health--;
-    Debug.Log("Health is:" + _health);
-    
+  {
+    _healthDelegate.DecreaseHealth();
+    Debug.Log("Health is: " + _healthDelegate.Health);
+
     var newState = _currentState.Execute(this);
     if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
     {
@@ -76,6 +76,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
       _currentState.Enter(this);
     }
   }
+
+  public int GetHealth()
+  {
+    return _healthDelegate.Health;
+  }
+  
   public int GetHydration()
   {
     return _nourishmentDelegate.Hydration;

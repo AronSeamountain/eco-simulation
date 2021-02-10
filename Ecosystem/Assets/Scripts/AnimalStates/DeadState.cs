@@ -17,7 +17,7 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      if (animal._health > 0) return AnimalState.Wander;
+      if (animal.GetHealth() > 0) return AnimalState.Wander;
       FallOver(animal);
       return AnimalState.Dead;
     }
@@ -33,7 +33,7 @@ namespace AnimalStates
     private void FallOver(Animal animal)
     {
       
-      if (animal._health <= 0)
+      if (animal.GetHealth() <= 0)
       {
         animal.StopMoving();
         animal.transform.rotation = Quaternion.Euler(0, 0, 90);

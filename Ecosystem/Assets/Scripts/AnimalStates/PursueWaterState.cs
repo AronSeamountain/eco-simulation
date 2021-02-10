@@ -20,11 +20,9 @@ public sealed class PursueWaterState : IState
     animal.HydrationSaturationTicker();
     if (!animal.IsThirsty) return AnimalState.Wander;
     if (!animal.KnowsWaterLocation) return AnimalState.Wander;
+    
     //Enter dead state
-    if (animal._health <= 0)
-    {
-      return AnimalState.Dead;
-    }
+    if (animal.GetHealth() <= 0) return AnimalState.Dead;
 
     _waterTarget = animal.ClosestKnownWater;
     if (_waterTarget == null) return AnimalState.Wander;

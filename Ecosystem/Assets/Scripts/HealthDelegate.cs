@@ -1,25 +1,20 @@
-﻿using UnityEngine;
-
-public class HealthDelegate : MonoBehaviour
+﻿public sealed class HealthDelegate
 {
-  private Animal _animal;
+  public HealthDelegate()
+  {
+    Health = 100;
+  }
   
+  public int Saturation { get; }
+  public int Hydration { get; }
+  public int Health { get; set; }
 
-  private void Delay5sec()
+  public void DecreaseHealth()
   {
-  }
-
-  public void UpdateHealth()
-  {
-    if (_animal._health == 0)
+    if (Saturation < 10 && Hydration < 10)
     {
-      _animal.StopMoving();
-      //Delay5sec() (don't know if needed yet)
-      // Remove the animal after 5 sec
-    }
-    else
-    {
-      //update _health;
+      Health--;
     }
   }
+  
 }

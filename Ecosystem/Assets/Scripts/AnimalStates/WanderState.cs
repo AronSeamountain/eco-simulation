@@ -51,10 +51,7 @@ namespace AnimalStates
         return AnimalState.PursueFood;
       
       //Enter dead state
-      if (animal._health <= 0)
-      {
-        return AnimalState.Dead;
-      }
+      if (animal.GetHealth() <= 0) return AnimalState.Dead;
 
       var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
       if (shouldMoveToNewPos)
