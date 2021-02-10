@@ -57,9 +57,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {
-      pursueWaterState,
-      pursueFoodState,
       new WanderState(),
+      pursueFoodState,
+      new PursueWaterState(),
       new BirthState()
     };
     _currentState = GetCorrelatingState(AnimalState.Wander);
