@@ -54,7 +54,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private void Start()
   {
     // Setup states
-    var pursueWaterState = new PursueWaterState();
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {

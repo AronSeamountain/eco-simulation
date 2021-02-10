@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class WaterManager : MonoBehaviour
 {
@@ -12,7 +10,7 @@ public class WaterManager : MonoBehaviour
   public Water ClosestKnownWater { get; private set; }
 
   // Start is called before the first frame update
-  void Start()
+  private void Start()
   {
     visualDetector.WaterFoundListeners += OnWaterFound;
   }
