@@ -9,13 +9,11 @@ using Utils;
 /// </summary>
 /// <typeparam name="T">The type of objects the state machine handles. For example an Animal or a Plant.</typeparam>
 /// <typeparam name="TEnum">The enums for the state machine.</typeparam>
-public class StateMachineContainer<T, TEnum>
-  where T : MonoBehaviour
-  where TEnum : Enum
+public sealed class StateMachine<T, TEnum> where TEnum : Enum
 {
   private readonly IList<IGenericState<T, TEnum>> _states;
 
-  public StateMachineContainer(IList<IGenericState<T, TEnum>> stateList)
+  public StateMachine(IList<IGenericState<T, TEnum>> stateList)
   {
     _states = Objects.RequireNonNull(stateList);
   }

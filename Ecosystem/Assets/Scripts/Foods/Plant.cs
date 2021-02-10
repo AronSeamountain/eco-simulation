@@ -9,7 +9,7 @@ namespace Foods
     private const int GrowthPerDay = 10;
     private int _ageInDays;
     private IGenericState<Plant, PlantState> _currentState;
-    private StateMachineContainer<Plant, PlantState> _stateContainer;
+    private StateMachine<Plant, PlantState> _stateMachine;
     public int MaxSaturation { get; } = 100;
 
     public bool ShouldGrow { get; private set; }
@@ -25,7 +25,7 @@ namespace Foods
         new GrowState(),
         new MatureState()
       };
-      _stateContainer = new StateMachineContainer<Plant, PlantState>(states);
+      _stateMachine = new StateMachine<Plant, PlantState>(states);
     }
 
     private void Update()
@@ -34,7 +34,7 @@ namespace Foods
       if (_currentState.GetStateEnum() != nextState)
       {
         _currentState.Exit(this);
-        _currentState = _stateContainer.GetCorrelatingState(nextState);
+        _currentState = _stateMachine.GetCorrelatingState(nextState);
         _currentState.Enter(this);
       }
     }
