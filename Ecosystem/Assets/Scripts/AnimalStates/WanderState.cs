@@ -44,9 +44,13 @@ namespace AnimalStates
       if (animal.KnowsWaterLocation && animal.IsThirsty)
         return AnimalState.PursueWater;
 
-      // Enter pursue food state.
+      // Enter pursue food state
       if (animal.KnowsFoodLocation && animal.IsHungry)
         return AnimalState.PursueFood;
+
+      // Spawn child
+      if (animal.ShouldBirth)
+        return AnimalState.Birth;
 
       var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
       if (shouldMoveToNewPos)

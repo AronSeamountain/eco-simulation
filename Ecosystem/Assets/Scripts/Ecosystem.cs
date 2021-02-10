@@ -38,6 +38,11 @@ public sealed class Ecosystem : MonoBehaviour
     UpdateTick();
   }
 
+  private void OnChildSpawned(Animal child)
+  {
+    ObserveAnimal(child);
+  }
+
   /// <summary>
   ///   Spawns animals and adds them to the list of animals.
   /// </summary>
@@ -52,8 +57,19 @@ public sealed class Ecosystem : MonoBehaviour
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
       );
       var animal = Instantiate(animalPrefab, randomPos, Quaternion.identity).GetComponent<Animal>();
-      _animals.Add(animal);
+      ObserveAnimal(animal);
     }
+  }
+
+  /// <summary>
+  ///   Adds the animal to a list of existing animals. Listens to ChildSpawned events. Does nothing if the animal is null.
+  /// </summary>
+  /// <param name="animal">The animal to observe.</param>
+  private void ObserveAnimal(Animal animal)
+  {
+    if (!animal) return;
+    _animals.Add(animal);
+    animal.ChildSpawnedListeners += OnChildSpawned;
   }
 
   private void UpdateTick()
