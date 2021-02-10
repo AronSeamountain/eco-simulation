@@ -1,78 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-
 
 namespace Foods
 {
   public class Plant : Food, ITickable
   {
+    private const int DaysAsSeed = 5;
+    private const int GrowthPerDay = 10;
     private int _ageInDays;
     private IPlantState _currentState;
-    private readonly int _daysAsSeed = 5;
-    private int _growthPerDay = 10;
-    private int maxSaturation = 100; //Saturation when plant is fully grown
+    private StateMachineContainer<Plant, PlantState> _stateContainer;
+    public int MaxSaturation { get; } = 100;
 
-    private StateMachineContainer<GenericState<Plant, PlantState>, PlantState, Plant> stateContainer;
-    
     public bool ShouldGrow { get; private set; }
 
     private void Start()
     {
       var seedState = new SeedState();
       _currentState = seedState;
-      
-      
-      var _states = new List<GenericState<Plant, PlantState>>
+
+      var states = new List<IGenericState<Plant, PlantState>>
       {
         seedState,
         new GrowState(),
         new MatureState()
       };
-      stateContainer = new StateMachineContainer<GenericState<Plant, PlantState>, PlantState, Plant>(_states);
+      _stateContainer = new StateMachineContainer<Plant, PlantState>(states);
     }
 
     private void Update()
     {
-      PlantState nextState = _currentState.Execute(this);
-      if (_currentState.GetStateEnum() == nextState)
-      {
-        
-      }
-      else
+      var nextState = _currentState.Execute(this);
+      if (_currentState.GetStateEnum() != nextState)
       {
         _currentState.Exit(this);
-        _currentState = (IPlantState) stateContainer.GetCorrelatingState(nextState);
+        _currentState = (IPlantState) _stateContainer.GetCorrelatingState(nextState);
+        _currentState.Enter(this);
       }
-     
-      
-    }
-
-    public int MaxSaturation()
-    {
-      return maxSaturation;
     }
 
     public void Tick()
     {
     }
-    
+
     public void DayTick()
     {
-     _currentState.DayTick(this);
+      _currentState.DayTick(this);
       Debug.Log("DAY-tick works");
     }
 
     public void Grow()
     {
-      saturation =+ _growthPerDay;
+      saturation += GrowthPerDay;
       Debug.Log("PLANTS ARE GROWING - saturation " + saturation);
     }
 
     public void IncreaseAge()
     {
       _ageInDays++;
-      if (_ageInDays >= _daysAsSeed) ShouldGrow = true;
+      if (_ageInDays >= DaysAsSeed) ShouldGrow = true;
     }
   }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Foods
 {
-  public interface IPlantState : GenericState<Plant,PlantState>
+  public interface IPlantState : IGenericState<Plant,PlantState>
   {
     void DayTick(Plant plant);
   }
