@@ -1,22 +1,27 @@
 ﻿using System;
 
+
 namespace Foods
 {
-  public class GrowState : IPlantState
+  public class GrowState : GenericState<Plant,PlantState>
   {
     public PlantState GetStateEnum()
     {
-      throw new NotImplementedException();
+      return PlantState.Grow;
     }
 
     public void Enter(Plant plant)
     {
-      throw new NotImplementedException();
+      
+      plant.Saturation();
+      
     }
 
     public PlantState Execute(Plant plant)
     {
-      throw new NotImplementedException();
+      if (plant.Saturation() >= plant.MaxSaturation()) return PlantState.Mature;
+      
+      return PlantState.Grow;
     }
 
     public void Exit(Plant plant)

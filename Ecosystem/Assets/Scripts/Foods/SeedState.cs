@@ -1,6 +1,8 @@
-﻿namespace Foods
+﻿
+
+namespace Foods
 {
-  public class SeedState : IPlantState
+  public class SeedState : GenericState<Plant,PlantState>
   {
     public PlantState GetStateEnum()
     {
@@ -19,6 +21,11 @@
 
     public void Exit(Plant plant)
     {
+    }
+
+    public void DayTick(Plant plant)
+    {
+      plant.IncreaseAge();
     }
   }
 }

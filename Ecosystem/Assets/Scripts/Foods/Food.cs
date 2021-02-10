@@ -4,7 +4,7 @@ namespace Foods
 {
   public class Food : MonoBehaviour, IEatable
   {
-    [SerializeField] private int saturation;
+    [SerializeField] protected int saturation;
     [SerializeField] private FoodType foodType;
 
     public int Saturation()
