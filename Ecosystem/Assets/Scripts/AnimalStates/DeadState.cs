@@ -4,8 +4,6 @@ namespace AnimalStates
 {
   public sealed class DeadState : IState
   {
-    private readonly int _rotationSpeed = 10;
-
     public AnimalState GetStateEnum()
     {
       return AnimalState.Dead;
@@ -13,18 +11,17 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
+      animal.StopMoving();
     }
 
     public AnimalState Execute(Animal animal)
     {
-      if (animal.GetHealth() > 0) return AnimalState.Wander;
       FallOver(animal);
       return AnimalState.Dead;
     }
 
     public void Exit(Animal animal)
     {
-      //animal.StopMoving();
     }
 
     /// <summary>
@@ -32,13 +29,8 @@ namespace AnimalStates
     /// </summary>
     private void FallOver(Animal animal)
     {
-      
-      if (animal.GetHealth() <= 0)
-      {
-        animal.StopMoving();
-        animal.transform.rotation = Quaternion.Euler(0, 0, 90);
-        animal.transform.position = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
-      }
+      animal.transform.rotation = Quaternion.Euler(0, 0, 90);
+      animal.transform.position = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
     }
   }
 }

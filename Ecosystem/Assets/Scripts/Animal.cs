@@ -37,6 +37,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
 
+  public int GetHealth => _healthDelegate.Health;
+
   private void Start()
   {
     _nourishmentDelegate = new NourishmentDelegate();
@@ -65,7 +67,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void Update()
   {
-    _healthDelegate.DecreaseHealth();
+    _healthDelegate.DecreaseHealth(1);
 
     var newState = _currentState.Execute(this);
     if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
@@ -94,11 +96,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void Eat(int saturation)
   {
     _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
-  }
-
-  public int GetHealth()
-  {
-    return _healthDelegate.Health;
   }
 
   private void OnWaterLocationChanged(Water water)
@@ -167,6 +164,19 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void Drink(Water water)
   {
     Drink(water.Hydration);
+  }
+
+  /// <summary>
+  ///   Decreases health if animal is starving and dehydrated
+  /// </summary>
+  public void DecreaseHealthIfStarving()
+  {
+    _healthDelegate.DecreaseHealth(1);
+  }
+
+  public bool IsAlive()
+  {
+    return GetHealth > 0;
   }
 
   /// <summary>

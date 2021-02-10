@@ -29,7 +29,8 @@ namespace AnimalStates
       if (!animal.IsHungry) return AnimalState.Wander;
 
       //Enter dead state
-      if (animal.GetHealth() <= 0) return AnimalState.Dead;
+      if (animal.GetSaturation() <= 10 && animal.GetHydration() <= 10) animal.DecreaseHealthIfStarving();
+      if (!animal.IsAlive()) return AnimalState.Dead;
 
 
       // A new food source has been found. Change the food target to the closest food.
