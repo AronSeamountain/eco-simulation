@@ -20,7 +20,7 @@ public class StateMachineContainer<StateType, StateEnum,_s> where StateType : Ge
   /// <param name="stateEnum">The state to get the state instance from.</param>
   /// <returns>The state correlating to the state enum.</returns>
   /// <exception cref="ArgumentOutOfRangeException">If the animal has no state for the provided state enum.</exception>
-  private StateType GetCorrelatingState(StateEnum stateEnum)
+  public StateType GetCorrelatingState(StateEnum stateEnum)
   {
     var state = _states.First(s => s.GetStateEnum().Equals(stateEnum));
     if (state != null) return state;

@@ -31,7 +31,7 @@ namespace Foods
 
     public void DayTick(Plant plant)
     {
-      throw new NotImplementedException();
+      plant.Grow();
     }
   }
 }

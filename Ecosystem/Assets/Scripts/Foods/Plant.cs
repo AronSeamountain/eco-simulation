@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 
 namespace Foods
@@ -7,7 +8,7 @@ namespace Foods
   public class Plant : Food, ITickable
   {
     private int _ageInDays;
-    private GenericState<Plant,PlantState> _currentState;
+    private IPlantState _currentState;
     private readonly int _daysAsSeed = 5;
     private int _growthPerDay = 10;
     private int maxSaturation = 100; //Saturation when plant is fully grown
@@ -41,7 +42,7 @@ namespace Foods
       else
       {
         _currentState.Exit(this);
-        
+        _currentState = (IPlantState) stateContainer.GetCorrelatingState(nextState);
       }
      
       
@@ -58,13 +59,14 @@ namespace Foods
     
     public void DayTick()
     {
-     // _currentState.DayTick(this);
-      
+     _currentState.DayTick(this);
+      Debug.Log("DAY-tick works");
     }
 
     public void Grow()
     {
       saturation =+ _growthPerDay;
+      Debug.Log("PLANTS ARE GROWING - saturation " + saturation);
     }
 
     public void IncreaseAge()
