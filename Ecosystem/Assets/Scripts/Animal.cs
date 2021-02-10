@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 ///   A very basic animal that searches for food.
@@ -14,17 +13,10 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
-  [SerializeField] private Slider hydrationSlider;
-  [SerializeField] private Slider saturationSlider;
-
-  /// <summary>
-  ///   Health bar not used at the moment.
-  /// </summary>
-  [SerializeField] private Slider healthBar;
 
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
-  private NourishmentDelegate _nourishmentDelegate;
+  public NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
 
   public bool ShowStats { get; set; }
@@ -52,8 +44,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   {
     ShowStats = false;
     _nourishmentDelegate = new NourishmentDelegate();
-    UpdateStats();
-    _nourishmentDelegate.NourishmentChangedListeners += UpdateStats;
 
     // Setup states
     var pursueWaterState = new PursueWaterState();
@@ -173,15 +163,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void Drink(Water water)
   {
     Drink(water.Hydration);
-  }
-
-  private void UpdateStats()
-  {
-    saturationSlider.gameObject.SetActive(ShowStats);
-    hydrationSlider.gameObject.SetActive(ShowStats);
-    healthBar.gameObject.SetActive(ShowStats);
-    hydrationSlider.value = GetHydration() / (float) _nourishmentDelegate.MaxHydration;
-    saturationSlider.value = GetSaturation() / (float) _nourishmentDelegate.MaxSaturation;
   }
 
   /// <summary>

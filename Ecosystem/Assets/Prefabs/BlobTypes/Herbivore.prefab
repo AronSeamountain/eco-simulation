@@ -1249,9 +1249,6 @@ MonoBehaviour:
   movement: {fileID: 7836581106720980516}
   foodManager: {fileID: 9054329623236228661}
   waterManager: {fileID: -7191508722750619209}
-  hydrationSlider: {fileID: 1265895545883497723}
-  saturationSlider: {fileID: 822246111790441115}
-  healthBar: {fileID: 4366774366165801887}
 --- !u!114 &9054329623236228661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1437,6 +1434,7 @@ GameObject:
   - component: {fileID: 4221513564860957003}
   - component: {fileID: 4135277596226074494}
   - component: {fileID: 9083648329371095316}
+  - component: {fileID: 7946258956992882595}
   m_Layer: 2
   m_Name: Canvas
   m_TagString: Untagged
@@ -1526,6 +1524,23 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7946258956992882595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8839981461155668507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ac20e84f5404794a83a2877bd7ddb61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animal: {fileID: 4206817655424769507}
+  hydrationSlider: {fileID: 1265895545883497723}
+  saturationSlider: {fileID: 822246111790441115}
+  healthBar: {fileID: 4366774366165801887}
+  lastShowStats: 0
 --- !u!1001 &6178371566378304043
 PrefabInstance:
   m_ObjectHideFlags: 0
