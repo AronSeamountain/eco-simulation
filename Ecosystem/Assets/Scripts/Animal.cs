@@ -67,8 +67,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
 
   private void Update()
   {
-    _healthDelegate.DecreaseHealth(1);
-
     var newState = _currentState.Execute(this);
     if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
     {
