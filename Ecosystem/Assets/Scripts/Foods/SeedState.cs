@@ -2,7 +2,7 @@
 
 namespace Foods
 {
-  public class SeedState : GenericState<Plant,PlantState>
+  public class SeedState : IPlantState
   {
     public PlantState GetStateEnum()
     {

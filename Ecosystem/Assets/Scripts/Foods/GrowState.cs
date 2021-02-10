@@ -3,7 +3,7 @@
 
 namespace Foods
 {
-  public class GrowState : GenericState<Plant,PlantState>
+  public class GrowState : IPlantState
   {
     public PlantState GetStateEnum()
     {
@@ -25,6 +25,11 @@ namespace Foods
     }
 
     public void Exit(Plant plant)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void DayTick(Plant plant)
     {
       throw new NotImplementedException();
     }
