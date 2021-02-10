@@ -36,10 +36,7 @@ public sealed class Ecosystem : MonoBehaviour
       _tickListeners += animal.Tick;
 
     foreach (var plant in _plants)
-    {
-      if (!plant) Debug.Log("yo");
       _dayTickListeners += plant.DayTick;
-    }
 
     // Logger
     _logger = DataLogger.Instance;

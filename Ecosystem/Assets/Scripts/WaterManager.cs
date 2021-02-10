@@ -19,7 +19,6 @@ public class WaterManager : MonoBehaviour
   {
     if (water == null) return;
     ClosestKnownWater = water;
-    Debug.Log("Closest water source found: " + water);
 
     WaterUpdateListeners?.Invoke(ClosestKnownWater);
   }

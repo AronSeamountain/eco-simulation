@@ -50,16 +50,9 @@ namespace Foods.Plants
     {
       // TODO: This is NOT final!!!! Should be in the state machine somehow.
       _ageInDays++;
-      if (_ageInDays >= DaysAsSeed)
-      {
-        ShouldGrow = true;
-      }
+      if (_ageInDays >= DaysAsSeed) ShouldGrow = true;
 
-      if (ShouldGrow)
-      {
-        saturation += GrowthPerDay;
-        Debug.Log("PLANTS ARE GROWING - saturation " + saturation);
-      }
+      if (ShouldGrow) saturation += GrowthPerDay;
     }
 
     public void SetSeedMaterial()

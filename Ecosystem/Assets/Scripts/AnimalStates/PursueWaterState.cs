@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using Utils;
+﻿using Utils;
 
 namespace AnimalStates
 {
@@ -40,7 +39,6 @@ namespace AnimalStates
 
     public void Exit(Animal animal)
     {
-      Debug.Log("EXIT PURSUE WATER");
     }
   }
 }
