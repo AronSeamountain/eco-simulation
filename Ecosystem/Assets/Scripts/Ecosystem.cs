@@ -17,15 +17,12 @@ public sealed class Ecosystem : MonoBehaviour
   [SerializeField] private GameObject plantPrefab;
   private IList<Animal> _animals;
   private int _days;
-
   private DayTick _dayTickListeners;
-
   private DataLogger _logger;
   private IList<Plant> _plants;
   private Tick _tickListeners;
   private float _unitsPassed;
   private float _unitTicker;
-
 
   private void Start()
   {
@@ -55,33 +52,29 @@ public sealed class Ecosystem : MonoBehaviour
   /// </summary>
   private void SpawnAndAddInitialAnimals()
   {
-    const float spawnSquareHalfWidth = 10f;
-    for (var i = 0; i < initialAnimals; i++)
-    {
-      var randomPos = new Vector3(
-        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
-        1.5f,
-        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
-      );
-      var animal = Instantiate(animalPrefab, randomPos, Quaternion.identity).GetComponent<Animal>();
-      _animals.Add(animal);
-    }
+    SpawnAndAddGeneric(initialAnimals, animalPrefab, _animals);
   }
 
+  /// <summary>
+  ///   Spawns plants and adds them to the list of animals.
+  /// </summary>
   private void SpawnAndAddInitialPlants()
   {
+    SpawnAndAddGeneric(initialPlants, plantPrefab, _plants);
+  }
+
+  private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list)
+  {
     const float spawnSquareHalfWidth = 10f;
-    Debug.Log("Plants " + initialPlants);
-    for (var i = 0; i < initialPlants; i++)
+    for (var i = 0; i < amount; i++)
     {
       var randomPos = new Vector3(
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
         1.5f,
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
       );
-      Debug.Log("SPAWNED PLANT");
-      var plant = Instantiate(plantPrefab, randomPos, Quaternion.identity).GetComponent<Plant>();
-      _plants.Add(plant);
+      var instance = Instantiate(prefab, randomPos, Quaternion.identity).GetComponent<T>();
+      list.Add(instance);
     }
   }
 
@@ -100,6 +93,7 @@ public sealed class Ecosystem : MonoBehaviour
         _unitsPassed = 0;
         _days++;
 
+        _dayTickListeners?.Invoke();
         _logger.Snapshot(_days, _animals);
       }
     }
