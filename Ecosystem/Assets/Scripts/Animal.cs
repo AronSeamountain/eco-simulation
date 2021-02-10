@@ -14,8 +14,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   [SerializeField] private WaterManager waterManager;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
-  private NourishmentDelegate _nourishmentDelegate;
   private HealthDelegate _healthDelegate;
+  private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
 
   public bool IsMoving => movement.HasTarget;
@@ -66,7 +66,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   private void Update()
   {
     _healthDelegate.DecreaseHealth();
-    Debug.Log("Health is: " + _healthDelegate.Health);
 
     var newState = _currentState.Execute(this);
     if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
@@ -77,11 +76,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     }
   }
 
-  public int GetHealth()
-  {
-    return _healthDelegate.Health;
-  }
-  
   public int GetHydration()
   {
     return _nourishmentDelegate.Hydration;
@@ -100,6 +94,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void Eat(int saturation)
   {
     _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
+  }
+
+  public int GetHealth()
+  {
+    return _healthDelegate.Health;
   }
 
   private void OnWaterLocationChanged(Water water)

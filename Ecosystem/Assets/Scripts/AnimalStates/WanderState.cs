@@ -49,7 +49,7 @@ namespace AnimalStates
       // Enter pursue food state.
       if (animal.KnowsFoodLocation && animal.IsHungry)
         return AnimalState.PursueFood;
-      
+
       //Enter dead state
       if (animal.GetHealth() <= 0) return AnimalState.Dead;
 
