@@ -1,35 +1,69 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using Utils;
 
 public sealed class CameraController : MonoBehaviour
 {
   /// <summary>
   ///   The distance in the x-z plane to the target
   /// </summary>
-  private const float Distance = 10.0f;
+  private const int Distance = 5;
 
   /// <summary>
   ///   The height we want the camera to be above the target
   /// </summary>
-  private const float Height = 5.0f;
+  private const int Height = 5;
 
-  private const float RotationSpeed = 10;
-  private const float ViewSpeed = 10;
-  private const int MovementSpeed = 10;
+  private const int RotationSpeed = 10;
+  private const int ViewSpeed = 10;
+  private const int Acceleration = 40;
+  private const int FlyMovementSpeed = 10;
+  private const int FastFlyMovementSpeed = 30;
   [SerializeField] private Camera mainCamera;
   private Transform _cameraTransform;
   private CameraControls _controls;
+  private float _followSpeed;
+  private bool _moveFast;
   private bool _rotate;
   private Transform _target;
+  private int MovementSpeed => _moveFast ? FastFlyMovementSpeed : FlyMovementSpeed;
+
+  private Transform Target
+  {
+    get => _target;
+    set
+    {
+      if (_target == value) return;
+
+      // Remove old outline from current target
+      if (_target && _target.GetComponent<Outline>() is Outline oldOutline)
+        Destroy(oldOutline);
+
+      // Set new target
+      _target = value ? value.root : null;
+
+      // Add outline to new target
+      if (Target)
+      {
+        var hasOutline = Target.GetComponent<Outline>() != null;
+        if (hasOutline) return;
+
+        var outline = Target.gameObject.AddComponent<Outline>();
+        outline.OutlineWidth = 7f;
+      }
+    }
+  }
 
   private void Awake()
   {
     _controls = new CameraControls();
     _controls.CameraMovement.Selecting.performed += OnSelect;
     _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
-    _controls.CameraMovement.StartRotate.performed += OnStartRotate;
-    _controls.CameraMovement.EndRotate.performed += OnEndRotate;
+    _controls.CameraMovement.Rotate.started += OnRotate;
+    _controls.CameraMovement.Rotate.canceled += OnRotate;
     _controls.CameraMovement.Movement.performed += OnMovement;
+    _controls.CameraMovement.MoveFast.started += OnMoveFast;
+    _controls.CameraMovement.MoveFast.canceled += OnMoveFast;
   }
 
   private void Start()
@@ -55,18 +89,36 @@ public sealed class CameraController : MonoBehaviour
     _controls.Disable();
   }
 
-  private void OnMovement(InputAction.CallbackContext _)
+  private void OnMoveFast(InputAction.CallbackContext context)
   {
-    // Dont lock onto a target on manual movement
-    _target = null;
+    if (context.started)
+      _moveFast = true;
+    else if (context.canceled)
+      _moveFast = false;
   }
 
-  private void OnStartRotate(InputAction.CallbackContext _)
+  private void OnMovement(InputAction.CallbackContext _)
   {
-    _target = null;
-    _rotate = true;
-    Cursor.visible = false;
-    Cursor.lockState = CursorLockMode.Locked;
+    Target = null;
+    _followSpeed = 0;
+  }
+
+  private void OnRotate(InputAction.CallbackContext context)
+  {
+    if (context.started)
+    {
+      _rotate = true;
+      Target = null;
+      _followSpeed = 0;
+      Cursor.visible = false;
+      Cursor.lockState = CursorLockMode.Locked;
+    }
+    else if (context.canceled)
+    {
+      _rotate = false;
+      Cursor.visible = true;
+      Cursor.lockState = CursorLockMode.None;
+    }
   }
 
   private void Rotate()
@@ -85,16 +137,10 @@ public sealed class CameraController : MonoBehaviour
     );
   }
 
-  private void OnEndRotate(InputAction.CallbackContext _)
-  {
-    _rotate = false;
-    Cursor.visible = true;
-    Cursor.lockState = CursorLockMode.None;
-  }
-
   private void OnCancelTarget(InputAction.CallbackContext _)
   {
-    _target = null;
+    Target = null;
+    _followSpeed = 0;
   }
 
   private void OnSelect(InputAction.CallbackContext _)
@@ -102,7 +148,8 @@ public sealed class CameraController : MonoBehaviour
     RaycastHit hitTarget;
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
-    if (Physics.Raycast(ray, out hitTarget)) _target = hitTarget.transform;
+    if (Physics.Raycast(ray, out hitTarget))
+      Target = hitTarget.transform;
   }
 
   private Vector2 GetMousePos()
@@ -112,8 +159,8 @@ public sealed class CameraController : MonoBehaviour
 
   private void LookAt()
   {
-    if (_target == null) return;
-    var dirToObj = (_target.position - _cameraTransform.position).normalized;
+    if (!Target) return;
+    var dirToObj = (Target.position - _cameraTransform.position).normalized;
     var desiredRotation = Quaternion.LookRotation(dirToObj, Vector3.up);
     _cameraTransform.rotation =
       Quaternion.Slerp(_cameraTransform.rotation, desiredRotation, RotationSpeed * Time.deltaTime);
@@ -124,7 +171,7 @@ public sealed class CameraController : MonoBehaviour
   /// </summary>
   private void Move()
   {
-    if (_target) return;
+    if (Target) return;
 
     var input = _controls.CameraMovement.Movement.ReadValue<Vector2>();
     var direction = new Vector3();
@@ -138,16 +185,21 @@ public sealed class CameraController : MonoBehaviour
   /// </summary>
   private void Follow()
   {
-    if (!_target) return;
+    if (!Target) return;
 
-    var targetFront = _target.forward;
-    var desiredPosition = _target.position - targetFront * Distance + new Vector3(0, Height);
+    var targetFront = Target.forward;
+    var desiredPosition = Target.position - targetFront * Distance + new Vector3(0, Height);
 
-    var hasArrived = (desiredPosition - _cameraTransform.position).magnitude <= 0.1f;
-    if (!hasArrived)
+    var hasArrived = Vector3Util.InRange(desiredPosition, _cameraTransform.position, 5f);
+    if (hasArrived)
     {
+      _followSpeed = 0;
+    }
+    else
+    {
+      _followSpeed += Acceleration * Time.deltaTime;
       var direction = (desiredPosition - _cameraTransform.position).normalized;
-      _cameraTransform.position += direction * (MovementSpeed * Time.deltaTime);
+      _cameraTransform.position += direction * (_followSpeed * Time.deltaTime);
     }
   }
 }

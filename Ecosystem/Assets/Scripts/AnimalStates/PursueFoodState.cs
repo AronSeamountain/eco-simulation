@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Utils;
 
 namespace AnimalStates
@@ -25,8 +24,6 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      animal.HydrationSaturationTicker();
-
       if (!animal.IsHungry) return AnimalState.Wander;
 
       // A new food source has been found. Change the food target to the closest food.
@@ -41,7 +38,7 @@ namespace AnimalStates
       if (_foodTarget == null) return AnimalState.Wander;
 
       // Eat the current food if it can be reached.
-      var reachesFood = Vector3Util.isInRange(animal.gameObject, _foodTarget.gameObject, 2);
+      var reachesFood = Vector3Util.InRange(animal.gameObject, _foodTarget.gameObject, 2);
       if (reachesFood)
       {
         animal.Eat(_foodTarget);
@@ -65,7 +62,7 @@ namespace AnimalStates
       var foods = animal.KnownFoods;
       if (!foods.Any()) return null;
 
-      return foods.OrderBy(f => Vector3Util.getDistance(animal.gameObject, f.gameObject)).First();
+      return foods.OrderBy(f => Vector3Util.Distance(animal.gameObject, f.gameObject)).First();
     }
 
     /// <summary>

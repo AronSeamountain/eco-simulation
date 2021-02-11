@@ -3,21 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
+public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
+  public delegate void ChildSpawned(Animal child);
+
+  /// <summary>
+  ///   The probability in the range [0, 1] whether the animal will give birth.
+  /// </summary>
+  [SerializeField] [Range(0f, 1f)] private float birthProbabilityPerUnit;
+
   private const int Health = 100;
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
-
+  [SerializeField] private GameObject childPrefab;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   public NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
+  public ChildSpawned ChildSpawnedListeners;
+  public bool ShouldBirth { get; private set; }
 
   public bool ShowStats { get; set; }
 
@@ -40,19 +50,22 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
 
-  private void Start()
+  private void Awake()
   {
     ShowStats = false;
     _nourishmentDelegate = new NourishmentDelegate();
+  }
 
+  private void Start()
+  {
     // Setup states
-    var pursueWaterState = new PursueWaterState();
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {
-      pursueWaterState,
+      new WanderState(),
       pursueFoodState,
-      new WanderState()
+      new PursueWaterState(),
+      new BirthState()
     };
     _currentState = GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter(this);
@@ -97,17 +110,15 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
     _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
   }
 
+  public void Tick()
+  {
+    ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
+    _nourishmentDelegate.Tick();
+  }
+
   private void OnWaterLocationChanged(Water water)
   {
     KnowsWaterLocation = water != null;
-  }
-
-  /// <summary>
-  ///   Decrease hydration and saturation over time.
-  /// </summary>
-  public void HydrationSaturationTicker()
-  {
-    _nourishmentDelegate.Tick(Time.deltaTime);
   }
 
   /// <summary>
@@ -163,6 +174,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void Drink(Water water)
   {
     Drink(water.Hydration);
+  }
+
+  public void SpawnChild()
+  {
+    var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
+    ChildSpawnedListeners?.Invoke(child);
+    ShouldBirth = false;
   }
 
   /// <summary>
