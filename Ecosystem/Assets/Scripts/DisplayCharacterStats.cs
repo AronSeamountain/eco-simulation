@@ -12,7 +12,7 @@ public class DisplayCharacterStats : MonoBehaviour
     _controls = new CameraControls();
     _controls.CameraMovement.Selecting.performed += ClickedChar;
     _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
-    _controls.CameraMovement.StartRotate.performed += OnCancelTarget;
+    _controls.CameraMovement.Rotate.performed += OnCancelTarget;
     _controls.CameraMovement.Movement.performed += OnCancelTarget;
   }
 
