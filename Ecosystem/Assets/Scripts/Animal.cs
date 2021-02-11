@@ -170,7 +170,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   public void DecreaseHealthIfStarving()
   {
     if (GetSaturation() <= 10 && GetHydration() <= 10)
-      _healthDelegate.DecreaseHealth(50);
+      _healthDelegate.DecreaseHealth(1);
   }
 
   public bool IsAlive => GetHealth > 0;
