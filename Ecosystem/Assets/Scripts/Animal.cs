@@ -169,13 +169,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat
   /// </summary>
   public void DecreaseHealthIfStarving()
   {
-    _healthDelegate.DecreaseHealth(1);
+    if (GetSaturation() <= 10 && GetHydration() <= 10)
+      _healthDelegate.DecreaseHealth(50);
   }
 
-  public bool IsAlive()
-  {
-    return GetHealth > 0;
-  }
+  public bool IsAlive => GetHealth > 0;
 
   /// <summary>
   ///   Gets invoked when the animal eats a food.

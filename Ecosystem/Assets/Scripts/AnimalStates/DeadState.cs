@@ -11,12 +11,11 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
-      animal.StopMoving();
+      FallOver(animal);
     }
 
     public AnimalState Execute(Animal animal)
     {
-      FallOver(animal);
       return AnimalState.Dead;
     }
 
@@ -25,10 +24,11 @@ namespace AnimalStates
     }
 
     /// <summary>
-    ///   The animal should fall over when it's dead.
+    ///   Stops the animal from moving and lays it on the floor.
     /// </summary>
     private void FallOver(Animal animal)
     {
+      animal.StopMoving();
       animal.transform.rotation = Quaternion.Euler(0, 0, 90);
       animal.transform.position = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
     }

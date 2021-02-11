@@ -41,6 +41,7 @@ namespace AnimalStates
     public AnimalState Execute(Animal animal)
     {
       animal.HydrationSaturationTicker();
+      animal.DecreaseHealthIfStarving();
 
       // Enter pursue water state
       if (animal.KnowsWaterLocation && animal.IsThirsty)
@@ -51,8 +52,8 @@ namespace AnimalStates
         return AnimalState.PursueFood;
 
       //Enter dead state
-      if (animal.GetSaturation() <= 10 && animal.GetHydration() <= 10) animal.DecreaseHealthIfStarving();
-      if (!animal.IsAlive()) return AnimalState.Dead;
+      if (!animal.IsAlive)
+        return AnimalState.Dead;
 
       var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
       if (shouldMoveToNewPos)
