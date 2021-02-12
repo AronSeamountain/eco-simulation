@@ -25,13 +25,10 @@ namespace AnimalStates
     public AnimalState Execute(Animal animal)
     {
       animal.HydrationSaturationTicker();
+      animal.DecreaseHealthIfStarving();
 
       if (!animal.IsHungry) return AnimalState.Wander;
-
-      //Enter dead state
-      if (animal.GetSaturation() <= 10 && animal.GetHydration() <= 10) animal.DecreaseHealthIfStarving();
-      if (!animal.IsAlive()) return AnimalState.Dead;
-
+      if (!animal.IsAlive) return AnimalState.Dead;
 
       // A new food source has been found. Change the food target to the closest food.
       if (_knownFoodTargetsChanged)

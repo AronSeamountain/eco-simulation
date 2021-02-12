@@ -18,12 +18,11 @@ public sealed class PursueWaterState : IState
   public AnimalState Execute(Animal animal)
   {
     animal.HydrationSaturationTicker();
+    animal.DecreaseHealthIfStarving();
+
     if (!animal.IsThirsty) return AnimalState.Wander;
     if (!animal.KnowsWaterLocation) return AnimalState.Wander;
-
-    //Enter dead state
-    if (animal.GetSaturation() <= 10 && animal.GetHydration() <= 10) animal.DecreaseHealthIfStarving();
-    if (!animal.IsAlive()) return AnimalState.Dead;
+    if (!animal.IsAlive) return AnimalState.Dead;
 
     _waterTarget = animal.ClosestKnownWater;
     if (_waterTarget == null) return AnimalState.Wander;
