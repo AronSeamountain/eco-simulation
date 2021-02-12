@@ -3,7 +3,12 @@
 /// </summary>
 public sealed class NourishmentDelegate : ITickable
 {
-  public delegate void NourishmentChanged();
+  public delegate void NourishmentChanged(NourishmentSnapshot nourishmentSnapshot);
+
+  public NourishmentChanged NourishmentChangedListeners;
+  private int _saturation;
+  private int _hydration;
+  private NourishmentSnapshot _nourishmentSnapshot;
 
   /// <summary>
   ///   The value for which the animal is considered hungry.
@@ -24,18 +29,47 @@ public sealed class NourishmentDelegate : ITickable
     Hydration = 25;
     MaxHydration = 50;
     MaxSaturation = 50;
+    _nourishmentSnapshot = new NourishmentSnapshot(Saturation, Hydration, MaxSaturation, MaxHydration);
   }
 
-  public int Saturation { get; set; }
-  public int Hydration { get; set; }
+  public int Saturation
+  {
+    get => _saturation;
+    set
+    {
+      _saturation = value;
+      Invoker();
+    } 
+  }
+
+  public int Hydration
+  {
+    get => _hydration;
+    set
+    {
+      _hydration = value;
+      Invoker();
+    } 
+  }
+
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
   public int MaxHydration { get; }
   public int MaxSaturation { get; }
+  
 
   public void Tick()
   {
     Saturation -= SaturationDecreasePerUnit;
     Hydration -= HydrationDecreasePerUnit;
+    
+    _nourishmentSnapshot.Hydration = Hydration;
+    _nourishmentSnapshot.Saturation = Saturation;
+    Invoker();
+  }
+
+  public void Invoker()
+  {
+    NourishmentChangedListeners?.Invoke(_nourishmentSnapshot);
   }
 }

@@ -22,14 +22,20 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
+  [SerializeField] private EntityStatsDisplay entityStatsDisplay;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
-  public NourishmentDelegate _nourishmentDelegate;
+  private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
   public ChildSpawned ChildSpawnedListeners;
-  public bool ShouldBirth { get; private set; }
 
-  public bool ShowStats { get; set; }
+  public bool ShouldBirth { get; private set; }
+  
+
+  public void ShowStats(bool show)
+  {
+    entityStatsDisplay.ShowStats = show;
+  }
 
   public bool IsMoving => movement.HasTarget;
 
@@ -52,7 +58,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   private void Awake()
   {
-    ShowStats = false;
+    ShowStats(false);
     _nourishmentDelegate = new NourishmentDelegate();
   }
 
@@ -75,6 +81,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
     _foodEatenListeners += foodManager.OnFoodEaten;
 
+    _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }

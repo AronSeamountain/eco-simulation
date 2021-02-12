@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class EntityStatsDisplay : MonoBehaviour
 {
-  [SerializeField] private Animal animal;
   [SerializeField] private Slider hydrationSlider;
   [SerializeField] private Slider saturationSlider;
 
@@ -12,38 +13,29 @@ public class EntityStatsDisplay : MonoBehaviour
   /// </summary>
   [SerializeField] private Slider healthBar;
 
-  public bool lastShowStats;
+  private bool _showStats;
 
-  public bool ShowStats { get; set; }
-
-  private void Awake()
+  public bool ShowStats
   {
-    saturationSlider.gameObject.SetActive(false);
-    hydrationSlider.gameObject.SetActive(false);
-    healthBar.gameObject.SetActive(false);
+    get => _showStats;
+    set
+    {
+      _showStats = value;
+      ShowSliders(ShowStats);
+    } 
   }
 
-  // Update is called once per frame
-  private void Update()
-  {
-    ShowStats = animal.ShowStats;
-    UpdateStats();
-    ShowSliders();
-    lastShowStats = ShowStats;
-  }
-
-  private void UpdateStats()
+  public void OnNourishmentChanged(NourishmentSnapshot nourishmentSnapshot) 
   {
     if (!ShowStats) return;
-    hydrationSlider.value = animal.GetHydration() / (float) animal._nourishmentDelegate.MaxHydration;
-    saturationSlider.value = animal.GetSaturation() / (float) animal._nourishmentDelegate.MaxSaturation;
+    hydrationSlider.value = nourishmentSnapshot.Saturation / (float) nourishmentSnapshot.MaxSaturation;
+    saturationSlider.value = nourishmentSnapshot.Hydration / (float) nourishmentSnapshot.MaxHydration;
   }
 
-  private void ShowSliders()
+  private void ShowSliders(bool show)
   {
-    if (!(ShowStats ^ lastShowStats)) return;
-    saturationSlider.gameObject.SetActive(ShowStats);
-    hydrationSlider.gameObject.SetActive(ShowStats);
-    healthBar.gameObject.SetActive(ShowStats);
+    saturationSlider.gameObject.SetActive(show);
+    hydrationSlider.gameObject.SetActive(show);
+    healthBar.gameObject.SetActive(show);
   }
 }

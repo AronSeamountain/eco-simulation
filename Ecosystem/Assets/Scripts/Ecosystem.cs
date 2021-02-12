@@ -27,9 +27,6 @@ public sealed class Ecosystem : MonoBehaviour
     _logger = DataLogger.Instance;
     _logger.InitializeLogging();
 
-    foreach (var animal in _animals)
-      _tickListeners += animal.Tick;
-
     _logger.Snapshot(0, _animals);
   }
 
@@ -69,6 +66,7 @@ public sealed class Ecosystem : MonoBehaviour
   {
     if (!animal) return;
     _animals.Add(animal);
+    _tickListeners += animal.Tick;
     animal.ChildSpawnedListeners += OnChildSpawned;
   }
 

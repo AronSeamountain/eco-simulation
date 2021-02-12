@@ -28,7 +28,7 @@ public class DisplayCharacterStats : MonoBehaviour
 
   private void OnCancelTarget(InputAction.CallbackContext obj)
   {
-    if (_target) _target.ShowStats = false;
+    if (_target) _target.ShowStats(false);
     _target = null;
   }
 
@@ -45,7 +45,7 @@ public class DisplayCharacterStats : MonoBehaviour
       if (hitTarget.transform.GetComponent<Animal>() is Animal animal)
       {
         if (_target) OnCancelTarget(_);
-        animal.ShowStats = true;
+        animal.ShowStats(true);
         _target = animal;
       }
   }
