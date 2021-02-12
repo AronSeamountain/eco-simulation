@@ -28,8 +28,8 @@ public class EntityStatsDisplay : MonoBehaviour
   public void OnNourishmentChanged(NourishmentSnapshot nourishmentSnapshot) 
   {
     if (!ShowStats) return;
-    hydrationSlider.value = nourishmentSnapshot.Saturation / (float) nourishmentSnapshot.MaxSaturation;
-    saturationSlider.value = nourishmentSnapshot.Hydration / (float) nourishmentSnapshot.MaxHydration;
+    saturationSlider.value = nourishmentSnapshot.Saturation / (float) nourishmentSnapshot.MaxSaturation;
+    hydrationSlider.value = nourishmentSnapshot.Hydration / (float) nourishmentSnapshot.MaxHydration;
   }
 
   private void ShowSliders(bool show)
