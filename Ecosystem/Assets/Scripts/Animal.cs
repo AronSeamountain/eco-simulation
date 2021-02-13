@@ -23,6 +23,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private GameObject childPrefab;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
+  private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
   public ChildSpawned ChildSpawnedListeners;
@@ -46,9 +47,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
 
+  public int GetHealth => _healthDelegate.Health;
+
+  public bool IsAlive => GetHealth > 0;
+
   private void Awake()
   {
     _nourishmentDelegate = new NourishmentDelegate();
+    _healthDelegate = new HealthDelegate();
   }
 
   private void Start()
@@ -57,6 +63,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {
+      new DeadState(),
       new WanderState(),
       pursueFoodState,
       new PursueWaterState(),
@@ -176,6 +183,15 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
     ChildSpawnedListeners?.Invoke(child);
     ShouldBirth = false;
+  }
+
+  /// <summary>
+  ///   Decreases health if animal is starving and dehydrated
+  /// </summary>
+  public void DecreaseHealthIfStarving()
+  {
+    if (GetSaturation() <= 10 && GetHydration() <= 10)
+      _healthDelegate.DecreaseHealth(1);
   }
 
   /// <summary>
