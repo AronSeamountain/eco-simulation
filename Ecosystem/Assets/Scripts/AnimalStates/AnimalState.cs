@@ -5,6 +5,7 @@
     Wander,
     PursueFood,
     PursueWater,
-    Birth
+    Birth,
+    Dead
   }
 }
