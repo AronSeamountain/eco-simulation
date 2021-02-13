@@ -1,7 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 public class EntityStatsDisplay : MonoBehaviour
 {
@@ -22,10 +20,16 @@ public class EntityStatsDisplay : MonoBehaviour
     {
       _showStats = value;
       ShowSliders(ShowStats);
-    } 
+    }
   }
 
-  public void OnNourishmentChanged(NourishmentSnapshot nourishmentSnapshot) 
+  public void OnHealthChanged(int health, int maxHealth)
+  {
+    if (!ShowStats) return;
+    healthBar.value = health / (float) maxHealth;
+  }
+
+  public void OnNourishmentChanged(NourishmentSnapshot nourishmentSnapshot)
   {
     if (!ShowStats) return;
     saturationSlider.value = nourishmentSnapshot.Saturation / (float) nourishmentSnapshot.MaxSaturation;

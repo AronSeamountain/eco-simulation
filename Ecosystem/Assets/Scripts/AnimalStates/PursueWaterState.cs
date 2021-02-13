@@ -18,8 +18,6 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      animal.DecreaseHealthIfStarving();
-
       if (!animal.IsThirsty) return AnimalState.Wander;
       if (!animal.KnowsWaterLocation) return AnimalState.Wander;
       if (!animal.IsAlive) return AnimalState.Dead;
