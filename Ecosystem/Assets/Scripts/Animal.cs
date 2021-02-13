@@ -40,7 +40,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
-  public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
+  public IReadOnlyCollection<FoodManager.FoodMemory> KnownFoods => foodManager.KnownFoodLocations;
 
   public Water ClosestKnownWater => waterManager.ClosestKnownWater;
 
@@ -199,4 +199,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// </summary>
   /// <param name="food">The food that was eaten.</param>
   private delegate void FoodEaten(Food food);
+
+  public void Forget(FoodManager.FoodMemory memory)
+  {
+    foodManager.Forget(memory);
+  }
 }

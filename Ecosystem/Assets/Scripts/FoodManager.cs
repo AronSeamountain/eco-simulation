@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -11,24 +12,34 @@ public sealed class FoodManager : MonoBehaviour
   ///   Gets invoked when the known food locations are changed.
   /// </summary>
   /// <param name="food">A list of all the known food sources.</param>
-  public delegate void KnownFoodLocationsChanged(IReadOnlyCollection<Food> food);
+  public delegate void KnownFoodLocationsChanged(IReadOnlyCollection<FoodMemory> food);
 
   [SerializeField] private VisualDetector visualDetector;
-  private IList<Food> _knownFoodLocations;
+  private IList<FoodMemory> _knownFoodMemories;
   public KnownFoodLocationsChanged KnownFoodLocationsChangedListeners;
-  public IReadOnlyList<Food> KnownFoodLocations => new ReadOnlyCollection<Food>(_knownFoodLocations);
+  public IReadOnlyList<FoodMemory> KnownFoodLocations => new ReadOnlyCollection<FoodMemory>(_knownFoodMemories);
 
   private void Start()
   {
-    _knownFoodLocations = new List<Food>();
+    _knownFoodMemories = new List<FoodMemory>();
     visualDetector.FoodFoundListeners += OnFoodFound;
   }
 
   private void OnFoodFound(Food food)
   {
-    if (_knownFoodLocations.Contains(food)) return;
+    var alreadyKnowsFood = false;
+    foreach (var memory in _knownFoodMemories)
+    {
+      if (memory.Food == food)
+      {
+        alreadyKnowsFood = true;
+        memory.Position = food.transform.position;
+      }
+    }
 
-    _knownFoodLocations.Add(food);
+    if (!alreadyKnowsFood)
+      _knownFoodMemories.Add(new FoodMemory(food, food.transform.position));
+
     KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
   }
 
@@ -36,7 +47,35 @@ public sealed class FoodManager : MonoBehaviour
   {
     if (food == null) return;
 
-    _knownFoodLocations.Remove(food);
+    _knownFoodMemories = _knownFoodMemories.Where(memory => memory.Food != food).ToList();
+    KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
+  }
+
+  public class FoodMemory
+  {
+    public Food Food;
+    public Vector3 Position;
+    public int TimeToForget;
+    public bool Forgotten;
+
+    public FoodMemory(Food food, Vector3 position)
+    {
+      Food = food;
+      Position = position;
+      TimeToForget = 5;
+      Forgotten = false;
+    }
+
+    public void Tick()
+    {
+      if (TimeToForget > 0) TimeToForget -= 1;
+      else Forgotten = true;
+    }
+  }
+
+  public void Forget(FoodMemory memory)
+  {
+    _knownFoodMemories.Remove(memory);
     KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
   }
 }

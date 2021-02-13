@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Utils;
 
 namespace AnimalStates
@@ -10,7 +11,7 @@ namespace AnimalStates
   /// </summary>
   public sealed class PursueFoodState : IState
   {
-    private Food _foodTarget;
+    private FoodManager.FoodMemory _foodTarget;
     private bool _knownFoodTargetsChanged;
 
     public AnimalState GetStateEnum()
@@ -33,18 +34,20 @@ namespace AnimalStates
       if (_knownFoodTargetsChanged)
       {
         _knownFoodTargetsChanged = false;
+        if (!animal.KnownFoods.Any()) return AnimalState.Wander;
+        
         _foodTarget = GetClosestFood(animal);
-        if (_foodTarget != null) animal.GoTo(_foodTarget.transform.position);
+        animal.GoTo(_foodTarget.Position);
       }
 
-      // No food -> Enter wander state
-      if (_foodTarget == null) return AnimalState.Wander;
-
       // Eat the current food if it can be reached.
-      var reachesFood = Vector3Util.InRange(animal.gameObject, _foodTarget.gameObject, 2);
+      var reachesFood = Vector3Util.InRange(animal.transform.position, _foodTarget.Position, 2);
       if (reachesFood)
       {
-        animal.Eat(_foodTarget);
+        var food = _foodTarget.Food;
+        if (food) 
+          animal.Eat(_foodTarget.Food);
+        animal.Forget(_foodTarget);
         _foodTarget = null;
       }
 
@@ -60,12 +63,12 @@ namespace AnimalStates
     /// </summary>
     /// <param name="animal">The animal.</param>
     /// <returns>The closest food.</returns>
-    private Food GetClosestFood(Animal animal)
+    private FoodManager.FoodMemory GetClosestFood(Animal animal)
     {
       var foods = animal.KnownFoods;
-      if (!foods.Any()) return null;
+      
 
-      return foods.OrderBy(f => Vector3Util.Distance(animal.gameObject, f.gameObject)).First();
+      return foods.OrderBy(f => Vector3Util.Distance(animal.transform.position, f.Position)).First();
     }
 
     /// <summary>
