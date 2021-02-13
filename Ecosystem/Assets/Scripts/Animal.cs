@@ -49,10 +49,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public int GetHealth => _healthDelegate.Health;
 
-  private void Start()
+  public bool IsAlive => GetHealth > 0;
+
+  private void Awake()
   {
     _nourishmentDelegate = new NourishmentDelegate();
     _healthDelegate = new HealthDelegate();
+  }
 
   private void Start()
   {
@@ -190,8 +193,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     if (GetSaturation() <= 10 && GetHydration() <= 10)
       _healthDelegate.DecreaseHealth(1);
   }
-
-  public bool IsAlive => GetHealth > 0;
 
   /// <summary>
   ///   Gets invoked when the animal eats a food.

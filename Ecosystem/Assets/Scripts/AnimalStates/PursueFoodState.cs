@@ -24,7 +24,6 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      animal.HydrationSaturationTicker();
       animal.DecreaseHealthIfStarving();
 
       if (!animal.IsHungry) return AnimalState.Wander;

@@ -40,7 +40,6 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      animal.HydrationSaturationTicker();
       animal.DecreaseHealthIfStarving();
 
       // Enter pursue water state
