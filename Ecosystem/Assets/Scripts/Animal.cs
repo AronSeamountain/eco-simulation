@@ -22,7 +22,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
   private IState _currentState;
-  private FoodEaten _foodEatenListeners;
   private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
@@ -75,7 +74,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     // Listen to food events
     foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
     foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
-    _foodEatenListeners += foodManager.OnFoodEaten;
+
 
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
@@ -116,6 +115,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
     _nourishmentDelegate.Tick();
+    foodManager.Tick();
   }
 
   private void OnWaterLocationChanged(Water water)
@@ -128,7 +128,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   ///   provided list.
   /// </summary>
   /// <param name="foods">The list of known foods.</param>
-  private void OnKnownFoodLocationsChanged(IReadOnlyCollection<Food> foods)
+  private void OnKnownFoodLocationsChanged(IReadOnlyCollection<FoodManager.FoodMemory> foods)
   {
     KnowsFoodLocation = foods.Any();
   }
@@ -139,9 +139,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// <param name="food">The food to eat.</param>
   public void Eat(Food food)
   {
-    movement.Stop();
     Eat(food.Saturation);
-    _foodEatenListeners?.Invoke(food);
     food.Consume();
   }
 
@@ -190,15 +188,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// </summary>
   public void DecreaseHealthIfStarving()
   {
-    if (GetSaturation() <= 10 && GetHydration() <= 10)
+    if (GetSaturation() <= 10 || GetHydration() <= 10)
       _healthDelegate.DecreaseHealth(1);
   }
-
-  /// <summary>
-  ///   Gets invoked when the animal eats a food.
-  /// </summary>
-  /// <param name="food">The food that was eaten.</param>
-  private delegate void FoodEaten(Food food);
 
   public void Forget(FoodManager.FoodMemory memory)
   {

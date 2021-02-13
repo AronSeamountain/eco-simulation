@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 ///   Takes care of finding and managing foods.
 /// </summary>
-public sealed class FoodManager : MonoBehaviour
+public sealed class FoodManager : MonoBehaviour, ITickable
 {
   /// <summary>
   ///   Gets invoked when the known food locations are changed.
@@ -25,17 +25,25 @@ public sealed class FoodManager : MonoBehaviour
     visualDetector.FoodFoundListeners += OnFoodFound;
   }
 
+  public void Tick()
+  {
+    foreach (var memory in _knownFoodMemories) memory.Tick();
+
+    var size = _knownFoodMemories.Count;
+    _knownFoodMemories = _knownFoodMemories.Where(memory => !memory.Forgotten).ToList();
+    if (size != _knownFoodMemories.Count)
+      KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
+  }
+
   private void OnFoodFound(Food food)
   {
     var alreadyKnowsFood = false;
     foreach (var memory in _knownFoodMemories)
-    {
       if (memory.Food == food)
       {
         alreadyKnowsFood = true;
         memory.Position = food.transform.position;
       }
-    }
 
     if (!alreadyKnowsFood)
       _knownFoodMemories.Add(new FoodMemory(food, food.transform.position));
@@ -43,39 +51,31 @@ public sealed class FoodManager : MonoBehaviour
     KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
   }
 
-  public void OnFoodEaten(Food food)
+  public void Forget(FoodMemory memory)
   {
-    if (food == null) return;
-
-    _knownFoodMemories = _knownFoodMemories.Where(memory => memory.Food != food).ToList();
+    _knownFoodMemories.Remove(memory);
     KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
   }
 
-  public class FoodMemory
+  public class FoodMemory : ITickable
   {
-    public Food Food;
-    public Vector3 Position;
-    public int TimeToForget;
+    public readonly Food Food;
+    private int _timeToForget;
     public bool Forgotten;
+    public Vector3 Position;
 
     public FoodMemory(Food food, Vector3 position)
     {
       Food = food;
       Position = position;
-      TimeToForget = 5;
+      _timeToForget = 20;
       Forgotten = false;
     }
 
     public void Tick()
     {
-      if (TimeToForget > 0) TimeToForget -= 1;
+      if (_timeToForget > 0) _timeToForget -= 1;
       else Forgotten = true;
     }
-  }
-
-  public void Forget(FoodMemory memory)
-  {
-    _knownFoodMemories.Remove(memory);
-    KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
   }
 }

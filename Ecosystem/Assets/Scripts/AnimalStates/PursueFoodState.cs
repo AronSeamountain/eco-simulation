@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Utils;
 
 namespace AnimalStates
@@ -35,7 +34,7 @@ namespace AnimalStates
       {
         _knownFoodTargetsChanged = false;
         if (!animal.KnownFoods.Any()) return AnimalState.Wander;
-        
+
         _foodTarget = GetClosestFood(animal);
         animal.GoTo(_foodTarget.Position);
       }
@@ -45,8 +44,12 @@ namespace AnimalStates
       if (reachesFood)
       {
         var food = _foodTarget.Food;
-        if (food) 
+        if (food)
+        {
+          animal.StopMoving();
           animal.Eat(_foodTarget.Food);
+        }
+
         animal.Forget(_foodTarget);
         _foodTarget = null;
       }
@@ -66,7 +69,7 @@ namespace AnimalStates
     private FoodManager.FoodMemory GetClosestFood(Animal animal)
     {
       var foods = animal.KnownFoods;
-      
+
 
       return foods.OrderBy(f => Vector3Util.Distance(animal.transform.position, f.Position)).First();
     }
@@ -75,7 +78,7 @@ namespace AnimalStates
     ///   Lets the state know that there is potentially a closer food.
     /// </summary>
     /// <param name="foods">The set of foods the animals knows of.</param>
-    public void OnKnownFoodLocationsChanged(IEnumerable<Food> foods)
+    public void OnKnownFoodLocationsChanged(IEnumerable<FoodManager.FoodMemory> foods)
     {
       _knownFoodTargetsChanged = true;
     }

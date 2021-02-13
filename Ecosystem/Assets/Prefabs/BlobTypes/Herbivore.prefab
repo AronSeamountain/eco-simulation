@@ -1233,11 +1233,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59b250f13e9b48febb95b74e6e82bd66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  birthProbabilityPerUnit: 0
   movement: {fileID: 7836581106720980516}
   foodManager: {fileID: 9054329623236228661}
   waterManager: {fileID: -7191508722750619209}
   childPrefab: {fileID: 4908545354356688046}
-  birthProbabilityPerUnit: 0.05
 --- !u!114 &9054329623236228661
 MonoBehaviour:
   m_ObjectHideFlags: 0
