@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Utils;
 
 namespace AnimalStates
@@ -43,12 +44,16 @@ namespace AnimalStates
       var reachesFood = Vector3Util.InRange(animal.transform.position, _foodTarget.Position, 2);
       if (reachesFood)
       {
-        var food = _foodTarget.Food;
-        if (food)
-        {
-          animal.StopMoving();
-          animal.Eat(_foodTarget.Food);
-        }
+        var colliders = Physics.OverlapSphere(animal.transform.position, 2);
+        foreach (var collider in colliders)
+          if (collider.GetComponent<Food>() is Food f)
+            if (f == _foodTarget.Food)
+            {
+              animal.StopMoving();
+              animal.Eat(_foodTarget.Food);
+              break;
+            }
+
 
         animal.Forget(_foodTarget);
         _foodTarget = null;
