@@ -1,7 +1,7 @@
 ﻿public struct NourishmentSnapshot
 {
-  public int Saturation { get; set; }
-  public int Hydration { get; set; }
+  public int Saturation { get; }
+  public int Hydration { get; }
   public int MaxSaturation { get; }
   public int MaxHydration { get; }
 
