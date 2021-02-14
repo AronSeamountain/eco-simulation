@@ -126,7 +126,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Eat(AbstractFood food)
   {
     movement.Stop();
-    Eat(food.Consume(int.MaxValue)); // Consume food as a whole.
+    Eat(food.Consume(int.MaxValue)); // Consume food as a whole for now.
     _foodEatenListeners?.Invoke(food);
   }
 
