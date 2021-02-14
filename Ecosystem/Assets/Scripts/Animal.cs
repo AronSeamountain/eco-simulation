@@ -117,6 +117,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
     _nourishmentDelegate.Tick();
+    DecreaseHealthIfStarving();
   }
 
   public void DayTick()
