@@ -9,7 +9,7 @@
 
     public void Enter(Plant plant)
     {
-      plant.SetMatureMaterial();
+      plant.ShowAsMature();
     }
 
     public PlantState Execute(Plant plant)

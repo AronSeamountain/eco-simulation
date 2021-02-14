@@ -9,7 +9,7 @@
 
     public void Enter(Plant plant)
     {
-      plant.SetSeedMaterial();
+      plant.ShowAsSeed();
     }
 
     public PlantState Execute(Plant plant)

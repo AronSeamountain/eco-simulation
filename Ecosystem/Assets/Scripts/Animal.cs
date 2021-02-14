@@ -30,7 +30,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
-  public IReadOnlyCollection<Food> KnownFoods => foodManager.KnownFoodLocations;
+  public IReadOnlyCollection<AbstractFood> KnownFoods => foodManager.KnownFoodLocations;
 
   public Water ClosestKnownWater => waterManager.ClosestKnownWater;
 
@@ -114,7 +114,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   ///   provided list.
   /// </summary>
   /// <param name="foods">The list of known foods.</param>
-  private void OnKnownFoodLocationsChanged(IReadOnlyCollection<Food> foods)
+  private void OnKnownFoodLocationsChanged(IReadOnlyCollection<AbstractFood> foods)
   {
     KnowsFoodLocation = foods.Any();
   }
@@ -123,12 +123,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   ///   Eats the provided food (removes its saturation). Removes it.
   /// </summary>
   /// <param name="food">The food to eat.</param>
-  public void Eat(Food food)
+  public void Eat(AbstractFood food)
   {
     movement.Stop();
-    Eat(food.Saturation());
+    Eat(food.Consume(int.MaxValue)); // Consume food as a whole.
     _foodEatenListeners?.Invoke(food);
-    food.Consume();
   }
 
   /// <summary>
@@ -168,5 +167,5 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   ///   Gets invoked when the animal eats a food.
   /// </summary>
   /// <param name="food">The food that was eaten.</param>
-  private delegate void FoodEaten(Food food);
+  private delegate void FoodEaten(AbstractFood food);
 }

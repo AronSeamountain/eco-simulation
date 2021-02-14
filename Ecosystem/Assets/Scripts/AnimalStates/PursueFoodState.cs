@@ -11,7 +11,7 @@ namespace AnimalStates
   /// </summary>
   public sealed class PursueFoodState : IState
   {
-    private Food _foodTarget;
+    private AbstractFood _foodTarget;
     private bool _knownFoodTargetsChanged;
 
     public AnimalState GetStateEnum()
@@ -58,7 +58,7 @@ namespace AnimalStates
     /// </summary>
     /// <param name="animal">The animal.</param>
     /// <returns>The closest food.</returns>
-    private Food GetClosestFood(Animal animal)
+    private AbstractFood GetClosestFood(Animal animal)
     {
       var foods = animal.KnownFoods;
       if (!foods.Any()) return null;
@@ -70,7 +70,7 @@ namespace AnimalStates
     ///   Lets the state know that there is potentially a closer food.
     /// </summary>
     /// <param name="foods">The set of foods the animals knows of.</param>
-    public void OnKnownFoodLocationsChanged(IEnumerable<Food> foods)
+    public void OnKnownFoodLocationsChanged(IEnumerable<AbstractFood> foods)
     {
       _knownFoodTargetsChanged = true;
     }

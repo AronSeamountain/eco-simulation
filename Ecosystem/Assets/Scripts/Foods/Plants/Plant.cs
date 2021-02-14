@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Foods.Plants
 {
-  public sealed class Plant : Food, ITickable
+  public sealed class Plant : AbstractFood, ITickable
   {
     private const int DaysAsSeed = 5;
     private const int GrowthPerDay = 10;
@@ -48,24 +48,26 @@ namespace Foods.Plants
 
     public void DayTick()
     {
-      // TODO: This is NOT final!!!! Should be in the state machine somehow.
       _ageInDays++;
-      if (_ageInDays >= DaysAsSeed) ShouldGrow = true;
 
-      if (ShouldGrow) saturation += GrowthPerDay;
+      if (_ageInDays >= DaysAsSeed)
+        ShouldGrow = true;
+
+      if (ShouldGrow)
+        Saturation += GrowthPerDay;
     }
 
-    public void SetSeedMaterial()
+    public void ShowAsSeed()
     {
       SetXMaterial(seedMaterial);
     }
 
-    public void SetGrowingMaterial()
+    public void ShowAsGrowing()
     {
       SetXMaterial(growingMaterial);
     }
 
-    public void SetMatureMaterial()
+    public void ShowAsMature()
     {
       SetXMaterial(matureMaterial);
     }
@@ -74,6 +76,11 @@ namespace Foods.Plants
     {
       var mesh = GetComponent<MeshRenderer>();
       mesh.material = material;
+    }
+
+    public override bool CanBeEaten()
+    {
+      return _currentState.GetStateEnum() == PlantState.Mature;
     }
   }
 }

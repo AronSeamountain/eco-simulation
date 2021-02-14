@@ -9,12 +9,12 @@
 
     public void Enter(Plant plant)
     {
-      plant.SetGrowingMaterial();
+      plant.ShowAsGrowing();
     }
 
     public PlantState Execute(Plant plant)
     {
-      if (plant.Saturation() >= plant.MaxSaturation) return PlantState.Mature;
+      if (plant.Saturation >= plant.MaxSaturation) return PlantState.Mature;
 
       return PlantState.Grow;
     }

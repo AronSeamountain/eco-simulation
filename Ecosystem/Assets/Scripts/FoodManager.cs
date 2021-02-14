@@ -12,20 +12,20 @@ public sealed class FoodManager : MonoBehaviour
   ///   Gets invoked when the known food locations are changed.
   /// </summary>
   /// <param name="food">A list of all the known food sources.</param>
-  public delegate void KnownFoodLocationsChanged(IReadOnlyCollection<Food> food);
+  public delegate void KnownFoodLocationsChanged(IReadOnlyCollection<AbstractFood> food);
 
   [SerializeField] private VisualDetector visualDetector;
-  private IList<Food> _knownFoodLocations;
+  private IList<AbstractFood> _knownFoodLocations;
   public KnownFoodLocationsChanged KnownFoodLocationsChangedListeners;
-  public IReadOnlyList<Food> KnownFoodLocations => new ReadOnlyCollection<Food>(_knownFoodLocations);
+  public IReadOnlyList<AbstractFood> KnownFoodLocations => new ReadOnlyCollection<AbstractFood>(_knownFoodLocations);
 
   private void Start()
   {
-    _knownFoodLocations = new List<Food>();
+    _knownFoodLocations = new List<AbstractFood>();
     visualDetector.FoodFoundListeners += OnFoodFound;
   }
 
-  private void OnFoodFound(Food food)
+  private void OnFoodFound(AbstractFood food)
   {
     if (_knownFoodLocations.Contains(food)) return;
 
@@ -33,7 +33,7 @@ public sealed class FoodManager : MonoBehaviour
     KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
   }
 
-  public void OnFoodEaten(Food food)
+  public void OnFoodEaten(AbstractFood food)
   {
     if (food == null) return;
 

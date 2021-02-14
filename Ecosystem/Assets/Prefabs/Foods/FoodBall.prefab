@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 3530372250991241418}
   - component: {fileID: 3530372250991241419}
   - component: {fileID: 3530372250991241415}
-  - component: {fileID: 3530372250991241414}
+  - component: {fileID: 7703687100109829034}
   m_Layer: 0
-  m_Name: Food
+  m_Name: FoodBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,7 +111,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3530372250991241414
+--- !u!114 &7703687100109829034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3530372250991241416}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebdd7c77d7249ce4e8676e5a230f206a, type: 3}
+  m_Script: {fileID: 11500000, guid: f6b6f4c60aa94d5e9e495c87d40e11fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  saturation: 50
+  foodType: 0
