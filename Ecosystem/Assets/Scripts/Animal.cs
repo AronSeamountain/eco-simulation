@@ -4,20 +4,31 @@ using System.Linq;
 using AnimalStates;
 using Foods;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
 public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
+  public delegate void ChildSpawned(Animal child);
+
+  /// <summary>
+  ///   The probability in the range [0, 1] whether the animal will give birth.
+  /// </summary>
+  [SerializeField] [Range(0f, 1f)] private float birthProbabilityPerUnit;
+
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
+  [SerializeField] private GameObject childPrefab;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
+  private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
-
+  public ChildSpawned ChildSpawnedListeners;
+  public bool ShouldBirth { get; private set; }
   public bool IsMoving => movement.HasTarget;
 
   /// <summary>
@@ -37,9 +48,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
 
+  public int GetHealth => _healthDelegate.Health;
+
+  public bool IsAlive => GetHealth > 0;
+
   private void Awake()
   {
     _nourishmentDelegate = new NourishmentDelegate();
+    _healthDelegate = new HealthDelegate();
   }
 
   private void Start()
@@ -48,9 +64,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     var pursueFoodState = new PursueFoodState();
     _states = new List<IState>
     {
+      new DeadState(),
       new WanderState(),
+      pursueFoodState,
       new PursueWaterState(),
-      pursueFoodState
+      new BirthState()
     };
     _currentState = GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter(this);
@@ -97,6 +115,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void Tick()
   {
+    ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
     _nourishmentDelegate.Tick();
   }
 
@@ -161,6 +180,22 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Drink(Water water)
   {
     Drink(water.Hydration);
+  }
+
+  public void SpawnChild()
+  {
+    var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
+    ChildSpawnedListeners?.Invoke(child);
+    ShouldBirth = false;
+  }
+
+  /// <summary>
+  ///   Decreases health if animal is starving and dehydrated
+  /// </summary>
+  public void DecreaseHealthIfStarving()
+  {
+    if (GetSaturation() <= 10 && GetHydration() <= 10)
+      _healthDelegate.DecreaseHealth(1);
   }
 
   /// <summary>

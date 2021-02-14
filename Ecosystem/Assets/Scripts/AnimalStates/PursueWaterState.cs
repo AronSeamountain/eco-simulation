@@ -23,7 +23,6 @@ namespace AnimalStates
       _waterTarget = animal.ClosestKnownWater;
       if (_waterTarget == null) return AnimalState.Wander;
 
-
       var reachesWater = Vector3Util.InRange(animal.gameObject, _waterTarget.gameObject, 2);
       if (reachesWater)
       {

@@ -33,7 +33,7 @@ public sealed class Ecosystem : MonoBehaviour
     SpawnAndAddInitialPlants();
 
     foreach (var animal in _animals)
-      _tickListeners += animal.Tick;
+      ObserveAnimal(animal);
 
     foreach (var plant in _plants)
       _dayTickListeners += plant.DayTick;
@@ -47,6 +47,11 @@ public sealed class Ecosystem : MonoBehaviour
   private void Update()
   {
     UpdateTick();
+  }
+
+  private void OnChildSpawned(Animal child)
+  {
+    ObserveAnimal(child);
   }
 
   /// <summary>
@@ -78,6 +83,19 @@ public sealed class Ecosystem : MonoBehaviour
       var instance = Instantiate(prefab, randomPos, Quaternion.identity).GetComponent<T>();
       list.Add(instance);
     }
+  }
+
+  /// <summary>
+  ///   Adds the animal to a list of existing animals. Listens to ChildSpawned events. Adds the animal to the tick events. Does nothing if the animal is null.
+  /// </summary>
+  /// <param name="animal">The animal to observe.</param>
+  private void ObserveAnimal(Animal animal)
+  {
+    if (!animal) return;
+    _animals.Add(animal);
+    _tickListeners += animal.Tick;
+    _dayTickListeners += animal.DayTick;
+    animal.ChildSpawnedListeners += OnChildSpawned;
   }
 
   private void UpdateTick()

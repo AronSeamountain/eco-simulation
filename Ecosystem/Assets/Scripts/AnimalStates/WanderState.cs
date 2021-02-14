@@ -40,13 +40,19 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
+      animal.DecreaseHealthIfStarving();
+
       // Enter pursue water state
       if (animal.KnowsWaterLocation && animal.IsThirsty)
         return AnimalState.PursueWater;
 
-      // Enter pursue food state.
+      // Enter pursue food state
       if (animal.KnowsFoodLocation && animal.IsHungry)
         return AnimalState.PursueFood;
+
+      //Enter dead state
+      if (!animal.IsAlive)
+        return AnimalState.Dead;
 
       var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
       if (shouldMoveToNewPos)

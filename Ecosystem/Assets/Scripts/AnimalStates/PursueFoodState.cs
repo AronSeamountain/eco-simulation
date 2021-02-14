@@ -25,7 +25,10 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
+      animal.DecreaseHealthIfStarving();
+
       if (!animal.IsHungry) return AnimalState.Wander;
+      if (!animal.IsAlive) return AnimalState.Dead;
 
       // A new food source has been found. Change the food target to the closest food.
       if (_knownFoodTargetsChanged)

@@ -4,6 +4,8 @@
   {
     Wander,
     PursueFood,
-    PursueWater
+    PursueWater,
+    Birth,
+    Dead
   }
 }
