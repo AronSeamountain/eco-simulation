@@ -52,7 +52,7 @@ public sealed class VisualDetector : MonoBehaviour
 
   private void OnTriggerEnter(Collider other)
   {
-    if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten() && CanSee(food))
+    if (other.GetComponent<AbstractFood>() is AbstractFood food && CanSee(food) && food.CanBeEaten())
       FoodFoundListeners?.Invoke(food);
 
     if (other.GetComponent<Water>() is Water water && CanSee(water))

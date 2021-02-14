@@ -15,7 +15,6 @@
     public PlantState Execute(Plant plant)
     {
       if (plant.Saturation >= plant.MaxSaturation) return PlantState.Mature;
-
       return PlantState.Grow;
     }
 

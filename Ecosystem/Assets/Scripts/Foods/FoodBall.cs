@@ -11,6 +11,11 @@
       Saturation = 50;
     }
 
+    protected override void FoodFullyConsumed()
+    {
+      Destroy(gameObject);
+    }
+
     public override bool CanBeEaten()
     {
       return Saturation > 0;

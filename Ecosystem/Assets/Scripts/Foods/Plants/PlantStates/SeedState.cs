@@ -10,11 +10,12 @@
     public void Enter(Plant plant)
     {
       plant.ShowAsSeed();
+      plant.Reset();
     }
 
     public PlantState Execute(Plant plant)
     {
-      if (plant.ShouldGrow) return PlantState.Grow;
+      if (plant.LeaveSeedState) return PlantState.Grow;
       return PlantState.Seed;
     }
 

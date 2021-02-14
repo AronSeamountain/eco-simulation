@@ -14,13 +14,21 @@ namespace Foods.Plants
     private int _ageInDays;
     private IGenericState<Plant, PlantState> _currentState;
     private StateMachine<Plant, PlantState> _stateMachine;
+    public bool LeaveSeedState { get; private set; }
 
-    public bool ShouldGrow { get; private set; }
+    /// <summary>
+    ///   Resets the plant (sets its age to zero and removes its saturation).
+    /// </summary>
+    public void Reset()
+    {
+      _ageInDays = 0;
+      Saturation = 0;
+      LeaveSeedState = false;
+    }
 
     private void Start()
     {
       MaxSaturation = 100;
-      Saturation = MaxSaturation;
 
       var states = new List<IGenericState<Plant, PlantState>>
       {
@@ -53,31 +61,35 @@ namespace Foods.Plants
       _ageInDays++;
 
       if (_ageInDays >= DaysAsSeed)
-        ShouldGrow = true;
+        LeaveSeedState = true;
 
-      if (ShouldGrow)
+      if (LeaveSeedState)
         Saturation += SaturationPerDay;
     }
 
     public void ShowAsSeed()
     {
-      SetXMaterial(seedMaterial);
+      SetMaterial(seedMaterial);
     }
 
     public void ShowAsGrowing()
     {
-      SetXMaterial(growingMaterial);
+      SetMaterial(growingMaterial);
     }
 
     public void ShowAsMature()
     {
-      SetXMaterial(matureMaterial);
+      SetMaterial(matureMaterial);
     }
 
-    private void SetXMaterial(Material material)
+    private void SetMaterial(Material material)
     {
       var mesh = GetComponent<MeshRenderer>();
       mesh.material = material;
+    }
+
+    protected override void FoodFullyConsumed()
+    {
     }
 
     public override bool CanBeEaten()

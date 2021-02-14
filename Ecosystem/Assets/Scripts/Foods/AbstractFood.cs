@@ -23,16 +23,28 @@ namespace Foods
     /// <returns>The amount of food point that was eaten.</returns>
     public int Consume(int amount)
     {
+      int consumedFood;
+
       if (Saturation >= amount)
       {
+        // Eat partially
         Saturation -= amount;
-        return amount;
+        consumedFood = amount;
+      }
+      else
+      {
+        // Eat whole food
+        consumedFood = Saturation;
+        Saturation = 0;
       }
 
-      var oldSaturation = Saturation;
-      Saturation = 0;
-      return oldSaturation;
+      if (Saturation <= 0)
+        FoodFullyConsumed();
+
+      return consumedFood;
     }
+
+    protected abstract void FoodFullyConsumed();
 
     public FoodType FoodType()
     {
