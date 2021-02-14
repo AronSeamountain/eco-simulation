@@ -67,7 +67,7 @@ public sealed class Ecosystem : MonoBehaviour
 
   private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list)
   {
-    const float spawnSquareHalfWidth = 10f;
+    const float spawnSquareHalfWidth = 30f;
     for (var i = 0; i < amount; i++)
     {
       var randomPos = new Vector3(
