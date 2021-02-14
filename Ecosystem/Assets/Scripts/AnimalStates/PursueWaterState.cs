@@ -1,8 +1,9 @@
-﻿using Utils;
+﻿using Core;
+using Utils;
 
 namespace AnimalStates
 {
-  public sealed class PursueWaterState : IState
+  public sealed class PursueWaterState : IState<Animal, AnimalState>
   {
     private Water _waterTarget;
 

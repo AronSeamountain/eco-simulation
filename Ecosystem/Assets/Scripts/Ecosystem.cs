@@ -86,7 +86,8 @@ public sealed class Ecosystem : MonoBehaviour
   }
 
   /// <summary>
-  ///   Adds the animal to a list of existing animals. Listens to ChildSpawned events. Adds the animal to the tick events. Does nothing if the animal is null.
+  ///   Adds the animal to a list of existing animals. Listens to ChildSpawned events. Adds the animal to the tick events.
+  ///   Does nothing if the animal is null.
   /// </summary>
   /// <param name="animal">The animal to observe.</param>
   /// <param name="addToList">Whether to add it to the list of animals.</param>

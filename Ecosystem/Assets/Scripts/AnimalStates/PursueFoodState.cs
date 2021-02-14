@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Core;
 using Foods;
 using Utils;
 
@@ -9,7 +10,7 @@ namespace AnimalStates
   ///   An animal state that chases the closest food the animal is aware of. Enters wander state when the animal isn't aware
   ///   of any food sources.
   /// </summary>
-  public sealed class PursueFoodState : IState
+  public sealed class PursueFoodState : IState<Animal, AnimalState>
   {
     private AbstractFood _foodTarget;
     private bool _knownFoodTargetsChanged;

@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 
 namespace AnimalStates
 {
   /// <summary>
   ///   A state for an animal which walks randomly.
   /// </summary>
-  public sealed class WanderState : IState
+  public sealed class WanderState : IState<Animal, AnimalState>
   {
     /// <summary>
     ///   The time to stand still in seconds.
