@@ -33,7 +33,7 @@ public sealed class Ecosystem : MonoBehaviour
     SpawnAndAddInitialPlants();
 
     foreach (var animal in _animals)
-      ObserveAnimal(animal);
+      ObserveAnimal(animal, false);
 
     foreach (var plant in _plants)
       _dayTickListeners += plant.DayTick;
@@ -51,7 +51,7 @@ public sealed class Ecosystem : MonoBehaviour
 
   private void OnChildSpawned(Animal child)
   {
-    ObserveAnimal(child);
+    ObserveAnimal(child, true);
   }
 
   /// <summary>
@@ -89,10 +89,11 @@ public sealed class Ecosystem : MonoBehaviour
   ///   Adds the animal to a list of existing animals. Listens to ChildSpawned events. Adds the animal to the tick events. Does nothing if the animal is null.
   /// </summary>
   /// <param name="animal">The animal to observe.</param>
-  private void ObserveAnimal(Animal animal)
+  /// <param name="addToList">Whether to add it to the list of animals.</param>
+  private void ObserveAnimal(Animal animal, bool addToList)
   {
     if (!animal) return;
-    _animals.Add(animal);
+    if (addToList) _animals.Add(animal);
     _tickListeners += animal.Tick;
     _dayTickListeners += animal.DayTick;
     animal.ChildSpawnedListeners += OnChildSpawned;

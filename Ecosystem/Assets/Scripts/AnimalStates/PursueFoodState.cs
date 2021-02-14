@@ -27,6 +27,7 @@ namespace AnimalStates
     {
       animal.DecreaseHealthIfStarving();
 
+      if (animal.ShouldBirth) return AnimalState.Birth;
       if (!animal.IsHungry) return AnimalState.Wander;
       if (!animal.IsAlive) return AnimalState.Dead;
 
