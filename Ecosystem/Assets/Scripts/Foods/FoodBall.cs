@@ -7,6 +7,7 @@
   {
     private void Start()
     {
+      MaxSaturation = 100;
       Saturation = 50;
     }
 

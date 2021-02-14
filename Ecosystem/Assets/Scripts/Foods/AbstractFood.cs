@@ -5,8 +5,15 @@ namespace Foods
   public abstract class AbstractFood : MonoBehaviour
   {
     [SerializeField] private FoodType foodType;
-    private bool _canBeEaten;
-    public int Saturation { get; protected set; }
+    private int _saturation;
+
+    public int Saturation
+    {
+      get => _saturation;
+      protected set => _saturation = Mathf.Clamp(value, 0, MaxSaturation);
+    }
+
+    public int MaxSaturation { get; protected set; }
 
     /// <summary>
     ///   Attempt to eat amount of the food. Will return the amount of food that could be consumed. For example, if the food

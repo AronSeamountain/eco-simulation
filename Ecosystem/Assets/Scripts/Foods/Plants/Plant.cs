@@ -7,19 +7,21 @@ namespace Foods.Plants
   public sealed class Plant : AbstractFood, ITickable
   {
     private const int DaysAsSeed = 5;
-    private const int GrowthPerDay = 10;
+    private const int SaturationPerDay = 10;
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
     private int _ageInDays;
     private IGenericState<Plant, PlantState> _currentState;
     private StateMachine<Plant, PlantState> _stateMachine;
-    public int MaxSaturation { get; } = 100;
 
     public bool ShouldGrow { get; private set; }
 
     private void Start()
     {
+      MaxSaturation = 100;
+      Saturation = MaxSaturation;
+
       var states = new List<IGenericState<Plant, PlantState>>
       {
         new SeedState(),
@@ -54,7 +56,7 @@ namespace Foods.Plants
         ShouldGrow = true;
 
       if (ShouldGrow)
-        Saturation += GrowthPerDay;
+        Saturation += SaturationPerDay;
     }
 
     public void ShowAsSeed()
