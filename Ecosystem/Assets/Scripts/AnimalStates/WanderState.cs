@@ -41,8 +41,6 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      animal.DecreaseHealthIfStarving();
-
       // Enter pursue water state
       if (animal.KnowsWaterLocation && animal.IsThirsty)
         return AnimalState.PursueWater;
