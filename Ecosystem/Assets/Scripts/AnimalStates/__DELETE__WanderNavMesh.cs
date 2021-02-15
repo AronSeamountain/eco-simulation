@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace AnimalStates
 {
-  public sealed class WanderNavMesh : IState<Animal, AnimalState>
+  public sealed class __DELETE__WanderNavMesh : IState<Animal, AnimalState>
   {
     public AnimalState GetStateEnum()
     {

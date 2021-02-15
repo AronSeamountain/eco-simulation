@@ -1221,8 +1221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bb56c0442b7cbc4bbff18d74c493d11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: -1361830133560282238}
-  movementSpeed: 10
+  agent: {fileID: 5883705690249736861}
 --- !u!114 &4206817655424769507
 MonoBehaviour:
   m_ObjectHideFlags: 0

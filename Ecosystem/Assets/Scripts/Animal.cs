@@ -30,7 +30,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private StateMachine<Animal, AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
-  public bool IsMoving => movement.HasTarget;
+  public bool IsMoving => movement.IsMoving;
 
   /// <summary>
   ///   Whether the animal knows about a food location.
@@ -64,7 +64,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     var states = new List<IState<Animal, AnimalState>>
     {
       new DeadState(),
-      new WanderNavMesh(),
+      new WanderState(),
       pursueFoodState,
       new PursueWaterState(),
       new BirthState()
@@ -156,12 +156,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   }
 
   /// <summary>
-  ///   Moves the Animal
+  ///   Moves the Animal.
   /// </summary>
-  /// <param name="pos">The position to go to</param>
-  public void GoTo(Vector3 pos)
+  /// <param name="destination">The position to go to.</param>
+  public void GoTo(Vector3 destination)
   {
-    movement.Target = pos;
+    movement.GoTo(destination);
   }
 
   public void StopMoving()

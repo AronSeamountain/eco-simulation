@@ -1,5 +1,6 @@
 ﻿using Core;
 using UnityEngine;
+using Utils;
 
 namespace AnimalStates
 {
@@ -23,6 +24,8 @@ namespace AnimalStates
     /// </summary>
     private float _timeIdled;
 
+    private Vector3 _destination;
+
     public AnimalState GetStateEnum()
     {
       return AnimalState.Wander;
@@ -41,28 +44,28 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      // Enter pursue water state
-      if (animal.KnowsWaterLocation && animal.IsThirsty)
-        return AnimalState.PursueWater;
+      //if (!animal.IsAlive) return AnimalState.Dead;
+      //if (animal.KnowsWaterLocation && animal.IsThirsty) return AnimalState.PursueWater;
+      //if (animal.KnowsFoodLocation && animal.IsHungry) return AnimalState.PursueFood;
 
-      // Enter pursue food state
-      if (animal.KnowsFoodLocation && animal.IsHungry)
-        return AnimalState.PursueFood;
+      if (Vector3Util.InRange(animal.transform.position, _destination, 1f))
+        animal.StopMoving();
 
-      //Enter dead state
-      if (!animal.IsAlive)
-        return AnimalState.Dead;
-
-      var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
-      if (shouldMoveToNewPos)
+      if (!animal.IsMoving)
       {
-        GoToClosePoint(animal);
-        UpdateIdleTime();
-        _timeIdled = 0;
-      }
-      else
-      {
-        _timeIdled += Time.deltaTime;
+        var haveIdledSufficiently = _timeIdled >= _idleTime;
+
+        if (haveIdledSufficiently)
+        {
+          GoToClosePoint(animal);
+          UpdateIdleTime();
+          _timeIdled = 0;
+        }
+        else
+        {
+          Debug.Log("idled: " + _timeIdled);
+          _timeIdled += Time.deltaTime;
+        }
       }
 
       return AnimalState.Wander;
@@ -75,7 +78,8 @@ namespace AnimalStates
     private void GoToClosePoint(Animal animal)
     {
       var point = GetRandomClosePoint(animal.transform.position);
-      animal.GoTo(point);
+      _destination = point;
+      animal.GoTo(_destination);
     }
 
     /// <summary>
