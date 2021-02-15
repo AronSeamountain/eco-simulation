@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Core;
 using Foods.Plants.PlantStates;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Foods.Plants
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
     private int _ageInDays;
-    private IGenericState<Plant, PlantState> _currentState;
+    private IState<Plant, PlantState> _currentState;
     private StateMachine<Plant, PlantState> _stateMachine;
     public bool LeaveSeedState { get; private set; }
 
@@ -30,7 +31,7 @@ namespace Foods.Plants
     {
       MaxSaturation = 100;
 
-      var states = new List<IGenericState<Plant, PlantState>>
+      var states = new List<IState<Plant, PlantState>>
       {
         new SeedState(),
         new GrowState(),

@@ -1,6 +1,8 @@
-﻿namespace Foods.Plants.PlantStates
+﻿using Core;
+
+namespace Foods.Plants.PlantStates
 {
-  public sealed class GrowState : IGenericState<Plant, PlantState>
+  public sealed class GrowState : IState<Plant, PlantState>
   {
     public PlantState GetStateEnum()
     {

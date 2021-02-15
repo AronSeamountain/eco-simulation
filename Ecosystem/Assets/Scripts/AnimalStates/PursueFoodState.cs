@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Core;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -10,7 +11,7 @@ namespace AnimalStates
   ///   An animal state that chases the closest food the animal is aware of. Enters wander state when the animal isn't aware
   ///   of any food sources.
   /// </summary>
-  public sealed class PursueFoodState : IState
+  public sealed class PursueFoodState : IState<Animal, AnimalState>
   {
     private FoodManager.FoodMemory _foodTarget;
     private bool _knownFoodTargetsChanged;
@@ -26,6 +27,7 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
+      if (animal.ShouldBirth) return AnimalState.Birth;
       if (!animal.IsHungry) return AnimalState.Wander;
       if (!animal.IsAlive) return AnimalState.Dead;
 
