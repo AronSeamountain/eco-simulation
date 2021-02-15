@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 
 namespace AnimalStates
 {
-  public sealed class DeadState : IState
+  public sealed class DeadState : IState<Animal, AnimalState>
   {
     public AnimalState GetStateEnum()
     {

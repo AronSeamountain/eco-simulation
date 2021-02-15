@@ -1,6 +1,8 @@
-﻿namespace AnimalStates
+﻿using Core;
+
+namespace AnimalStates
 {
-  public sealed class BirthState : IState
+  public sealed class BirthState : IState<Animal, AnimalState>
   {
     public AnimalState GetStateEnum()
     {
