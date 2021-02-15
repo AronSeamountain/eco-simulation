@@ -12,8 +12,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
   public delegate void ChildSpawned(Animal child);
 
-  private const int Health = 100;
-
   /// <summary>
   ///   The probability in the range [0, 1] whether the animal will give birth.
   /// </summary>
@@ -23,15 +21,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
-  private IState<Animal, AnimalState> _currentState;
   [SerializeField] private EntityStatsDisplay entityStatsDisplay;
+  private IState<Animal, AnimalState> _currentState;
   private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
   private StateMachine<Animal, AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
-
   public bool ShouldBirth { get; private set; }
-
   public bool IsMoving => movement.HasTarget;
 
   /// <summary>
@@ -44,7 +40,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
-  public IReadOnlyCollection<FoodManager.FoodMemory> KnownFoods => foodManager.KnownFoodMemories;
+  public IEnumerable<FoodManager.FoodMemory> KnownFoods => foodManager.KnownFoodMemories;
 
   public Water ClosestKnownWater => waterManager.ClosestKnownWater;
   public bool IsHungry => _nourishmentDelegate.IsHungry;
