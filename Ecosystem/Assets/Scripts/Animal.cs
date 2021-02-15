@@ -4,6 +4,7 @@ using AnimalStates;
 using Core;
 using Foods;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 ///   A very basic animal that searches for food.
@@ -17,6 +18,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// </summary>
   [SerializeField] [Range(0f, 1f)] private float birthProbabilityPerUnit;
 
+  [SerializeField] private NavMeshAgent agent;
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
@@ -62,7 +64,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     var states = new List<IState<Animal, AnimalState>>
     {
       new DeadState(),
-      new WanderState(),
+      new WanderNavMesh(),
       pursueFoodState,
       new PursueWaterState(),
       new BirthState()
@@ -191,5 +193,10 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Forget(FoodManager.FoodMemory memory)
   {
     foodManager.Forget(memory);
+  }
+
+  public void SetDestination(Vector3 destination)
+  {
+    agent.SetDestination(destination);
   }
 }

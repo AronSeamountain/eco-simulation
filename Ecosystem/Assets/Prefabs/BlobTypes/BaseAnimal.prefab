@@ -1103,6 +1103,7 @@ GameObject:
   - component: {fileID: 4206817655424769507}
   - component: {fileID: 9054329623236228661}
   - component: {fileID: -7191508722750619209}
+  - component: {fileID: 5883705690249736861}
   m_Layer: 0
   m_Name: BaseAnimal
   m_TagString: Untagged
@@ -1235,6 +1236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   birthProbabilityPerUnit: 0
+  agent: {fileID: 5883705690249736861}
   movement: {fileID: 7836581106720980516}
   foodManager: {fileID: 9054329623236228661}
   waterManager: {fileID: -7191508722750619209}
@@ -1266,6 +1268,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualDetector: {fileID: 3254812618266142070}
+--- !u!195 &5883705690249736861
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908545354356688046}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &5140020598105999105
 GameObject:
   m_ObjectHideFlags: 0
