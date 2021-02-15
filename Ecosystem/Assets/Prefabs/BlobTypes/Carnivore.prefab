@@ -1,5 +1,24 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &8261543688819276837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8672377695379901830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 809eae12739d8384f8e02f6c459f7b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  birthProbabilityPerUnit: 0
+  movement: {fileID: 0}
+  foodManager: {fileID: 0}
+  waterManager: {fileID: 0}
+  childPrefab: {fileID: 8672377695379901830, guid: 85ba19cd4fe588c41a63c69561385f30,
+    type: 3}
+  entityStatsDisplay: {fileID: 0}
 --- !u!1001 &4342840507159857448
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15,6 +34,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442009499382370392, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442009499382370392, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702750967655962463, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702750967655962463, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2943484383253803422, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
@@ -53,9 +92,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4206817655424769507, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4206817655424769507, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
       propertyPath: childPrefab
       value: 
       objectReference: {fileID: 8672377695379901830}
+    - target: {fileID: 4497746730459369214, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497746730459369214, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4865815848461791069, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
       propertyPath: m_Mesh
@@ -71,7 +125,8 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4206817655424769507, guid: bf200501b32dda54c93cca32e5f22aba, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: bf200501b32dda54c93cca32e5f22aba, type: 3}
 --- !u!1 &8672377695379901830 stripped
 GameObject:
