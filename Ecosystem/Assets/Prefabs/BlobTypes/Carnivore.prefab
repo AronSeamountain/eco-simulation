@@ -51,6 +51,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4206817655424769507, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: childPrefab
+      value: 
+      objectReference: {fileID: 8672377695379901830}
     - target: {fileID: 4865815848461791069, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
       propertyPath: m_Mesh
@@ -68,3 +73,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf200501b32dda54c93cca32e5f22aba, type: 3}
+--- !u!1 &8672377695379901830 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4908545354356688046, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 4342840507159857448}
+  m_PrefabAsset: {fileID: 0}
