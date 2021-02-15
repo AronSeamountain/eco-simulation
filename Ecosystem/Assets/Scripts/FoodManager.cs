@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Foods;
 using System.Linq;
+using Foods;
 using UnityEngine;
 
 /// <summary>
@@ -56,6 +56,12 @@ public sealed class FoodManager : MonoBehaviour, ITickable
     KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
   }
 
+  public void Forget(FoodMemory memory)
+  {
+    _knownFoodMemories.Remove(memory);
+    KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
+  }
+
   public class FoodMemory : ITickable
   {
     public readonly AbstractFood Food;
@@ -80,11 +86,5 @@ public sealed class FoodManager : MonoBehaviour, ITickable
     public void DayTick()
     {
     }
-  }
-
-  public void Forget(FoodMemory memory)
-  {
-    _knownFoodMemories.Remove(memory);
-    KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
   }
 }

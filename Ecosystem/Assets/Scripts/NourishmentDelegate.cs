@@ -65,12 +65,12 @@ public sealed class NourishmentDelegate : ITickable
     Invoker();
   }
 
+  public void DayTick()
+  {
+  }
+
   private void Invoker()
   {
     NourishmentChangedListeners?.Invoke(new NourishmentSnapshot(Saturation, Hydration, MaxSaturation, MaxHydration));
-  }
-
-  public void DayTick()
-  {
   }
 }
