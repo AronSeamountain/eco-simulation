@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
+public class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
   public delegate void ChildSpawned(Animal child);
 
@@ -17,15 +17,16 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// </summary>
   [SerializeField] [Range(0f, 1f)] private float birthProbabilityPerUnit;
 
-  [SerializeField] private GoToMovement movement;
-  [SerializeField] private FoodManager foodManager;
-  [SerializeField] private WaterManager waterManager;
-  [SerializeField] private GameObject childPrefab;
-  [SerializeField] private EntityStatsDisplay entityStatsDisplay;
-  private IState<Animal, AnimalState> _currentState;
-  private HealthDelegate _healthDelegate;
-  private NourishmentDelegate _nourishmentDelegate;
-  private StateMachine<Animal, AnimalState> _stateMachine;
+  [SerializeField] protected GoToMovement movement;
+  [SerializeField] protected FoodManager foodManager;
+  [SerializeField] protected WaterManager waterManager;
+  [SerializeField] protected GameObject childPrefab;
+  [SerializeField] protected EntityStatsDisplay entityStatsDisplay;
+
+  protected IState<Animal, AnimalState> _currentState;
+  protected HealthDelegate _healthDelegate;
+  protected NourishmentDelegate _nourishmentDelegate;
+  protected StateMachine<Animal, AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
   public bool IsMoving => movement.HasTarget;
@@ -48,7 +49,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private int Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
 
-  private void Awake()
+  protected virtual void Awake()
   {
     ShowStats(false);
     _nourishmentDelegate = new NourishmentDelegate();
@@ -124,12 +125,17 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
   }
 
+  protected int GetHealth()
+  {
+    return _healthDelegate.Health;
+  }
+
   public void ShowStats(bool show)
   {
     entityStatsDisplay.ShowStats = show;
   }
 
-  private void OnWaterLocationChanged(Water water)
+  public void OnWaterLocationChanged(Water water)
   {
     KnowsWaterLocation = water != null;
   }
@@ -139,7 +145,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   ///   provided list.
   /// </summary>
   /// <param name="foods">The list of known foods.</param>
-  private void OnKnownFoodLocationsChanged(IReadOnlyCollection<FoodManager.FoodMemory> foods)
+  public void OnKnownFoodLocationsChanged(IReadOnlyCollection<FoodManager.FoodMemory> foods)
   {
     KnowsFoodLocation = foods.Any();
   }
