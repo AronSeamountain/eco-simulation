@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
+using Foods;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -44,7 +45,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
-  public IReadOnlyCollection<FoodManager.FoodMemory> KnownFoods => foodManager.KnownFoodLocations;
+  public IReadOnlyCollection<FoodManager.FoodMemory> KnownFoods => foodManager.KnownFoodMemories;
 
   public Water ClosestKnownWater => waterManager.ClosestKnownWater;
 
@@ -78,8 +79,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     _currentState.Enter(this);
 
     // Listen to food events
-    foodManager.KnownFoodLocationsChangedListeners += OnKnownFoodLocationsChanged;
-    foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
+    foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
+    foodManager.KnownFoodMemoriesChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
 
     _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
     _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
@@ -126,6 +127,10 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     DecreaseHealthIfStarving();
   }
 
+  public void DayTick()
+  {
+  }
+
   public void ShowStats(bool show)
   {
     entityStatsDisplay.ShowStats = show;
@@ -147,13 +152,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   }
 
   /// <summary>
-  ///   Eats the provided food (removes its saturation). Removes it.
+  ///   Eats the provided food.
   /// </summary>
   /// <param name="food">The food to eat.</param>
-  public void Eat(Food food)
+  public void Eat(AbstractFood food)
   {
-    Eat(food.Saturation);
-    food.Consume();
+    Eat(food.Consume(int.MaxValue));
   }
 
   /// <summary>

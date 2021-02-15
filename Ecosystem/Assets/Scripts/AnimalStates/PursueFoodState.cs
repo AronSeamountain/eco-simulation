@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Foods;
 using UnityEngine;
 using Utils;
 
@@ -44,14 +45,13 @@ namespace AnimalStates
       {
         var colliders = Physics.OverlapSphere(animal.transform.position, 2);
         foreach (var collider in colliders)
-          if (collider.GetComponent<Food>() is Food f)
+          if (collider.GetComponent<AbstractFood>() is AbstractFood f)
             if (f == _foodTarget.Food)
             {
               animal.StopMoving();
               animal.Eat(_foodTarget.Food);
               break;
             }
-
 
         animal.Forget(_foodTarget);
         _foodTarget = null;

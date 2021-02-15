@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using Utils;
+﻿using Utils;
 
 namespace AnimalStates
 {
@@ -20,11 +19,9 @@ namespace AnimalStates
     {
       if (!animal.IsThirsty) return AnimalState.Wander;
       if (!animal.KnowsWaterLocation) return AnimalState.Wander;
-      if (!animal.IsAlive) return AnimalState.Dead;
 
       _waterTarget = animal.ClosestKnownWater;
       if (_waterTarget == null) return AnimalState.Wander;
-
 
       var reachesWater = Vector3Util.InRange(animal.gameObject, _waterTarget.gameObject, 2);
       if (reachesWater)
@@ -41,7 +38,6 @@ namespace AnimalStates
 
     public void Exit(Animal animal)
     {
-      Debug.Log("EXIT PURSUE WATER");
     }
   }
 }

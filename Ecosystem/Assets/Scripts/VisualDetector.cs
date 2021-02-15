@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Foods;
+using UnityEngine;
 
 /// <summary>
 ///   Scans for food and calls a delegate when food is found.
@@ -9,7 +10,7 @@ public sealed class VisualDetector : MonoBehaviour
   ///   Gets invoked when a food is found.
   /// </summary>
   /// <param name="food">The found that was just found.</param>
-  public delegate void FoodFound(Food food);
+  public delegate void FoodFound(AbstractFood food);
 
   /// <summary>
   ///   Gets invoked when water is found.
@@ -51,7 +52,7 @@ public sealed class VisualDetector : MonoBehaviour
 
   private void OnTriggerEnter(Collider other)
   {
-    if (other.GetComponent<Food>() is Food food && CanSee(food))
+    if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten() && CanSee(food))
       FoodFoundListeners?.Invoke(food);
 
     if (other.GetComponent<Water>() is Water water && CanSee(water))

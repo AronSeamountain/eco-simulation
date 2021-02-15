@@ -28,8 +28,8 @@ public sealed class NourishmentDelegate : ITickable
   {
     Saturation = 25;
     Hydration = 25;
-    MaxHydration = 50;
-    MaxSaturation = 50;
+    MaxHydration = 100;
+    MaxSaturation = 100;
   }
 
   public int Saturation
@@ -54,9 +54,8 @@ public sealed class NourishmentDelegate : ITickable
 
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
-  public int MaxHydration { get; }
-  public int MaxSaturation { get; }
-
+  private int MaxHydration { get; }
+  private int MaxSaturation { get; }
 
   public void Tick()
   {
@@ -66,7 +65,11 @@ public sealed class NourishmentDelegate : ITickable
     Invoker();
   }
 
-  public void Invoker()
+  public void DayTick()
+  {
+  }
+
+  private void Invoker()
   {
     NourishmentChangedListeners?.Invoke(new NourishmentSnapshot(Saturation, Hydration, MaxSaturation, MaxHydration));
   }
