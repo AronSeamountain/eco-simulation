@@ -6,13 +6,13 @@ using UnityEngine.InputSystem;
 public sealed class NavMeshDemoController : MonoBehaviour
 {
   [SerializeField] private NavMeshAgent agent;
-  [SerializeField] private Camera camera;
+  [SerializeField] private Camera cam;
 
   private void Update()
   {
     var mousePos = Mouse.current.position.ReadValue();
 
-    var ray = camera.ScreenPointToRay(mousePos);
+    var ray = cam.ScreenPointToRay(mousePos);
 
     if (Physics.Raycast(ray, out var hit))
     {
