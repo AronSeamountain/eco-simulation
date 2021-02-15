@@ -12,17 +12,17 @@ public sealed class FoodManager : MonoBehaviour, ITickable
   /// <summary>
   ///   Gets invoked when the known food locations are changed.
   /// </summary>
-  /// <param name="food">A list of all the known food sources.</param>
-  public delegate void KnownFoodLocationsChanged(IReadOnlyCollection<AbstractFood> food);
+  /// <param name="foodMemories">A list of all the known food sources.</param>
+  public delegate void KnownFoodMemoriesChanged(IReadOnlyCollection<FoodMemory> foodMemories);
 
   [SerializeField] private VisualDetector visualDetector;
-  private IList<AbstractFood> _knownFoodLocations;
-  public KnownFoodLocationsChanged KnownFoodLocationsChangedListeners;
-  public IReadOnlyList<AbstractFood> KnownFoodLocations => new ReadOnlyCollection<AbstractFood>(_knownFoodLocations);
+  private IList<FoodMemory> _knownFoodMemories;
+  public KnownFoodMemoriesChanged KnownFoodMemoriesChangedListeners;
+  public IReadOnlyList<FoodMemory> KnownFoodMemories => new ReadOnlyCollection<FoodMemory>(_knownFoodMemories);
 
   private void Start()
   {
-    _knownFoodLocations = new List<AbstractFood>();
+    _knownFoodMemories = new List<FoodMemory>();
     visualDetector.FoodFoundListeners += OnFoodFound;
   }
 
@@ -33,10 +33,13 @@ public sealed class FoodManager : MonoBehaviour, ITickable
     var size = _knownFoodMemories.Count;
     _knownFoodMemories = _knownFoodMemories.Where(memory => !memory.Forgotten).ToList();
     if (size != _knownFoodMemories.Count)
-      KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
+      KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
   }
 
-  private void OnFoodFound(Food food)
+  public void DayTick()
+  {
+  }
+
   private void OnFoodFound(AbstractFood food)
   {
     var alreadyKnowsFood = false;
@@ -50,23 +53,17 @@ public sealed class FoodManager : MonoBehaviour, ITickable
     if (!alreadyKnowsFood)
       _knownFoodMemories.Add(new FoodMemory(food, food.transform.position));
 
-    KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
-  }
-
-  public void OnFoodEaten(AbstractFood food)
-  {
-    _knownFoodMemories.Remove(memory);
-    KnownFoodLocationsChangedListeners?.Invoke(KnownFoodLocations);
+    KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
   }
 
   public class FoodMemory : ITickable
   {
-    public readonly Food Food;
+    public readonly AbstractFood Food;
     private int _timeToForget;
     public bool Forgotten;
     public Vector3 Position;
 
-    public FoodMemory(Food food, Vector3 position)
+    public FoodMemory(AbstractFood food, Vector3 position)
     {
       Food = food;
       Position = position;
@@ -79,5 +76,15 @@ public sealed class FoodManager : MonoBehaviour, ITickable
       if (_timeToForget > 0) _timeToForget -= 1;
       else Forgotten = true;
     }
+
+    public void DayTick()
+    {
+    }
+  }
+
+  public void Forget(FoodMemory memory)
+  {
+    _knownFoodMemories.Remove(memory);
+    KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
   }
 }
