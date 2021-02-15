@@ -1,5 +1,6 @@
 ﻿using Core;
 using UnityEngine;
+using UnityEngine.AI;
 using Utils;
 
 namespace AnimalStates
@@ -14,6 +15,8 @@ namespace AnimalStates
     /// </summary>
     private const float MaxIdle = 4f;
 
+    private Vector3 _destination;
+
     /// <summary>
     ///   The time the animal should stand still.
     /// </summary>
@@ -23,8 +26,6 @@ namespace AnimalStates
     ///   The time the animal has stood still.
     /// </summary>
     private float _timeIdled;
-
-    private Vector3 _destination;
 
     public AnimalState GetStateEnum()
     {
@@ -90,7 +91,16 @@ namespace AnimalStates
     private Vector3 GetRandomClosePoint(Vector3 origin)
     {
       const int radius = 10;
-      return origin + new Vector3(Random.Range(-radius, radius), 0, Random.Range(-radius, radius));
+
+      var randomDirection = origin + Random.insideUnitSphere * radius;
+      var finalPosition = Vector3.zero;
+
+      if (NavMesh.SamplePosition(randomDirection, out var hit, radius, 1))
+        finalPosition = hit.position;
+
+      // TODO: I believe there is a SLIGHT chance that it may not find a point. How to handle this?
+      Debug.Assert(finalPosition != Vector3.zero);
+      return finalPosition;
     }
 
     /// <summary>
