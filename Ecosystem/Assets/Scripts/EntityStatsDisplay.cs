@@ -1,15 +1,14 @@
-﻿using UnityEngine;
+﻿using AnimalStates;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class EntityStatsDisplay : MonoBehaviour
 {
   [SerializeField] private Slider hydrationSlider;
   [SerializeField] private Slider saturationSlider;
-
-  /// <summary>
-  ///   Health bar not used at the moment.
-  /// </summary>
   [SerializeField] private Slider healthBar;
+
+  [SerializeField] private Text text;
 
   private bool _showStats;
 
@@ -41,5 +40,12 @@ public class EntityStatsDisplay : MonoBehaviour
     saturationSlider.gameObject.SetActive(show);
     hydrationSlider.gameObject.SetActive(show);
     healthBar.gameObject.SetActive(show);
+    text.gameObject.SetActive(show);
+  }
+
+  public void OnStateChanged(string state, Color color)
+  {
+    text.text = state;
+    text.color = color;
   }
 }

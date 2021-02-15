@@ -192,4 +192,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     foodManager.Forget(memory);
   }
+
+  public void DisplayState(string state, Color color)
+  {
+    entityStatsDisplay.OnStateChanged(state, color);
+  }
 }
