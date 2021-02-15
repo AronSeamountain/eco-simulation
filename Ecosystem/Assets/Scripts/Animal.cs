@@ -12,6 +12,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
   public delegate void ChildSpawned(Animal child);
 
+  private const int Health = 100;
+
   /// <summary>
   ///   The probability in the range [0, 1] whether the animal will give birth.
   /// </summary>
@@ -21,13 +23,16 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
+  [SerializeField] private EntityStatsDisplay entityStatsDisplay;
   private IState _currentState;
   private FoodEaten _foodEatenListeners;
   private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
   private IList<IState> _states;
   public ChildSpawned ChildSpawnedListeners;
+
   public bool ShouldBirth { get; private set; }
+
   public bool IsMoving => movement.HasTarget;
 
   /// <summary>
@@ -53,6 +58,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   private void Awake()
   {
+    ShowStats(false);
     _nourishmentDelegate = new NourishmentDelegate();
     _healthDelegate = new HealthDelegate();
   }
@@ -77,6 +83,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     foodManager.KnownFoodLocationsChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
     _foodEatenListeners += foodManager.OnFoodEaten;
 
+    _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
+    _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }
@@ -99,7 +107,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void Drink(int hydration)
   {
-    _nourishmentDelegate.Hydration += Mathf.Clamp(hydration, 0, int.MaxValue);
+    _nourishmentDelegate.Hydration += hydration;
   }
 
   public int GetSaturation()
@@ -109,13 +117,19 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void Eat(int saturation)
   {
-    _nourishmentDelegate.Saturation += Mathf.Clamp(saturation, 0, int.MaxValue);
+    _nourishmentDelegate.Saturation += saturation;
   }
 
   public void Tick()
   {
     ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
     _nourishmentDelegate.Tick();
+    DecreaseHealthIfStarving();
+  }
+
+  public void ShowStats(bool show)
+  {
+    entityStatsDisplay.ShowStats = show;
   }
 
   private void OnWaterLocationChanged(Water water)
@@ -188,7 +202,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// <summary>
   ///   Decreases health if animal is starving and dehydrated
   /// </summary>
-  public void DecreaseHealthIfStarving()
+  private void DecreaseHealthIfStarving()
   {
     if (GetSaturation() <= 10 && GetHydration() <= 10)
       _healthDelegate.DecreaseHealth(1);
