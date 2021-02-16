@@ -15,17 +15,21 @@ public sealed class EntityManager : MonoBehaviour
   [SerializeField] private int initialPlants = 4;
   [SerializeField] private GameObject animalPrefab;
   [SerializeField] private GameObject plantPrefab;
+  [SerializeField] private Transform spawnLocation;
   private IList<Animal> _animals;
   private int _days;
   private DayTick _dayTickListeners;
   private DataLogger _logger;
   private IList<Plant> _plants;
+  private Vector3 _spawnLocationVector3;
   private Tick _tickListeners;
   private float _unitsPassed;
   private float _unitTicker;
 
   private void Start()
   {
+    _spawnLocationVector3 = spawnLocation.position;
+
     // Lists
     _animals = new List<Animal>();
     SpawnAndAddInitialAnimals();
@@ -75,12 +79,13 @@ public sealed class EntityManager : MonoBehaviour
     const float spawnSquareHalfWidth = 30f;
     for (var i = 0; i < amount; i++)
     {
-      var randomPos = new Vector3(
+      var offset = new Vector3(
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
         1.5f,
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
       );
-      var instance = Instantiate(prefab, randomPos, Quaternion.identity).GetComponent<T>();
+      var pos = _spawnLocationVector3 + offset;
+      var instance = Instantiate(prefab, pos, Quaternion.identity).GetComponent<T>();
       list.Add(instance);
     }
   }
