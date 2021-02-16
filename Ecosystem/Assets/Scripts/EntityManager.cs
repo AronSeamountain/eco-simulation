@@ -3,7 +3,7 @@ using Foods.Plants;
 using Logger;
 using UnityEngine;
 
-public sealed class Ecosystem : MonoBehaviour
+public sealed class EntityManager : MonoBehaviour
 {
   /// <summary>
   ///   The amount of time that a "unit" is in.
