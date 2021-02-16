@@ -22,6 +22,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
   [SerializeField] private EntityStatsDisplay entityStatsDisplay;
+  private double _speedModifier;
+  private double _sizeModifier;
   private IState<Animal, AnimalState> _currentState;
   private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
@@ -35,7 +37,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   /// </summary>
   public bool KnowsFoodLocation { get; private set; }
 
+  /// <summary>
+  ///   Whether the animal knows about a water location.
+  /// </summary>
   public bool KnowsWaterLocation { get; private set; }
+
+  public double SpeedModifier { get; private set; }
+
+  public double SizeModifier { get; private set; }
 
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
