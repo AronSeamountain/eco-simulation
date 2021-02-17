@@ -3,7 +3,7 @@ using Foods.Plants;
 using Logger;
 using UnityEngine;
 
-public sealed class Ecosystem : MonoBehaviour
+public sealed class Ecosystem : MonoBehaviour 
 {
   /// <summary>
   ///   The amount of time that a "unit" is in.
@@ -15,7 +15,7 @@ public sealed class Ecosystem : MonoBehaviour
   [SerializeField] private int initialPlants = 4;
   [SerializeField] private GameObject animalPrefab;
   [SerializeField] private GameObject plantPrefab;
-  private IList<Animal> _animals;
+  private IList<AbstractAnimal> _animals;
   private int _days;
   private DayTick _dayTickListeners;
   private DataLogger _logger;
@@ -27,7 +27,7 @@ public sealed class Ecosystem : MonoBehaviour
   private void Start()
   {
     // Lists
-    _animals = new List<Animal>();
+    _animals = new List<AbstractAnimal>();
     SpawnAndAddInitialAnimals();
     _plants = new List<Plant>();
     SpawnAndAddInitialPlants();
@@ -49,7 +49,7 @@ public sealed class Ecosystem : MonoBehaviour
     UpdateTick();
   }
 
-  private void OnChildSpawned(Animal child)
+  private void OnChildSpawned(AbstractAnimal child)
   {
     ObserveAnimal(child, true);
   }
@@ -91,7 +91,7 @@ public sealed class Ecosystem : MonoBehaviour
   /// </summary>
   /// <param name="animal">The animal to observe.</param>
   /// <param name="addToList">Whether to add it to the list of animals.</param>
-  private void ObserveAnimal(Animal animal, bool addToList)
+  private void ObserveAnimal(AbstractAnimal animal, bool addToList)
   {
     if (!animal) return;
     if (addToList) _animals.Add(animal);

@@ -6,6 +6,7 @@
     PursueFood,
     PursueWater,
     Birth,
-    Dead
+    Dead,
+    Hunt
   }
 }

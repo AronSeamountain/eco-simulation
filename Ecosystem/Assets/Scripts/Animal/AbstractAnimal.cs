@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Animal;
 using AnimalStates;
 using Core;
 using Foods;
@@ -8,9 +9,10 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
+public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
-  public delegate void ChildSpawned(Animal child);
+  public delegate void ChildSpawned(AbstractAnimal child);
+  
 
   /// <summary>
   ///   The probability in the range [0, 1] whether the animal will give birth.
@@ -23,11 +25,12 @@ public class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] protected GameObject childPrefab;
   [SerializeField] protected EntityStatsDisplay entityStatsDisplay;
 
-  protected IState<Animal, AnimalState> _currentState;
-  protected HealthDelegate _healthDelegate;
-  protected NourishmentDelegate _nourishmentDelegate;
-  protected StateMachine<Animal, AnimalState> _stateMachine;
+  private INewState<AnimalState> _currentState;
+  private HealthDelegate _healthDelegate;
+  private NourishmentDelegate _nourishmentDelegate;
+  private NewStateMachine<AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
+  private const int Size = 25;
   public bool ShouldBirth { get; private set; }
   public bool IsMoving => movement.HasTarget;
 
@@ -48,6 +51,10 @@ public class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
   private int Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
+  /// <summary>
+  /// Bool CanBeEaten is used in VisualDetector
+  /// </summary>
+  public bool CanBeEaten => Size < CarnivoreScript.Size; 
 
   protected virtual void Awake()
   {
@@ -59,18 +66,11 @@ public class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private void Start()
   {
     // Setup states
-    var pursueFoodState = new PursueFoodState();
-    var states = new List<IState<Animal, AnimalState>>
-    {
-      new DeadState(),
-      new WanderState(),
-      pursueFoodState,
-      new PursueWaterState(),
-      new BirthState()
-    };
-    _stateMachine = new StateMachine<Animal, AnimalState>(states);
+    var pursueFoodState = new PursueFoodState(this); // todo: samma referens ska vara i listan av states
+    var states = GetStates();
+    _stateMachine = new NewStateMachine<AnimalState>(states);
     _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);
-    _currentState.Enter(this);
+    _currentState.Enter();
 
     // Listen to food events
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
@@ -78,18 +78,21 @@ public class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
     _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
     _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
+    
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }
 
+  protected abstract List<INewState<AnimalState>> GetStates();
+
   private void Update()
   {
-    var newState = _currentState.Execute(this);
+    var newState = _currentState.Execute();
     if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
     {
-      _currentState.Exit(this);
+      _currentState.Exit();
       _currentState = _stateMachine.GetCorrelatingState(newState);
-      _currentState.Enter(this);
+      _currentState.Enter();
     }
   }
 
@@ -180,7 +183,7 @@ public class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void SpawnChild()
   {
-    var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
+    var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
     ChildSpawnedListeners?.Invoke(child);
     ShouldBirth = false;
   }
@@ -198,4 +201,6 @@ public class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     foodManager.Forget(memory);
   }
+  
+ 
 }

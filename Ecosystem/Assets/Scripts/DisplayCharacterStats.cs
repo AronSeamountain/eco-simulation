@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class DisplayCharacterStats : MonoBehaviour
+public class DisplayCharacterStats: MonoBehaviour
 {
   [SerializeField] private Camera mainCamera;
   private CameraControls _controls;
-  private Animal _target;
+  private AbstractAnimal _target;
 
   private void Awake()
   {
@@ -42,7 +42,7 @@ public class DisplayCharacterStats : MonoBehaviour
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
     if (Physics.Raycast(ray, out hitTarget))
-      if (hitTarget.transform.GetComponent<Animal>() is Animal animal)
+      if (hitTarget.transform.GetComponent<AbstractAnimal>() is AbstractAnimal animal)
       {
         if (_target) OnCancelTarget(_);
         animal.ShowStats(true);
