@@ -150,10 +150,6 @@ public sealed class CameraController : MonoBehaviour
     {
       if (selectableLayers.Contains(hitTarget.collider.gameObject.layer))
         Target = hitTarget.transform;
-      else
-      {
-        Debug.Log("kolliderade med ett dåligt lager");
-      }
     }
   }
 

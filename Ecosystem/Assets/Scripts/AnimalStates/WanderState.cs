@@ -96,7 +96,7 @@ namespace AnimalStates
         finalPosition = hit.position;
 
       // TODO: I believe there is a SLIGHT chance that it may not find a point. How to handle this?
-      Debug.Assert(finalPosition != Vector3.zero);
+      Debug.Assert(finalPosition != Vector3.zero, "Attempted to go outside the nav mesh.");
       return finalPosition;
     }
 

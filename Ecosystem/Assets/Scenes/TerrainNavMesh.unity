@@ -193,6 +193,11 @@ PrefabInstance:
       propertyPath: spawnLocation
       value: 
       objectReference: {fileID: 2051351378}
+    - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
+        type: 3}
+      propertyPath: initialAnimals
+      value: 300
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1159ec73a46948a438b1b74cc111085c, type: 3}
 --- !u!1 &894464764
