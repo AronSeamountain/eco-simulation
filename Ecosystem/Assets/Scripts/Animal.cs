@@ -29,7 +29,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private StateMachine<Animal, AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
-  public bool isFertile { get; private set; }
+  public bool Fertile { get; private set; }
+  private const int fertilityTime = 5;
+  private int timeUntilFertile = fertilityTime;
   public bool IsMoving => movement.HasTarget;
 
   private Gender _gender;
@@ -111,20 +113,20 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     if (random > 0.5)
     {
       _gender = Gender.Male;
-      isFertile = false;
+      Fertile = false;
       cubeRenderer.material.SetColor("_Color", Color.cyan);
     }
     else
     {
       _gender = Gender.Female;
-      isFertile = true;
+      Fertile = false;
       cubeRenderer.material.SetColor("_Color", Color.magenta);
     }
   }
 
   private void OnMateFound(Animal animal)
   {
-    if (animal.GetGender() != _gender)
+    if (animal.GetGender() != _gender && animal.Fertile)
     {
       _mateTarget = animal;
     }
@@ -157,6 +159,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Tick()
   {
     ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
+
+    if (!Fertile) timeUntilFertile--;
+
+    if (timeUntilFertile <= 0)
+    {
+      Fertile = true;
+    }
+    
     _nourishmentDelegate.Tick();
     foodManager.Tick();
     DecreaseHealthIfStarving();
@@ -216,9 +226,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void SpawnChild()
   {
+   
     var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
     ChildSpawnedListeners?.Invoke(child);
+    
+    timeUntilFertile = fertilityTime;
+    Fertile = false;
     ShouldBirth = false;
+    
   }
 
   /// <summary>

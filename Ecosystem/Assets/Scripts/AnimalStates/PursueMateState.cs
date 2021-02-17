@@ -23,6 +23,11 @@ namespace AnimalStates
 
       var mateTarget = animal.GetMateTarget();
       if (mateTarget == null) return AnimalState.Wander;
+      if (!mateTarget.Fertile) 
+      {
+        animal.ClearMateTarget();
+        return AnimalState.Wander;
+      }
       
       var reachesMate = Vector3Util.InRange(animal.gameObject, mateTarget.gameObject, 2);
       if (reachesMate)
@@ -30,6 +35,7 @@ namespace AnimalStates
         Debug.Log("Reached Mate");
         mateTarget.ProduceChild(animal);
         animal.ClearMateTarget();
+        return AnimalState.Wander;
       }
       else
       {
