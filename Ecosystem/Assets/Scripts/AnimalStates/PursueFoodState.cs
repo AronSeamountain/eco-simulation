@@ -23,7 +23,7 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
-      animal.DisplayState(GetStateEnum().ToString(), Color.green);
+      animal.DisplayState();
     }
 
     public AnimalState Execute(Animal animal)

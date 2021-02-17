@@ -43,9 +43,26 @@ public class EntityStatsDisplay : MonoBehaviour
     text.gameObject.SetActive(show);
   }
 
-  public void OnStateChanged(string state, Color color)
+  public void OnStateChanged(AnimalState state)
   {
-    text.text = state;
-    text.color = color;
+    text.text = state.ToString();
+    switch (state)
+    {
+      case AnimalState.Birth:
+        text.color = Color.magenta;
+        break;
+      case AnimalState.PursueFood:
+        text.color = Color.green;
+        break;
+      case AnimalState.PursueWater:
+        text.color = Color.blue;
+        break;
+      case AnimalState.Dead:
+        text.color = Color.red;
+        break;
+      default:
+        text.color = Color.black;
+        break;
+    }
   }
 }

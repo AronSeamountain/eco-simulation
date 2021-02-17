@@ -12,7 +12,7 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
-      animal.DisplayState(GetStateEnum().ToString(), Color.red);
+      animal.DisplayState();
       FallOver(animal);
     }
 

@@ -30,7 +30,7 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
-      animal.DisplayState(GetStateEnum().ToString(), Color.black);
+      animal.DisplayState();
       GoToClosePoint(animal);
       UpdateIdleTime();
     }
