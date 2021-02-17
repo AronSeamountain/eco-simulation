@@ -23,6 +23,7 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
+      animal.DisplayState();
     }
 
     public AnimalState Execute(Animal animal)

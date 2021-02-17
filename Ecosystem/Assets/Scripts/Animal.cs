@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
+public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStatable
 {
   public delegate void ChildSpawned(Animal child);
 
@@ -112,6 +112,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     _nourishmentDelegate.Saturation += saturation;
   }
 
+  public void Stats(bool value)
+  {
+    Debug.Log("ANIMALS STATS INTERFACE");
+    ShowStats(value);
+  }
+
   public void Tick()
   {
     ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
@@ -191,5 +197,10 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Forget(FoodManager.FoodMemory memory)
   {
     foodManager.Forget(memory);
+  }
+
+  public void DisplayState()
+  {
+    entityStatsDisplay.OnStateChanged(_currentState.GetStateEnum());
   }
 }

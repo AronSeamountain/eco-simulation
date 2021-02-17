@@ -1,4 +1,5 @@
 ﻿using Core;
+using UnityEngine;
 using Utils;
 
 namespace AnimalStates
@@ -14,6 +15,7 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
+      animal.DisplayState();
     }
 
     public AnimalState Execute(Animal animal)
