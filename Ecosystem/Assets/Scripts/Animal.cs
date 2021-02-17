@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
+public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStatable
 {
   public delegate void ChildSpawned(Animal child);
 
@@ -196,5 +196,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void DisplayState(string state, Color color)
   {
     entityStatsDisplay.OnStateChanged(state, color);
+  }
+
+  public void Stats(bool value)
+  {
+    Debug.Log("ANIMALS STATS INTERFACE");
+    ShowStats(value);
   }
 }

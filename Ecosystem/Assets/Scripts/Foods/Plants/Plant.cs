@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Foods.Plants
 {
-  public sealed class Plant : AbstractFood, ITickable
+  public sealed class Plant : AbstractFood, ITickable, IStatable
   {
     private const int DaysAsSeed = 5;
     private const int SaturationPerDay = 10;
@@ -96,6 +96,11 @@ namespace Foods.Plants
     public override bool CanBeEaten()
     {
       return _currentState.GetStateEnum() == PlantState.Mature;
+    }
+
+    public void Stats(bool value)
+    {
+      Debug.Log("Saturation: " + Saturation + " and age in days: " + _ageInDays);
     }
   }
 }

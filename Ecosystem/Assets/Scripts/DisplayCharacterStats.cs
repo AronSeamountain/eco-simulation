@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class DisplayCharacterStats : MonoBehaviour
@@ -6,6 +7,7 @@ public class DisplayCharacterStats : MonoBehaviour
   [SerializeField] private Camera mainCamera;
   private CameraControls _controls;
   private Animal _target;
+  private IStatable _targetIS;
 
   private void Awake()
   {
@@ -28,8 +30,8 @@ public class DisplayCharacterStats : MonoBehaviour
 
   private void OnCancelTarget(InputAction.CallbackContext obj)
   {
-    if (_target) _target.ShowStats(false);
-    _target = null;
+    if (_targetIS != null) _targetIS.Stats(false);
+    _targetIS = null;
   }
 
   /// <summary>
@@ -42,12 +44,16 @@ public class DisplayCharacterStats : MonoBehaviour
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
     if (Physics.Raycast(ray, out hitTarget))
-      if (hitTarget.transform.GetComponent<Animal>() is Animal animal)
-      {
-        if (_target) OnCancelTarget(_);
-        animal.ShowStats(true);
-        _target = animal;
-      }
+    {
+      var interfaces = hitTarget.collider.gameObject.GetComponents<MonoBehaviour>();
+      foreach (var mb in interfaces)
+        if (mb is IStatable)
+        {
+          if (_targetIS != null) OnCancelTarget(_);
+          _targetIS = mb as IStatable;
+          _targetIS.Stats(true);
+        }
+    }
   }
 
   private Vector2 GetMousePos()
