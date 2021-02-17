@@ -30,6 +30,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public bool ShouldBirth { get; private set; }
   public bool IsMoving => movement.HasTarget;
 
+  private Gender _gender;
+
   /// <summary>
   ///   Whether the animal knows about a food location.
   /// </summary>
@@ -57,6 +59,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   private void Start()
   {
+
+    GenerateGender();
     // Setup states
     var pursueFoodState = new PursueFoodState();
     var states = new List<IState<Animal, AnimalState>>
@@ -92,6 +96,21 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     }
   }
 
+  private void GenerateGender()
+  {
+    var random = Random.Range(0f, 1f);
+    var cubeRenderer = gameObject.GetComponent<Renderer>();
+    if (random > 0.5)
+    {
+      _gender = Gender.Male;
+      cubeRenderer.material.SetColor("_Color", Color.cyan);
+    }
+    else
+    {
+      _gender = Gender.Female;
+      cubeRenderer.material.SetColor("_Color", Color.red);
+    }
+  }
   public int GetHydration()
   {
     return _nourishmentDelegate.Hydration;
