@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using Core;
+using DefaultNamespace;
 using Foods;
 using UnityEngine;
 using UnityEngine.UI;
@@ -118,9 +119,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   {
     Debug.Log("ANIMALS STATS INTERFACE");
     //ShowStats(value);
-    var text = new GameObject();
+    /*var text = new GameObject();
     text.transform.SetParent(canvas.transform, false);
-    text.transform.localPosition = Vector3.zero;
+    text.transform.localPosition = Vector3.zero + new Vector3(0, -5, 0);
     
     var myText = text.AddComponent<Text>();
     myText.text = "swag";
@@ -129,9 +130,19 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
     myText.alignment = TextAnchor.UpperCenter;
     RectTransform rt = text.GetComponent<RectTransform>();
-    rt.sizeDelta = new Vector2(15, 10);
+    rt.sizeDelta = new Vector2(15, 10);*/
+
+    var text1 = new StatContainer("text", 5f, Color.magenta);
+    var text2 = new StatContainer("text", 5f, Color.blue);
+    var slider1 = new StatContainer("slider", 10f, Color.green);
+    var SCList = new List<StatContainer>();
+    SCList.Add(text1);
+    SCList.Add(text2);
+    SCList.Add(slider1);
     
-    Debug.Log("is active: " + text.activeSelf + " and position: " + text.transform.position);
+    var card = new Card(SCList, canvas);
+    card.DrawCard(canvas);
+    //Debug.Log("is active: " + text.activeSelf + " and position: " + text.transform.position);
   }
 
   public void Tick()
