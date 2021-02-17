@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class MatingManager: MonoBehaviour
 {
@@ -15,6 +15,9 @@ public class MatingManager: MonoBehaviour
   private void OnAnimalFound(Animal animal)
   {
     if (animal == null) return;
+
+    if (animal.GetGender() == Gender.Male) return;
+    
     MateListeners.Invoke(animal);
   }
 }

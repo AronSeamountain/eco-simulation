@@ -68,7 +68,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
 
     GenerateGender();
-    matingManager.MateListeners += OnMateFound;
+    if (_gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+    
     
     // Setup states
     var pursueFoodState = new PursueFoodState();
