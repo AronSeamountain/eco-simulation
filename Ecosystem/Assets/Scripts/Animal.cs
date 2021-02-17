@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using Core;
 using Foods;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 ///   A very basic animal that searches for food.
@@ -22,8 +24,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
   [SerializeField] private EntityStatsDisplay entityStatsDisplay;
-  private double _speedModifier;
-  private double _sizeModifier;
+  private float _speedModifier;
+  private float _sizeModifier;
   private IState<Animal, AnimalState> _currentState;
   private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
@@ -41,10 +43,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   ///   Whether the animal knows about a water location.
   /// </summary>
   public bool KnowsWaterLocation { get; private set; }
-
-  public double SpeedModifier { get; private set; }
-
-  public double SizeModifier { get; private set; }
 
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
@@ -88,6 +86,23 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
+
+    //setup speed and size variables for nourishment modifiers
+    const float rangeMin = (float) 0.8;
+    const float rangeMax = (float) 1.2;
+    _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+    _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+
+    float decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
+
+    _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
+    _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
+    _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
+
+    //setup speed modifier
+    movement.SpeedFactor = _speedModifier;
+    //setup size modification
+    transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
   }
 
   private void Update()
@@ -101,7 +116,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     }
   }
 
-  public int GetHydration()
+  public float GetHydration()
   {
     return _nourishmentDelegate.Hydration;
   }
@@ -111,7 +126,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     _nourishmentDelegate.Hydration += hydration;
   }
 
-  public int GetSaturation()
+  public float GetSaturation()
   {
     return _nourishmentDelegate.Saturation;
   }

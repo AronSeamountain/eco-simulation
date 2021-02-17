@@ -1,11 +1,11 @@
 ﻿public struct NourishmentSnapshot
 {
-  public int Saturation { get; }
-  public int Hydration { get; }
-  public int MaxSaturation { get; }
-  public int MaxHydration { get; }
+  public float Saturation { get; }
+  public float Hydration { get; }
+  public float MaxSaturation { get; }
+  public float MaxHydration { get; }
 
-  public NourishmentSnapshot(int saturation, int hydration, int maxSaturation, int maxHydration)
+  public NourishmentSnapshot(float saturation, float hydration, float maxSaturation, float maxHydration)
   {
     Saturation = saturation;
     Hydration = hydration;

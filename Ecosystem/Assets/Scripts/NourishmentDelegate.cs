@@ -1,6 +1,3 @@
-using System;
-using System.Drawing;
-using UnityEditor.Experimental;
 using UnityEngine;
 
 /// <summary>
@@ -13,34 +10,20 @@ public sealed class NourishmentDelegate : ITickable
   /// <summary>
   ///   The value for which the animal is considered hungry.
   /// </summary>
-  private const int HungrySaturationLevel = 50;
+  private const float HungrySaturationLevel = 50;
 
   /// <summary>
   ///   The value for which the animal is considered thirsty.
   /// </summary>
-  private const int ThirstyHydrationLevel = 50;
+  private const float ThirstyHydrationLevel = 50;
 
-  private int _saturationDecreasePerUnit = 1;
-  private int _hydrationDecreasePerUnit = 1;
+  public float HydrationDecreasePerUnit { get; set; } = 1;
 
-  public void setMoving(bool isMoving, double size)
-  {
-    if (isMoving)
-    {
-      var newDecrease = Convert.ToInt32(Math.Pow(size, 3.0));
-      _saturationDecreasePerUnit = newDecrease;
-      _hydrationDecreasePerUnit  = newDecrease;
-    }
-    else
-    {
-      var newDecrease = Convert.ToInt32(Math.Pow(size, (0.75)));
-      _saturationDecreasePerUnit = newDecrease;
-      _hydrationDecreasePerUnit  = newDecrease;
-    }
-  }
 
-  private int _hydration;
-  private int _saturation;
+  public float SaturationDecreasePerUnit { get; set; } = 1;
+
+  private float _hydration;
+  private float _saturation;
 
   public NourishmentChanged NourishmentChangedListeners;
 
@@ -52,7 +35,13 @@ public sealed class NourishmentDelegate : ITickable
     MaxSaturation = 100;
   }
 
-  public int Saturation
+  public void SetMaxNourishment(float maxValue)
+  {
+    MaxHydration = maxValue;
+    MaxSaturation = maxValue;
+  }
+
+  public float Saturation
   {
     get => _saturation;
     set
@@ -62,7 +51,7 @@ public sealed class NourishmentDelegate : ITickable
     }
   }
 
-  public int Hydration
+  public float Hydration
   {
     get => _hydration;
     set
@@ -74,13 +63,13 @@ public sealed class NourishmentDelegate : ITickable
 
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
-  private int MaxHydration { get; }
-  private int MaxSaturation { get; }
+  private float MaxHydration { get; set; }
+  private float MaxSaturation { get; set; }
 
   public void Tick()
   {
-    Saturation -= _saturationDecreasePerUnit;
-    Hydration -= _hydrationDecreasePerUnit;
+    Saturation -= SaturationDecreasePerUnit;
+    Hydration -= HydrationDecreasePerUnit;
 
     Invoker();
   }
