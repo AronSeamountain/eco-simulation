@@ -4,6 +4,7 @@ using AnimalStates;
 using Core;
 using Foods;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 ///   A very basic animal that searches for food.
@@ -22,6 +23,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
   [SerializeField] private EntityStatsDisplay entityStatsDisplay;
+  [SerializeField] private GameObject canvas;
   private IState<Animal, AnimalState> _currentState;
   private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
@@ -115,7 +117,21 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   public void Stats(bool value)
   {
     Debug.Log("ANIMALS STATS INTERFACE");
-    ShowStats(value);
+    //ShowStats(value);
+    var text = new GameObject();
+    text.transform.SetParent(canvas.transform, false);
+    text.transform.localPosition = Vector3.zero;
+    
+    var myText = text.AddComponent<Text>();
+    myText.text = "swag";
+    myText.color = Color.magenta;
+    myText.fontSize = 1;
+    myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+    myText.alignment = TextAnchor.UpperCenter;
+    RectTransform rt = text.GetComponent<RectTransform>();
+    rt.sizeDelta = new Vector2(15, 10);
+    
+    Debug.Log("is active: " + text.activeSelf + " and position: " + text.transform.position);
   }
 
   public void Tick()
