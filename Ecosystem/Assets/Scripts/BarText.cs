@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class BarText : MonoBehaviour
@@ -18,6 +17,6 @@ public class BarText : MonoBehaviour
 
   private void ValueChanged(float value)
   {
-    _text.text = string.Format(valueText + "/" + GetComponentInParent<Slider>().maxValue*100, value*100);
+    _text.text = string.Format(valueText + "/" + GetComponentInParent<Slider>().maxValue * 100, value * 100);
   }
 }

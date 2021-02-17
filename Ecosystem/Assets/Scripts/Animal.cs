@@ -112,6 +112,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     _nourishmentDelegate.Saturation += saturation;
   }
 
+  public void Stats(bool value)
+  {
+    Debug.Log("ANIMALS STATS INTERFACE");
+    ShowStats(value);
+  }
+
   public void Tick()
   {
     ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
@@ -196,11 +202,5 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   public void DisplayState(string state, Color color)
   {
     entityStatsDisplay.OnStateChanged(state, color);
-  }
-
-  public void Stats(bool value)
-  {
-    Debug.Log("ANIMALS STATS INTERFACE");
-    ShowStats(value);
   }
 }

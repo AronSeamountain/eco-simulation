@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class DisplayCharacterStats : MonoBehaviour
@@ -30,7 +29,7 @@ public class DisplayCharacterStats : MonoBehaviour
 
   private void OnCancelTarget(InputAction.CallbackContext obj)
   {
-    if (_targetIS != null) _targetIS.Stats(false);
+    _targetIS?.Stats(false);
     _targetIS = null;
   }
 
@@ -40,17 +39,16 @@ public class DisplayCharacterStats : MonoBehaviour
   /// <param name="_"></param>
   private void ClickedChar(InputAction.CallbackContext _)
   {
-    RaycastHit hitTarget;
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
-    if (Physics.Raycast(ray, out hitTarget))
+    if (Physics.Raycast(ray, out var hitTarget))
     {
       var interfaces = hitTarget.collider.gameObject.GetComponents<MonoBehaviour>();
       foreach (var mb in interfaces)
-        if (mb is IStatable)
+        if (mb is IStatable statable)
         {
           if (_targetIS != null) OnCancelTarget(_);
-          _targetIS = mb as IStatable;
+          _targetIS = statable;
           _targetIS.Stats(true);
         }
     }

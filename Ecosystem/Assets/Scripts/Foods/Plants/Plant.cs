@@ -12,6 +12,7 @@ namespace Foods.Plants
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
+    [SerializeField] private EntityStatsDisplay entityStatsDisplay;
     private int _ageInDays;
     private IState<Plant, PlantState> _currentState;
     private StateMachine<Plant, PlantState> _stateMachine;
@@ -51,6 +52,11 @@ namespace Foods.Plants
         _currentState = _stateMachine.GetCorrelatingState(nextState);
         _currentState.Enter(this);
       }
+    }
+
+    public void Stats(bool value)
+    {
+      Debug.Log("Saturation: " + Saturation + " and age in days: " + _ageInDays);
     }
 
     public void Tick()
@@ -96,11 +102,6 @@ namespace Foods.Plants
     public override bool CanBeEaten()
     {
       return _currentState.GetStateEnum() == PlantState.Mature;
-    }
-
-    public void Stats(bool value)
-    {
-      Debug.Log("Saturation: " + Saturation + " and age in days: " + _ageInDays);
     }
   }
 }
