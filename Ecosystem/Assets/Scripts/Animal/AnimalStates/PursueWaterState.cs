@@ -1,13 +1,12 @@
 ﻿using Animal;
-using Core;
 using Utils;
 
 namespace AnimalStates
 {
-  public sealed class PursueWaterState: INewState<AnimalState>
+  public sealed class PursueWaterState : INewState<AnimalState>
   {
+    private readonly AbstractAnimal _animal;
     private Water _waterTarget;
-    private AbstractAnimal _animal;
 
     public PursueWaterState(AbstractAnimal animal)
     {

@@ -1,11 +1,10 @@
 ﻿using Animal;
-using Core;
 
 namespace AnimalStates
 {
   public sealed class BirthState : INewState<AnimalState>
   {
-    private AbstractAnimal _animal;
+    private readonly AbstractAnimal _animal;
 
     public BirthState(AbstractAnimal animal)
     {

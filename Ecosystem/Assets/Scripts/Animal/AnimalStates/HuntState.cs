@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Animal;
-using Core;
 using UnityEngine;
 using Utils;
 
@@ -11,11 +10,11 @@ namespace AnimalStates
   ///   An animal state that chases the closest food the animal is aware of. Enters wander state when the animal isn't aware
   ///   of any food sources.
   /// </summary>
-  public sealed class HuntState : INewState<AnimalState> 
+  public sealed class HuntState : INewState<AnimalState>
   {
+    private readonly CarnivoreScript _carnivore;
     private bool _knownPreyTargetsChanged;
     private PreyManager.PreyMemory _preyTarget;
-    private CarnivoreScript _carnivore;
 
     public HuntState(CarnivoreScript carnivore)
     {
@@ -53,14 +52,15 @@ namespace AnimalStates
       {
         var colliders = Physics.OverlapSphere(_carnivore.transform.position, 2);
         foreach (var collider in colliders)
-          if (collider.GetComponent<HerbivoreScript>() is HerbivoreScript prey) 
+          if (collider.GetComponent<HerbivoreScript>() is HerbivoreScript prey)
             if (prey == _preyTarget.Animal)
             {
               _carnivore.StopMoving();
               //_carnivore.Eat(_preyTarget.Animal); 
               break;
             }
-        _carnivore.Forget(_preyTarget); 
+
+        _carnivore.Forget(_preyTarget);
         _preyTarget = null;
       }
 
@@ -77,7 +77,7 @@ namespace AnimalStates
     /// <param name="carnivore">The carnivore.</param>
     /// <returns>The closest food.</returns>
     private PreyManager.PreyMemory GetClosestFood(CarnivoreScript carnivore)
-    { 
+    {
       var preys = carnivore.KnownPrey;
       return preys.OrderBy(prey => Vector3Util.Distance(carnivore.transform.position, prey.Position)).First();
     }

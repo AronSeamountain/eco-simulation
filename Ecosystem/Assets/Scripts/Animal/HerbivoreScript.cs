@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Animal;
 using AnimalStates;
-using Core;
-using UnityEngine;
 
-
-public sealed class HerbivoreScript: AbstractAnimal
+public sealed class HerbivoreScript : AbstractAnimal
 {
   protected override List<INewState<AnimalState>> GetStates()
   {
@@ -19,5 +15,4 @@ public sealed class HerbivoreScript: AbstractAnimal
       new PursueFoodState(this)
     };
   }
-  
 }

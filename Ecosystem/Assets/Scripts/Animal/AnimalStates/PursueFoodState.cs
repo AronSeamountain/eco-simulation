@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Animal;
-using Core;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -14,9 +13,9 @@ namespace AnimalStates
   /// </summary>
   public sealed class PursueFoodState : INewState<AnimalState>
   {
+    private readonly AbstractAnimal _animal;
     private FoodManager.FoodMemory _foodTarget;
     private bool _knownFoodTargetsChanged;
-    private AbstractAnimal _animal;
 
     public PursueFoodState(AbstractAnimal animal)
     {

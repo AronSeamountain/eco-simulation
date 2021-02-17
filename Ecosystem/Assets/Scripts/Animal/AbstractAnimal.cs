@@ -12,7 +12,9 @@ using UnityEngine;
 public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 {
   public delegate void ChildSpawned(AbstractAnimal child);
-  
+
+  private const int Size = 25;
+
 
   /// <summary>
   ///   The probability in the range [0, 1] whether the animal will give birth.
@@ -30,7 +32,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   private NourishmentDelegate _nourishmentDelegate;
   private NewStateMachine<AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
-  private const int Size = 25;
   public bool ShouldBirth { get; private set; }
   public bool IsMoving => movement.HasTarget;
 
@@ -51,10 +52,11 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
   private int Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
+
   /// <summary>
-  /// Bool CanBeEaten is used in VisualDetector
+  ///   Bool CanBeEaten is used in VisualDetector
   /// </summary>
-  public bool CanBeEaten => Size < CarnivoreScript.Size; 
+  public bool CanBeEaten => Size < Size;
 
   protected virtual void Awake()
   {
@@ -78,12 +80,10 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
     _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
     _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
-    
+
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }
-
-  protected abstract List<INewState<AnimalState>> GetStates();
 
   private void Update()
   {
@@ -127,6 +127,8 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   public void DayTick()
   {
   }
+
+  protected abstract List<INewState<AnimalState>> GetStates();
 
   protected int GetHealth()
   {
@@ -201,6 +203,4 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   {
     foodManager.Forget(memory);
   }
-  
- 
 }

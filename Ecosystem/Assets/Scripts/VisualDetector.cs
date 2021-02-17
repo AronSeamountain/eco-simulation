@@ -11,9 +11,9 @@ public sealed class VisualDetector : MonoBehaviour
   /// </summary>
   /// <param name="food">The found that was just found.</param>
   public delegate void FoodFound(AbstractFood food);
-  
+
   /// <summary>
-  /// Gets invoked when a carnivore finds an animal to eat
+  ///   Gets invoked when a carnivore finds an animal to eat
   /// </summary>
   /// <param name="food"></param>
   public delegate void PreyFound(HerbivoreScript animal);
@@ -28,8 +28,8 @@ public sealed class VisualDetector : MonoBehaviour
   private int _distance;
   private int _radius;
   public FoodFound FoodFoundListeners;
-  public WaterFound WaterFoundListeners;
   public PreyFound PreyFoundListeners;
+  public WaterFound WaterFoundListeners;
 
   private int Distance
   {

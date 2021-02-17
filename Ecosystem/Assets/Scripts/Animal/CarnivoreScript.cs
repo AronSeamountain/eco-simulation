@@ -2,25 +2,23 @@
 using System.Linq;
 using Animal;
 using AnimalStates;
-using Core;
 using UnityEngine;
 
 public sealed class CarnivoreScript : AbstractAnimal
 {
   [SerializeField] private PreyManager preyManager;
-  
+
   /// <summary>
   ///   Whether the animal knows about a food location.
   /// </summary>
   public bool KnowsPreyLocation { get; private set; }
-  
+
   /// <summary>
   ///   Returns a collection of the foods that the animal is aware of.
   /// </summary>
 
   public IEnumerable<PreyManager.PreyMemory> KnownPrey => preyManager.KnownPreyMemories;
 
-  
 
   /// <summary>
   ///   Gets called when the list of known foods are changed. Sets the KnownFoodLocation to true if there is any foods in the

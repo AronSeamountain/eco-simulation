@@ -1,21 +1,20 @@
 ﻿using Animal;
-using Core;
 using UnityEngine;
 
 namespace AnimalStates
 {
   public sealed class DeadState : INewState<AnimalState>
   {
-    private AbstractAnimal _animal;
-
-    public AnimalState GetStateEnum()
-    {
-      return AnimalState.Dead;
-    }
+    private readonly AbstractAnimal _animal;
 
     public DeadState(AbstractAnimal animal)
     {
       _animal = animal;
+    }
+
+    public AnimalState GetStateEnum()
+    {
+      return AnimalState.Dead;
     }
 
     public void Enter()

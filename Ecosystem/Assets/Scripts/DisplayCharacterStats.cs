@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class DisplayCharacterStats: MonoBehaviour
+public class DisplayCharacterStats : MonoBehaviour
 {
   [SerializeField] private Camera mainCamera;
   private CameraControls _controls;

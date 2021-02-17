@@ -2,7 +2,7 @@
 
 namespace Animal
 {
-  public interface INewState<TEnum> where TEnum : Enum 
+  public interface INewState<TEnum> where TEnum : Enum
   {
     /// <summary>
     ///   Gets enum correlating to the state.

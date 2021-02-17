@@ -1,5 +1,4 @@
 ﻿using Animal;
-using Core;
 using UnityEngine;
 
 namespace AnimalStates
@@ -9,17 +8,12 @@ namespace AnimalStates
   /// </summary>
   public sealed class WanderState : INewState<AnimalState>
   {
-    private AbstractAnimal _animal;
-
-    public WanderState(AbstractAnimal animal)
-    {
-      _animal = animal;
-    }
-
     /// <summary>
     ///   The time to stand still in seconds.
     /// </summary>
     private const float MaxIdle = 4f;
+
+    private readonly AbstractAnimal _animal;
 
     /// <summary>
     ///   The time the animal should stand still.
@@ -30,6 +24,11 @@ namespace AnimalStates
     ///   The time the animal has stood still.
     /// </summary>
     private float _timeIdled;
+
+    public WanderState(AbstractAnimal animal)
+    {
+      _animal = animal;
+    }
 
     public AnimalState GetStateEnum()
     {
