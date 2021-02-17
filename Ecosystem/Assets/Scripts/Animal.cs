@@ -29,10 +29,12 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private StateMachine<Animal, AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
+  public bool isFertile { get; private set; }
   public bool IsMoving => movement.HasTarget;
 
   private Gender _gender;
   private Animal _mateTarget;
+  
 
   /// <summary>
   ///   Whether the animal knows about a food location.
@@ -109,12 +111,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     if (random > 0.5)
     {
       _gender = Gender.Male;
+      isFertile = false;
       cubeRenderer.material.SetColor("_Color", Color.cyan);
     }
     else
     {
       _gender = Gender.Female;
-      cubeRenderer.material.SetColor("_Color", Color.red);
+      isFertile = true;
+      cubeRenderer.material.SetColor("_Color", Color.magenta);
     }
   }
 
@@ -239,5 +243,10 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public Animal GetMateTarget()
   {
     return _mateTarget;
+  }
+
+  public void ProduceChild(Animal father)
+  {
+    ShouldBirth = true;
   }
 }

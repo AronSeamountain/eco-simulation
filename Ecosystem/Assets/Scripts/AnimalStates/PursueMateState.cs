@@ -28,6 +28,7 @@ namespace AnimalStates
       if (reachesMate)
       {
         Debug.Log("Reached Mate");
+        mateTarget.ProduceChild(animal);
         animal.ClearMateTarget();
       }
       else
