@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2145551233028917335}
   - component: {fileID: 6489230935868571991}
   - component: {fileID: 3762960656060468135}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sphere (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 9164101030897492896}
   - component: {fileID: 4865815848461791069}
   - component: {fileID: 3254812618266142070}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: DetectionArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1103,7 +1103,7 @@ GameObject:
   - component: {fileID: 9054329623236228661}
   - component: {fileID: -7191508722750619209}
   - component: {fileID: 5883705690249736861}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BaseAnimal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1279,7 +1279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7186414436251405066}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EyesPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1314,7 +1314,7 @@ GameObject:
   - component: {fileID: 342419744750402508}
   - component: {fileID: 8621766971246724858}
   - component: {fileID: 6970263910047628081}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1442,7 +1442,7 @@ GameObject:
   - component: {fileID: 4980913776242481273}
   - component: {fileID: 3759372946895396764}
   - component: {fileID: 5681442469478140897}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1640,10 +1640,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: SaturationBar
       objectReference: {fileID: 0}
+    - target: {fileID: 1614070849303720730, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1649382987820205948, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_Pivot.x
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2658700237682912240, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
@@ -1659,6 +1669,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872443028476214353, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840144992530209223, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7576209141342034356, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
@@ -1822,10 +1842,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: HealthBar
       objectReference: {fileID: 0}
+    - target: {fileID: 1614070849303720730, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1649382987820205948, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_Pivot.x
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2658700237682912240, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
@@ -1841,6 +1871,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872443028476214353, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840144992530209223, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7576209141342034356, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
@@ -2004,10 +2044,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: HydrationBar
       objectReference: {fileID: 0}
+    - target: {fileID: 1614070849303720730, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1649382987820205948, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_Pivot.x
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2658700237682912240, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
@@ -2023,6 +2073,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2872443028476214353, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840144992530209223, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7576209141342034356, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}

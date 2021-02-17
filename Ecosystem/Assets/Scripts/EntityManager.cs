@@ -2,6 +2,8 @@
 using Foods.Plants;
 using Logger;
 using UnityEngine;
+using UnityEngine.AI;
+using Utils;
 
 public sealed class EntityManager : MonoBehaviour
 {
@@ -74,18 +76,31 @@ public sealed class EntityManager : MonoBehaviour
     SpawnAndAddGeneric(initialPlants, plantPrefab, _plants);
   }
 
-  private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list)
+  private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list) where T : MonoBehaviour
   {
     const float spawnSquareHalfWidth = 30f;
     for (var i = 0; i < amount; i++)
     {
       var offset = new Vector3(
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
-        1.5f,
+        100,
         Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
       );
-      var pos = _spawnLocationVector3 + offset;
-      var instance = Instantiate(prefab, pos, Quaternion.identity).GetComponent<T>();
+
+      var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
+
+      if (instance.TryGetComponent(out NavMeshAgent agent))
+      {
+        var coord = NavMeshUtil.GetRandomLocation();
+        var successfulWarp = agent.Warp(coord);
+        Debug.Assert(successfulWarp, "Could not warp entity to nav mesh.");
+      }
+      else
+      {
+        var pos = _spawnLocationVector3 + offset;
+        instance.transform.position = pos;
+      }
+
       list.Add(instance);
     }
   }

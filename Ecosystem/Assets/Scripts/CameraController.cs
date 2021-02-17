@@ -1,17 +1,20 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Experimental.TerrainAPI;
 using UnityEngine.InputSystem;
+using Utils;
 
 public sealed class CameraController : MonoBehaviour
 {
   /// <summary>
   ///   The distance in the x-z plane to the target
   /// </summary>
-  private const int DistanceBehind = 5;
+  private const int DistanceBehind = 20;
 
   /// <summary>
   ///   The height we want the camera to be above the target
   /// </summary>
-  private const int DistanceOver = 5;
+  private const int DistanceOver = 10;
 
   private const int RotationSpeed = 10;
   private const int ViewSpeed = 10;
@@ -25,6 +28,7 @@ public sealed class CameraController : MonoBehaviour
   private bool _rotate;
   private Transform _target;
   private int FreeMovementSpeed => _moveFast ? FreeMovementFastSpeed : FreeMovementStandardSpeed;
+  [SerializeField] private LayerMask selectableLayers;
 
   private Transform Target
   {
@@ -140,11 +144,17 @@ public sealed class CameraController : MonoBehaviour
 
   private void OnSelect(InputAction.CallbackContext _)
   {
-    RaycastHit hitTarget;
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
-    if (Physics.Raycast(ray, out hitTarget))
-      Target = hitTarget.transform;
+    if (Physics.Raycast(ray, out var hitTarget))
+    {
+      if (selectableLayers.Contains(hitTarget.collider.gameObject.layer))
+        Target = hitTarget.transform;
+      else
+      {
+        Debug.Log("kolliderade med ett dåligt lager");
+      }
+    }
   }
 
   private Vector2 GetMousePos()

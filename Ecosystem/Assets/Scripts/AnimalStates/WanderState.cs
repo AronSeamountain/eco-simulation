@@ -63,10 +63,7 @@ namespace AnimalStates
           _timeIdled = 0;
         }
         else
-        {
-          Debug.Log("idled: " + _timeIdled);
           _timeIdled += Time.deltaTime;
-        }
       }
 
       return AnimalState.Wander;
