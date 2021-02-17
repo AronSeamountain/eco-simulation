@@ -63,7 +63,6 @@ public sealed class VisualDetector : MonoBehaviour
 
     if (other.GetComponent<Animal>() is Animal animal && CanSee(animal)  && WantToMate(animal))
     {
-      Debug.Log("I can see you");
       AnimalFoundListeners.Invoke(animal);
     }
   }

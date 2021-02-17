@@ -32,6 +32,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public bool IsMoving => movement.HasTarget;
 
   private Gender _gender;
+  private Animal _mateTarget;
 
   /// <summary>
   ///   Whether the animal knows about a food location.
@@ -51,6 +52,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private int Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
 
+  
   private void Awake()
   {
     ShowStats(false);
@@ -72,7 +74,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
       new WanderState(),
       pursueFoodState,
       new PursueWaterState(),
-      new BirthState()
+      new BirthState(),
+      new PursueMateState()
     };
     _stateMachine = new StateMachine<Animal, AnimalState>(states);
     _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);
@@ -119,8 +122,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     if (animal.GetGender() != _gender)
     {
-      Debug.Log("yay i found someone!");
+      _mateTarget = animal;
     }
+  }
+
+  public void ClearMateTarget()
+  {
+    _mateTarget = null;
   }
   public int GetHydration()
   {
@@ -226,5 +234,10 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public Gender GetGender()
   {
     return _gender;
+  }
+
+  public Animal GetMateTarget()
+  {
+    return _mateTarget;
   }
 }

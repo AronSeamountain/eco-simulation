@@ -53,6 +53,10 @@ namespace AnimalStates
       if (!animal.IsAlive)
         return AnimalState.Dead;
 
+      if (animal.GetMateTarget() != null && animal.GetGender() == Gender.Male)
+      {
+        return AnimalState.PursueMate;
+      }
       var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
       if (shouldMoveToNewPos)
       {

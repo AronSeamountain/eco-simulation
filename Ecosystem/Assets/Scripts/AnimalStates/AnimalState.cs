@@ -6,6 +6,8 @@
     PursueFood,
     PursueWater,
     Birth,
-    Dead
+    Dead,
+    PursueMate,
+    Mate
   }
 }

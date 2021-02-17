@@ -14,7 +14,7 @@ public class MatingManager: MonoBehaviour
 
   private void OnAnimalFound(Animal animal)
   {
-    Debug.Log("IN Mating manager");
+    if (animal == null) return;
     MateListeners.Invoke(animal);
   }
 }
