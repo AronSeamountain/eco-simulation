@@ -68,15 +68,13 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   private void Start()
   {
     // Setup states
-    var pursueFoodState = new PursueFoodState(this); // todo: samma referens ska vara i listan av states
-    var states = GetStates();
+    var states = GetStates(foodManager);
     _stateMachine = new NewStateMachine<AnimalState>(states);
     _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);
     _currentState.Enter();
 
     // Listen to food events
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
-    foodManager.KnownFoodMemoriesChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
 
     _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
     _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
@@ -128,7 +126,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   {
   }
 
-  protected abstract List<INewState<AnimalState>> GetStates();
+  protected abstract List<INewState<AnimalState>> GetStates(FoodManager foodManager);
 
   protected int GetHealth()
   {

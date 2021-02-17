@@ -43,7 +43,7 @@ namespace AnimalStates
         _knownFoodTargetsChanged = false;
         if (!_animal.KnownFoods.Any()) return AnimalState.Wander;
 
-        _foodTarget = GetClosestFood(_animal);
+        _foodTarget = GetClosestFood();
         _animal.GoTo(_foodTarget.Position);
       }
 
@@ -77,7 +77,7 @@ namespace AnimalStates
     /// </summary>
     /// <param name="animal">The animal.</param>
     /// <returns>The closest food.</returns>
-    private FoodManager.FoodMemory GetClosestFood(AbstractAnimal _animal)
+    private FoodManager.FoodMemory GetClosestFood()
     {
       var foods = _animal.KnownFoods;
 

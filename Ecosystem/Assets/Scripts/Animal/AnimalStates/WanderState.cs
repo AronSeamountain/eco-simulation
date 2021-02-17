@@ -48,6 +48,9 @@ namespace AnimalStates
 
     public AnimalState Execute()
     {
+      if (_animal is CarnivoreScript)
+        return AnimalState.Hunt;
+      
       // Enter pursue water state
       if (_animal.KnowsWaterLocation && _animal.IsThirsty)
         return AnimalState.PursueWater;

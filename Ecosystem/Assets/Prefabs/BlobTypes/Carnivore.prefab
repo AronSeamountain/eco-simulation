@@ -27,7 +27,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   birthProbabilityPerUnit: 0
   movement: {fileID: 5802323596056786700}
-  foodManager: {fileID: 0}
+  foodManager: {fileID: 4747830557226467101}
   waterManager: {fileID: 2339196169049295007}
   childPrefab: {fileID: 8672377695379901830}
   entityStatsDisplay: {fileID: 5468061608224460754}
@@ -139,8 +139,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 4206817655424769507, guid: bf200501b32dda54c93cca32e5f22aba, type: 3}
-    - {fileID: 9054329623236228661, guid: bf200501b32dda54c93cca32e5f22aba, type: 3}
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: bf200501b32dda54c93cca32e5f22aba, type: 3}
 --- !u!1 &8672377695379901830 stripped
 GameObject:
@@ -158,6 +157,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bb56c0442b7cbc4bbff18d74c493d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4747830557226467101 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9054329623236228661, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 4342840507159857448}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8672377695379901830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ed6799756146048a91cdc666817a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2339196169049295007 stripped

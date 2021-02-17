@@ -35,7 +35,7 @@ public sealed class CarnivoreScript : AbstractAnimal
     preyManager.Forget(memory);
   }
 
-  protected override List<INewState<AnimalState>> GetStates()
+  protected override List<INewState<AnimalState>> GetStates(FoodManager fManager)
   {
     return new List<INewState<AnimalState>>
     {
@@ -43,7 +43,7 @@ public sealed class CarnivoreScript : AbstractAnimal
       new WanderState(this),
       new PursueWaterState(this),
       new BirthState(this),
-      new HuntState(this)
+      new HuntState2(this)
     };
   }
 }
