@@ -20,6 +20,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private GoToMovement movement;
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
+  [SerializeField] private MatingManager matingManager;
   [SerializeField] private GameObject childPrefab;
   [SerializeField] private EntityStatsDisplay entityStatsDisplay;
   private IState<Animal, AnimalState> _currentState;
@@ -61,6 +62,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
 
     GenerateGender();
+    matingManager.MateListeners += OnMateFound;
+    
     // Setup states
     var pursueFoodState = new PursueFoodState();
     var states = new List<IState<Animal, AnimalState>>
@@ -109,6 +112,14 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     {
       _gender = Gender.Female;
       cubeRenderer.material.SetColor("_Color", Color.red);
+    }
+  }
+
+  private void OnMateFound(Animal animal)
+  {
+    if (animal.GetGender() != _gender)
+    {
+      Debug.Log("yay i found someone!");
     }
   }
   public int GetHydration()
@@ -210,5 +221,10 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Forget(FoodManager.FoodMemory memory)
   {
     foodManager.Forget(memory);
+  }
+
+  public Gender GetGender()
+  {
+    return _gender;
   }
 }

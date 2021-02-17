@@ -1103,6 +1103,7 @@ GameObject:
   - component: {fileID: 4206817655424769507}
   - component: {fileID: 9054329623236228661}
   - component: {fileID: -7191508722750619209}
+  - component: {fileID: 1163955920227588804}
   m_Layer: 0
   m_Name: BaseAnimal
   m_TagString: Untagged
@@ -1238,6 +1239,7 @@ MonoBehaviour:
   movement: {fileID: 7836581106720980516}
   foodManager: {fileID: 9054329623236228661}
   waterManager: {fileID: -7191508722750619209}
+  matingManager: {fileID: 1163955920227588804}
   childPrefab: {fileID: 0}
   entityStatsDisplay: {fileID: 8621766971246724858}
 --- !u!114 &9054329623236228661
@@ -1263,6 +1265,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualDetector: {fileID: 3254812618266142070}
+--- !u!114 &1163955920227588804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908545354356688046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a01267a139454c07a4663795998ac9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   visualDetector: {fileID: 3254812618266142070}

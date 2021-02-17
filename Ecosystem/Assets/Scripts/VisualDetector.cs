@@ -18,11 +18,14 @@ public sealed class VisualDetector : MonoBehaviour
   /// <param name="water">The water that was just found.</param>
   public delegate void WaterFound(Water water);
 
+  public delegate void AnimalFound(Animal animal);
+
   [SerializeField] private Transform eyesTransform;
   private int _distance;
   private int _radius;
   public FoodFound FoodFoundListeners;
   public WaterFound WaterFoundListeners;
+  public AnimalFound AnimalFoundListeners;
 
   private int Distance
   {
@@ -57,6 +60,12 @@ public sealed class VisualDetector : MonoBehaviour
 
     if (other.GetComponent<Water>() is Water water && CanSee(water))
       WaterFoundListeners?.Invoke(water);
+
+    if (other.GetComponent<Animal>() is Animal animal && CanSee(animal)  && WantToMate(animal))
+    {
+      Debug.Log("I can see you");
+      AnimalFoundListeners.Invoke(animal);
+    }
   }
 
   /// <summary>
@@ -82,6 +91,10 @@ public sealed class VisualDetector : MonoBehaviour
     return false;
   }
 
+  private bool WantToMate(Animal animal)
+  {
+    return true;
+  }
   /// <summary>
   ///   Scales the detection area and repositions it correctly.
   /// </summary>
