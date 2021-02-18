@@ -26,8 +26,8 @@ namespace AnimalStates
       _waterTarget = animal.ClosestKnownWater;
       if (_waterTarget == null) return AnimalState.Wander;
 
-      var reachesWater = Vector3Util.InRange(animal.gameObject, _waterTarget.gameObject, 2);
-      if (reachesWater)
+      //var reachedWater(animal);// = Vector3Util.InRange(animal.gameObject, _waterTarget.gameObject, 2);
+      if (ReachedWater(animal))
       {
         animal.Drink(_waterTarget);
         return AnimalState.Wander;
@@ -37,6 +37,12 @@ namespace AnimalStates
       animal.GoTo(position);
 
       return AnimalState.PursueWater;
+    }
+
+    private bool ReachedWater(Animal animal)
+    {
+      var distance = 2;
+      return Vector3Util.InRange(animal.gameObject, _waterTarget.gameObject, distance);
     }
 
     public void Exit(Animal animal)
