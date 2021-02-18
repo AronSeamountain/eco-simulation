@@ -14,6 +14,7 @@ public sealed class Ecosystem : MonoBehaviour
   [SerializeField] private int initialAnimals = 1;
   [SerializeField] private int initialPlants = 4;
   [SerializeField] private GameObject animalPrefab;
+  [SerializeField] private GameObject carnivorePrefab;
   [SerializeField] private GameObject plantPrefab;
   private IList<AbstractAnimal> _animals;
   private int _days;
@@ -60,8 +61,10 @@ public sealed class Ecosystem : MonoBehaviour
   private void SpawnAndAddInitialAnimals()
   {
     SpawnAndAddGeneric(initialAnimals, animalPrefab, _animals);
+    SpawnAndAddGeneric(initialAnimals, carnivorePrefab, _animals);
   }
 
+  
   /// <summary>
   ///   Spawns plants and adds them to the list of animals.
   /// </summary>

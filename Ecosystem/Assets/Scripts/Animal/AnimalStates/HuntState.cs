@@ -1,5 +1,6 @@
 ﻿using Animal;
 using UnityEngine;
+using Utils;
 
 namespace AnimalStates
 {
@@ -7,6 +8,7 @@ namespace AnimalStates
   {
     private CarnivoreScript _carnivore;
     private HerbivoreScript _target;
+    private const float Range = 10;
 
     public HuntState(CarnivoreScript carnivore)
     {
@@ -33,6 +35,7 @@ namespace AnimalStates
     public AnimalState Execute()
     {
       if (!_target) return AnimalState.Wander;
+      if (!Vector3Util.InRange(_carnivore.gameObject, _target.gameObject, Range)) return AnimalState.Wander;
       _carnivore.GoTo(_target.transform.position);
       return AnimalState.Hunt;
     }

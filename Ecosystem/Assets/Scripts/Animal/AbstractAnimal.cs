@@ -62,7 +62,16 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
   private void Start()
   {
+    if (this is HerbivoreScript)
+    {
+      movement.MovementSpeed = 25;
+    }
+    else
+    {
+      movement.MovementSpeed = 10;
+    }
     // Setup states
+    
     var states = GetStates(foodManager);
     _stateMachine = new NewStateMachine<AnimalState>(states);
     _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);

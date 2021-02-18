@@ -7,7 +7,7 @@ using Utils;
 public sealed class GoToMovement : MonoBehaviour
 {
   [SerializeField] private CharacterController controller;
-  [SerializeField] private int movementSpeed;
+  public int MovementSpeed { get; set; }
   private Vector3 _target;
 
   /// <summary>
@@ -42,7 +42,7 @@ public sealed class GoToMovement : MonoBehaviour
 
     // Move
     var direction = (Target - transform.position).normalized;
-    controller.Move(direction * (movementSpeed * Time.deltaTime));
+    controller.Move(direction * (MovementSpeed * Time.deltaTime));
     transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
   }
 

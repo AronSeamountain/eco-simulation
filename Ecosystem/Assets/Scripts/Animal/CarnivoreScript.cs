@@ -25,12 +25,8 @@ public sealed class CarnivoreScript : AbstractAnimal
     };
   }
 
-  public void FixedUpdate()
-  {
-    Debug.Log(gameObject + "Hydration: " + GetHydration() + "Saturation: " + GetSaturation());
-
-  }
-
+  
+  
   private bool CanBeEaten(AbstractAnimal animal)
   {
     if (true)
