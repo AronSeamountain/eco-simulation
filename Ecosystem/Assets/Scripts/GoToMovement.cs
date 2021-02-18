@@ -10,6 +10,8 @@ public sealed class GoToMovement : MonoBehaviour
   [SerializeField] private int movementSpeed;
   private Vector3 _target;
 
+  public float SpeedFactor { get; set; } = 1;
+
   /// <summary>
   ///   The target to go to.
   /// </summary>
@@ -42,7 +44,7 @@ public sealed class GoToMovement : MonoBehaviour
 
     // Move
     var direction = (Target - transform.position).normalized;
-    controller.Move(direction * (movementSpeed * Time.deltaTime));
+    controller.Move(direction * (movementSpeed * SpeedFactor * Time.deltaTime));
     transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
   }
 
