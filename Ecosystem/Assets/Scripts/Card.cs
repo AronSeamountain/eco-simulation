@@ -17,17 +17,17 @@ namespace DefaultNamespace
       _canvas = canvas;
     }
 
-    public void DrawCard(GameObject canvas)
+    public void DrawCard()
     {
       foreach (var statContainer in _statContainers)
       {
         switch (statContainer.ObjectType)
         {
           case "text":
-            MakeTextObject(statContainer, canvas);
+            MakeTextObject(statContainer);
             break;
           case "slider":
-            MakeSliderObject(statContainer, canvas);
+            MakeSliderObject(statContainer);
             break;
         }
 
@@ -35,10 +35,10 @@ namespace DefaultNamespace
       }
     }
 
-    private void MakeSliderObject(StatContainer statContainer, GameObject canvas)
+    private void MakeSliderObject(StatContainer statContainer)
     {
       var slider = new GameObject();
-      slider.transform.SetParent(canvas.transform, false);
+      slider.transform.SetParent(_canvas.transform, false);
       slider.transform.localPosition = Vector3.zero + new Vector3(0, 2+_offset, 0);
       
       var mySlider = slider.AddComponent<Slider>();
@@ -49,14 +49,14 @@ namespace DefaultNamespace
       rt.sizeDelta = new Vector2(15, 10);
     }
 
-    private void MakeTextObject(StatContainer statContainer, GameObject canvas)
+    private void MakeTextObject(StatContainer statContainer)
     {
-      var text = new GameObject();
-      text.transform.SetParent(canvas.transform, false);
+      var text = new GameObject("text" + _offset);
+      text.transform.SetParent(_canvas.transform, false);
       text.transform.localPosition = Vector3.zero + new Vector3(0, 2+_offset, 0);
-    
+
       var myText = text.AddComponent<Text>();
-      myText.text = _offset.ToString();
+      myText.text = statContainer.Text;
       myText.color = statContainer.Color;
       myText.fontSize = 1;
       myText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
