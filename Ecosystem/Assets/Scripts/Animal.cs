@@ -199,4 +199,16 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     agent.SetDestination(destination);
   }
+
+  public void FixAgentOnNavMesh()
+  {
+    if (agent.enabled && !agent.isOnNavMesh)
+    {
+      var position = transform.position;
+      NavMeshHit hit;
+      NavMesh.SamplePosition(position, out hit, 10.0f, 1);
+      position = hit.position; // usually this barely changes, if at all
+      agent.Warp(position);
+    }
+  }
 }

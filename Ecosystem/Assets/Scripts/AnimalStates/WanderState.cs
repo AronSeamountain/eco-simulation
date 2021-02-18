@@ -1,7 +1,9 @@
-﻿using Core;
+﻿using System;
+using Core;
 using UnityEngine;
 using UnityEngine.AI;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace AnimalStates
 {
@@ -48,6 +50,7 @@ namespace AnimalStates
       //if (!animal.IsAlive) return AnimalState.Dead;
       //if (animal.KnowsWaterLocation && animal.IsThirsty) return AnimalState.PursueWater;
       //if (animal.KnowsFoodLocation && animal.IsHungry) return AnimalState.PursueFood;
+      animal.FixAgentOnNavMesh();
 
       if (Vector3Util.InRange(animal.transform.position, _destination, 1f))
         animal.StopMoving();
@@ -88,16 +91,22 @@ namespace AnimalStates
     private Vector3 GetRandomClosePoint(Vector3 origin)
     {
       const int radius = 10;
+      const int maxAttempts = 10;
 
-      var randomDirection = origin + Random.insideUnitSphere * radius;
-      var finalPosition = Vector3.zero;
+      for (var i = 0; i < maxAttempts; i++)
+      {
+        var xzOffset = Random.insideUnitSphere;
+        xzOffset.y = 0;
+        var randomDirection = origin + xzOffset * radius;
 
-      if (NavMesh.SamplePosition(randomDirection, out var hit, radius, 1))
-        finalPosition = hit.position;
+        if (NavMesh.SamplePosition(randomDirection, out var hit, radius, 1))
+          return hit.position;
+      }
 
-      // TODO: I believe there is a SLIGHT chance that it may not find a point. How to handle this?
-      Debug.Assert(finalPosition != Vector3.zero, "Attempted to go outside the nav mesh.");
-      return finalPosition;
+      //Debug.LogError("Tried to go to a invalid position");
+      //UnityEditor.EditorApplication.isPlaying = false;
+      //throw new Exception("Wasd!");
+      return new Vector3(0, 2, 0);
     }
 
     /// <summary>

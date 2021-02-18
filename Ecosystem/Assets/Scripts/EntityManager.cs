@@ -78,31 +78,55 @@ public sealed class EntityManager : MonoBehaviour
 
   private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list) where T : MonoBehaviour
   {
-    const float spawnSquareHalfWidth = 30f;
     for (var i = 0; i < amount; i++)
     {
-      var offset = new Vector3(
-        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
-        100,
-        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
-      );
-
       var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
 
       if (instance.TryGetComponent(out NavMeshAgent agent))
-      {
-        var coord = NavMeshUtil.GetRandomLocation();
-        var successfulWarp = agent.Warp(coord);
-        Debug.Assert(successfulWarp, "Could not warp entity to nav mesh.");
-      }
+        PlaceNavAgent(agent);
       else
-      {
-        var pos = _spawnLocationVector3 + offset;
-        instance.transform.position = pos;
-      }
+        PlaceSimple(instance);
 
       list.Add(instance);
     }
+  }
+
+  private void PlaceSimple<T>(T instance) where T : MonoBehaviour
+  {
+    const float spawnSquareHalfWidth = 30f;
+
+    var offset = new Vector3(
+      Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
+      100,
+      Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
+    );
+
+    var pos = _spawnLocationVector3 + offset;
+    instance.transform.position = pos;
+  }
+
+  private void PlaceNavAgent(NavMeshAgent agent)
+  {
+    var coord = NavMeshUtil.GetRandomLocation();
+
+    if (NavMesh.SamplePosition(coord, out var hit, 5, 1))
+    {
+      var successfulWarp = agent.Warp(hit.position);
+
+      if (!successfulWarp)
+        QuitApplication();
+    }
+  }
+
+  private void QuitApplication()
+  {
+    Debug.LogError("Failed placing agents, quiting");
+
+#if UNITY_EDITOR
+    UnityEditor.EditorApplication.isPlaying = false;
+#else
+      Application.Quit();
+#endif
   }
 
   /// <summary>

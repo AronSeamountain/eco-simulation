@@ -14,6 +14,7 @@ public sealed class Billboard : MonoBehaviour
 
   private void Update()
   {
+    // TODO: Dont update if is not shown
     transform.LookAt(_cameraTransform);
   }
 }
