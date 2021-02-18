@@ -37,7 +37,7 @@ namespace AnimalStates
     }
 
     public void Enter()
-    { 
+    {
       GoToClosePoint(_animal);
       UpdateIdleTime();
     }
@@ -49,11 +49,10 @@ namespace AnimalStates
 
     public AnimalState Execute()
     {
-      
-      if (_animal is CarnivoreScript carnivore) 
-        if (carnivore.Target)
+      if (_animal is CarnivoreScript carnivore)
+        if (carnivore.Target && carnivore.ShouldHunt(carnivore.Target))
           return AnimalState.Hunt;
-      
+
       // Enter pursue water state
       if (_animal.KnowsWaterLocation && _animal.IsThirsty)
         return AnimalState.PursueWater;

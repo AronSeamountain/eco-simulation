@@ -7,8 +7,8 @@ using Utils;
 public sealed class GoToMovement : MonoBehaviour
 {
   [SerializeField] private CharacterController controller;
-  public int MovementSpeed { get; set; }
   private Vector3 _target;
+  public int MovementSpeed { get; set; }
 
   /// <summary>
   ///   The target to go to.

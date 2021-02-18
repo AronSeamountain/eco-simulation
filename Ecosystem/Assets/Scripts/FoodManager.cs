@@ -15,10 +15,14 @@ public sealed class FoodManager : MonoBehaviour, ITickable
   /// <param name="foodMemories">A list of all the known food sources.</param>
   public delegate void KnownFoodMemoriesChanged(IReadOnlyCollection<FoodMemory> foodMemories);
 
+  public delegate void PreyFound(HerbivoreScript herbivore);
+
   [SerializeField] private VisualDetector visualDetector;
   private IList<FoodMemory> _knownFoodMemories;
   public KnownFoodMemoriesChanged KnownFoodMemoriesChangedListeners;
+
   public PreyFound PreyFoundListeners;
+
   //private CarnivoreScript carnivore;
   //public HerbivoreScript target;
   public IReadOnlyList<FoodMemory> KnownFoodMemories => new ReadOnlyCollection<FoodMemory>(_knownFoodMemories);
@@ -75,8 +79,6 @@ public sealed class FoodManager : MonoBehaviour, ITickable
     _knownFoodMemories.Remove(memory);
     KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
   }
-
-  public delegate void PreyFound(HerbivoreScript herbivore);
 
   public class FoodMemory : ITickable
   {

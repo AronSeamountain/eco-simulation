@@ -64,7 +64,7 @@ public sealed class Ecosystem : MonoBehaviour
     SpawnAndAddGeneric(initialAnimals, carnivorePrefab, _animals);
   }
 
-  
+
   /// <summary>
   ///   Spawns plants and adds them to the list of animals.
   /// </summary>

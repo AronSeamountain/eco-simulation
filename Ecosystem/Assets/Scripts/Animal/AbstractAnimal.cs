@@ -63,15 +63,11 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   private void Start()
   {
     if (this is HerbivoreScript)
-    {
       movement.MovementSpeed = 25;
-    }
     else
-    {
       movement.MovementSpeed = 10;
-    }
     // Setup states
-    
+
     var states = GetStates(foodManager);
     _stateMachine = new NewStateMachine<AnimalState>(states);
     _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);
@@ -79,7 +75,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
     // Listen to food events
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
-    
+
 
     _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
     _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
@@ -157,7 +153,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   {
     KnowsFoodLocation = foods.Any();
   }
-  
+
 
   /// <summary>
   ///   Eats the provided food.
