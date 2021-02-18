@@ -48,6 +48,7 @@ namespace AnimalStates
       var position = animal.transform.position;
       Ray ray = new Ray(position, _waterTarget.transform.position - position);
       Physics.Raycast(ray, out var hit);
+      if (hit.collider == null) return false; 
       if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
       {
         return hit.distance < 2;
