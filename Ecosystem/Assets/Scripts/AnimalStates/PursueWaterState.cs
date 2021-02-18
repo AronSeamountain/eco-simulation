@@ -20,10 +20,10 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
+      if (!animal.IsAlive) return AnimalState.Dead;
       if (animal.ShouldBirth) return AnimalState.Birth;
       if (!animal.IsThirsty) return AnimalState.Wander;
       if (!animal.KnowsWaterLocation) return AnimalState.Wander;
-      if (!animal.IsAlive) return AnimalState.Dead;
 
       _waterTarget = animal.ClosestKnownWater;
       if (_waterTarget == null) return AnimalState.Wander;
