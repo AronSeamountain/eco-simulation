@@ -14,6 +14,7 @@ namespace AnimalStates
     private const float MaxIdle = 4f;
 
     private readonly AbstractAnimal _animal;
+    private HerbivoreScript _herbivore;
 
     /// <summary>
     ///   The time the animal should stand still.
@@ -36,7 +37,7 @@ namespace AnimalStates
     }
 
     public void Enter()
-    {
+    { 
       GoToClosePoint(_animal);
       UpdateIdleTime();
     }
@@ -48,15 +49,17 @@ namespace AnimalStates
 
     public AnimalState Execute()
     {
-      if (_animal is CarnivoreScript)
-        return AnimalState.Hunt;
+      
+      if (_animal is CarnivoreScript carnivore) 
+        if (carnivore.Target)
+          return AnimalState.Hunt;
       
       // Enter pursue water state
       if (_animal.KnowsWaterLocation && _animal.IsThirsty)
         return AnimalState.PursueWater;
 
       // Enter pursue food state
-      if (_animal.KnowsFoodLocation && _animal.IsHungry)
+      if (_animal.KnowsFoodLocation && _animal.IsHungry && !(_animal is CarnivoreScript))
         return AnimalState.PursueFood;
 
       //Enter dead state

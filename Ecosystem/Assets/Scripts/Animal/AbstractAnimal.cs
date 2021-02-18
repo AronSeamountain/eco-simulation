@@ -53,11 +53,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   private int Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
 
-  /// <summary>
-  ///   Bool CanBeEaten is used in VisualDetector
-  /// </summary>
-  public bool CanBeEaten => Size < Size;
-
   protected virtual void Awake()
   {
     ShowStats(false);
@@ -75,6 +70,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
     // Listen to food events
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
+    
 
     _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
     _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
@@ -152,6 +148,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   {
     KnowsFoodLocation = foods.Any();
   }
+  
 
   /// <summary>
   ///   Eats the provided food.

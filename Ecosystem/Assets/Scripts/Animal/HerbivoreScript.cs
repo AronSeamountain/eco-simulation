@@ -17,4 +17,9 @@ public sealed class HerbivoreScript : AbstractAnimal
       pursueFoodState
     };
   }
+
+  public bool CanBeEaten()
+  {
+    return true;
+  }
 }

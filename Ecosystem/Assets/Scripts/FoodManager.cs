@@ -18,12 +18,16 @@ public sealed class FoodManager : MonoBehaviour, ITickable
   [SerializeField] private VisualDetector visualDetector;
   private IList<FoodMemory> _knownFoodMemories;
   public KnownFoodMemoriesChanged KnownFoodMemoriesChangedListeners;
+  public PreyFound PreyFoundListeners;
+  //private CarnivoreScript carnivore;
+  //public HerbivoreScript target;
   public IReadOnlyList<FoodMemory> KnownFoodMemories => new ReadOnlyCollection<FoodMemory>(_knownFoodMemories);
 
   private void Start()
   {
     _knownFoodMemories = new List<FoodMemory>();
     visualDetector.FoodFoundListeners += OnFoodFound;
+    visualDetector.PreyFoundListeners += OnPreyFound;
   }
 
   public void Tick()
@@ -38,6 +42,16 @@ public sealed class FoodManager : MonoBehaviour, ITickable
 
   public void DayTick()
   {
+  }
+
+  private void OnPreyFound(HerbivoreScript herbivore)
+  {
+    //if (carnivore.target == null) Debug.Log("target is null");
+    //if (carnivore == null) Debug.Log("carnivore is null"); // this one triggers
+    //if (herbivore == null) Debug.Log("herbivore is null");
+    //carnivore.target = herbivore;
+    // add herbivore to knownPreyMemory
+    PreyFoundListeners?.Invoke(herbivore);
   }
 
   private void OnFoodFound(AbstractFood food)
@@ -61,6 +75,8 @@ public sealed class FoodManager : MonoBehaviour, ITickable
     _knownFoodMemories.Remove(memory);
     KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
   }
+
+  public delegate void PreyFound(HerbivoreScript herbivore);
 
   public class FoodMemory : ITickable
   {
