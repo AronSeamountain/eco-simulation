@@ -18,6 +18,7 @@ namespace AnimalStates
     private const float MaxIdle = 4f;
 
     private Vector3 _destination;
+    private const float MarginToReachDestination = 2.5f;
 
     /// <summary>
     ///   The time the animal should stand still.
@@ -50,9 +51,9 @@ namespace AnimalStates
       //if (!animal.IsAlive) return AnimalState.Dead;
       //if (animal.KnowsWaterLocation && animal.IsThirsty) return AnimalState.PursueWater;
       //if (animal.KnowsFoodLocation && animal.IsHungry) return AnimalState.PursueFood;
-      animal.FixAgentOnNavMesh();
+      //animal.FixAgentOnNavMesh();
 
-      if (Vector3Util.InRange(animal.transform.position, _destination, 1f))
+      if (Vector3Util.InRange(animal.transform.position, _destination, MarginToReachDestination))
         animal.StopMoving();
 
       if (!animal.IsMoving)
@@ -78,35 +79,9 @@ namespace AnimalStates
     /// <param name="animal">The animal to move.</param>
     private void GoToClosePoint(Animal animal)
     {
-      var point = GetRandomClosePoint(animal.transform.position);
+      var point = NavMeshUtil.GetRandomClosePoint(animal.transform.position);
       _destination = point;
       animal.GoTo(_destination);
-    }
-
-    /// <summary>
-    ///   Gets a new point close to the given origin vector. Will have the same y level.
-    /// </summary>
-    /// <param name="origin">The point to get a point close to.</param>
-    /// <returns>A new point close to the given origin vector.</returns>
-    private Vector3 GetRandomClosePoint(Vector3 origin)
-    {
-      const int radius = 10;
-      const int maxAttempts = 10;
-
-      for (var i = 0; i < maxAttempts; i++)
-      {
-        var xzOffset = Random.insideUnitSphere;
-        xzOffset.y = 0;
-        var randomDirection = origin + xzOffset * radius;
-
-        if (NavMesh.SamplePosition(randomDirection, out var hit, radius, 1))
-          return hit.position;
-      }
-
-      //Debug.LogError("Tried to go to a invalid position");
-      //UnityEditor.EditorApplication.isPlaying = false;
-      //throw new Exception("Wasd!");
-      return new Vector3(0, 2, 0);
     }
 
     /// <summary>

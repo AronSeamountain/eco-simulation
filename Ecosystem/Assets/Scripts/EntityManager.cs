@@ -109,18 +109,16 @@ public sealed class EntityManager : MonoBehaviour
   {
     var coord = NavMeshUtil.GetRandomLocation();
 
-    if (NavMesh.SamplePosition(coord, out var hit, 5, 1))
-    {
-      var successfulWarp = agent.Warp(hit.position);
+    var foundPointOnNavMesh = NavMesh.SamplePosition(coord, out var hit, 50, -1);
+    var successfullyWarped = agent.Warp(hit.position);
 
-      if (!successfulWarp)
-        QuitApplication();
-    }
+    if (!foundPointOnNavMesh || !successfullyWarped) // TODO: Test, assume that it works?
+      QuitApplication("Could not find a position on the nav mesh");
   }
 
-  private void QuitApplication()
+  private void QuitApplication(string message = "oof")
   {
-    Debug.LogError("Failed placing agents, quiting");
+    Debug.LogError(message);
 
 #if UNITY_EDITOR
     UnityEditor.EditorApplication.isPlaying = false;
