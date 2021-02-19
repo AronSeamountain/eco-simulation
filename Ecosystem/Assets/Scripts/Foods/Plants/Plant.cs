@@ -27,7 +27,7 @@ namespace Foods.Plants
       LeaveSeedState = false;
     }
 
-    private void Start()
+    private void Awake()
     {
       MaxSaturation = 100;
 

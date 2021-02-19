@@ -190,6 +190,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
         type: 3}
+      propertyPath: initialPlants
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
+        type: 3}
       propertyPath: spawnLocation
       value: 
       objectReference: {fileID: 2051351378}
