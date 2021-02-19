@@ -17,9 +17,11 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      if (animal.ShouldBirth) return AnimalState.Birth;
-      if (!animal.IsHungry) return AnimalState.Wander;
       if (!animal.IsAlive) return AnimalState.Dead;
+      if (animal.ShouldBirth) return AnimalState.Birth;
+      if (animal.IsHungry && animal.KnowsFoodLocation) return AnimalState.PursueFood;
+      if (animal.IsThirsty && animal.KnowsWaterLocation) return AnimalState.PursueWater;
+      
 
       var mateTarget = animal.GetMateTarget();
       if (mateTarget == null) return AnimalState.Wander;
