@@ -11,12 +11,9 @@ using Random = UnityEngine.Random;
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable
+public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStatable
 {
   public delegate void ChildSpawned(AbstractAnimal child);
-
-
-
 
   /// <summary>
   ///   The probability in the range [0, 1] whether the animal will give birth.
@@ -27,20 +24,13 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   [SerializeField] protected FoodManager foodManager;
   [SerializeField] protected WaterManager waterManager;
   [SerializeField] protected GameObject childPrefab;
-  [SerializeField] protected EntityStatsDisplay entityStatsDisplay; 
-  private float _speedModifier;
-  private float _sizeModifier;
-
-
-
-
-
-
-
+  [SerializeField] protected EntityStatsDisplay entityStatsDisplay;
 
   private INewState<AnimalState> _currentState;
   protected HealthDelegate _healthDelegate;
   protected NourishmentDelegate _nourishmentDelegate;
+  private float _sizeModifier;
+  private float _speedModifier;
   private NewStateMachine<AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
@@ -50,14 +40,10 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   ///   Whether the animal knows about a food location.
   /// </summary>
   public bool KnowsFoodLocation { get; private set; }
-/// <summary>
+
+  /// <summary>
   ///   Whether the animal knows about a water location.
   /// </summary>
-
-
-
-
-
 
 
   public bool KnowsWaterLocation { get; private set; }
@@ -101,14 +87,14 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
     _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
 
     //listen to water events
-    waterManager.WaterUpdateListeners += OnWaterLocationChanged;   
+    waterManager.WaterUpdateListeners += OnWaterLocationChanged;
     //setup speed and size variables for nourishment modifiers
     const float rangeMin = (float) 0.8;
     const float rangeMax = (float) 1.2;
     _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
     _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
 
-    float decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
+    var decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
 
     _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
     _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
@@ -118,8 +104,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
     movement.SpeedFactor = _speedModifier;
     //setup size modification
     transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
-
-
   }
 
   private void Update()
@@ -152,12 +136,12 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   {
     _nourishmentDelegate.Saturation += saturation;
   }
-public void Stats(bool value)
+
+  public void Stats(bool value)
   {
     Debug.Log("ANIMALS STATS INTERFACE");
     ShowStats(value);
   }
-
 
 
   public void Tick()

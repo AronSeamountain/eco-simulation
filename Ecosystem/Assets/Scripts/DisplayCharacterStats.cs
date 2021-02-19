@@ -51,7 +51,6 @@ public class DisplayCharacterStats : MonoBehaviour
           _targetIS.Stats(true);
         }
     }
-
   }
 
   private Vector2 GetMousePos()
