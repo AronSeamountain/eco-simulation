@@ -61,7 +61,7 @@ public sealed class VisualDetector : MonoBehaviour
     if (other.GetComponent<Water>() is Water water && CanSee(water))
       WaterFoundListeners?.Invoke(water);
 
-    if (other.GetComponent<Animal>() is Animal animal && CanSee(animal)  && WantToMate(animal))
+    if (other.GetComponent<Animal>() is Animal animal && CanSee(animal))
     {
       if(AnimalFoundListeners != null) AnimalFoundListeners.Invoke(animal);
     }
@@ -89,11 +89,7 @@ public sealed class VisualDetector : MonoBehaviour
     Debug.DrawRay(eyesTransform.position, dirToObject, Color.red, 5);
     return false;
   }
-
-  private bool WantToMate(Animal animal)
-  {
-    return true;
-  }
+  
   /// <summary>
   ///   Scales the detection area and repositions it correctly.
   /// </summary>
