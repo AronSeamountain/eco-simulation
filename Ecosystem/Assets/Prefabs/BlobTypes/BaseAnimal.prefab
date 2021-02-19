@@ -1431,6 +1431,7 @@ MonoBehaviour:
   childPrefab: {fileID: 0}
   entityStatsDisplay: {fileID: 8621766971246724858}
   canvas: {fileID: 116062044169309942}
+  slider: {fileID: 7576209141342034356, guid: 1d49f6c78a90ed546950df43b86577b4, type: 3}
 --- !u!114 &9054329623236228661
 MonoBehaviour:
   m_ObjectHideFlags: 0

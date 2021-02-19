@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace.UI;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class DisplayCharacterStats : MonoBehaviour
 {
   [SerializeField] private Camera mainCamera;
+  [SerializeField] private CardFactory cardFactory;
   private CameraControls _controls;
   private Animal _target;
   private IStatable _targetIS;
@@ -29,7 +31,7 @@ public class DisplayCharacterStats : MonoBehaviour
 
   private void OnCancelTarget(InputAction.CallbackContext obj)
   {
-    _targetIS?.Stats(false);
+    if (_targetIS != null) cardFactory.ClearContent();
     _targetIS = null;
   }
 
@@ -49,7 +51,7 @@ public class DisplayCharacterStats : MonoBehaviour
         {
           if (_targetIS != null) OnCancelTarget(_);
           _targetIS = statable;
-          _targetIS.Stats(true);
+          cardFactory.Populate(_targetIS.GetStats());
         }
     }
   }

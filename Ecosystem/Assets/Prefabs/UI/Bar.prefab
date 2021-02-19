@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 452307286107947417}
   - component: {fileID: 7576209141342034356}
   - component: {fileID: 7788820459579415460}
+  - component: {fileID: 2602704576475755610}
   m_Layer: 2
   m_Name: Bar
   m_TagString: Untagged
@@ -27,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 1614070849303720730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1649382987820205948}
   - {fileID: 9031607926817340779}
@@ -98,6 +99,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1614070849303720730}
   m_CullTransparentMesh: 0
+--- !u!114 &2602704576475755610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614070849303720730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f94551cc4245b4a5ab4adf1f8630b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2658700237682912240
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,3 +386,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c01d2cf036836f044a8666c428b999c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  valueText: '{0}'

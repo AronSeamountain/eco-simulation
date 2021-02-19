@@ -54,9 +54,10 @@ namespace Foods.Plants
       }
     }
 
-    public void Stats(bool value)
+    public IList<GameObject> GetStats()
     {
       Debug.Log("Saturation: " + Saturation + " and age in days: " + _ageInDays);
+      return null;
     }
 
     public void Tick()

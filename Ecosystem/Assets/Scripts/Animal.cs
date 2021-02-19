@@ -3,6 +3,7 @@ using System.Linq;
 using AnimalStates;
 using Core;
 using DefaultNamespace;
+using DefaultNamespace.UI;
 using Foods;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   [SerializeField] private GameObject childPrefab;
   [SerializeField] private EntityStatsDisplay entityStatsDisplay;
   [SerializeField] private GameObject canvas;
+  [SerializeField] private Slider slider;
   private IState<Animal, AnimalState> _currentState;
   private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
@@ -53,7 +55,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
 
   private void Awake()
   {
-    ShowStats(false);
     _nourishmentDelegate = new NourishmentDelegate();
     _healthDelegate = new HealthDelegate();
   }
@@ -115,22 +116,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     _nourishmentDelegate.Saturation += saturation;
   }
 
-  public void Stats(bool value)
+  public IList<GameObject> GetStats()
   {
-    ShowStats(value);
-    if (value)
-    {
-      var text1 = new StatContainer("text", _currentState.GetStateEnum().ToString(),5f, Color.magenta);
-      var text2 = new StatContainer("text", "hejehj", 5f, Color.blue);
-      var slider1 = new StatContainer("slider", "", 10f, Color.green);
-      var scList = new List<StatContainer>();
-      scList.Add(text1);
-      scList.Add(text2);
-      scList.Add(slider1);
-    
-      var card = new Card(scList, canvas);
-      card.DrawCard();
-    }
+    var newSlider = Instantiate(slider).GetComponent<Bar>();
+    _healthDelegate.HealthChangedListeners += newSlider.OnValueChanged;
+    return new List<GameObject> {newSlider.gameObject};
   }
 
   public void Tick()
@@ -143,11 +133,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
 
   public void DayTick()
   {
-  }
-
-  public void ShowStats(bool show)
-  {
-    entityStatsDisplay.ShowStats = show;
   }
 
   private void OnWaterLocationChanged(Water water)
