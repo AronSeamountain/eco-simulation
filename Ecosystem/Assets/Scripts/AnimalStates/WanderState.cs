@@ -54,7 +54,7 @@ namespace AnimalStates
       if (!animal.IsAlive)
         return AnimalState.Dead;
 
-      if (animal.GetMateTarget() != null && animal.GetGender() == Gender.Male)
+      if (animal.GetMateTarget() != null && animal.Gender == Gender.Male)
       {
         return AnimalState.PursueMate;
       }

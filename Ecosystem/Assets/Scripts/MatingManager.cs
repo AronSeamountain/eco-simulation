@@ -16,7 +16,7 @@ public class MatingManager: MonoBehaviour
   {
     if (animal == null) return;
 
-    if (animal.GetGender() == Gender.Male) return;
+    if (animal.Gender == Gender.Male) return;
     
     if(MateListeners!= null) MateListeners.Invoke(animal);
   }

@@ -30,11 +30,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
   public bool Fertile { get; private set; }
-  private const int fertilityTime = 5;
-  private int timeUntilFertile = fertilityTime;
+  private const int FertilityTimeInUnits = 5;
+  private int unitsUntilFertile = FertilityTimeInUnits;
   public bool IsMoving => movement.HasTarget;
 
-  private Gender _gender;
+  public Gender Gender { get; private set; }
   private Animal _mateTarget;
   
 
@@ -68,7 +68,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
 
     GenerateGender();
-    if (_gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+    if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
     
     
     // Setup states
@@ -113,13 +113,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     var cubeRenderer = gameObject.GetComponent<Renderer>();
     if (random > 0.5)
     {
-      _gender = Gender.Male;
+      Gender = Gender.Male;
       Fertile = false;
       cubeRenderer.material.SetColor("_Color", Color.cyan);
     }
     else
     {
-      _gender = Gender.Female;
+      Gender = Gender.Female;
       Fertile = false;
       cubeRenderer.material.SetColor("_Color", Color.magenta);
     }
@@ -127,7 +127,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   private void OnMateFound(Animal animal)
   {
-    if (animal.GetGender() != _gender && animal.Fertile)
+    if (animal.Gender != Gender && animal.Fertile)
     {
       _mateTarget = animal;
     }
@@ -161,9 +161,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
 
-    if (!Fertile) timeUntilFertile--;
+    if (!Fertile) unitsUntilFertile--;
 
-    if (timeUntilFertile <= 0)
+    if (unitsUntilFertile <= 0)
     {
       Fertile = true;
     }
@@ -231,7 +231,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
     ChildSpawnedListeners?.Invoke(child);
     
-    timeUntilFertile = fertilityTime;
+    unitsUntilFertile = FertilityTimeInUnits;
     Fertile = false;
     ShouldBirth = false;
     
@@ -251,18 +251,16 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     foodManager.Forget(memory);
   }
 
-  public Gender GetGender()
-  {
-    return _gender;
-  }
 
   public Animal GetMateTarget()
   {
     return _mateTarget;
   }
-
-  public void ProduceChild(Animal father)
+  /// <summary>
+  ///   Method ill only be called for females. Father parameter is for future genetic transfer implementations
+  /// </summary>
+  public void Mate(Animal father)
   {
-    ShouldBirth = true;
+    if(Gender == Gender.Female) ShouldBirth = true;
   }
 }

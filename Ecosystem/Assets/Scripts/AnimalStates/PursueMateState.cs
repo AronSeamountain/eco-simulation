@@ -34,8 +34,7 @@ namespace AnimalStates
       var reachesMate = Vector3Util.InRange(animal.gameObject, mateTarget.gameObject, 2);
       if (reachesMate)
       {
-        Debug.Log("Reached Mate");
-        mateTarget.ProduceChild(animal);
+        mateTarget.Mate(animal);
         animal.ClearMateTarget();
         return AnimalState.Wander;
       }
