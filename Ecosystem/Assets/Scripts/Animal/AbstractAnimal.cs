@@ -28,8 +28,8 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   [SerializeField] protected EntityStatsDisplay entityStatsDisplay;
 
   private INewState<AnimalState> _currentState;
-  private HealthDelegate _healthDelegate;
-  private NourishmentDelegate _nourishmentDelegate;
+  protected HealthDelegate _healthDelegate;
+  protected NourishmentDelegate _nourishmentDelegate;
   private NewStateMachine<AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
@@ -129,7 +129,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
   protected abstract List<INewState<AnimalState>> GetStates(FoodManager foodManager);
 
-  protected int GetHealth()
+  public int GetHealth()
   {
     return _healthDelegate.Health;
   }

@@ -32,7 +32,9 @@ namespace AnimalStates
     {
       if (!_target) return AnimalState.Wander;
       if (!_carnivore.ShouldHunt(_target)) return AnimalState.Wander;
+      if (!_target.IsAlive) return AnimalState.Wander;
       _carnivore.GoTo(_target.transform.position);
+      _carnivore.EatHerbivore(_target);
       return AnimalState.Hunt;
     }
 

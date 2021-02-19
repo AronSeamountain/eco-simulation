@@ -22,4 +22,9 @@ public sealed class HerbivoreScript : AbstractAnimal
   {
     return true;
   }
+
+  public void IsEaten()
+  {
+    _healthDelegate.Health--;
+  }
 }

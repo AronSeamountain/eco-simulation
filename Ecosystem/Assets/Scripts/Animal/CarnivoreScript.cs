@@ -6,6 +6,7 @@ using Utils;
 public sealed class CarnivoreScript : AbstractAnimal
 {
   private const float Range = 10;
+  private const float EatingRange = 2f;
   public HerbivoreScript Target { get; private set; }
 
   public void OnPreyFound(HerbivoreScript herbivore)
@@ -26,16 +27,22 @@ public sealed class CarnivoreScript : AbstractAnimal
     };
   }
 
-
-  private bool CanBeEaten(AbstractAnimal animal)
-  {
-    if (true)
-      return true;
-  }
-
-
   public bool ShouldHunt(HerbivoreScript carnivoreTarget)
   {
     return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, Range);
+  }
+
+  private bool IsInRange(HerbivoreScript carnivoreTarget)
+  {
+    return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, EatingRange);
+  }
+
+  public void EatHerbivore(HerbivoreScript carnivoreTarget)
+  {
+    if (IsInRange(carnivoreTarget))
+    {
+      carnivoreTarget.IsEaten();
+      _nourishmentDelegate.Saturation++;
+    }
   }
 }
