@@ -8,6 +8,7 @@ namespace Utils
   public static class NavMeshUtil
   {
     private const string WalkableLayerName = "Walkable";
+    private const int AllLayers = -1;
 
     /// <summary>
     ///   Gets a random point of the nav mesh.
@@ -40,11 +41,9 @@ namespace Utils
       var offset = new Vector3(Random.Range(-radius, radius), 0, Random.Range(-radius, radius));
       var randomDirection = origin + offset;
 
-      var walkableLayer = NavMeshUtil.WalkableLayer;
-      const int allLayers = -1;
-      const int layer = allLayers;
+      const int lookAtLayers = AllLayers;
 
-      if (NavMesh.SamplePosition(randomDirection, out var hit, radius * 2, layer))
+      if (NavMesh.SamplePosition(randomDirection, out var hit, radius * 2, lookAtLayers))
         return hit.position;
 
       throw new Exception("Failed to find a walkable position close to " + randomDirection);
