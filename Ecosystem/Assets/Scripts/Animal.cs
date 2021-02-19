@@ -23,7 +23,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
-  [SerializeField] private EntityStatsDisplay entityStatsDisplay;
   private IState<Animal, AnimalState> _currentState;
   private HealthDelegate _healthDelegate;
   private NourishmentDelegate _nourishmentDelegate;
@@ -49,6 +48,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
   private int Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
+
+  /// <summary>
+  ///   The margin for which is the animal considers to have reached its desired position.
+  /// </summary>
+  public float Reach => 2f;
 
   private void Awake()
   {
@@ -77,8 +81,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
     foodManager.KnownFoodMemoriesChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
 
-    _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
-    _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }
@@ -128,7 +130,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void ShowStats(bool show)
   {
-    entityStatsDisplay.ShowStats = show;
   }
 
   private void OnWaterLocationChanged(Water water)
@@ -193,22 +194,5 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Forget(FoodManager.FoodMemory memory)
   {
     foodManager.Forget(memory);
-  }
-
-  public void SetDestination(Vector3 destination)
-  {
-    agent.SetDestination(destination);
-  }
-
-  public void FixAgentOnNavMesh()
-  {
-    if (agent.enabled && !agent.isOnNavMesh)
-    {
-      var position = transform.position;
-      NavMeshHit hit;
-      NavMesh.SamplePosition(position, out hit, 10.0f, 1);
-      position = hit.position; // usually this barely changes, if at all
-      agent.Warp(position);
-    }
   }
 }

@@ -42,10 +42,10 @@ namespace AnimalStates
       }
 
       // Eat the current food if it can be reached.
-      var reachesFood = Vector3Util.InRange(animal.transform.position, _foodTarget.Position, 2);
+      var reachesFood = Vector3Util.InRange(animal.transform.position, _foodTarget.Position, animal.Reach);
       if (reachesFood)
       {
-        var colliders = Physics.OverlapSphere(animal.transform.position, 2);
+        var colliders = Physics.OverlapSphere(animal.transform.position, animal.Reach * 1.5f);
         foreach (var collider in colliders)
           if (collider.GetComponent<AbstractFood>() is AbstractFood f)
             if (f == _foodTarget.Food)

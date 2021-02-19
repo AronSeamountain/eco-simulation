@@ -48,10 +48,9 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
-      //if (!animal.IsAlive) return AnimalState.Dead;
-      //if (animal.KnowsWaterLocation && animal.IsThirsty) return AnimalState.PursueWater;
-      //if (animal.KnowsFoodLocation && animal.IsHungry) return AnimalState.PursueFood;
-      //animal.FixAgentOnNavMesh();
+      if (!animal.IsAlive) return AnimalState.Dead;
+      if (animal.KnowsWaterLocation && animal.IsThirsty) return AnimalState.PursueWater;
+      if (animal.KnowsFoodLocation && animal.IsHungry) return AnimalState.PursueFood;
 
       if (Vector3Util.InRange(animal.transform.position, _destination, MarginToReachDestination))
         animal.StopMoving();
