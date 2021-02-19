@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Foods.Plants;
 using Logger;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using Utils;
@@ -81,39 +82,31 @@ public sealed class EntityManager : MonoBehaviour
     for (var i = 0; i < amount; i++)
     {
       var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
-
-      if (instance.TryGetComponent(out NavMeshAgent agent))
-        PlaceNavAgent(agent);
-      else
-        PlaceSimple(instance);
-
+      Place(instance);
       list.Add(instance);
     }
   }
 
-  private void PlaceSimple<T>(T instance) where T : MonoBehaviour
-  {
-    const float spawnSquareHalfWidth = 30f;
-
-    var offset = new Vector3(
-      Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
-      100,
-      Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
-    );
-
-    var pos = _spawnLocationVector3 + offset;
-    instance.transform.position = pos;
-  }
-
-  private void PlaceNavAgent(NavMeshAgent agent)
+  private void Place<T>(T instance) where T : MonoBehaviour
   {
     var coord = NavMeshUtil.GetRandomLocation();
-
     var foundPointOnNavMesh = NavMesh.SamplePosition(coord, out var hit, 50, -1);
-    var successfullyWarped = agent.Warp(hit.position);
 
-    if (!foundPointOnNavMesh || !successfullyWarped) // TODO: Test, assume that it works?
-      QuitApplication("Could not find a position on the nav mesh");
+    if (!foundPointOnNavMesh)
+      QuitApplication("Could not find a position on the nav mesh when placing a game object");
+
+    if (hit.position == Vector3.zero)
+      QuitApplication("Attempted to place game object a non nav mesh place");
+
+    if (instance.TryGetComponent(out NavMeshAgent agent))
+    {
+      if (!agent.Warp(hit.position))
+        QuitApplication("Could not warp agent to nav mesh");
+    }
+    else
+    {
+      instance.transform.position = hit.position;
+    }
   }
 
   private void QuitApplication(string message = "oof")
@@ -121,7 +114,7 @@ public sealed class EntityManager : MonoBehaviour
     Debug.LogError(message);
 
 #if UNITY_EDITOR
-    UnityEditor.EditorApplication.isPlaying = false;
+    EditorApplication.isPlaying = false;
 #else
       Application.Quit();
 #endif
