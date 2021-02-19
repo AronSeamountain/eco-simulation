@@ -14,6 +14,7 @@ public sealed class Billboard : MonoBehaviour
 
   private void Update()
   {
-    transform.LookAt(_cameraTransform);
+    //transform.LookAt(_cameraTransform);
+    transform.rotation = _cameraTransform.rotation;
   }
 }

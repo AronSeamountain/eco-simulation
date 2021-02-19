@@ -6,6 +6,7 @@ public class DisplayCharacterStats : MonoBehaviour
   [SerializeField] private Camera mainCamera;
   private CameraControls _controls;
   private AbstractAnimal _target;
+  private IStatable _targetIS;
 
   private void Awake()
   {
@@ -28,8 +29,8 @@ public class DisplayCharacterStats : MonoBehaviour
 
   private void OnCancelTarget(InputAction.CallbackContext obj)
   {
-    if (_target) _target.ShowStats(false);
-    _target = null;
+    _targetIS?.Stats(false);
+    _targetIS = null;
   }
 
   /// <summary>
@@ -38,16 +39,19 @@ public class DisplayCharacterStats : MonoBehaviour
   /// <param name="_"></param>
   private void ClickedChar(InputAction.CallbackContext _)
   {
-    RaycastHit hitTarget;
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
+    if (Physics.Raycast(ray, out var hitTarget))
+    {
+      var interfaces = hitTarget.collider.gameObject.GetComponents<MonoBehaviour>();
+      foreach (var mb in interfaces)
+        if (mb is IStatable statable)
+        {
+          if (_targetIS != null) OnCancelTarget(_);
+          _targetIS = statable;
+          _targetIS.Stats(true);
+        }
+    }
 
-    if (Physics.Raycast(ray, out hitTarget))
-      if (hitTarget.transform.GetComponent<AbstractAnimal>() is AbstractAnimal animal)
-      {
-        if (_target) OnCancelTarget(_);
-        animal.ShowStats(true);
-        _target = animal;
-      }
   }
 
   private Vector2 GetMousePos()

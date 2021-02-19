@@ -30,6 +30,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c6fbb3104b7d4734d80a423008bda1f0, type: 2}
+    - target: {fileID: 1008075089679007342, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1197174237443806308, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
       propertyPath: m_Mesh
@@ -119,6 +124,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Carnivore
+      objectReference: {fileID: 0}
+    - target: {fileID: 5485427529280969439, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5729227723332263384, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6364301893857852928, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Direction
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625045596493641991, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Direction
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7370167640182523001, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8231091343605522598, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Direction
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9164101030897492896, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
