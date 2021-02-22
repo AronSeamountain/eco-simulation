@@ -5,7 +5,7 @@ public class DisplayCharacterStats : MonoBehaviour
 {
   [SerializeField] private Camera mainCamera;
   private CameraControls _controls;
-  private Animal _target;
+  private AbstractAnimal _target;
   private IStatable _targetIS;
 
   private void Awake()
@@ -40,7 +40,6 @@ public class DisplayCharacterStats : MonoBehaviour
   private void ClickedChar(InputAction.CallbackContext _)
   {
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
-
     if (Physics.Raycast(ray, out var hitTarget))
     {
       var interfaces = hitTarget.collider.gameObject.GetComponents<MonoBehaviour>();

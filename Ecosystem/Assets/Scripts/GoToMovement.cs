@@ -9,6 +9,7 @@ public sealed class GoToMovement : MonoBehaviour
   [SerializeField] private CharacterController controller;
   [SerializeField] private int movementSpeed;
   private Vector3 _target;
+  public int MovementSpeed { get; set; }
 
   public float SpeedFactor { get; set; } = 1;
 

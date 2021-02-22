@@ -246,6 +246,8 @@ MonoBehaviour:
   initialPlants: 4
   animalPrefab: {fileID: 3994141988682731950, guid: 51020aa19a9877a49924a41101ce6231,
     type: 3}
+  carnivorePrefab: {fileID: 8672377695379901830, guid: 85ba19cd4fe588c41a63c69561385f30,
+    type: 3}
   plantPrefab: {fileID: 8397035145334695597, guid: fb4276b6e821a084caebb0c6d6579005,
     type: 3}
 --- !u!4 &395833026

@@ -11,7 +11,7 @@
     Health = 100;
   }
 
-  public int Health { get; private set; }
+  public int Health { get; set; }
 
   public void DecreaseHealth(int decrease)
   {

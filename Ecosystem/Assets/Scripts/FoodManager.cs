@@ -15,15 +15,23 @@ public sealed class FoodManager : MonoBehaviour, ITickable
   /// <param name="foodMemories">A list of all the known food sources.</param>
   public delegate void KnownFoodMemoriesChanged(IReadOnlyCollection<FoodMemory> foodMemories);
 
+  public delegate void PreyFound(HerbivoreScript herbivore);
+
   [SerializeField] private VisualDetector visualDetector;
   private IList<FoodMemory> _knownFoodMemories;
   public KnownFoodMemoriesChanged KnownFoodMemoriesChangedListeners;
+
+  public PreyFound PreyFoundListeners;
+
+  //private CarnivoreScript carnivore;
+  //public HerbivoreScript target;
   public IReadOnlyList<FoodMemory> KnownFoodMemories => new ReadOnlyCollection<FoodMemory>(_knownFoodMemories);
 
   private void Start()
   {
     _knownFoodMemories = new List<FoodMemory>();
     visualDetector.FoodFoundListeners += OnFoodFound;
+    visualDetector.PreyFoundListeners += OnPreyFound;
   }
 
   public void Tick()
@@ -38,6 +46,11 @@ public sealed class FoodManager : MonoBehaviour, ITickable
 
   public void DayTick()
   {
+  }
+
+  private void OnPreyFound(HerbivoreScript herbivore)
+  {
+    PreyFoundListeners?.Invoke(herbivore);
   }
 
   private void OnFoodFound(AbstractFood food)

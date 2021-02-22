@@ -1,34 +1,40 @@
-﻿using Core;
+﻿using Animal;
 using UnityEngine;
 
 namespace AnimalStates
 {
-  public sealed class DeadState : IState<Animal, AnimalState>
+  public sealed class DeadState : INewState<AnimalState>
   {
+    private readonly AbstractAnimal _animal;
+
+    public DeadState(AbstractAnimal animal)
+    {
+      _animal = animal;
+    }
+
     public AnimalState GetStateEnum()
     {
       return AnimalState.Dead;
     }
 
-    public void Enter(Animal animal)
+    public void Enter()
     {
-      animal.DisplayState();
-      FallOver(animal);
+      FallOver(_animal);
     }
 
-    public AnimalState Execute(Animal animal)
+    public AnimalState Execute()
     {
       return AnimalState.Dead;
     }
 
-    public void Exit(Animal animal)
+    public void Exit()
     {
     }
 
     /// <summary>
     ///   Stops the animal from moving and lays it on the floor.
     /// </summary>
-    private void FallOver(Animal animal)
+    private void FallOver(AbstractAnimal animal)
     {
       animal.StopMoving();
       animal.transform.rotation = Quaternion.Euler(0, 0, 90);
