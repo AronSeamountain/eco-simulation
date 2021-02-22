@@ -7,7 +7,7 @@ public interface ICanEat
   ///   Gets the amount of saturation the entity has.
   /// </summary>
   /// <returns>The amount of saturation the entity has.</returns>
-  int GetSaturation();
+  float GetSaturation();
 
   /// <summary>
   ///   Adds the amount of saturation to the entity.

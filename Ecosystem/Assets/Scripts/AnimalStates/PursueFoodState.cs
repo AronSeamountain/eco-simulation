@@ -23,13 +23,14 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
+      animal.DisplayState();
     }
 
     public AnimalState Execute(Animal animal)
     {
+      if (!animal.IsAlive) return AnimalState.Dead;
       if (animal.ShouldBirth) return AnimalState.Birth;
       if (!animal.IsHungry) return AnimalState.Wander;
-      if (!animal.IsAlive) return AnimalState.Dead;
 
       // A new food source has been found. Change the food target to the closest food.
       if (_knownFoodTargetsChanged)

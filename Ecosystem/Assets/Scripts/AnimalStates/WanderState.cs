@@ -30,6 +30,7 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
+      animal.DisplayState();
       GoToClosePoint(animal);
       UpdateIdleTime();
     }
@@ -41,6 +42,10 @@ namespace AnimalStates
 
     public AnimalState Execute(Animal animal)
     {
+      //Enter dead state
+      if (!animal.IsAlive)
+        return AnimalState.Dead;
+      
       if (animal.ShouldBirth) return AnimalState.Birth;
       // Enter pursue water state
       if (animal.KnowsWaterLocation && animal.IsThirsty)
@@ -49,10 +54,6 @@ namespace AnimalStates
       // Enter pursue food state
       if (animal.KnowsFoodLocation && animal.IsHungry)
         return AnimalState.PursueFood;
-
-      //Enter dead state
-      if (!animal.IsAlive)
-        return AnimalState.Dead;
 
       if (animal.GetMateTarget() != null && animal.Gender == Gender.Male)
       {
