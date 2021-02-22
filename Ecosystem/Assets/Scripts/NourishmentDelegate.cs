@@ -17,11 +17,6 @@ public sealed class NourishmentDelegate : ITickable
   /// </summary>
   private const float ThirstyHydrationLevel = 50;
 
-  public float HydrationDecreasePerUnit { get; set; } = 1;
-
-
-  public float SaturationDecreasePerUnit { get; set; } = 1;
-
   private float _hydration;
   private float _saturation;
 
@@ -35,11 +30,10 @@ public sealed class NourishmentDelegate : ITickable
     MaxSaturation = 100;
   }
 
-  public void SetMaxNourishment(float maxValue)
-  {
-    MaxHydration = maxValue;
-    MaxSaturation = maxValue;
-  }
+  public float HydrationDecreasePerUnit { get; set; } = 1;
+
+
+  public float SaturationDecreasePerUnit { get; set; } = 1;
 
   public float Saturation
   {
@@ -76,6 +70,12 @@ public sealed class NourishmentDelegate : ITickable
 
   public void DayTick()
   {
+  }
+
+  public void SetMaxNourishment(float maxValue)
+  {
+    MaxHydration = maxValue;
+    MaxSaturation = maxValue;
   }
 
   private void Invoker()

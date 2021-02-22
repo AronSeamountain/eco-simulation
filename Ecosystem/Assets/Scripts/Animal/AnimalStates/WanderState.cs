@@ -1,4 +1,4 @@
-﻿using Core;
+﻿using Animal;
 using UnityEngine;
 
 namespace AnimalStates
@@ -6,12 +6,15 @@ namespace AnimalStates
   /// <summary>
   ///   A state for an animal which walks randomly.
   /// </summary>
-  public sealed class WanderState : IState<Animal, AnimalState>
+  public sealed class WanderState : INewState<AnimalState>
   {
     /// <summary>
     ///   The time to stand still in seconds.
     /// </summary>
     private const float MaxIdle = 4f;
+
+    private readonly AbstractAnimal _animal;
+    private HerbivoreScript _herbivore;
 
     /// <summary>
     ///   The time the animal should stand still.
@@ -23,41 +26,49 @@ namespace AnimalStates
     /// </summary>
     private float _timeIdled;
 
+    public WanderState(AbstractAnimal animal)
+    {
+      _animal = animal;
+    }
+
     public AnimalState GetStateEnum()
     {
       return AnimalState.Wander;
     }
 
-    public void Enter(Animal animal)
+    public void Enter()
     {
-      animal.DisplayState();
-      GoToClosePoint(animal);
+      GoToClosePoint(_animal);
       UpdateIdleTime();
     }
 
-    public void Exit(Animal animal)
+    public void Exit()
     {
-      animal.StopMoving();
+      _animal.StopMoving();
     }
 
-    public AnimalState Execute(Animal animal)
+    public AnimalState Execute()
     {
-      //Enter dead state
-      if (!animal.IsAlive)
-        return AnimalState.Dead;
-      
+      if (_animal is CarnivoreScript carnivore)
+        if (carnivore.Target && carnivore.ShouldHunt(carnivore.Target))
+          return AnimalState.Hunt;
+
       // Enter pursue water state
-      if (animal.KnowsWaterLocation && animal.IsThirsty)
+      if (_animal.KnowsWaterLocation && _animal.IsThirsty)
         return AnimalState.PursueWater;
 
       // Enter pursue food state
-      if (animal.KnowsFoodLocation && animal.IsHungry)
+      if (_animal.KnowsFoodLocation && _animal.IsHungry && !(_animal is CarnivoreScript))
         return AnimalState.PursueFood;
 
-      var shouldMoveToNewPos = !animal.IsMoving && _timeIdled >= _idleTime;
+      //Enter dead state
+      if (!_animal.IsAlive)
+        return AnimalState.Dead;
+
+      var shouldMoveToNewPos = !_animal.IsMoving && _timeIdled >= _idleTime;
       if (shouldMoveToNewPos)
       {
-        GoToClosePoint(animal);
+        GoToClosePoint(_animal);
         UpdateIdleTime();
         _timeIdled = 0;
       }
@@ -73,7 +84,7 @@ namespace AnimalStates
     ///   Sets the animals target position to a close points.
     /// </summary>
     /// <param name="animal">The animal to move.</param>
-    private void GoToClosePoint(Animal animal)
+    private void GoToClosePoint(AbstractAnimal animal)
     {
       var point = GetRandomClosePoint(animal.transform.position);
       animal.GoTo(point);
