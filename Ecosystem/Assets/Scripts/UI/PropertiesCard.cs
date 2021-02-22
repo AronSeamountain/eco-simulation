@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UI
 {
-  public class CardFactory : MonoBehaviour
+  public class PropertiesCard : MonoBehaviour
   {
     [SerializeField] private GameObject content;
 

@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 namespace UI
 {
-  public static class GOFactory
+  public static class PropertyFactory
   {
     private static readonly Dictionary<string, GameObject> _goDictionary;
     private static readonly GameObject slider;
     private static readonly GameObject text;
 
-    static GOFactory()
+    static PropertyFactory()
     {
       var gameObjects = Resources.LoadAll<GameObject>("Prefabs/UI");
       _goDictionary = new Dictionary<string, GameObject>(gameObjects.Length);

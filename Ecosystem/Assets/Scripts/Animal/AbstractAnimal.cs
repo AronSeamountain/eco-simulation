@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Animal.AnimalStates;
+using Animal.Managers;
 using Core;
 using Foods;
 using UI;
@@ -293,7 +294,7 @@ namespace Animal
 
       if (!isTargeted) return null;
 
-      return GOFactory.MakeAnimalObjects(this);
+      return PropertyFactory.MakeAnimalObjects(this);
     }
 
     public HealthDelegate GetHealthDelegate()

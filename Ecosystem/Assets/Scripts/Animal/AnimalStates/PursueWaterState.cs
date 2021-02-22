@@ -1,4 +1,5 @@
 ﻿using Core;
+using Foods;
 using Utils;
 
 namespace Animal.AnimalStates

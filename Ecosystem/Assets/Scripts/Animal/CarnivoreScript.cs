@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Animal.AnimalStates;
+using Animal.Managers;
 using Core;
 using Utils;
 
