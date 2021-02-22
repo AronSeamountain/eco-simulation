@@ -17,6 +17,7 @@ MonoBehaviour:
   foodManager: {fileID: 2111628281946265205}
   waterManager: {fileID: 4747830557226467101}
   childPrefab: {fileID: 8672377695379901830}
+  matingManager: {fileID: 3198661640221365228}
 --- !u!1001 &4342840507159857448
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -189,6 +190,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3198661640221365228 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1163955920227588804, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 4342840507159857448}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8672377695379901830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a01267a139454c07a4663795998ac9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2111628281946265205 stripped

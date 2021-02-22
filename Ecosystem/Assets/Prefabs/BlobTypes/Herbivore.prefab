@@ -18,6 +18,7 @@ MonoBehaviour:
   waterManager: {fileID: 1069567349259084597}
   childPrefab: {fileID: 3994141988682731950, guid: 51020aa19a9877a49924a41101ce6231,
     type: 3}
+  matingManager: {fileID: 7158364655585054660}
 --- !u!1001 &8318338745849550080
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -229,6 +230,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7158364655585054660 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1163955920227588804, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 8318338745849550080}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3994141988682731950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a01267a139454c07a4663795998ac9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &5943187825592142429 stripped

@@ -7,6 +7,7 @@
     PursueWater,
     Birth,
     Dead,
-    Hunt
+    Hunt,
+    PursueMate
   }
 }

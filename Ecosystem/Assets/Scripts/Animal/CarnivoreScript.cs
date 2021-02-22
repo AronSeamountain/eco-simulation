@@ -23,7 +23,8 @@ public sealed class CarnivoreScript : AbstractAnimal
       new WanderState(this),
       new PursueWaterState(this),
       new BirthState(this),
-      new HuntState(this)
+      new HuntState(this),
+      new PursueMateState(this)
     };
   }
 
