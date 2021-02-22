@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 /// <summary>
 ///   A delegate for something that needs to eat and drink.
@@ -14,17 +14,20 @@ public sealed class NourishmentDelegate : ITickable
   /// <summary>
   ///   The value for which the animal is considered hungry.
   /// </summary>
-  private const int HungrySaturationLevel = 50;
+  private const float HungrySaturationLevel = 50;
 
   /// <summary>
   ///   The value for which the animal is considered thirsty.
   /// </summary>
-  private const int ThirstyHydrationLevel = 50;
+  private const float ThirstyHydrationLevel = 50;
 
-  private const int SaturationDecreasePerUnit = 1;
-  private const int HydrationDecreasePerUnit = 1;
-  private int _hydration;
-  private int _saturation;
+  public float HydrationDecreasePerUnit { get; set; } = 1;
+
+
+  public float SaturationDecreasePerUnit { get; set; } = 1;
+
+  private float _hydration;
+  private float _saturation;
 
   public NourishmentChanged NourishmentChangedListeners;
   public SaturationChanged SaturationChangedListeners;
@@ -38,7 +41,13 @@ public sealed class NourishmentDelegate : ITickable
     MaxSaturation = 100;
   }
 
-  public int Saturation
+  public void SetMaxNourishment(float maxValue)
+  {
+    MaxHydration = maxValue;
+    MaxSaturation = maxValue;
+  }
+
+  public float Saturation
   {
     get => _saturation;
     set
@@ -48,7 +57,7 @@ public sealed class NourishmentDelegate : ITickable
     }
   }
 
-  public int Hydration
+  public float Hydration
   {
     get => _hydration;
     set

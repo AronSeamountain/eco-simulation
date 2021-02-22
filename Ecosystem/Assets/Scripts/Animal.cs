@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
@@ -6,6 +7,7 @@ using DefaultNamespace;
 using DefaultNamespace.UI;
 using Foods;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using UnityEngine.UI;
 
 /// <summary>
@@ -24,6 +26,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
+  private float _speedModifier;
+  private float _sizeModifier;
   private IState<Animal, AnimalState> _currentState;
   public HealthDelegate _healthDelegate;
   public NourishmentDelegate _nourishmentDelegate;
@@ -37,6 +41,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   /// </summary>
   public bool KnowsFoodLocation { get; private set; }
 
+  /// <summary>
+  ///   Whether the animal knows about a water location.
+  /// </summary>
   public bool KnowsWaterLocation { get; private set; }
 
   /// <summary>
@@ -78,6 +85,23 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
 
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
+
+    //setup speed and size variables for nourishment modifiers
+    const float rangeMin = (float) 0.8;
+    const float rangeMax = (float) 1.2;
+    _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+    _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+
+    float decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
+
+    _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
+    _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
+    _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
+
+    //setup speed modifier
+    movement.SpeedFactor = _speedModifier;
+    //setup size modification
+    transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
   }
 
   private void Update()
@@ -91,7 +115,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     }
   }
 
-  public int GetHydration()
+  public float GetHydration()
   {
     return _nourishmentDelegate.Hydration;
   }
@@ -101,7 +125,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     _nourishmentDelegate.Hydration += hydration;
   }
 
-  public int GetSaturation()
+  public float GetSaturation()
   {
     return _nourishmentDelegate.Saturation;
   }

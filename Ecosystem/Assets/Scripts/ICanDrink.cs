@@ -7,7 +7,7 @@ public interface ICanDrink
   ///   Gets the amount of hydration the entity has.
   /// </summary>
   /// <returns>The amount of hydration the entity has.</returns>
-  int GetHydration();
+  float GetHydration();
 
   /// <summary>
   ///   Adds the amount of hydration to the entity.
