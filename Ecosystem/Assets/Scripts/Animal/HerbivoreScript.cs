@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Animal;
 using AnimalStates;
+using Core;
 
 public sealed class HerbivoreScript : AbstractAnimal
 {
@@ -14,7 +14,8 @@ public sealed class HerbivoreScript : AbstractAnimal
       new WanderState(this),
       new PursueWaterState(this),
       new BirthState(this),
-      pursueFoodState
+      pursueFoodState,
+      new PursueMateState(this)
     };
   }
 

@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using Foods.Plants;
 using Logger;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
+using Utils;
 
-public sealed class Ecosystem : MonoBehaviour
+public sealed class EntityManager : MonoBehaviour
 {
   /// <summary>
   ///   The amount of time that a "unit" is in.
@@ -14,19 +17,22 @@ public sealed class Ecosystem : MonoBehaviour
   [SerializeField] private int initialAnimals = 1;
   [SerializeField] private int initialPlants = 4;
   [SerializeField] private GameObject animalPrefab;
-  [SerializeField] private GameObject carnivorePrefab;
   [SerializeField] private GameObject plantPrefab;
+  [SerializeField] private Transform spawnLocation;
   private IList<AbstractAnimal> _animals;
   private int _days;
   private DayTick _dayTickListeners;
   private DataLogger _logger;
   private IList<Plant> _plants;
+  private Vector3 _spawnLocationVector3;
   private Tick _tickListeners;
   private float _unitsPassed;
   private float _unitTicker;
 
   private void Start()
   {
+    _spawnLocationVector3 = spawnLocation.position;
+
     // Lists
     _animals = new List<AbstractAnimal>();
     SpawnAndAddInitialAnimals();
@@ -61,9 +67,7 @@ public sealed class Ecosystem : MonoBehaviour
   private void SpawnAndAddInitialAnimals()
   {
     SpawnAndAddGeneric(initialAnimals, animalPrefab, _animals);
-    SpawnAndAddGeneric(initialAnimals, carnivorePrefab, _animals);
   }
-
 
   /// <summary>
   ///   Spawns plants and adds them to the list of animals.
@@ -73,19 +77,47 @@ public sealed class Ecosystem : MonoBehaviour
     SpawnAndAddGeneric(initialPlants, plantPrefab, _plants);
   }
 
-  private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list)
+  private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list) where T : MonoBehaviour
   {
-    const float spawnSquareHalfWidth = 30f;
     for (var i = 0; i < amount; i++)
     {
-      var randomPos = new Vector3(
-        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth),
-        1.5f,
-        Random.Range(-spawnSquareHalfWidth, spawnSquareHalfWidth)
-      );
-      var instance = Instantiate(prefab, randomPos, Quaternion.identity).GetComponent<T>();
+      var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
+      Place(instance);
       list.Add(instance);
     }
+  }
+
+  private void Place<T>(T instance) where T : MonoBehaviour
+  {
+    var coord = NavMeshUtil.GetRandomLocation();
+    var foundPointOnNavMesh = NavMesh.SamplePosition(coord, out var hit, 50, -1);
+
+    if (!foundPointOnNavMesh)
+      QuitApplication("Could not find a position on the nav mesh when placing a game object");
+
+    if (hit.position == Vector3.zero)
+      QuitApplication("Attempted to place game object a non nav mesh place");
+
+    if (instance.TryGetComponent(out NavMeshAgent agent))
+    {
+      if (!agent.Warp(hit.position))
+        QuitApplication("Could not warp agent to nav mesh");
+    }
+    else
+    {
+      instance.transform.position = hit.position;
+    }
+  }
+
+  private void QuitApplication(string message = "oof")
+  {
+    Debug.LogError(message);
+
+#if UNITY_EDITOR
+    EditorApplication.isPlaying = false;
+#else
+      Application.Quit();
+#endif
   }
 
   /// <summary>

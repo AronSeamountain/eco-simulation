@@ -24,7 +24,7 @@ public sealed class VisualDetector : MonoBehaviour
   /// <param name="water">The water that was just found.</param>
   public delegate void WaterFound(Water water);
 
-  public delegate void AnimalFound(Animal animal);
+  public delegate void AnimalFound(AbstractAnimal animal);
 
   [SerializeField] private Transform eyesTransform;
   private int _distance;
@@ -69,9 +69,9 @@ public sealed class VisualDetector : MonoBehaviour
     if (other.GetComponent<Water>() is Water water && CanSee(water))
       WaterFoundListeners?.Invoke(water);
 
-    if (other.GetComponent<Animal>() is Animal animal && CanSee(animal))
+    if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal && CanSee(foundAnimal))
     {
-      if(AnimalFoundListeners != null) AnimalFoundListeners.Invoke(animal);
+      if(AnimalFoundListeners != null) AnimalFoundListeners.Invoke(foundAnimal);
     }
   }
 

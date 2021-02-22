@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Animal;
 using AnimalStates;
 using Core;
 using Foods;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -23,9 +23,8 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   [SerializeField] protected GoToMovement movement;
   [SerializeField] protected FoodManager foodManager;
   [SerializeField] protected WaterManager waterManager;
-  [SerializeField] protected GameObject childPrefab;
-  [SerializeField] protected EntityStatsDisplay entityStatsDisplay;
-
+  [SerializeField] protected GameObject childPrefab; 
+  [SerializeField] MatingManager matingManager;
   private INewState<AnimalState> _currentState;
   protected HealthDelegate _healthDelegate;
   protected NourishmentDelegate _nourishmentDelegate;
@@ -36,11 +35,16 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   public bool ShouldBirth { get; private set; }
   public bool Fertile { get; private set; }
   private const int FertilityTimeInUnits = 5;
-  private int unitsUntilFertile = FertilityTimeInUnits;
-  public bool IsMoving => movement.HasTarget;
+  private int _unitsUntilFertile = FertilityTimeInUnits;
+  public bool IsMoving => movement.IsMoving;
 
   public Gender Gender { get; private set; }
-  private Animal _mateTarget;
+  private AbstractAnimal _mateTarget;
+  /// <summary>
+  ///   The margin for which is the animal considers to have reached its desired position.
+  /// </summary>
+  public float Reach => 2f;
+
   /// <summary>
   ///   Whether the animal knows about a food location.
   /// </summary>
@@ -71,12 +75,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
   private void Start()
   {
-    if (this is HerbivoreScript)
-      movement.MovementSpeed = 25;
-    else
-      movement.MovementSpeed = 10;
-    // Setup states
-
     var states = GetStates(foodManager);
     _stateMachine = new NewStateMachine<AnimalState>(states);
     _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);
@@ -88,9 +86,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
     
     // Listen to food events
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
-    
-    _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
-    _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
 
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
@@ -143,7 +138,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
     }
   }
 
-  private void OnMateFound(Animal animal)
+  private void OnMateFound(AbstractAnimal animal)
   {
     if (animal.Gender != Gender && animal.Fertile)
     {
@@ -187,9 +182,9 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   {
     ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
 
-    if (!Fertile) unitsUntilFertile--;
+    if (!Fertile) _unitsUntilFertile--;
 
-    if (unitsUntilFertile <= 0)
+    if (_unitsUntilFertile <= 0)
     {
       Fertile = true;
     }
@@ -213,7 +208,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
   public void ShowStats(bool show)
   {
-    entityStatsDisplay.ShowStats = show;
   }
 
   public void OnWaterLocationChanged(Water water)
@@ -242,12 +236,12 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   }
 
   /// <summary>
-  ///   Moves the Animal
+  ///   Moves the Animal.
   /// </summary>
-  /// <param name="pos">The position to go to</param>
-  public void GoTo(Vector3 pos)
+  /// <param name="destination">The position to go to.</param>
+  public void GoTo(Vector3 destination)
   {
-    movement.Target = pos;
+    movement.GoTo(destination);
   }
 
   public void StopMoving()
@@ -265,7 +259,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
     var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
     ChildSpawnedListeners?.Invoke(child);
     
-    unitsUntilFertile = FertilityTimeInUnits;
+    _unitsUntilFertile = FertilityTimeInUnits;
     Fertile = false;
     ShouldBirth = false;
   }
@@ -279,14 +273,14 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
       _healthDelegate.DecreaseHealth(1);
   }
   
-  public Animal GetMateTarget()
+  public AbstractAnimal GetMateTarget()
   {
     return _mateTarget;
   }
   /// <summary>
   ///   Method ill only be called for females. Father parameter is for future genetic transfer implementations
   /// </summary>
-  public void Mate(Animal father)
+  public void Mate(AbstractAnimal father)
   {
     if(Gender == Gender.Female) ShouldBirth = true;
   }
@@ -298,6 +292,5 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
   public void DisplayState()
   {
-    entityStatsDisplay.OnStateChanged(_currentState.GetStateEnum());
   }
 }

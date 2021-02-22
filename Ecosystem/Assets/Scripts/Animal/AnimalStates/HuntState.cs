@@ -1,4 +1,4 @@
-﻿using Animal;
+﻿using Core;
 
 namespace AnimalStates
 {

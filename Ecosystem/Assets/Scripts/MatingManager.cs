@@ -3,7 +3,7 @@ using UnityEngine;
 public class MatingManager: MonoBehaviour
 {
   [SerializeField] private VisualDetector visualDetector;
-  public delegate void AnimalFound(Animal animal);
+  public delegate void AnimalFound(AbstractAnimal animal);
 
   public AnimalFound MateListeners;
   
@@ -12,7 +12,7 @@ public class MatingManager: MonoBehaviour
     visualDetector.AnimalFoundListeners += OnAnimalFound;
   }
 
-  private void OnAnimalFound(Animal animal)
+  private void OnAnimalFound(AbstractAnimal animal)
   {
     if (animal == null) return;
 

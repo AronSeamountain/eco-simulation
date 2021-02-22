@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Animal;
+using Core;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -48,10 +48,10 @@ namespace AnimalStates
       }
 
       // Eat the current food if it can be reached.
-      var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, 2);
+      var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
       if (reachesFood)
       {
-        var colliders = Physics.OverlapSphere(_animal.transform.position, 2);
+        var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
         foreach (var collider in colliders)
           if (collider.GetComponent<AbstractFood>() is AbstractFood f)
             if (f == _foodTarget.Food)
