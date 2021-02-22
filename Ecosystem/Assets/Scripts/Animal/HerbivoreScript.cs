@@ -7,11 +7,11 @@ namespace Animal
 {
   public sealed class HerbivoreScript : AbstractAnimal
   {
-    protected override List<INewState<AnimalState>> GetStates(FoodManager fManager)
+    protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
     {
       var pursueFoodState = new PursueFoodState(this);
       fManager.KnownFoodMemoriesChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
-      return new List<INewState<AnimalState>>
+      return new List<IState<AnimalState>>
       {
         new DeadState(this),
         new WanderState(this),

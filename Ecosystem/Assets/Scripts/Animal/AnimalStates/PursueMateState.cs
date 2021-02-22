@@ -3,7 +3,7 @@ using Utils;
 
 namespace Animal.AnimalStates
 {
-  public class PursueMateState : INewState<AnimalState>
+  public class PursueMateState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
 

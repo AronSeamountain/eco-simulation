@@ -7,7 +7,7 @@ namespace Animal.AnimalStates
   /// <summary>
   ///   A state for an animal which walks randomly.
   /// </summary>
-  public sealed class WanderState : INewState<AnimalState>
+  public sealed class WanderState : IState<AnimalState>
   {
     /// <summary>
     ///   The time to stand still in seconds.

@@ -17,10 +17,10 @@ namespace Animal
       Target = herbivore;
     }
 
-    protected override List<INewState<AnimalState>> GetStates(FoodManager fManager)
+    protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
     {
       fManager.PreyFoundListeners += OnPreyFound;
-      return new List<INewState<AnimalState>>
+      return new List<IState<AnimalState>>
       {
         new DeadState(this),
         new WanderState(this),

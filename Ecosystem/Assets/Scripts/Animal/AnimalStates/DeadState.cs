@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Animal.AnimalStates
 {
-  public sealed class DeadState : INewState<AnimalState>
+  public sealed class DeadState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
 

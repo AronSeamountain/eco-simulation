@@ -4,7 +4,7 @@ using Utils;
 
 namespace Animal.AnimalStates
 {
-  public sealed class PursueWaterState : INewState<AnimalState>
+  public sealed class PursueWaterState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
     private Water _waterTarget;

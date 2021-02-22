@@ -30,19 +30,17 @@ namespace Animal
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
-    private INewState<AnimalState> _currentState;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _sizeModifier;
     private float _speedModifier;
-    private NewStateMachine<AnimalState> _stateMachine;
+    private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public ChildSpawned ChildSpawnedListeners;
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
-
     public Gender Gender { get; private set; }
 
     /// <summary>
@@ -80,9 +78,7 @@ namespace Animal
     private void Start()
     {
       var states = GetStates(foodManager);
-      _stateMachine = new NewStateMachine<AnimalState>(states);
-      _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);
-      _currentState.Enter();
+      _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
 
       // Setup gender
       GenerateGender();
@@ -91,12 +87,12 @@ namespace Animal
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
 
-      //listen to water events
+      // Listen to water events
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
 
-      //setup speed and size variables for nourishment modifiers
-      const float rangeMin = (float) 0.8;
-      const float rangeMax = (float) 1.2;
+      // Setup speed and size variables for nourishment modifiers
+      const float rangeMin = 0.8f;
+      const float rangeMax = 1.2f;
       _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
       _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
 
@@ -106,22 +102,16 @@ namespace Animal
       _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
 
-      //setup speed modifier
+      // Setup speed modifier
       movement.SpeedFactor = _speedModifier;
 
-      //setup size modification
+      // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
     }
 
     private void Update()
     {
-      var newState = _currentState.Execute();
-      if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
-      {
-        _currentState.Exit();
-        _currentState = _stateMachine.GetCorrelatingState(newState);
-        _currentState.Enter();
-      }
+      _stateMachine.Execute();
     }
 
     public float GetHydration()
@@ -201,7 +191,7 @@ namespace Animal
       _mateTarget = null;
     }
 
-    protected abstract List<INewState<AnimalState>> GetStates(FoodManager foodManager);
+    protected abstract List<IState<AnimalState>> GetStates(FoodManager foodManager);
 
     public void OnWaterLocationChanged(Water water)
     {
@@ -284,9 +274,9 @@ namespace Animal
       foodManager.Forget(memory);
     }
 
-    public AnimalState GetCurrentState()
+    public AnimalState GetCurrentStateEnum()
     {
-      return _currentState.GetStateEnum();
+      return _stateMachine.GetCurrentStateEnum();
     }
 
     public float GetSize()

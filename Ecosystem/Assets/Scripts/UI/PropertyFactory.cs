@@ -49,7 +49,7 @@ namespace UI
 
 
       var state = Object.Instantiate(text).GetComponent<Text>();
-      state.text = "State: " + animal.GetCurrentState();
+      state.text = "State: " + animal.GetCurrentStateEnum();
       list.Add(state.gameObject);
 
       var speed = Object.Instantiate(text).GetComponent<Text>();

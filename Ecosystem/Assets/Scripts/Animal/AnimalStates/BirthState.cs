@@ -2,7 +2,7 @@
 
 namespace Animal.AnimalStates
 {
-  public sealed class BirthState : INewState<AnimalState>
+  public sealed class BirthState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
 

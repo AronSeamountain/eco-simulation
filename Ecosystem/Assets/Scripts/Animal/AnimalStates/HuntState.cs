@@ -2,7 +2,7 @@
 
 namespace Animal.AnimalStates
 {
-  public sealed class HuntState : INewState<AnimalState>
+  public sealed class HuntState : IState<AnimalState>
   {
     private readonly CarnivoreScript _carnivore;
     private HerbivoreScript _target;
