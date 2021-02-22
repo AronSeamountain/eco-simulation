@@ -70,9 +70,8 @@ public sealed class VisualDetector : MonoBehaviour
       WaterFoundListeners?.Invoke(water);
 
     if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal && CanSee(foundAnimal))
-    {
-      if(AnimalFoundListeners != null) AnimalFoundListeners.Invoke(foundAnimal);
-    }
+      AnimalFoundListeners?.Invoke(foundAnimal);
+
   }
 
   /// <summary>
