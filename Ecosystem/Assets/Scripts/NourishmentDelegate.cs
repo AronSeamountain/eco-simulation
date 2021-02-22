@@ -5,7 +5,11 @@ using UnityEngine;
 /// </summary>
 public sealed class NourishmentDelegate : ITickable
 {
+  public delegate void HydrationChanged(float hydration, float maxHydration);
+
   public delegate void NourishmentChanged(NourishmentSnapshot nourishmentSnapshot);
+
+  public delegate void SaturationChanged(float saturation, float maxSaturation);
 
   /// <summary>
   ///   The value for which the animal is considered hungry.
@@ -19,8 +23,8 @@ public sealed class NourishmentDelegate : ITickable
 
   private float _hydration;
   private float _saturation;
-
-  public NourishmentChanged NourishmentChangedListeners;
+  public HydrationChanged HydrationChangedListeners;
+  public SaturationChanged SaturationChangedListeners;
 
   public NourishmentDelegate()
   {
@@ -41,7 +45,7 @@ public sealed class NourishmentDelegate : ITickable
     set
     {
       _saturation = Mathf.Clamp(value, 0, MaxSaturation);
-      Invoker();
+      SaturationInvoker();
     }
   }
 
@@ -51,21 +55,22 @@ public sealed class NourishmentDelegate : ITickable
     set
     {
       _hydration = Mathf.Clamp(value, 0, MaxHydration);
-      Invoker();
+      HydrationInvoker();
     }
   }
 
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
-  private float MaxHydration { get; set; }
-  private float MaxSaturation { get; set; }
+  public float MaxHydration { get; set; }
+  public float MaxSaturation { get; set; }
 
   public void Tick()
   {
     Saturation -= SaturationDecreasePerUnit;
-    Hydration -= HydrationDecreasePerUnit;
+    SaturationInvoker();
 
-    Invoker();
+    Hydration -= HydrationDecreasePerUnit;
+    HydrationInvoker();
   }
 
   public void DayTick()
@@ -78,8 +83,13 @@ public sealed class NourishmentDelegate : ITickable
     MaxSaturation = maxValue;
   }
 
-  private void Invoker()
+  private void SaturationInvoker()
   {
-    NourishmentChangedListeners?.Invoke(new NourishmentSnapshot(Saturation, Hydration, MaxSaturation, MaxHydration));
+    SaturationChangedListeners?.Invoke(Saturation, MaxSaturation);
+  }
+
+  private void HydrationInvoker()
+  {
+    HydrationChangedListeners?.Invoke(Hydration, MaxHydration);
   }
 }

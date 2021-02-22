@@ -1,8 +1,11 @@
-﻿public sealed class HealthDelegate
-{
-  public delegate void HealthChanged(int health, int maxHealth);
+﻿using UnityEngine;
 
-  private const int MaxHealth = 100;
+public sealed class HealthDelegate
+{
+  public delegate void HealthChanged(float health, float maxHealth);
+
+  private const float MaxHealth = 100;
+  private float _health;
 
   public HealthChanged HealthChangedListeners;
 
@@ -11,7 +14,16 @@
     Health = 100;
   }
 
-  public int Health { get; set; }
+  public float Health
+  {
+    get => _health;
+    private set => _health = Mathf.Clamp(value, 0f, MaxHealth);
+  }
+
+  public float GetMaxHealth()
+  {
+    return MaxHealth;
+  }
 
   public void DecreaseHealth(int decrease)
   {

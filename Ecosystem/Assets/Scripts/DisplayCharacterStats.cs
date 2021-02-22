@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace.UI;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class DisplayCharacterStats : MonoBehaviour
 {
   [SerializeField] private Camera mainCamera;
+  [SerializeField] private CardFactory cardFactory;
   private CameraControls _controls;
-  private AbstractAnimal _target;
   private IStatable _targetIS;
 
   private void Awake()
@@ -29,7 +30,9 @@ public class DisplayCharacterStats : MonoBehaviour
 
   private void OnCancelTarget(InputAction.CallbackContext obj)
   {
-    _targetIS?.Stats(false);
+    if (_targetIS != null)
+      _targetIS.GetStats(false);
+    cardFactory.ClearContent();
     _targetIS = null;
   }
 
@@ -42,14 +45,11 @@ public class DisplayCharacterStats : MonoBehaviour
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
     if (Physics.Raycast(ray, out var hitTarget))
     {
-      var interfaces = hitTarget.collider.gameObject.GetComponents<MonoBehaviour>();
-      foreach (var mb in interfaces)
-        if (mb is IStatable statable)
-        {
-          if (_targetIS != null) OnCancelTarget(_);
-          _targetIS = statable;
-          _targetIS.Stats(true);
-        }
+      if (_targetIS != null) OnCancelTarget(_);
+      var statable = hitTarget.collider.gameObject.GetComponent<IStatable>();
+      if (statable == null) return;
+      _targetIS = statable;
+      cardFactory.Populate(statable.GetStats(true));
     }
   }
 

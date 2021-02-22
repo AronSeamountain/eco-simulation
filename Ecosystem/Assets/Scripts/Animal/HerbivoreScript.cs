@@ -26,6 +26,6 @@ public sealed class HerbivoreScript : AbstractAnimal
 
   public void TakeDamage()
   {
-    _healthDelegate.Health--;
+    _healthDelegate.DecreaseHealth(1);
   }
 }

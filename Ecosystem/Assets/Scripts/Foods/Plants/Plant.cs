@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core;
+using DefaultNamespace.UI;
 using Foods.Plants.PlantStates;
 using UnityEngine;
 
@@ -12,7 +13,6 @@ namespace Foods.Plants
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
-    [SerializeField] private EntityStatsDisplay entityStatsDisplay;
     private int _ageInDays;
     private IState<Plant, PlantState> _currentState;
     private StateMachine<Plant, PlantState> _stateMachine;
@@ -54,9 +54,9 @@ namespace Foods.Plants
       }
     }
 
-    public void Stats(bool value)
+    public IList<GameObject> GetStats(bool getStats)
     {
-      Debug.Log("Saturation: " + Saturation + " and age in days: " + _ageInDays);
+      return GOFactory.MakePlantObjects(this);
     }
 
     public void Tick()
