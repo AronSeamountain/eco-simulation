@@ -34,17 +34,19 @@ namespace DefaultNamespace.UI
       var list = new List<GameObject>();
 
       var healthSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      healthSlider.Value = animal._healthDelegate.Health;
+      healthSlider.InitializeBar(animal._healthDelegate.Health, animal._healthDelegate.GetMaxHealth());
       healthSlider.Color = Color.red;
       animal._healthDelegate.HealthChangedListeners += healthSlider.OnValueChanged;
       list.Add(healthSlider.gameObject);
 
       var saturationSlider = Object.Instantiate(slider).GetComponent<Bar>();
+      saturationSlider.InitializeBar(animal._nourishmentDelegate.Saturation, animal._nourishmentDelegate.MaxSaturation);
       saturationSlider.Color = Color.green;
       animal._nourishmentDelegate.SaturationChangedListeners += saturationSlider.OnValueChanged;
       list.Add(saturationSlider.gameObject);
       
       var hydrationSlider = Object.Instantiate(slider).GetComponent<Bar>();
+      hydrationSlider.InitializeBar(animal._nourishmentDelegate.Hydration, animal._nourishmentDelegate.MaxHydration);
       hydrationSlider.Color = Color.cyan;
       animal._nourishmentDelegate.HydrationChangedListeners += hydrationSlider.OnValueChanged;
       list.Add(hydrationSlider.gameObject);

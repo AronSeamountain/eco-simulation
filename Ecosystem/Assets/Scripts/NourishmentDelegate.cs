@@ -60,8 +60,8 @@ public sealed class NourishmentDelegate : ITickable
 
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
-  private int MaxHydration { get; }
-  private int MaxSaturation { get; }
+  public int MaxHydration { get; }
+  public int MaxSaturation { get; }
 
   public void Tick()
   {
