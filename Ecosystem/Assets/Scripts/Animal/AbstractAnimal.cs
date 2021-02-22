@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using Core;
+using DefaultNamespace.UI;
 using Foods;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -63,12 +64,11 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   public Water ClosestKnownWater => waterManager.ClosestKnownWater;
   public bool IsHungry => _nourishmentDelegate.IsHungry;
   public bool IsThirsty => _nourishmentDelegate.IsThirsty;
-  private int Health => _healthDelegate.Health;
+  private float Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
 
   private void Awake()
   {
-    ShowStats(false);
     _nourishmentDelegate = new NourishmentDelegate();
     _healthDelegate = new HealthDelegate();
   }
@@ -171,12 +171,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
     _nourishmentDelegate.Saturation += saturation;
   }
 
-  public void Stats(bool value)
-  {
-    Debug.Log("ANIMALS STATS INTERFACE");
-    ShowStats(value);
-  }
-
 
   public void Tick()
   {
@@ -200,15 +194,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   }
 
   protected abstract List<INewState<AnimalState>> GetStates(FoodManager foodManager);
-
-  public int GetHealth()
-  {
-    return _healthDelegate.Health;
-  }
-
-  public void ShowStats(bool show)
-  {
-  }
 
   public void OnWaterLocationChanged(Water water)
   {
@@ -290,7 +275,38 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
     foodManager.Forget(memory);
   }
 
-  public void DisplayState()
+  public AnimalState GetCurrentState()
   {
+    return _currentState.GetStateEnum();
+  }
+
+  public float GetSize()
+  {
+    return transform.localScale.x;
+  }
+  
+  public IList<GameObject> GetStats(bool isTargeted)
+  {
+    var visualDetector = GetComponentInChildren<VisualDetector>();
+    visualDetector.GetComponent<Renderer>().enabled = isTargeted;
+
+    if (!isTargeted) return null;
+
+    return GOFactory.MakeAnimalObjects(this);
+  }
+
+  public HealthDelegate GetHealthDelegate()
+  {
+    return _healthDelegate;
+  }
+  
+  public NourishmentDelegate GetNourishmentDelegate()
+  {
+    return _nourishmentDelegate;
+  }
+
+  public float GetSpeedModifier()
+  {
+    return _speedModifier;
   }
 }

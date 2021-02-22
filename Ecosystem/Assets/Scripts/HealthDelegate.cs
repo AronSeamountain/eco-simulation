@@ -2,10 +2,10 @@
 
 public sealed class HealthDelegate
 {
-  public delegate void HealthChanged(int health, int maxHealth);
+  public delegate void HealthChanged(float health, float maxHealth);
 
-  private const int MaxHealth = 100;
-  private int _health;
+  private const float MaxHealth = 100;
+  private float _health;
 
   public HealthChanged HealthChangedListeners;
 
@@ -14,13 +14,13 @@ public sealed class HealthDelegate
     Health = 100;
   }
 
-  public int Health
+  public float Health
   {
     get => _health;
-    private set => _health = Mathf.Clamp(value, 0, MaxHealth);
+    private set => _health = Mathf.Clamp(value, 0f, MaxHealth);
   }
 
-  public int GetMaxHealth()
+  public float GetMaxHealth()
   {
     return MaxHealth;
   }

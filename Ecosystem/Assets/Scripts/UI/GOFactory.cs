@@ -22,28 +22,28 @@ namespace DefaultNamespace.UI
       text = _goDictionary["Text"];
     }
 
-    public static IList<GameObject> MakeAnimalObjects(Animal animal)
+    public static IList<GameObject> MakeAnimalObjects(AbstractAnimal animal)
     {
       var list = new List<GameObject>();
 
       var healthSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      healthSlider.InitializeBar(animal._healthDelegate.Health, animal._healthDelegate.GetMaxHealth());
+      healthSlider.InitializeBar(animal.GetHealthDelegate().Health, animal.GetHealthDelegate().GetMaxHealth());
       healthSlider.Color = Color.red;
-      animal._healthDelegate.HealthChangedListeners += healthSlider.OnValueChanged;
+      animal.GetHealthDelegate().HealthChangedListeners += healthSlider.OnValueChanged;
       list.Add(healthSlider.gameObject);
 
       var saturationSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      saturationSlider.InitializeBar( animal._nourishmentDelegate.Saturation,
-        animal._nourishmentDelegate.MaxSaturation);
+      saturationSlider.InitializeBar( animal.GetNourishmentDelegate().Saturation,
+        animal.GetNourishmentDelegate().MaxSaturation);
       saturationSlider.Color = Color.green;
-      animal._nourishmentDelegate.SaturationChangedListeners += saturationSlider.OnValueChanged;
+      animal.GetNourishmentDelegate().SaturationChangedListeners += saturationSlider.OnValueChanged;
       list.Add(saturationSlider.gameObject);
 
       var hydrationSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      hydrationSlider.InitializeBar( animal._nourishmentDelegate.Hydration,
-        animal._nourishmentDelegate.MaxHydration);
+      hydrationSlider.InitializeBar( animal.GetNourishmentDelegate().Hydration,
+        animal.GetNourishmentDelegate().MaxHydration);
       hydrationSlider.Color = Color.cyan;
-      animal._nourishmentDelegate.HydrationChangedListeners += hydrationSlider.OnValueChanged;
+      animal.GetNourishmentDelegate().HydrationChangedListeners += hydrationSlider.OnValueChanged;
       list.Add(hydrationSlider.gameObject);
 
 
@@ -52,7 +52,7 @@ namespace DefaultNamespace.UI
       list.Add(state.gameObject);
 
       var speed = Object.Instantiate(text).GetComponent<Text>();
-      speed.text = "Speed: " + animal.GetMovementSpeed();
+      speed.text = "Speed: " + animal.GetSpeedModifier();
       list.Add(speed.gameObject);
 
       var size = Object.Instantiate(text).GetComponent<Text>();

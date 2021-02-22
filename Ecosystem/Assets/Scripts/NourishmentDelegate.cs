@@ -5,11 +5,11 @@ using UnityEngine;
 /// </summary>
 public sealed class NourishmentDelegate : ITickable
 {
-  public delegate void HydrationChanged(int hydration, int maxHydration);
+  public delegate void HydrationChanged(float hydration, float maxHydration);
 
   public delegate void NourishmentChanged(NourishmentSnapshot nourishmentSnapshot);
 
-  public delegate void SaturationChanged(int saturation, int maxSaturation);
+  public delegate void SaturationChanged(float saturation, float maxSaturation);
 
   /// <summary>
   ///   The value for which the animal is considered hungry.
@@ -61,8 +61,8 @@ public sealed class NourishmentDelegate : ITickable
 
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
-  public int MaxHydration { get; set; }
-  public int MaxSaturation { get; set; }
+  public float MaxHydration { get; set; }
+  public float MaxSaturation { get; set; }
 
   public void Tick()
   {
@@ -85,11 +85,11 @@ public sealed class NourishmentDelegate : ITickable
 
   private void SaturationInvoker()
   {
-    SaturationChangedListeners?.Invoke((int) Saturation, MaxSaturation);
+    SaturationChangedListeners?.Invoke(Saturation, MaxSaturation);
   }
 
   private void HydrationInvoker()
   {
-    HydrationChangedListeners?.Invoke((int) Hydration, MaxHydration);
+    HydrationChangedListeners?.Invoke(Hydration, MaxHydration);
   }
 }
