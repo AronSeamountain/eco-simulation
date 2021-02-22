@@ -43,7 +43,6 @@ public class DisplayCharacterStats : MonoBehaviour
   private void ClickedChar(InputAction.CallbackContext _)
   {
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
-
     if (Physics.Raycast(ray, out var hitTarget))
     {
       if (_targetIS != null) OnCancelTarget(_);

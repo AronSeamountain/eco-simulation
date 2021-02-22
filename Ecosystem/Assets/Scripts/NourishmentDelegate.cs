@@ -79,8 +79,8 @@ public sealed class NourishmentDelegate : ITickable
 
   public void SetMaxNourishment(float maxValue)
   {
-    MaxHydration = (int) maxValue;
-    MaxSaturation = (int) maxValue;
+    MaxHydration = maxValue;
+    MaxSaturation = maxValue;
   }
 
   private void SaturationInvoker()

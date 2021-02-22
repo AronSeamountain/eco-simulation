@@ -17,7 +17,7 @@ namespace DefaultNamespace.UI
 
     public Color BackgroundColor { get; set; }
 
-    public void InitializeBar(int value, int maxValue)
+    public void InitializeBar(float value, float maxValue)
     {
       slider = GetComponent<Slider>();
       text = slider.GetComponentInChildren<Text>();
@@ -26,7 +26,7 @@ namespace DefaultNamespace.UI
       text.text = Value + "/" + maxValue;
     }
 
-    public void OnValueChanged(int value, int maxValue)
+    public void OnValueChanged(float value, float maxValue)
     {
       if (!this) return;
       Value = value;
