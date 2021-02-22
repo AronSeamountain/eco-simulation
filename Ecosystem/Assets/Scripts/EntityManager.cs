@@ -19,7 +19,7 @@ public sealed class EntityManager : MonoBehaviour
   [SerializeField] private GameObject animalPrefab;
   [SerializeField] private GameObject plantPrefab;
   [SerializeField] private Transform spawnLocation;
-  private IList<Animal> _animals;
+  private IList<AbstractAnimal> _animals;
   private int _days;
   private DayTick _dayTickListeners;
   private DataLogger _logger;
@@ -34,7 +34,7 @@ public sealed class EntityManager : MonoBehaviour
     _spawnLocationVector3 = spawnLocation.position;
 
     // Lists
-    _animals = new List<Animal>();
+    _animals = new List<AbstractAnimal>();
     SpawnAndAddInitialAnimals();
     _plants = new List<Plant>();
     SpawnAndAddInitialPlants();
@@ -56,7 +56,7 @@ public sealed class EntityManager : MonoBehaviour
     UpdateTick();
   }
 
-  private void OnChildSpawned(Animal child)
+  private void OnChildSpawned(AbstractAnimal child)
   {
     ObserveAnimal(child, true);
   }
@@ -126,7 +126,7 @@ public sealed class EntityManager : MonoBehaviour
   /// </summary>
   /// <param name="animal">The animal to observe.</param>
   /// <param name="addToList">Whether to add it to the list of animals.</param>
-  private void ObserveAnimal(Animal animal, bool addToList)
+  private void ObserveAnimal(AbstractAnimal animal, bool addToList)
   {
     if (!animal) return;
     if (addToList) _animals.Add(animal);

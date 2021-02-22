@@ -1,15 +1,14 @@
-﻿using UnityEngine;
+﻿using AnimalStates;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class EntityStatsDisplay : MonoBehaviour
 {
   [SerializeField] private Slider hydrationSlider;
   [SerializeField] private Slider saturationSlider;
-
-  /// <summary>
-  ///   Health bar not used at the moment.
-  /// </summary>
   [SerializeField] private Slider healthBar;
+
+  [SerializeField] private Text text;
 
   private bool _showStats;
 
@@ -32,8 +31,8 @@ public class EntityStatsDisplay : MonoBehaviour
   public void OnNourishmentChanged(NourishmentSnapshot nourishmentSnapshot)
   {
     if (!ShowStats) return;
-    saturationSlider.value = nourishmentSnapshot.Saturation / (float) nourishmentSnapshot.MaxSaturation;
-    hydrationSlider.value = nourishmentSnapshot.Hydration / (float) nourishmentSnapshot.MaxHydration;
+    saturationSlider.value = nourishmentSnapshot.Saturation / nourishmentSnapshot.MaxSaturation;
+    hydrationSlider.value = nourishmentSnapshot.Hydration / nourishmentSnapshot.MaxHydration;
   }
 
   private void ShowSliders(bool show)
@@ -41,5 +40,29 @@ public class EntityStatsDisplay : MonoBehaviour
     saturationSlider.gameObject.SetActive(show);
     hydrationSlider.gameObject.SetActive(show);
     healthBar.gameObject.SetActive(show);
+    text.gameObject.SetActive(show);
+  }
+
+  public void OnStateChanged(AnimalState state)
+  {
+    text.text = state.ToString();
+    switch (state)
+    {
+      case AnimalState.Birth:
+        text.color = Color.magenta;
+        break;
+      case AnimalState.PursueFood:
+        text.color = Color.green;
+        break;
+      case AnimalState.PursueWater:
+        text.color = Color.blue;
+        break;
+      case AnimalState.Dead:
+        text.color = Color.red;
+        break;
+      default:
+        text.color = Color.black;
+        break;
+    }
   }
 }

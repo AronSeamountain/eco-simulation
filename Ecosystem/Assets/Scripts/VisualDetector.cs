@@ -13,6 +13,12 @@ public sealed class VisualDetector : MonoBehaviour
   public delegate void FoodFound(AbstractFood food);
 
   /// <summary>
+  ///   Gets invoked when a carnivore finds an animal to eat
+  /// </summary>
+  /// <param name="animal"></param>
+  public delegate void PreyFound(HerbivoreScript animal);
+
+  /// <summary>
   ///   Gets invoked when water is found.
   /// </summary>
   /// <param name="water">The water that was just found.</param>
@@ -22,6 +28,7 @@ public sealed class VisualDetector : MonoBehaviour
   private int _distance;
   private int _radius;
   public FoodFound FoodFoundListeners;
+  public PreyFound PreyFoundListeners;
   public WaterFound WaterFoundListeners;
 
   private int Distance
@@ -54,7 +61,8 @@ public sealed class VisualDetector : MonoBehaviour
   {
     if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten() && CanSee(food))
       FoodFoundListeners?.Invoke(food);
-
+    if (other.GetComponent<HerbivoreScript>() is HerbivoreScript animal && animal.CanBeEaten() && CanSee(animal))
+      PreyFoundListeners?.Invoke(animal);
     if (other.GetComponent<Water>() is Water water && CanSee(water))
       WaterFoundListeners?.Invoke(water);
   }

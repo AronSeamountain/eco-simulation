@@ -9,6 +9,8 @@ public sealed class GoToMovement : MonoBehaviour
 {
   [SerializeField] private NavMeshAgent agent;
 
+  public float SpeedFactor { get; set; } = 1;
+
   /// <summary>
   ///   Moves the agent to the given destination.
   /// </summary>

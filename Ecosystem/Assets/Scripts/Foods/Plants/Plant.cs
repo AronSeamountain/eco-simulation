@@ -5,13 +5,14 @@ using UnityEngine;
 
 namespace Foods.Plants
 {
-  public sealed class Plant : AbstractFood, ITickable
+  public sealed class Plant : AbstractFood, ITickable, IStatable
   {
     private const int DaysAsSeed = 5;
     private const int SaturationPerDay = 10;
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
+    [SerializeField] private EntityStatsDisplay entityStatsDisplay;
     private int _ageInDays;
     private IState<Plant, PlantState> _currentState;
     private StateMachine<Plant, PlantState> _stateMachine;
@@ -51,6 +52,11 @@ namespace Foods.Plants
         _currentState = _stateMachine.GetCorrelatingState(nextState);
         _currentState.Enter(this);
       }
+    }
+
+    public void Stats(bool value)
+    {
+      Debug.Log("Saturation: " + Saturation + " and age in days: " + _ageInDays);
     }
 
     public void Tick()

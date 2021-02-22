@@ -1,40 +1,52 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using Core;
 using Foods;
 using UnityEngine;
-using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 /// <summary>
 ///   A very basic animal that searches for food.
 /// </summary>
-public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
+public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStatable
 {
-  public delegate void ChildSpawned(Animal child);
+  public delegate void ChildSpawned(AbstractAnimal child);
 
   /// <summary>
   ///   The probability in the range [0, 1] whether the animal will give birth.
   /// </summary>
   [SerializeField] [Range(0f, 1f)] private float birthProbabilityPerUnit;
 
-  [SerializeField] private NavMeshAgent agent;
-  [SerializeField] private GoToMovement movement;
-  [SerializeField] private FoodManager foodManager;
-  [SerializeField] private WaterManager waterManager;
-  [SerializeField] private GameObject childPrefab;
-  private IState<Animal, AnimalState> _currentState;
-  private HealthDelegate _healthDelegate;
-  private NourishmentDelegate _nourishmentDelegate;
-  private StateMachine<Animal, AnimalState> _stateMachine;
+  [SerializeField] protected GoToMovement movement;
+  [SerializeField] protected FoodManager foodManager;
+  [SerializeField] protected WaterManager waterManager;
+  [SerializeField] protected GameObject childPrefab;
+  private INewState<AnimalState> _currentState;
+  protected HealthDelegate _healthDelegate;
+  protected NourishmentDelegate _nourishmentDelegate;
+  private float _sizeModifier;
+  private float _speedModifier;
+  private NewStateMachine<AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
   public bool IsMoving => movement.IsMoving;
 
   /// <summary>
+  ///   The margin for which is the animal considers to have reached its desired position.
+  /// </summary>
+  public float Reach => 2f;
+
+  /// <summary>
   ///   Whether the animal knows about a food location.
   /// </summary>
   public bool KnowsFoodLocation { get; private set; }
+
+  /// <summary>
+  ///   Whether the animal knows about a water location.
+  /// </summary>
+
 
   public bool KnowsWaterLocation { get; private set; }
 
@@ -49,11 +61,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   private int Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
 
-  /// <summary>
-  ///   The margin for which is the animal considers to have reached its desired position.
-  /// </summary>
-  public float Reach => 2f;
-
   private void Awake()
   {
     ShowStats(false);
@@ -63,40 +70,46 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   private void Start()
   {
-    // Setup states
-    var pursueFoodState = new PursueFoodState();
-    var states = new List<IState<Animal, AnimalState>>
-    {
-      new DeadState(),
-      new WanderState(),
-      pursueFoodState,
-      new PursueWaterState(),
-      new BirthState()
-    };
-    _stateMachine = new StateMachine<Animal, AnimalState>(states);
+    var states = GetStates(foodManager);
+    _stateMachine = new NewStateMachine<AnimalState>(states);
     _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);
-    _currentState.Enter(this);
+    _currentState.Enter();
 
     // Listen to food events
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
-    foodManager.KnownFoodMemoriesChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
 
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
+    //setup speed and size variables for nourishment modifiers
+    const float rangeMin = (float) 0.8;
+    const float rangeMax = (float) 1.2;
+    _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+    _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+
+    var decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
+
+    _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
+    _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
+    _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
+
+    //setup speed modifier
+    movement.SpeedFactor = _speedModifier;
+    //setup size modification
+    transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
   }
 
   private void Update()
   {
-    var newState = _currentState.Execute(this);
+    var newState = _currentState.Execute();
     if (newState != _currentState.GetStateEnum()) // Could be "cached" in the future.
     {
-      _currentState.Exit(this);
+      _currentState.Exit();
       _currentState = _stateMachine.GetCorrelatingState(newState);
-      _currentState.Enter(this);
+      _currentState.Enter();
     }
   }
 
-  public int GetHydration()
+  public float GetHydration()
   {
     return _nourishmentDelegate.Hydration;
   }
@@ -106,7 +119,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
     _nourishmentDelegate.Hydration += hydration;
   }
 
-  public int GetSaturation()
+  public float GetSaturation()
   {
     return _nourishmentDelegate.Saturation;
   }
@@ -115,6 +128,13 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
     _nourishmentDelegate.Saturation += saturation;
   }
+
+  public void Stats(bool value)
+  {
+    Debug.Log("ANIMALS STATS INTERFACE");
+    ShowStats(value);
+  }
+
 
   public void Tick()
   {
@@ -128,11 +148,18 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   {
   }
 
+  protected abstract List<INewState<AnimalState>> GetStates(FoodManager foodManager);
+
+  public int GetHealth()
+  {
+    return _healthDelegate.Health;
+  }
+
   public void ShowStats(bool show)
   {
   }
 
-  private void OnWaterLocationChanged(Water water)
+  public void OnWaterLocationChanged(Water water)
   {
     KnowsWaterLocation = water != null;
   }
@@ -142,10 +169,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   ///   provided list.
   /// </summary>
   /// <param name="foods">The list of known foods.</param>
-  private void OnKnownFoodLocationsChanged(IReadOnlyCollection<FoodManager.FoodMemory> foods)
+  public void OnKnownFoodLocationsChanged(IReadOnlyCollection<FoodManager.FoodMemory> foods)
   {
     KnowsFoodLocation = foods.Any();
   }
+
 
   /// <summary>
   ///   Eats the provided food.
@@ -177,7 +205,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
 
   public void SpawnChild()
   {
-    var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<Animal>();
+    var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
     ChildSpawnedListeners?.Invoke(child);
     ShouldBirth = false;
   }
@@ -194,5 +222,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable
   public void Forget(FoodManager.FoodMemory memory)
   {
     foodManager.Forget(memory);
+  }
+
+  public void DisplayState()
+  {
   }
 }
