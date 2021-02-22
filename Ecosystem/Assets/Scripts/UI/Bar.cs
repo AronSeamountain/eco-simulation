@@ -5,10 +5,9 @@ namespace DefaultNamespace.UI
 {
   public class Bar : MonoBehaviour
   {
-    public float Value { get; set; }
-
     public Slider slider;
     public Text text;
+    public float Value { get; set; }
 
     public Color Color
     {
@@ -26,7 +25,7 @@ namespace DefaultNamespace.UI
       slider.value = Value / maxValue;
       text.text = Value + "/" + maxValue;
     }
-    
+
     public void OnValueChanged(int value, int maxValue)
     {
       if (!this) return;

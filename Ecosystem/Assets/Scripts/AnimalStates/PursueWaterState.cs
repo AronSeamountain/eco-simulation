@@ -1,6 +1,5 @@
 using Core;
 using UnityEngine;
-using Utils;
 
 namespace AnimalStates
 {
@@ -39,27 +38,25 @@ namespace AnimalStates
       return AnimalState.PursueWater;
     }
 
+    public void Exit(Animal animal)
+    {
+    }
+
     /// <summary>
-    /// Shoots a ray at the water source and checks that the length of the ray is less than 2 (no real reason for 2, it works)
+    ///   Shoots a ray at the water source and checks that the length of the ray is less than 2 (no real reason for 2, it
+    ///   works)
     /// </summary>
     /// <param name="animal">The animal</param>
     /// <returns>true if the water is in range, false otherwise</returns>
     private bool ReachedWater(Animal animal)
     {
       var position = animal.transform.position;
-      Ray ray = new Ray(position, _waterTarget.transform.position - position);
+      var ray = new Ray(position, _waterTarget.transform.position - position);
       Physics.Raycast(ray, out var hit);
-      if (hit.collider == null) return false; 
-      if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
-      {
-        return hit.distance < 2;
-      }
+      if (hit.collider == null) return false;
+      if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget) return hit.distance < 2;
 
       return false;
-    }
-
-    public void Exit(Animal animal)
-    {
     }
   }
 }

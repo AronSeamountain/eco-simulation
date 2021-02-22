@@ -1,5 +1,4 @@
 ﻿using Core;
-using UnityEngine;
 
 namespace AnimalStates
 {

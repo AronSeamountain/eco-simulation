@@ -55,4 +55,9 @@ public sealed class GoToMovement : MonoBehaviour
   {
     HasTarget = false;
   }
+
+  public int GetMovementspeed()
+  {
+    return movementSpeed;
+  }
 }

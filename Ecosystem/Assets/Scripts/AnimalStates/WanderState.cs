@@ -44,7 +44,7 @@ namespace AnimalStates
       //Enter dead state
       if (!animal.IsAlive)
         return AnimalState.Dead;
-      
+
       // Enter pursue water state
       if (animal.KnowsWaterLocation && animal.IsThirsty)
         return AnimalState.PursueWater;

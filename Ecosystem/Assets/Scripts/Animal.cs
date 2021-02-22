@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using AnimalStates;
 using Core;
-using DefaultNamespace;
 using DefaultNamespace.UI;
 using Foods;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using UnityEngine.UI;
 
 /// <summary>
 ///   A very basic animal that searches for food.
@@ -26,11 +24,11 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
-  private float _speedModifier;
-  private float _sizeModifier;
   private IState<Animal, AnimalState> _currentState;
   public HealthDelegate _healthDelegate;
   public NourishmentDelegate _nourishmentDelegate;
+  private float _sizeModifier;
+  private float _speedModifier;
   private StateMachine<Animal, AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
@@ -92,7 +90,7 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
     _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
 
-    float decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
+    var decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
 
     _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
     _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
@@ -139,10 +137,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   {
     var visualDetector = GetComponentInChildren<VisualDetector>();
     visualDetector.GetComponent<Renderer>().enabled = isTargeted;
-    
 
     if (!isTargeted) return null;
-    
+
     return GOFactory.MakeAnimalObjects(this);
   }
 
@@ -225,5 +222,15 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   public AnimalState GetCurrentState()
   {
     return _currentState.GetStateEnum();
+  }
+
+  public int GetMovementSpeed()
+  {
+    return movement.GetMovementspeed();
+  }
+
+  public float GetSize()
+  {
+    return transform.localScale.x;
   }
 }

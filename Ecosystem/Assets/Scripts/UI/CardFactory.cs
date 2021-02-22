@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace DefaultNamespace.UI
 {
@@ -12,18 +10,12 @@ namespace DefaultNamespace.UI
     public void Populate(IEnumerable<GameObject> gameObjects)
     {
       if (gameObjects == null) return;
-      foreach (var gameO in gameObjects)
-      {
-        gameO.transform.SetParent(content.transform, false);
-      }
+      foreach (var gameO in gameObjects) gameO.transform.SetParent(content.transform, false);
     }
 
     public void ClearContent()
     {
-      foreach (Transform child in content.transform)
-      {
-        Destroy(child.gameObject);
-      }
+      foreach (Transform child in content.transform) Destroy(child.gameObject);
     }
   }
 }

@@ -1,5 +1,4 @@
 ﻿using DefaultNamespace.UI;
-using Foods.Plants;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -50,6 +49,7 @@ public class DisplayCharacterStats : MonoBehaviour
     {
       if (_targetIS != null) OnCancelTarget(_);
       var statable = hitTarget.collider.gameObject.GetComponent<IStatable>();
+      if (statable == null) return;
       _targetIS = statable;
       cardFactory.Populate(statable.GetStats(true));
     }

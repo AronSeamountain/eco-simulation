@@ -5,11 +5,11 @@ using UnityEngine;
 /// </summary>
 public sealed class NourishmentDelegate : ITickable
 {
+  public delegate void HydrationChanged(int hydration, int maxHydration);
+
   public delegate void NourishmentChanged(NourishmentSnapshot nourishmentSnapshot);
 
   public delegate void SaturationChanged(int saturation, int maxSaturation);
-  
-  public delegate void HydrationChanged(int hydration, int maxHydration);
 
   /// <summary>
   ///   The value for which the animal is considered hungry.
@@ -21,17 +21,10 @@ public sealed class NourishmentDelegate : ITickable
   /// </summary>
   private const float ThirstyHydrationLevel = 50;
 
-  public float HydrationDecreasePerUnit { get; set; } = 1;
-
-
-  public float SaturationDecreasePerUnit { get; set; } = 1;
-
   private float _hydration;
   private float _saturation;
-
-  public NourishmentChanged NourishmentChangedListeners;
-  public SaturationChanged SaturationChangedListeners;
   public HydrationChanged HydrationChangedListeners;
+  public SaturationChanged SaturationChangedListeners;
 
   public NourishmentDelegate()
   {
@@ -41,11 +34,10 @@ public sealed class NourishmentDelegate : ITickable
     MaxSaturation = 100;
   }
 
-  public void SetMaxNourishment(float maxValue)
-  {
-    MaxHydration = maxValue;
-    MaxSaturation = maxValue;
-  }
+  public float HydrationDecreasePerUnit { get; set; } = 1;
+
+
+  public float SaturationDecreasePerUnit { get; set; } = 1;
 
   public float Saturation
   {
@@ -69,14 +61,14 @@ public sealed class NourishmentDelegate : ITickable
 
   public bool IsHungry => Saturation <= HungrySaturationLevel;
   public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
-  public int MaxHydration { get; }
-  public int MaxSaturation { get; }
+  public int MaxHydration { get; set; }
+  public int MaxSaturation { get; set; }
 
   public void Tick()
   {
     Saturation -= SaturationDecreasePerUnit;
     SaturationInvoker();
-    
+
     Hydration -= HydrationDecreasePerUnit;
     HydrationInvoker();
   }
@@ -85,18 +77,19 @@ public sealed class NourishmentDelegate : ITickable
   {
   }
 
+  public void SetMaxNourishment(float maxValue)
+  {
+    MaxHydration = (int) maxValue;
+    MaxSaturation = (int) maxValue;
+  }
+
   private void SaturationInvoker()
   {
-    SaturationChangedListeners?.Invoke(Saturation, MaxSaturation);
+    SaturationChangedListeners?.Invoke((int) Saturation, MaxSaturation);
   }
 
   private void HydrationInvoker()
   {
-    HydrationChangedListeners?.Invoke(Hydration, MaxHydration);
-  }
-
-  private void Invoker()
-  {
-    NourishmentChangedListeners?.Invoke(new NourishmentSnapshot(Saturation, Hydration, MaxSaturation, MaxHydration));
+    HydrationChangedListeners?.Invoke((int) Hydration, MaxHydration);
   }
 }
