@@ -12,7 +12,6 @@ namespace AnimalStates
 
     public void Enter(Animal animal)
     {
-      animal.DisplayState();
       FallOver(animal);
     }
 

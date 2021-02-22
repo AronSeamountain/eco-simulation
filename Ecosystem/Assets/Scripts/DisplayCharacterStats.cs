@@ -1,4 +1,5 @@
 ﻿using DefaultNamespace.UI;
+using Foods.Plants;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -31,7 +32,9 @@ public class DisplayCharacterStats : MonoBehaviour
 
   private void OnCancelTarget(InputAction.CallbackContext obj)
   {
-    if (_targetIS != null) cardFactory.ClearContent();
+    if (_targetIS != null)
+      _targetIS.GetStats(false);
+    cardFactory.ClearContent();
     _targetIS = null;
   }
 
@@ -45,14 +48,10 @@ public class DisplayCharacterStats : MonoBehaviour
 
     if (Physics.Raycast(ray, out var hitTarget))
     {
-      var interfaces = hitTarget.collider.gameObject.GetComponents<MonoBehaviour>();
-      foreach (var mb in interfaces)
-        if (mb is IStatable statable)
-        {
-          if (_targetIS != null) OnCancelTarget(_);
-          _targetIS = statable;
-          cardFactory.Populate(_targetIS.GetStats());
-        }
+      if (_targetIS != null) OnCancelTarget(_);
+      var statable = hitTarget.collider.gameObject.GetComponent<IStatable>();
+      _targetIS = statable;
+      cardFactory.Populate(statable.GetStats(true));
     }
   }
 

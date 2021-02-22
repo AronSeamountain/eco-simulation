@@ -7,11 +7,11 @@ namespace DefaultNamespace.UI
 {
   public class CardFactory : MonoBehaviour
   {
-    [SerializeField] private Slider slider;
     [SerializeField] private GameObject content;
 
     public void Populate(IEnumerable<GameObject> gameObjects)
     {
+      if (gameObjects == null) return;
       foreach (var gameO in gameObjects)
       {
         gameO.transform.SetParent(content.transform, false);

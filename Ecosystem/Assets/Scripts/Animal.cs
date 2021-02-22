@@ -24,12 +24,9 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
   [SerializeField] private FoodManager foodManager;
   [SerializeField] private WaterManager waterManager;
   [SerializeField] private GameObject childPrefab;
-  [SerializeField] private EntityStatsDisplay entityStatsDisplay;
-  [SerializeField] private GameObject canvas;
-  [SerializeField] private Slider slider;
   private IState<Animal, AnimalState> _currentState;
-  private HealthDelegate _healthDelegate;
-  private NourishmentDelegate _nourishmentDelegate;
+  public HealthDelegate _healthDelegate;
+  public NourishmentDelegate _nourishmentDelegate;
   private StateMachine<Animal, AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
@@ -79,8 +76,6 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
     foodManager.KnownFoodMemoriesChangedListeners += pursueFoodState.OnKnownFoodLocationsChanged;
 
-    _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
-    _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
   }
@@ -116,11 +111,15 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     _nourishmentDelegate.Saturation += saturation;
   }
 
-  public IList<GameObject> GetStats()
+  public IList<GameObject> GetStats(bool isTargeted)
   {
-    var newSlider = Instantiate(slider).GetComponent<Bar>();
-    _healthDelegate.HealthChangedListeners += newSlider.OnValueChanged;
-    return new List<GameObject> {newSlider.gameObject};
+    var visualDetector = GetComponentInChildren<VisualDetector>();
+    visualDetector.GetComponent<Renderer>().enabled = isTargeted;
+    
+
+    if (!isTargeted) return null;
+    
+    return GOFactory.MakeAnimalObjects(this);
   }
 
   public void Tick()
@@ -199,8 +198,8 @@ public sealed class Animal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStat
     foodManager.Forget(memory);
   }
 
-  public void DisplayState()
+  public AnimalState GetCurrentState()
   {
-    entityStatsDisplay.OnStateChanged(_currentState.GetStateEnum());
+    return _currentState.GetStateEnum();
   }
 }

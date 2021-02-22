@@ -1141,7 +1141,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 36bce9ab6cae8ce43962938466458044, type: 2}
+  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1214,7 +1214,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2923273441679148205
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1432,6 +1432,7 @@ MonoBehaviour:
   entityStatsDisplay: {fileID: 8621766971246724858}
   canvas: {fileID: 116062044169309942}
   slider: {fileID: 7576209141342034356, guid: 1d49f6c78a90ed546950df43b86577b4, type: 3}
+  empty: {fileID: 0}
 --- !u!114 &9054329623236228661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1830,6 +1831,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SaturationBar
       objectReference: {fileID: 0}
+    - target: {fileID: 1614070849303720730, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1649382987820205948, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1843,12 +1849,12 @@ PrefabInstance:
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7576209141342034356, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
@@ -2012,6 +2018,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HealthBar
       objectReference: {fileID: 0}
+    - target: {fileID: 1614070849303720730, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1649382987820205948, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2025,12 +2036,12 @@ PrefabInstance:
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7576209141342034356, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
@@ -2194,6 +2205,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HydrationBar
       objectReference: {fileID: 0}
+    - target: {fileID: 1614070849303720730, guid: 1d49f6c78a90ed546950df43b86577b4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1649382987820205948, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2207,12 +2223,12 @@ PrefabInstance:
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2699234213983467500, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7576209141342034356, guid: 1d49f6c78a90ed546950df43b86577b4,
         type: 3}
