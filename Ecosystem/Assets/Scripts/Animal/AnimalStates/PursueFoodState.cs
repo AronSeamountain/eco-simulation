@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Animal.Managers;
 using Core;
 using Foods;
 using UnityEngine;
 using Utils;
 
-namespace AnimalStates
+namespace Animal.AnimalStates
 {
   /// <summary>
   ///   An animal state that chases the closest food the animal is aware of. Enters wander state when the animal isn't aware
   ///   of any food sources.
   /// </summary>
-  public sealed class PursueFoodState : INewState<AnimalState>
+  public sealed class PursueFoodState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
     private FoodManager.FoodMemory _foodTarget;

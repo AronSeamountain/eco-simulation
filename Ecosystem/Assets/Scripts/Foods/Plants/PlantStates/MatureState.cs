@@ -2,25 +2,32 @@
 
 namespace Foods.Plants.PlantStates
 {
-  public sealed class MatureState : IState<Plant, PlantState>
+  public sealed class MatureState : IState<PlantState>
   {
+    private readonly Plant _plant;
+
+    public MatureState(Plant plant)
+    {
+      _plant = plant;
+    }
+
     public PlantState GetStateEnum()
     {
       return PlantState.Mature;
     }
 
-    public void Enter(Plant plant)
+    public void Enter()
     {
-      plant.ShowAsMature();
+      _plant.ShowAsMature();
     }
 
-    public PlantState Execute(Plant plant)
+    public PlantState Execute()
     {
-      if (plant.Saturation <= 0) return PlantState.Seed;
+      if (_plant.Saturation <= 0) return PlantState.Seed;
       return PlantState.Mature;
     }
 
-    public void Exit(Plant plant)
+    public void Exit()
     {
     }
   }

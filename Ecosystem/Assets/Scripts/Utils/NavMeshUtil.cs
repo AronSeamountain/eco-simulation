@@ -10,6 +10,8 @@ namespace Utils
     private const string WalkableLayerName = "Walkable";
     private const int AllLayers = -1;
 
+    public static int WalkableLayer => NavMesh.GetAreaFromName(WalkableLayerName);
+
     /// <summary>
     ///   Gets a random point of the nav mesh.
     /// </summary>
@@ -26,8 +28,6 @@ namespace Utils
 
       return point;
     }
-
-    public static int WalkableLayer => NavMesh.GetAreaFromName(WalkableLayerName);
 
     /// <summary>
     ///   Gets a new point close to the given origin vector. Will have the same y level.

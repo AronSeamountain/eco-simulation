@@ -1,15 +1,19 @@
 using UnityEngine;
 using UnityEngine.AI;
-using Utils;
 
 /// <summary>
-///   A movement that moves towards transform. Does NOT stop when the agent has arrived. 
+///   A movement that moves towards transform. Does NOT stop when the agent has arrived.
 /// </summary>
 public sealed class GoToMovement : MonoBehaviour
 {
   [SerializeField] private NavMeshAgent agent;
 
   public float SpeedFactor { get; set; } = 1;
+
+  /// <summary>
+  ///   Whether the movement is currently in pursuit of travelling to a point.
+  /// </summary>
+  public bool IsMoving => !agent.isStopped;
 
   /// <summary>
   ///   Moves the agent to the given destination.
@@ -20,11 +24,6 @@ public sealed class GoToMovement : MonoBehaviour
     agent.SetDestination(destination);
     agent.isStopped = false;
   }
-
-  /// <summary>
-  ///   Whether the movement is currently in pursuit of travelling to a point.
-  /// </summary>
-  public bool IsMoving => !agent.isStopped;
 
   /// <summary>
   ///   Stops the movement to the vector.

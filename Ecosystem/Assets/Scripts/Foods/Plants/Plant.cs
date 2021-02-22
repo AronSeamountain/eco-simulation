@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core;
-using DefaultNamespace.UI;
 using Foods.Plants.PlantStates;
+using UI;
 using UnityEngine;
 
 namespace Foods.Plants
@@ -14,9 +14,21 @@ namespace Foods.Plants
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
     private int _ageInDays;
-    private IState<Plant, PlantState> _currentState;
-    private StateMachine<Plant, PlantState> _stateMachine;
+    private StateMachine<PlantState> _stateMachine;
     public bool LeaveSeedState { get; private set; }
+
+    private void Awake()
+    {
+      MaxSaturation = 100;
+
+      var states = new List<IState<PlantState>>
+      {
+        new SeedState(this),
+        new GrowState(this),
+        new MatureState(this)
+      };
+      _stateMachine = new StateMachine<PlantState>(states, PlantState.Seed);
+    }
 
     /// <summary>
     ///   Resets the plant (sets its age to zero and removes its saturation).
@@ -28,35 +40,14 @@ namespace Foods.Plants
       LeaveSeedState = false;
     }
 
-    private void Awake()
-    {
-      MaxSaturation = 100;
-
-      var states = new List<IState<Plant, PlantState>>
-      {
-        new SeedState(),
-        new GrowState(),
-        new MatureState()
-      };
-      _stateMachine = new StateMachine<Plant, PlantState>(states);
-      _currentState = _stateMachine.GetCorrelatingState(PlantState.Seed);
-      _currentState.Enter(this);
-    }
-
     private void Update()
     {
-      var nextState = _currentState.Execute(this);
-      if (_currentState.GetStateEnum() != nextState)
-      {
-        _currentState.Exit(this);
-        _currentState = _stateMachine.GetCorrelatingState(nextState);
-        _currentState.Enter(this);
-      }
+      _stateMachine.Execute();
     }
 
     public IList<GameObject> GetStats(bool getStats)
     {
-      return GOFactory.MakePlantObjects(this);
+      return PropertyFactory.MakePlantObjects(this);
     }
 
     public void Tick()
@@ -101,7 +92,7 @@ namespace Foods.Plants
 
     public override bool CanBeEaten()
     {
-      return _currentState.GetStateEnum() == PlantState.Mature;
+      return _stateMachine.GetCurrentStateEnum() == PlantState.Mature;
     }
   }
 }

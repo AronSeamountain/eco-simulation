@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace DefaultNamespace.UI
+namespace UI
 {
-  public class CardFactory : MonoBehaviour
+  public class PropertiesCard : MonoBehaviour
   {
     [SerializeField] private GameObject content;
 

@@ -1,28 +1,23 @@
 ﻿using Core;
 using UnityEngine;
 using Utils;
-using Random = UnityEngine.Random;
 
-namespace AnimalStates
+namespace Animal.AnimalStates
 {
   /// <summary>
   ///   A state for an animal which walks randomly.
   /// </summary>
-  public sealed class WanderState : INewState<AnimalState>
+  public sealed class WanderState : IState<AnimalState>
   {
     /// <summary>
     ///   The time to stand still in seconds.
     /// </summary>
     private const float MaxIdle = 4f;
 
-    private Vector3 _destination;
     private const float MarginToReachDestination = 2.5f;
     private readonly AbstractAnimal _animal;
 
-    public WanderState(AbstractAnimal animal)
-    {
-      _animal = animal;
-    }
+    private Vector3 _destination;
 
     /// <summary>
     ///   The time the animal should stand still.
@@ -33,6 +28,11 @@ namespace AnimalStates
     ///   The time the animal has stood still.
     /// </summary>
     private float _timeIdled;
+
+    public WanderState(AbstractAnimal animal)
+    {
+      _animal = animal;
+    }
 
     public AnimalState GetStateEnum()
     {
@@ -57,11 +57,8 @@ namespace AnimalStates
       if (_animal.KnowsWaterLocation && _animal.IsThirsty) return AnimalState.PursueWater;
       if (_animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
 
-      if (_animal.GetMateTarget() != null && _animal.Gender == Gender.Male)
-      {
-        return AnimalState.PursueMate;
-      }
-      
+      if (_animal.GetMateTarget() != null && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
+
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
         _animal.StopMoving();
 
@@ -76,7 +73,9 @@ namespace AnimalStates
           _timeIdled = 0;
         }
         else
+        {
           _timeIdled += Time.deltaTime;
+        }
       }
 
       return AnimalState.Wander;

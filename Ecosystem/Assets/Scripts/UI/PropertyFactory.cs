@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
+using Animal;
 using Foods.Plants;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DefaultNamespace.UI
+namespace UI
 {
-  public static class GOFactory
+  public static class PropertyFactory
   {
     private static readonly Dictionary<string, GameObject> _goDictionary;
     private static readonly GameObject slider;
     private static readonly GameObject text;
 
-    static GOFactory()
+    static PropertyFactory()
     {
       var gameObjects = Resources.LoadAll<GameObject>("Prefabs/UI");
       _goDictionary = new Dictionary<string, GameObject>(gameObjects.Length);
@@ -33,14 +34,14 @@ namespace DefaultNamespace.UI
       list.Add(healthSlider.gameObject);
 
       var saturationSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      saturationSlider.InitializeBar( animal.GetNourishmentDelegate().Saturation,
+      saturationSlider.InitializeBar(animal.GetNourishmentDelegate().Saturation,
         animal.GetNourishmentDelegate().MaxSaturation);
       saturationSlider.Color = Color.green;
       animal.GetNourishmentDelegate().SaturationChangedListeners += saturationSlider.OnValueChanged;
       list.Add(saturationSlider.gameObject);
 
       var hydrationSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      hydrationSlider.InitializeBar( animal.GetNourishmentDelegate().Hydration,
+      hydrationSlider.InitializeBar(animal.GetNourishmentDelegate().Hydration,
         animal.GetNourishmentDelegate().MaxHydration);
       hydrationSlider.Color = Color.cyan;
       animal.GetNourishmentDelegate().HydrationChangedListeners += hydrationSlider.OnValueChanged;
@@ -48,7 +49,7 @@ namespace DefaultNamespace.UI
 
 
       var state = Object.Instantiate(text).GetComponent<Text>();
-      state.text = "State: " + animal.GetCurrentState();
+      state.text = "State: " + animal.GetCurrentStateEnum();
       list.Add(state.gameObject);
 
       var speed = Object.Instantiate(text).GetComponent<Text>();
