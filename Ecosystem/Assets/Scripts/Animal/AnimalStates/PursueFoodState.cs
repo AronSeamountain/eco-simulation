@@ -33,9 +33,9 @@ namespace AnimalStates
 
     public AnimalState Execute()
     {
+      if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsHungry) return AnimalState.Wander;
-      if (!_animal.IsAlive) return AnimalState.Dead;
 
       // A new food source has been found. Change the food target to the closest food.
       if (_knownFoodTargetsChanged)
