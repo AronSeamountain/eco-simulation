@@ -14,11 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   birthProbabilityPerUnit: 0
   movement: {fileID: 2283762596506970916}
-  foodManager: {fileID: 1069567349259084597}
-  waterManager: {fileID: 8016985608681985207}
+  foodManager: {fileID: 5943187825592142429}
+  waterManager: {fileID: 1069567349259084597}
   childPrefab: {fileID: 3994141988682731950, guid: 51020aa19a9877a49924a41101ce6231,
     type: 3}
-  entityStatsDisplay: {fileID: 348473052211729402}
 --- !u!1001 &8318338745849550080
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -130,6 +129,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3639573523982455666, guid: bf200501b32dda54c93cca32e5f22aba,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4206817655424769507, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
       propertyPath: childPrefab
@@ -224,30 +228,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 3994141988682731950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ed6799756146048a91cdc666817a35, type: 3}
+  m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8016985608681985207 stripped
+--- !u!114 &5943187825592142429 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -7191508722750619209, guid: bf200501b32dda54c93cca32e5f22aba,
+  m_CorrespondingSourceObject: {fileID: 2380958150110191453, guid: bf200501b32dda54c93cca32e5f22aba,
     type: 3}
   m_PrefabInstance: {fileID: 8318338745849550080}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3994141988682731950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &348473052211729402 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8621766971246724858, guid: bf200501b32dda54c93cca32e5f22aba,
-    type: 3}
-  m_PrefabInstance: {fileID: 8318338745849550080}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ac20e84f5404794a83a2877bd7ddb61, type: 3}
+  m_Script: {fileID: 11500000, guid: f8ed6799756146048a91cdc666817a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

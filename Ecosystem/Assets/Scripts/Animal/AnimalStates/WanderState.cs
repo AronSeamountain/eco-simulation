@@ -1,5 +1,7 @@
-﻿using Animal;
+﻿using Core;
 using UnityEngine;
+using Utils;
+using Random = UnityEngine.Random;
 
 namespace AnimalStates
 {
@@ -13,8 +15,14 @@ namespace AnimalStates
     /// </summary>
     private const float MaxIdle = 4f;
 
+    private Vector3 _destination;
+    private const float MarginToReachDestination = 2.5f;
     private readonly AbstractAnimal _animal;
-    private HerbivoreScript _herbivore;
+
+    public WanderState(AbstractAnimal animal)
+    {
+      _animal = animal;
+    }
 
     /// <summary>
     ///   The time the animal should stand still.
@@ -26,11 +34,6 @@ namespace AnimalStates
     /// </summary>
     private float _timeIdled;
 
-    public WanderState(AbstractAnimal animal)
-    {
-      _animal = animal;
-    }
-
     public AnimalState GetStateEnum()
     {
       return AnimalState.Wander;
@@ -38,7 +41,7 @@ namespace AnimalStates
 
     public void Enter()
     {
-      GoToClosePoint(_animal);
+      GoToClosePoint();
       UpdateIdleTime();
     }
 
@@ -49,32 +52,25 @@ namespace AnimalStates
 
     public AnimalState Execute()
     {
-      if (_animal is CarnivoreScript carnivore)
-        if (carnivore.Target && carnivore.ShouldHunt(carnivore.Target))
-          return AnimalState.Hunt;
+      if (!_animal.IsAlive) return AnimalState.Dead;
+      if (_animal.KnowsWaterLocation && _animal.IsThirsty) return AnimalState.PursueWater;
+      if (_animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
 
-      // Enter pursue water state
-      if (_animal.KnowsWaterLocation && _animal.IsThirsty)
-        return AnimalState.PursueWater;
+      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
+        _animal.StopMoving();
 
-      // Enter pursue food state
-      if (_animal.KnowsFoodLocation && _animal.IsHungry && !(_animal is CarnivoreScript))
-        return AnimalState.PursueFood;
-
-      //Enter dead state
-      if (!_animal.IsAlive)
-        return AnimalState.Dead;
-
-      var shouldMoveToNewPos = !_animal.IsMoving && _timeIdled >= _idleTime;
-      if (shouldMoveToNewPos)
+      if (!_animal.IsMoving)
       {
-        GoToClosePoint(_animal);
-        UpdateIdleTime();
-        _timeIdled = 0;
-      }
-      else
-      {
-        _timeIdled += Time.deltaTime;
+        var haveIdledSufficiently = _timeIdled >= _idleTime;
+
+        if (haveIdledSufficiently)
+        {
+          GoToClosePoint();
+          UpdateIdleTime();
+          _timeIdled = 0;
+        }
+        else
+          _timeIdled += Time.deltaTime;
       }
 
       return AnimalState.Wander;
@@ -84,21 +80,11 @@ namespace AnimalStates
     ///   Sets the animals target position to a close points.
     /// </summary>
     /// <param name="animal">The animal to move.</param>
-    private void GoToClosePoint(AbstractAnimal animal)
+    private void GoToClosePoint()
     {
-      var point = GetRandomClosePoint(animal.transform.position);
-      animal.GoTo(point);
-    }
-
-    /// <summary>
-    ///   Gets a new point close to the given origin vector. Will have the same y level.
-    /// </summary>
-    /// <param name="origin">The point to get a point close to.</param>
-    /// <returns>A new point close to the given origin vector.</returns>
-    private Vector3 GetRandomClosePoint(Vector3 origin)
-    {
-      const int radius = 10;
-      return origin + new Vector3(Random.Range(-radius, radius), 0, Random.Range(-radius, radius));
+      var point = NavMeshUtil.GetRandomClosePoint(_animal.transform.position);
+      _destination = point;
+      _animal.GoTo(_destination);
     }
 
     /// <summary>

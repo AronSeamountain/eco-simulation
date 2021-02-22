@@ -14,11 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   birthProbabilityPerUnit: 0
   movement: {fileID: 5802323596056786700}
-  foodManager: {fileID: 4747830557226467101}
-  waterManager: {fileID: 2339196169049295007}
+  foodManager: {fileID: 2111628281946265205}
+  waterManager: {fileID: 4747830557226467101}
   childPrefab: {fileID: 8672377695379901830}
-  entityStatsDisplay: {fileID: 5468061608224460754}
-  target: {fileID: 0}
 --- !u!1001 &4342840507159857448
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -190,30 +188,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 8672377695379901830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ed6799756146048a91cdc666817a35, type: 3}
+  m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2339196169049295007 stripped
+--- !u!114 &2111628281946265205 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -7191508722750619209, guid: bf200501b32dda54c93cca32e5f22aba,
+  m_CorrespondingSourceObject: {fileID: 2380958150110191453, guid: bf200501b32dda54c93cca32e5f22aba,
     type: 3}
   m_PrefabInstance: {fileID: 4342840507159857448}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8672377695379901830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5468061608224460754 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8621766971246724858, guid: bf200501b32dda54c93cca32e5f22aba,
-    type: 3}
-  m_PrefabInstance: {fileID: 4342840507159857448}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ac20e84f5404794a83a2877bd7ddb61, type: 3}
+  m_Script: {fileID: 11500000, guid: f8ed6799756146048a91cdc666817a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

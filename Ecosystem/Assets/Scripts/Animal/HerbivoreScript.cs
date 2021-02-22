@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Animal;
 using AnimalStates;
+using Core;
 
 public sealed class HerbivoreScript : AbstractAnimal
 {

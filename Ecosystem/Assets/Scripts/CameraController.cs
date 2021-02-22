@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Experimental.TerrainAPI;
 using UnityEngine.InputSystem;
 using Utils;
 
@@ -7,26 +9,26 @@ public sealed class CameraController : MonoBehaviour
   /// <summary>
   ///   The distance in the x-z plane to the target
   /// </summary>
-  private const int Distance = 5;
+  private const int DistanceBehind = 20;
 
   /// <summary>
   ///   The height we want the camera to be above the target
   /// </summary>
-  private const int Height = 5;
+  private const int DistanceOver = 10;
 
   private const int RotationSpeed = 10;
   private const int ViewSpeed = 10;
-  private const int Acceleration = 40;
-  private const int FlyMovementSpeed = 10;
-  private const int FastFlyMovementSpeed = 30;
+  private const int FreeMovementStandardSpeed = 10;
+  private const int FreeMovementFastSpeed = 30;
+  private const int FixedTargetSpeed = 1;
   [SerializeField] private Camera mainCamera;
-  private Transform _cameraTransform;
+  private Transform _camTransform;
   private CameraControls _controls;
-  private float _followSpeed;
   private bool _moveFast;
   private bool _rotate;
   private Transform _target;
-  private int MovementSpeed => _moveFast ? FastFlyMovementSpeed : FlyMovementSpeed;
+  private int FreeMovementSpeed => _moveFast ? FreeMovementFastSpeed : FreeMovementStandardSpeed;
+  [SerializeField] private LayerMask selectableLayers;
 
   private Transform Target
   {
@@ -68,12 +70,12 @@ public sealed class CameraController : MonoBehaviour
 
   private void Start()
   {
-    _cameraTransform = transform;
+    _camTransform = transform;
   }
 
   private void Update()
   {
-    Move();
+    FreeMovement();
     Follow();
     LookAt();
     Rotate();
@@ -100,7 +102,6 @@ public sealed class CameraController : MonoBehaviour
   private void OnMovement(InputAction.CallbackContext _)
   {
     Target = null;
-    _followSpeed = 0;
   }
 
   private void OnRotate(InputAction.CallbackContext context)
@@ -109,7 +110,6 @@ public sealed class CameraController : MonoBehaviour
     {
       _rotate = true;
       Target = null;
-      _followSpeed = 0;
       Cursor.visible = false;
       Cursor.lockState = CursorLockMode.Locked;
     }
@@ -128,11 +128,11 @@ public sealed class CameraController : MonoBehaviour
     var deltaMouse = _controls.CameraMovement.View.ReadValue<Vector2>();
     deltaMouse *= -1; // Flip
 
-    _cameraTransform.Rotate(
+    _camTransform.Rotate(
       new Vector3(1, 0, 0), deltaMouse.y * ViewSpeed * Time.deltaTime
     );
 
-    _cameraTransform.Rotate(
+    _camTransform.Rotate(
       new Vector3(0, 1, 0), -deltaMouse.x * ViewSpeed * Time.deltaTime, Space.World
     );
   }
@@ -140,16 +140,17 @@ public sealed class CameraController : MonoBehaviour
   private void OnCancelTarget(InputAction.CallbackContext _)
   {
     Target = null;
-    _followSpeed = 0;
   }
 
   private void OnSelect(InputAction.CallbackContext _)
   {
-    RaycastHit hitTarget;
     var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
-    if (Physics.Raycast(ray, out hitTarget))
-      Target = hitTarget.transform;
+    if (Physics.Raycast(ray, out var hitTarget))
+    {
+      if (selectableLayers.Contains(hitTarget.collider.gameObject.layer))
+        Target = hitTarget.transform;
+    }
   }
 
   private Vector2 GetMousePos()
@@ -160,24 +161,24 @@ public sealed class CameraController : MonoBehaviour
   private void LookAt()
   {
     if (!Target) return;
-    var dirToObj = (Target.position - _cameraTransform.position).normalized;
+    var dirToObj = (Target.position - _camTransform.position).normalized;
     var desiredRotation = Quaternion.LookRotation(dirToObj, Vector3.up);
-    _cameraTransform.rotation =
-      Quaternion.Slerp(_cameraTransform.rotation, desiredRotation, RotationSpeed * Time.deltaTime);
+    _camTransform.rotation =
+      Quaternion.Slerp(_camTransform.rotation, desiredRotation, RotationSpeed * Time.deltaTime);
   }
 
   /// <summary>
   ///   Camera movement using WASD or arrow keys. Travel up and down the y-axis using Z and X.
   /// </summary>
-  private void Move()
+  private void FreeMovement()
   {
     if (Target) return;
 
     var input = _controls.CameraMovement.Movement.ReadValue<Vector2>();
     var direction = new Vector3();
-    direction += input.x * _cameraTransform.right;
-    direction += input.y * _cameraTransform.forward;
-    _cameraTransform.position += direction * (MovementSpeed * Time.deltaTime);
+    direction += input.x * _camTransform.right;
+    direction += input.y * _camTransform.forward;
+    _camTransform.position += direction * (FreeMovementSpeed * Time.deltaTime);
   }
 
   /// <summary>
@@ -186,20 +187,7 @@ public sealed class CameraController : MonoBehaviour
   private void Follow()
   {
     if (!Target) return;
-
-    var targetFront = Target.forward;
-    var desiredPosition = Target.position - targetFront * Distance + new Vector3(0, Height);
-
-    var hasArrived = Vector3Util.InRange(desiredPosition, _cameraTransform.position, 5f);
-    if (hasArrived)
-    {
-      _followSpeed = 0;
-    }
-    else
-    {
-      _followSpeed += Acceleration * Time.deltaTime;
-      var direction = (desiredPosition - _cameraTransform.position).normalized;
-      _cameraTransform.position += direction * (_followSpeed * Time.deltaTime);
-    }
+    var desiredPos = Target.position - Target.forward * DistanceBehind + new Vector3(0, DistanceOver);
+    _camTransform.position = Vector3.Lerp(_camTransform.position, desiredPos, FixedTargetSpeed * Time.deltaTime);
   }
 }

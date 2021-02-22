@@ -1,6 +1,7 @@
 ﻿using System;
+using Core;
 
-namespace Animal
+namespace Core
 {
   public interface INewState<TEnum> where TEnum : Enum
   {

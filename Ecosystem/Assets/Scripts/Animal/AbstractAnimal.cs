@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Animal;
 using AnimalStates;
 using Core;
 using Foods;
@@ -24,8 +23,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   [SerializeField] protected FoodManager foodManager;
   [SerializeField] protected WaterManager waterManager;
   [SerializeField] protected GameObject childPrefab;
-  [SerializeField] protected EntityStatsDisplay entityStatsDisplay;
-
   private INewState<AnimalState> _currentState;
   protected HealthDelegate _healthDelegate;
   protected NourishmentDelegate _nourishmentDelegate;
@@ -34,7 +31,12 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   private NewStateMachine<AnimalState> _stateMachine;
   public ChildSpawned ChildSpawnedListeners;
   public bool ShouldBirth { get; private set; }
-  public bool IsMoving => movement.HasTarget;
+  public bool IsMoving => movement.IsMoving;
+
+  /// <summary>
+  ///   The margin for which is the animal considers to have reached its desired position.
+  /// </summary>
+  public float Reach => 2f;
 
   /// <summary>
   ///   Whether the animal knows about a food location.
@@ -68,12 +70,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
   private void Start()
   {
-    if (this is HerbivoreScript)
-      movement.MovementSpeed = 25;
-    else
-      movement.MovementSpeed = 10;
-    // Setup states
-
     var states = GetStates(foodManager);
     _stateMachine = new NewStateMachine<AnimalState>(states);
     _currentState = _stateMachine.GetCorrelatingState(AnimalState.Wander);
@@ -81,10 +77,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
     // Listen to food events
     foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
-
-
-    _healthDelegate.HealthChangedListeners += entityStatsDisplay.OnHealthChanged;
-    _nourishmentDelegate.NourishmentChangedListeners += entityStatsDisplay.OnNourishmentChanged;
 
     //listen to water events
     waterManager.WaterUpdateListeners += OnWaterLocationChanged;
@@ -165,7 +157,6 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
   public void ShowStats(bool show)
   {
-    entityStatsDisplay.ShowStats = show;
   }
 
   public void OnWaterLocationChanged(Water water)
@@ -194,12 +185,12 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   }
 
   /// <summary>
-  ///   Moves the Animal
+  ///   Moves the Animal.
   /// </summary>
-  /// <param name="pos">The position to go to</param>
-  public void GoTo(Vector3 pos)
+  /// <param name="destination">The position to go to.</param>
+  public void GoTo(Vector3 destination)
   {
-    movement.Target = pos;
+    movement.GoTo(destination);
   }
 
   public void StopMoving()
@@ -235,6 +226,5 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
 
   public void DisplayState()
   {
-    entityStatsDisplay.OnStateChanged(_currentState.GetStateEnum());
   }
 }

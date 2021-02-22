@@ -1,4 +1,4 @@
-﻿using Animal;
+﻿using Core;
 using Utils;
 
 namespace AnimalStates
@@ -32,7 +32,7 @@ namespace AnimalStates
       _waterTarget = _animal.ClosestKnownWater;
       if (_waterTarget == null) return AnimalState.Wander;
 
-      var reachesWater = Vector3Util.InRange(_animal.gameObject, _waterTarget.gameObject, 2);
+      var reachesWater = Vector3Util.InRange(_animal.gameObject, _waterTarget.gameObject, _animal.Reach);
       if (reachesWater)
       {
         _animal.Drink(_waterTarget);
