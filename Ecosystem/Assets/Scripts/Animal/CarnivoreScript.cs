@@ -37,11 +37,11 @@ public sealed class CarnivoreScript : AbstractAnimal
     return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, EatingRange);
   }
 
-  public void EatHerbivore(HerbivoreScript carnivoreTarget)
+  public void TakeABiteFromHerbivore(HerbivoreScript carnivoreTarget)
   {
     if (IsInRange(carnivoreTarget))
     {
-      carnivoreTarget.IsEaten();
+      carnivoreTarget.TakeDamage();
       _nourishmentDelegate.Saturation++;
     }
   }

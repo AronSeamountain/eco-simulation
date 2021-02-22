@@ -59,7 +59,7 @@ public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITicka
   private int Health => _healthDelegate.Health;
   public bool IsAlive => Health > 0;
 
-  protected virtual void Awake()
+  private void Awake()
   {
     ShowStats(false);
     _nourishmentDelegate = new NourishmentDelegate();

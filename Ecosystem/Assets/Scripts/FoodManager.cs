@@ -50,11 +50,6 @@ public sealed class FoodManager : MonoBehaviour, ITickable
 
   private void OnPreyFound(HerbivoreScript herbivore)
   {
-    //if (carnivore.target == null) Debug.Log("target is null");
-    //if (carnivore == null) Debug.Log("carnivore is null"); // this one triggers
-    //if (herbivore == null) Debug.Log("herbivore is null");
-    //carnivore.target = herbivore;
-    // add herbivore to knownPreyMemory
     PreyFoundListeners?.Invoke(herbivore);
   }
 
