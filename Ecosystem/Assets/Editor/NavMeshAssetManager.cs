@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using NavMeshComponents;
 using UnityEditor.Experimental.SceneManagement;
 using UnityEditor.SceneManagement;
 using UnityEngine.AI;

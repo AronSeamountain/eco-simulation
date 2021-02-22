@@ -1,6 +1,6 @@
 ﻿using Core;
 
-namespace AnimalStates
+namespace Animal.AnimalStates
 {
   public sealed class HuntState : INewState<AnimalState>
   {

@@ -1,10 +1,13 @@
 using System.Collections.Generic;
-#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.AI;
+#if UNITY_EDITOR
+
 #endif
 
-namespace UnityEngine.AI
+namespace NavMeshComponents
 {
     public enum CollectObjects
     {

@@ -1,3 +1,4 @@
+using NavMeshComponents;
 using UnityEditor.IMGUI.Controls;
 using UnityEditorInternal;
 using UnityEngine.AI;

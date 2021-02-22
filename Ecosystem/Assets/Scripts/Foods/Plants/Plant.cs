@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core;
-using DefaultNamespace.UI;
 using Foods.Plants.PlantStates;
+using UI;
 using UnityEngine;
 
 namespace Foods.Plants

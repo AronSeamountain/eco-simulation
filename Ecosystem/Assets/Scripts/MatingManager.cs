@@ -1,3 +1,4 @@
+using Animal;
 using UnityEngine;
 
 public class MatingManager: MonoBehaviour

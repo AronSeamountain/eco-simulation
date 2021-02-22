@@ -1,49 +1,52 @@
 ﻿using System.Collections.Generic;
-using AnimalStates;
+using Animal.AnimalStates;
 using Core;
 using Utils;
 
-public sealed class CarnivoreScript : AbstractAnimal
+namespace Animal
 {
-  private const float Range = 10;
-  private const float EatingRange = 2f;
-  public HerbivoreScript Target { get; private set; }
-
-  public void OnPreyFound(HerbivoreScript herbivore)
+  public sealed class CarnivoreScript : AbstractAnimal
   {
-    Target = herbivore;
-  }
+    private const float Range = 10;
+    private const float EatingRange = 2f;
+    public HerbivoreScript Target { get; private set; }
 
-  protected override List<INewState<AnimalState>> GetStates(FoodManager fManager)
-  {
-    fManager.PreyFoundListeners += OnPreyFound;
-    return new List<INewState<AnimalState>>
+    public void OnPreyFound(HerbivoreScript herbivore)
     {
-      new DeadState(this),
-      new WanderState(this),
-      new PursueWaterState(this),
-      new BirthState(this),
-      new HuntState(this),
-      new PursueMateState(this)
-    };
-  }
+      Target = herbivore;
+    }
 
-  public bool ShouldHunt(HerbivoreScript carnivoreTarget)
-  {
-    return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, Range);
-  }
-
-  private bool IsInRange(HerbivoreScript carnivoreTarget)
-  {
-    return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, EatingRange);
-  }
-
-  public void TakeABiteFromHerbivore(HerbivoreScript carnivoreTarget)
-  {
-    if (IsInRange(carnivoreTarget))
+    protected override List<INewState<AnimalState>> GetStates(FoodManager fManager)
     {
-      carnivoreTarget.TakeDamage();
-      _nourishmentDelegate.Saturation++;
+      fManager.PreyFoundListeners += OnPreyFound;
+      return new List<INewState<AnimalState>>
+      {
+        new DeadState(this),
+        new WanderState(this),
+        new PursueWaterState(this),
+        new BirthState(this),
+        new HuntState(this),
+        new PursueMateState(this)
+      };
+    }
+
+    public bool ShouldHunt(HerbivoreScript carnivoreTarget)
+    {
+      return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, Range);
+    }
+
+    private bool IsInRange(HerbivoreScript carnivoreTarget)
+    {
+      return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, EatingRange);
+    }
+
+    public void TakeABiteFromHerbivore(HerbivoreScript carnivoreTarget)
+    {
+      if (IsInRange(carnivoreTarget))
+      {
+        carnivoreTarget.TakeDamage();
+        _nourishmentDelegate.Saturation++;
+      }
     }
   }
 }

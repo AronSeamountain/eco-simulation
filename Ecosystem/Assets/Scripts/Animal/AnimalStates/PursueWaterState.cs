@@ -1,7 +1,7 @@
 ﻿using Core;
 using Utils;
 
-namespace AnimalStates
+namespace Animal.AnimalStates
 {
   public sealed class PursueWaterState : INewState<AnimalState>
   {

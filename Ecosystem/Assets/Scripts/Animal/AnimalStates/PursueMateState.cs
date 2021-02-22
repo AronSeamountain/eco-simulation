@@ -1,8 +1,7 @@
 ﻿using Core;
-using UnityEngine;
 using Utils;
 
-namespace AnimalStates
+namespace Animal.AnimalStates
 {
   public class PursueMateState : INewState<AnimalState>
   {

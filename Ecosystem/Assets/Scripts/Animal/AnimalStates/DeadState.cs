@@ -1,7 +1,7 @@
 ﻿using Core;
 using UnityEngine;
 
-namespace AnimalStates
+namespace Animal.AnimalStates
 {
   public sealed class DeadState : INewState<AnimalState>
   {

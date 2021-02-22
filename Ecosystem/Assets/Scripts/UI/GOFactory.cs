@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Animal;
 using Foods.Plants;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DefaultNamespace.UI
+namespace UI
 {
   public static class GOFactory
   {

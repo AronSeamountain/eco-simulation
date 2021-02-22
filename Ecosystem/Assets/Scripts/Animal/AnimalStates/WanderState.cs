@@ -3,7 +3,7 @@ using UnityEngine;
 using Utils;
 using Random = UnityEngine.Random;
 
-namespace AnimalStates
+namespace Animal.AnimalStates
 {
   /// <summary>
   ///   A state for an animal which walks randomly.

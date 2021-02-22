@@ -1,4 +1,4 @@
-﻿using DefaultNamespace.UI;
+﻿using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

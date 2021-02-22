@@ -1,4 +1,5 @@
-﻿using Foods;
+﻿using Animal;
+using Foods;
 using UnityEngine;
 
 /// <summary>

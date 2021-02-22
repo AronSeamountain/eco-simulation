@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Animal;
 using Foods.Plants;
 using Logger;
 using UnityEditor;

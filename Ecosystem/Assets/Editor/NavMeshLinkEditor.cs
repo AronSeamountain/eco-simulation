@@ -1,3 +1,4 @@
+using NavMeshComponents;
 using UnityEngine;
 using UnityEngine.AI;
 

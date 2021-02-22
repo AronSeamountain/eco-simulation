@@ -1,4 +1,4 @@
-﻿namespace AnimalStates
+﻿namespace Animal.AnimalStates
 {
   public enum AnimalState
   {

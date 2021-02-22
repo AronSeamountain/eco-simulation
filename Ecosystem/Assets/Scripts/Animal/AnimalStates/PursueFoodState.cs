@@ -5,7 +5,7 @@ using Foods;
 using UnityEngine;
 using Utils;
 
-namespace AnimalStates
+namespace Animal.AnimalStates
 {
   /// <summary>
   ///   An animal state that chases the closest food the animal is aware of. Enters wander state when the animal isn't aware
