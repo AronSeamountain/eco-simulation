@@ -5,7 +5,7 @@ using Core;
 
 namespace Animal
 {
-  public sealed class HerbivoreScript : AbstractAnimal
+  public sealed class Herbivore : AbstractAnimal
   {
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
     {

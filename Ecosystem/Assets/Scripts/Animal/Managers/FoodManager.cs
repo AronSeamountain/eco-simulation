@@ -18,7 +18,7 @@ namespace Animal.Managers
     /// <param name="foodMemories">A list of all the known food sources.</param>
     public delegate void KnownFoodMemoriesChanged(IReadOnlyCollection<FoodMemory> foodMemories);
 
-    public delegate void PreyFound(HerbivoreScript herbivore);
+    public delegate void PreyFound(Herbivore herbivore);
 
     [SerializeField] private VisualDetector visualDetector;
     private IList<FoodMemory> _knownFoodMemories;
@@ -51,7 +51,7 @@ namespace Animal.Managers
     {
     }
 
-    private void OnPreyFound(HerbivoreScript herbivore)
+    private void OnPreyFound(Herbivore herbivore)
     {
       PreyFoundListeners?.Invoke(herbivore);
     }

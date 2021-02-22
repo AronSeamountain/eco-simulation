@@ -6,13 +6,13 @@ using Utils;
 
 namespace Animal
 {
-  public sealed class CarnivoreScript : AbstractAnimal
+  public sealed class Carnivore : AbstractAnimal
   {
     private const float Range = 10;
     private const float EatingRange = 2f;
-    public HerbivoreScript Target { get; private set; }
+    public Herbivore Target { get; private set; }
 
-    public void OnPreyFound(HerbivoreScript herbivore)
+    private void OnPreyFound(Herbivore herbivore)
     {
       Target = herbivore;
     }
@@ -31,17 +31,17 @@ namespace Animal
       };
     }
 
-    public bool ShouldHunt(HerbivoreScript carnivoreTarget)
+    public bool ShouldHunt(Herbivore carnivoreTarget)
     {
       return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, Range);
     }
 
-    private bool IsInRange(HerbivoreScript carnivoreTarget)
+    private bool IsInRange(Herbivore carnivoreTarget)
     {
       return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, EatingRange);
     }
 
-    public void TakeABiteFromHerbivore(HerbivoreScript carnivoreTarget)
+    public void TakeABiteFromHerbivore(Herbivore carnivoreTarget)
     {
       if (IsInRange(carnivoreTarget))
       {

@@ -4,10 +4,10 @@ namespace Animal.AnimalStates
 {
   public sealed class HuntState : IState<AnimalState>
   {
-    private readonly CarnivoreScript _carnivore;
-    private HerbivoreScript _target;
+    private readonly Carnivore _carnivore;
+    private Herbivore _target;
 
-    public HuntState(CarnivoreScript carnivore)
+    public HuntState(Carnivore carnivore)
     {
       _carnivore = carnivore;
     }

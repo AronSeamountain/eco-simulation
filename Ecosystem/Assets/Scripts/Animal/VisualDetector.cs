@@ -20,7 +20,7 @@ namespace Animal
     ///   Gets invoked when a carnivore finds an animal to eat
     /// </summary>
     /// <param name="animal"></param>
-    public delegate void PreyFound(HerbivoreScript animal);
+    public delegate void PreyFound(Herbivore animal);
 
     /// <summary>
     ///   Gets invoked when water is found.
@@ -66,11 +66,10 @@ namespace Animal
     {
       if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten() && CanSee(food))
         FoodFoundListeners?.Invoke(food);
-      if (other.GetComponent<HerbivoreScript>() is HerbivoreScript animal && animal.CanBeEaten() && CanSee(animal))
+      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten() && CanSee(animal))
         PreyFoundListeners?.Invoke(animal);
       if (other.GetComponent<Water>() is Water water && CanSee(water))
         WaterFoundListeners?.Invoke(water);
-
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal && CanSee(foundAnimal))
         AnimalFoundListeners?.Invoke(foundAnimal);
     }
