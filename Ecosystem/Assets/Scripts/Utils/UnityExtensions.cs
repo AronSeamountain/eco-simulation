@@ -5,7 +5,8 @@ namespace Utils
   public static class UnityExtensions
   {
     /// <summary>
-    ///   Checks if the provided layer is in the layer mask. Credits to Mikael-H (https://answers.unity.com/questions/50279/check-if-layer-is-in-layermask.html).
+    ///   Checks if the provided layer is in the layer mask. Credits to Mikael-H
+    ///   (https://answers.unity.com/questions/50279/check-if-layer-is-in-layermask.html).
     /// </summary>
     /// <param name="mask">The mask to check if the layer is in.</param>
     /// <param name="layer">The layer to check.</param>

@@ -8,6 +8,8 @@ namespace Animal
   /// </summary>
   public sealed class VisualDetector : MonoBehaviour
   {
+    public delegate void AnimalFound(AbstractAnimal animal);
+
     /// <summary>
     ///   Gets invoked when a food is found.
     /// </summary>
@@ -26,15 +28,13 @@ namespace Animal
     /// <param name="water">The water that was just found.</param>
     public delegate void WaterFound(Water water);
 
-    public delegate void AnimalFound(AbstractAnimal animal);
-
     [SerializeField] private Transform eyesTransform;
     private int _distance;
     private int _radius;
+    public AnimalFound AnimalFoundListeners;
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
-    public AnimalFound AnimalFoundListeners;
 
     private int Distance
     {
@@ -73,7 +73,6 @@ namespace Animal
 
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal && CanSee(foundAnimal))
         AnimalFoundListeners?.Invoke(foundAnimal);
-
     }
 
     /// <summary>
@@ -98,7 +97,7 @@ namespace Animal
       Debug.DrawRay(eyesTransform.position, dirToObject, Color.red, 5);
       return false;
     }
-  
+
     /// <summary>
     ///   Scales the detection area and repositions it correctly.
     /// </summary>

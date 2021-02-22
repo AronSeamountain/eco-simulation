@@ -22,13 +22,13 @@ namespace Camera
     private const int FreeMovementFastSpeed = 30;
     private const int FixedTargetSpeed = 1;
     [SerializeField] private UnityEngine.Camera mainCamera;
+    [SerializeField] private LayerMask selectableLayers;
     private Transform _camTransform;
     private CameraControls _controls;
     private bool _moveFast;
     private bool _rotate;
     private Transform _target;
     private int FreeMovementSpeed => _moveFast ? FreeMovementFastSpeed : FreeMovementStandardSpeed;
-    [SerializeField] private LayerMask selectableLayers;
 
     private Transform Target
     {
@@ -147,10 +147,8 @@ namespace Camera
       var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
       if (Physics.Raycast(ray, out var hitTarget))
-      {
         if (selectableLayers.Contains(hitTarget.collider.gameObject.layer))
           Target = hitTarget.transform;
-      }
     }
 
     private Vector2 GetMousePos()

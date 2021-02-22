@@ -18,6 +18,8 @@ namespace Animal
   {
     public delegate void ChildSpawned(AbstractAnimal child);
 
+    private const int FertilityTimeInUnits = 5;
+
     /// <summary>
     ///   The probability in the range [0, 1] whether the animal will give birth.
     /// </summary>
@@ -26,23 +28,23 @@ namespace Animal
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
-    [SerializeField] protected GameObject childPrefab; 
-    [SerializeField] MatingManager matingManager;
+    [SerializeField] protected GameObject childPrefab;
+    [SerializeField] private MatingManager matingManager;
     private INewState<AnimalState> _currentState;
     protected HealthDelegate _healthDelegate;
+    private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _sizeModifier;
     private float _speedModifier;
     private NewStateMachine<AnimalState> _stateMachine;
+    private int _unitsUntilFertile = FertilityTimeInUnits;
     public ChildSpawned ChildSpawnedListeners;
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
-    private const int FertilityTimeInUnits = 5;
-    private int _unitsUntilFertile = FertilityTimeInUnits;
     public bool IsMoving => movement.IsMoving;
 
     public Gender Gender { get; private set; }
-    private AbstractAnimal _mateTarget;
+
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
     /// </summary>
@@ -85,13 +87,13 @@ namespace Animal
       // Setup gender
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
-    
+
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
 
       //listen to water events
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
-    
+
       //setup speed and size variables for nourishment modifiers
       const float rangeMin = (float) 0.8;
       const float rangeMax = (float) 1.2;
@@ -106,7 +108,7 @@ namespace Animal
 
       //setup speed modifier
       movement.SpeedFactor = _speedModifier;
-    
+
       //setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
     }
@@ -120,6 +122,55 @@ namespace Animal
         _currentState = _stateMachine.GetCorrelatingState(newState);
         _currentState.Enter();
       }
+    }
+
+    public float GetHydration()
+    {
+      return _nourishmentDelegate.Hydration;
+    }
+
+    public void Drink(int hydration)
+    {
+      _nourishmentDelegate.Hydration += hydration;
+    }
+
+    public float GetSaturation()
+    {
+      return _nourishmentDelegate.Saturation;
+    }
+
+    public void Eat(int saturation)
+    {
+      _nourishmentDelegate.Saturation += saturation;
+    }
+
+    public IList<GameObject> GetStats(bool isTargeted)
+    {
+      var visualDetector = GetComponentInChildren<VisualDetector>();
+      visualDetector.GetComponent<Renderer>().enabled = isTargeted;
+
+      if (!isTargeted) return null;
+
+      return PropertyFactory.MakeAnimalObjects(this);
+    }
+
+
+    public void Tick()
+    {
+      ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
+
+      if (!Fertile) _unitsUntilFertile--;
+
+      if (_unitsUntilFertile <= 0) Fertile = true;
+
+      ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
+      _nourishmentDelegate.Tick();
+      foodManager.Tick();
+      DecreaseHealthIfStarving();
+    }
+
+    public void DayTick()
+    {
     }
 
     private void GenerateGender()
@@ -142,57 +193,12 @@ namespace Animal
 
     private void OnMateFound(AbstractAnimal animal)
     {
-      if (animal.Gender != Gender && animal.Fertile)
-      {
-        _mateTarget = animal;
-      }
+      if (animal.Gender != Gender && animal.Fertile) _mateTarget = animal;
     }
 
     public void ClearMateTarget()
     {
       _mateTarget = null;
-    }
-  
-    public float GetHydration()
-    {
-      return _nourishmentDelegate.Hydration;
-    }
-
-    public void Drink(int hydration)
-    {
-      _nourishmentDelegate.Hydration += hydration;
-    }
-
-    public float GetSaturation()
-    {
-      return _nourishmentDelegate.Saturation;
-    }
-
-    public void Eat(int saturation)
-    {
-      _nourishmentDelegate.Saturation += saturation;
-    }
-
-
-    public void Tick()
-    {
-      ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
-
-      if (!Fertile) _unitsUntilFertile--;
-
-      if (_unitsUntilFertile <= 0)
-      {
-        Fertile = true;
-      }
-    
-      ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
-      _nourishmentDelegate.Tick();
-      foodManager.Tick();
-      DecreaseHealthIfStarving();
-    }
-
-    public void DayTick()
-    {
     }
 
     protected abstract List<INewState<AnimalState>> GetStates(FoodManager foodManager);
@@ -245,7 +251,7 @@ namespace Animal
     {
       var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
       ChildSpawnedListeners?.Invoke(child);
-    
+
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
@@ -259,19 +265,20 @@ namespace Animal
       if (GetSaturation() <= 10 || GetHydration() <= 10)
         _healthDelegate.DecreaseHealth(1);
     }
-  
+
     public AbstractAnimal GetMateTarget()
     {
       return _mateTarget;
     }
+
     /// <summary>
     ///   Method ill only be called for females. Father parameter is for future genetic transfer implementations
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if(Gender == Gender.Female) ShouldBirth = true;
+      if (Gender == Gender.Female) ShouldBirth = true;
     }
-  
+
     public void Forget(FoodManager.FoodMemory memory)
     {
       foodManager.Forget(memory);
@@ -286,22 +293,12 @@ namespace Animal
     {
       return transform.localScale.x;
     }
-  
-    public IList<GameObject> GetStats(bool isTargeted)
-    {
-      var visualDetector = GetComponentInChildren<VisualDetector>();
-      visualDetector.GetComponent<Renderer>().enabled = isTargeted;
-
-      if (!isTargeted) return null;
-
-      return PropertyFactory.MakeAnimalObjects(this);
-    }
 
     public HealthDelegate GetHealthDelegate()
     {
       return _healthDelegate;
     }
-  
+
     public NourishmentDelegate GetNourishmentDelegate()
     {
       return _nourishmentDelegate;

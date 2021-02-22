@@ -18,16 +18,6 @@ namespace Foods.Plants
     private StateMachine<Plant, PlantState> _stateMachine;
     public bool LeaveSeedState { get; private set; }
 
-    /// <summary>
-    ///   Resets the plant (sets its age to zero and removes its saturation).
-    /// </summary>
-    public void Reset()
-    {
-      _ageInDays = 0;
-      Saturation = 0;
-      LeaveSeedState = false;
-    }
-
     private void Awake()
     {
       MaxSaturation = 100;
@@ -41,6 +31,16 @@ namespace Foods.Plants
       _stateMachine = new StateMachine<Plant, PlantState>(states);
       _currentState = _stateMachine.GetCorrelatingState(PlantState.Seed);
       _currentState.Enter(this);
+    }
+
+    /// <summary>
+    ///   Resets the plant (sets its age to zero and removes its saturation).
+    /// </summary>
+    public void Reset()
+    {
+      _ageInDays = 0;
+      Saturation = 0;
+      LeaveSeedState = false;
     }
 
     private void Update()

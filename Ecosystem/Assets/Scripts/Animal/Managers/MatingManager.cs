@@ -2,13 +2,14 @@ using UnityEngine;
 
 namespace Animal.Managers
 {
-  public class MatingManager: MonoBehaviour
+  public class MatingManager : MonoBehaviour
   {
-    [SerializeField] private VisualDetector visualDetector;
     public delegate void AnimalFound(AbstractAnimal animal);
 
+    [SerializeField] private VisualDetector visualDetector;
+
     public AnimalFound MateListeners;
-  
+
     private void Start()
     {
       visualDetector.AnimalFoundListeners += OnAnimalFound;
@@ -19,8 +20,8 @@ namespace Animal.Managers
       if (animal == null) return;
 
       if (animal.Gender == Gender.Male) return;
-    
-      if(MateListeners!= null) MateListeners.Invoke(animal);
+
+      if (MateListeners != null) MateListeners.Invoke(animal);
     }
   }
 }

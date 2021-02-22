@@ -34,14 +34,14 @@ namespace UI
       list.Add(healthSlider.gameObject);
 
       var saturationSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      saturationSlider.InitializeBar( animal.GetNourishmentDelegate().Saturation,
+      saturationSlider.InitializeBar(animal.GetNourishmentDelegate().Saturation,
         animal.GetNourishmentDelegate().MaxSaturation);
       saturationSlider.Color = Color.green;
       animal.GetNourishmentDelegate().SaturationChangedListeners += saturationSlider.OnValueChanged;
       list.Add(saturationSlider.gameObject);
 
       var hydrationSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      hydrationSlider.InitializeBar( animal.GetNourishmentDelegate().Hydration,
+      hydrationSlider.InitializeBar(animal.GetNourishmentDelegate().Hydration,
         animal.GetNourishmentDelegate().MaxHydration);
       hydrationSlider.Color = Color.cyan;
       animal.GetNourishmentDelegate().HydrationChangedListeners += hydrationSlider.OnValueChanged;

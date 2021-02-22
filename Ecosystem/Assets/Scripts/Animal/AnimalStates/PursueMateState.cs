@@ -27,16 +27,16 @@ namespace Animal.AnimalStates
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.IsHungry && _animal.KnowsFoodLocation) return AnimalState.PursueFood;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
-      
+
 
       var mateTarget = _animal.GetMateTarget();
       if (mateTarget == null) return AnimalState.Wander;
-      if (!mateTarget.Fertile) 
+      if (!mateTarget.Fertile)
       {
         _animal.ClearMateTarget();
         return AnimalState.Wander;
       }
-      
+
       var reachesMate = Vector3Util.InRange(_animal.gameObject, mateTarget.gameObject, 2);
       if (reachesMate)
       {
@@ -44,10 +44,8 @@ namespace Animal.AnimalStates
         _animal.ClearMateTarget();
         return AnimalState.Wander;
       }
-      else
-      {
-        _animal.GoTo(mateTarget.transform.position);
-      }
+
+      _animal.GoTo(mateTarget.transform.position);
 
       return AnimalState.PursueMate;
     }
