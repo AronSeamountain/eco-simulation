@@ -7,7 +7,6 @@ public class DisplayCharacterStats : MonoBehaviour
   [SerializeField] private Camera mainCamera;
   [SerializeField] private CardFactory cardFactory;
   private CameraControls _controls;
-  private Animal _target;
   private IStatable _targetIS;
 
   private void Awake()
