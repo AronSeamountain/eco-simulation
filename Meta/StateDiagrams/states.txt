@@ -1,52 +1,73 @@
 @startuml
 
-skinparam monochrome true
-skinparam ranksep 20
+skinparam monochrome reverse
 skinparam dpi 150
-skinparam arrowThickness 0.7
-skinparam packageTitleAlignment left
-skinparam usecaseBorderThickness 0.4
-skinparam defaultFontSize 12
-skinparam rectangleBorderThickness 1
+skinparam defaultFontSize 16
 
 rectangle "Herbivore" {
-  (H.Wander) --> (H.PursueFood) : Hungry & knows food
-  (H.PursueFood) --> (H.Wander) : Food eaten
-  (H.Wander) --> (H.Wander)
-
+  (H.Wander) ---> (H.Wander)
+  (H.Wander) ---> (H.Escape) : Noticed an enemy
+  (H.Wander) ---> (H.PursueFood) : Hungry & knows food
   (H.Wander) ---> (H.PursueWater) : Thirsty & knows food
-  (H.PursueWater) --> (H.Wander) : Drank water
-  (H.PursueWater) --> (H.PursueWater)
+  (H.Wander) ---> (H.PursueMate) : Fed, hydrated and saw a mate
+  (H.Wander) ---> (H.Dead) : No health
 
-  (H.Wander) --> (H.PursueMate)
-  (H.PursueMate) --> (H.Wander)
-  (H.PursueMate) --> (H.PursueMate)
+  (H.PursueFood) ---> (H.PursueFood)
+  (H.PursueFood) ---> (H.Wander) : Food eaten
+  (H.PursueFood) ---> (H.Escape) : Noticed an enemy
+  (H.PursueFood) ---> (H.Dead) : No health
 
-  (H.Wander) --> (H.Escape) : Notices an enemy
-  (H.Escape) --> (H.Wander) : No longer chased
-  (H.Escape) --> (H.Escape) : Is chased
+  (H.PursueWater) ---> (H.Escape) : Noticed an enemy
+  (H.PursueWater) ---> (H.PursueWater)
+  (H.PursueWater) ---> (H.Wander) : Drank water
+  (H.PursueWater) ---> (H.Dead) : No health
 
-  (H.PursueMate) --> (H.Birth) : Found mate & is female
+  (H.PursueMate) ---> (H.PursueMate)
+  (H.PursueMate) ---> (H.Birth) : Found mate & is female
+  (H.PursueMate) ---> (H.Wander) : (Mated & is male) or (is hungry or thirsty)
+  (H.PursueMate) ---> (H.Dead) : No health
+
+  (H.Escape) ---> (H.Escape)
+  (H.Escape) ---> (H.Wander) : No longer chased
+  (H.Escape) ---> (H.Dead) : No health
+
+  (H.Dead) ---> (H.Dead)
+
+  (H.Birth) ---> (H.Wander)
+  (H.Birth) ---> (H.Dead) : No health
 }
 
 rectangle "Carnivore" {
-  (C.Wander) --> (C.PursueFood) : Hungry & knows food
-  (C.PursueFood) --> (C.Wander) : Food eaten
-  (C.Wander) --> (C.Wander)
-
+  (C.Wander) ---> (C.Wander)
+  (C.Wander) ---> (C.Escape) : Noticed an enemy
+  (C.Wander) ---> (C.PursueFood) : Hungry & knows food
   (C.Wander) ---> (C.PursueWater) : Thirsty & knows food
-  (C.PursueWater) --> (C.Wander) : Drank water
-  (C.PursueWater) --> (C.PursueWater) : Not
+  (C.Wander) ---> (C.PursueMate) : Fed, hydrated and saw a mate
+  (C.Wander) ---> (C.Dead) : No health
+  (C.Wander) ---> (C.Hunt) : Is hungry & saw target
 
-  (C.Wander) --> (C.PursueMate)
-  (C.PursueMate) --> (C.Wander)
-  (C.PursueMate) --> (C.PursueMate)
+  (C.Hunt) ---> (C.Wander) : Target eaten or gave up
+  (C.Hunt) ---> (C.Escape) : Noticed an enemy
+  (C.Hunt) ---> (C.Dead) : No health
 
-  (C.Wander) --> (C.Hunt) : Is hu
-  (C.Hunt) --> (C.Wander)
-  (C.Hunt) --> (C.Hunt)
+  (C.PursueWater) ---> (C.Escape) : Noticed an enemy
+  (C.PursueWater) ---> (C.PursueWater)
+  (C.PursueWater) ---> (C.Wander) : Drank water
+  (C.PursueWater) ---> (C.Dead) : No health
 
-  (C.PursueMate) --> (C.Birth) : Found mate & is female
+  (C.PursueMate) ---> (C.PursueMate)
+  (C.PursueMate) ---> (C.Birth) : Found mate & is female
+  (C.PursueMate) ---> (C.Wander) : (Mated & is male) or (is hungry or thirsty)
+  (C.PursueMate) ---> (C.Dead) : No health
+
+  (C.Escape) ---> (C.Escape)
+  (C.Escape) ---> (C.Wander) : No longer chased
+  (C.Escape) ---> (C.Dead) : No health
+
+  (C.Dead) ---> (C.Dead)
+
+  (C.Birth) ---> (C.Wander)
+  (C.Birth) ---> (C.Dead) : No health
 }
 
 @enduml
