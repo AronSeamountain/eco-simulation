@@ -47,7 +47,7 @@ namespace Foods.Plants
 
     public IList<GameObject> GetStats(bool getStats)
     {
-      return PropertyFactory.MakePlantObjects(this);
+      return PropertyFactory.Create(this);
     }
 
     public void Tick()

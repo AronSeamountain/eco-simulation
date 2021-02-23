@@ -8,39 +8,24 @@ namespace UI
 {
   public static class PropertyFactory
   {
-    private static readonly Dictionary<string, GameObject> _goDictionary;
-    private static readonly GameObject slider;
-    private static readonly GameObject text;
-
-    static PropertyFactory()
-    {
-      var gameObjects = Resources.LoadAll<GameObject>("Prefabs/UI");
-      _goDictionary = new Dictionary<string, GameObject>(gameObjects.Length);
-
-      foreach (var gameObject in gameObjects) _goDictionary.Add(gameObject.name, gameObject);
-
-      slider = _goDictionary["Bar"];
-      text = _goDictionary["Text"];
-    }
-
-    public static IList<GameObject> MakeAnimalObjects(AbstractAnimal animal)
+    public static IList<GameObject> Create(AbstractAnimal animal)
     {
       var list = new List<GameObject>();
 
-      var healthSlider = Object.Instantiate(slider).GetComponent<Bar>();
-      healthSlider.InitializeBar(animal.GetHealthDelegate().Health, animal.GetHealthDelegate().GetMaxHealth());
-      healthSlider.Color = Color.red;
-      animal.GetHealthDelegate().HealthChangedListeners += healthSlider.OnValueChanged;
-      list.Add(healthSlider.gameObject);
+      var healthBar = RowFactory.CreateSlider();
+      healthBar.InitializeBar(animal.GetHealthDelegate().Health, animal.GetHealthDelegate().GetMaxHealth());
+      healthBar.Color = Color.red;
+      animal.GetHealthDelegate().HealthChangedListeners += healthBar.OnValueChanged;
+      list.Add(healthBar.gameObject);
 
-      var saturationSlider = Object.Instantiate(slider).GetComponent<Bar>();
+      var saturationSlider = RowFactory.CreateSlider();
       saturationSlider.InitializeBar(animal.GetNourishmentDelegate().Saturation,
         animal.GetNourishmentDelegate().MaxSaturation);
       saturationSlider.Color = Color.green;
       animal.GetNourishmentDelegate().SaturationChangedListeners += saturationSlider.OnValueChanged;
       list.Add(saturationSlider.gameObject);
 
-      var hydrationSlider = Object.Instantiate(slider).GetComponent<Bar>();
+      var hydrationSlider = RowFactory.CreateSlider();
       hydrationSlider.InitializeBar(animal.GetNourishmentDelegate().Hydration,
         animal.GetNourishmentDelegate().MaxHydration);
       hydrationSlider.Color = Color.cyan;
@@ -48,34 +33,61 @@ namespace UI
       list.Add(hydrationSlider.gameObject);
 
 
-      var state = Object.Instantiate(text).GetComponent<Text>();
+      var state = RowFactory.CreateText();
       state.text = "State: " + animal.GetCurrentStateEnum();
       list.Add(state.gameObject);
 
-      var speed = Object.Instantiate(text).GetComponent<Text>();
+      var speed = RowFactory.CreateText();
       speed.text = "Speed: " + animal.GetSpeedModifier();
       list.Add(speed.gameObject);
 
-      var size = Object.Instantiate(text).GetComponent<Text>();
+      var size = RowFactory.CreateText();
       size.text = "Size: " + animal.GetSize();
       list.Add(size.gameObject);
 
       return list;
     }
 
-    public static IList<GameObject> MakePlantObjects(Plant plant)
+    public static IList<GameObject> Create(Plant plant)
     {
       var list = new List<GameObject>();
 
-      var saturation = Object.Instantiate(text).GetComponent<Text>();
+      var saturation = RowFactory.CreateText();
       saturation.text = "Saturation: " + plant.Saturation;
       list.Add(saturation.gameObject);
 
-      var eatable = Object.Instantiate(text).GetComponent<Text>();
+      var eatable = RowFactory.CreateText();
       eatable.text = "Can be eaten: " + plant.CanBeEaten();
       list.Add(eatable.gameObject);
 
       return list;
+    }
+
+    private static class RowFactory
+    {
+      private static readonly GameObject sliderPrefab;
+      private static readonly GameObject textPrefab;
+
+      static RowFactory()
+      {
+        var gameObjects = Resources.LoadAll<GameObject>("Prefabs/UI");
+        var _goDictionary = new Dictionary<string, GameObject>(gameObjects.Length);
+
+        foreach (var gameObject in gameObjects) _goDictionary.Add(gameObject.name, gameObject);
+
+        sliderPrefab = _goDictionary["Bar"];
+        textPrefab = _goDictionary["Text"];
+      }
+
+      public static Bar CreateSlider()
+      {
+        return Object.Instantiate(sliderPrefab).GetComponent<Bar>();
+      }
+
+      public static Text CreateText()
+      {
+        return Object.Instantiate(textPrefab).GetComponent<Text>();
+      }
     }
   }
 }

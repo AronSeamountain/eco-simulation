@@ -141,7 +141,7 @@ namespace Animal
 
       if (!isTargeted) return null;
 
-      return PropertyFactory.MakeAnimalObjects(this);
+      return PropertyFactory.Create(this);
     }
 
 
