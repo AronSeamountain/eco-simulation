@@ -30,6 +30,7 @@ namespace Animal
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
+    [SerializeField] protected ParticleSystem mouthParticles;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -215,7 +216,15 @@ namespace Animal
     /// <param name="food">The food to eat.</param>
     public void Eat(AbstractFood food)
     {
-      Eat(food.Consume(int.MaxValue));
+      Eat(food.Consume((int) Math.Round(20*_sizeModifier*_sizeModifier)));
+      //insert code to pause and particles
+      mouthParticles.Play();
+      
+    }
+
+    public void StopEating()
+    {
+      mouthParticles.Stop();
     }
 
     /// <summary>
