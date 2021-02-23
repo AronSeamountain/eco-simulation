@@ -84,9 +84,10 @@ namespace Animal
       // Setup gender
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
-      
+
       //Listen to hearing events
-      hearingManager.KnownAnimalMemoriesChangedListeners += OnAnimalHeard;
+      hearingManager.KnownAnimalChangedListeners += OnAnimalHeard;
+      hearingManager.KnownAnimalChangedListeners += OnAnimalLeftHearing;
 
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
@@ -170,6 +171,11 @@ namespace Animal
     private void OnAnimalHeard(IReadOnlyCollection<HearingManager.AnimalMemory> animal)
     {
       Debug.Log("Can hear other animals");
+    }
+
+    private void OnAnimalLeftHearing(IReadOnlyCollection<HearingManager.AnimalMemory> animal)
+    {
+      Debug.Log("Cannot hear animal anymore");
     }
 
     private void GenerateGender()
@@ -282,8 +288,6 @@ namespace Animal
     {
       foodManager.Forget(memory);
     }
-    
-    
 
     public AnimalState GetCurrentStateEnum()
     {
