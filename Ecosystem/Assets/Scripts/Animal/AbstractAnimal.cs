@@ -30,6 +30,7 @@ namespace Animal
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
+    [SerializeField] protected HearingManager hearingManager;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -83,6 +84,9 @@ namespace Animal
       // Setup gender
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+      
+      //Listen to hearing events
+      hearingManager.KnownAnimalMemoriesChangedListeners += OnAnimalHeard;
 
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
@@ -161,6 +165,11 @@ namespace Animal
 
     public void DayTick()
     {
+    }
+
+    private void OnAnimalHeard(IReadOnlyCollection<HearingManager.AnimalMemory> animal)
+    {
+      Debug.Log("Can hear other animals");
     }
 
     private void GenerateGender()
@@ -273,6 +282,8 @@ namespace Animal
     {
       foodManager.Forget(memory);
     }
+    
+    
 
     public AnimalState GetCurrentStateEnum()
     {

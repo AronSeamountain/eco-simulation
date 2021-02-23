@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Animal
 {
@@ -25,11 +26,22 @@ namespace Animal
 
     private void Start()
     {
-      _radius = 8;
+      Radius = 8;
     }
-    
-    
-
+    private void OnTriggerEnter(Collider other)
+    {
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal)
+      {
+        AnimalHeardListeners?.Invoke(animal);
+      }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal)
+      {
+        AnimalHeardListeners?.Invoke(animal);
+      }
+    }
   } 
   
 }
