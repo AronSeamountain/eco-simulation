@@ -18,6 +18,8 @@ namespace Animal
   {
     public delegate void ChildSpawned(AbstractAnimal child);
 
+    public delegate void StateChanged(string state);
+
     private const int FertilityTimeInUnits = 5;
 
     /// <summary>
@@ -38,6 +40,7 @@ namespace Animal
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public ChildSpawned ChildSpawnedListeners;
+    public StateChanged StateChangedListeners;
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
@@ -79,6 +82,7 @@ namespace Animal
     {
       var states = GetStates(foodManager);
       _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
+      _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
 
       // Setup gender
       GenerateGender();

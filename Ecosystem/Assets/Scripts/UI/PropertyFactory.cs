@@ -39,6 +39,7 @@ namespace UI
       // State name
       var state = RowFactory.CreateKeyValuePair();
       state.Configure("State", animal.GetCurrentStateEnum().ToString());
+      animal.StateChangedListeners += state.OnValueChanged;
 
       // Speed
       var speed = RowFactory.CreateKeyValuePair();
