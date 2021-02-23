@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Animal;
-using Animal.AnimalStates;
 using Foods.Plants;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,7 +49,7 @@ namespace UI
       var size = RowFactory.CreateText();
       size.text = "Size: " + animal.GetSize();
 
-      return new List<MonoBehaviour>() {healthBar, saturationSlider, hydrationSlider, state, speed, size};
+      return new List<MonoBehaviour> {healthBar, saturationSlider, hydrationSlider, state, speed, size};
     }
 
     public static IList<MonoBehaviour> Create(Plant plant)
@@ -61,7 +60,7 @@ namespace UI
       var eatable = RowFactory.CreateText();
       eatable.text = "Can be eaten: " + plant.CanBeEaten();
 
-      return new List<MonoBehaviour>() {saturation, eatable};
+      return new List<MonoBehaviour> {saturation, eatable};
     }
 
     private static class RowFactory
