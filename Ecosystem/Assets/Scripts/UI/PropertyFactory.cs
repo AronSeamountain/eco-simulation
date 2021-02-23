@@ -2,7 +2,6 @@
 using Animal;
 using Foods.Plants;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI
 {
@@ -38,35 +37,37 @@ namespace UI
       animal.GetNourishmentDelegate().SaturationChangedListeners += hydrationSlider.OnValueChanged;
 
       // State name
-      var state = RowFactory.CreateText();
-      state.text = "State: " + animal.GetCurrentStateEnum();
+      var state = RowFactory.CreateKeyValuePair();
+      state.Configure("State", animal.GetCurrentStateEnum().ToString());
 
       // Speed
-      var speed = RowFactory.CreateText();
-      speed.text = "Speed: " + animal.GetSpeedModifier();
+      var speed = RowFactory.CreateKeyValuePair();
+      speed.Configure("Speed", animal.GetSpeedModifier().ToString());
 
       // Size
-      var size = RowFactory.CreateText();
-      size.text = "Size: " + animal.GetSize();
+      var size = RowFactory.CreateKeyValuePair();
+      size.Configure("Size", animal.GetSize().ToString());
 
       return new List<MonoBehaviour> {healthBar, saturationSlider, hydrationSlider, state, speed, size};
     }
 
     public static IList<MonoBehaviour> Create(Plant plant)
     {
-      var saturation = RowFactory.CreateText();
-      saturation.text = "Saturation: " + plant.Saturation;
+      var saturation = RowFactory.CreateKeyValuePair();
+      saturation.Configure("Saturation", plant.Saturation.ToString());
 
-      var eatable = RowFactory.CreateText();
-      eatable.text = "Can be eaten: " + plant.CanBeEaten();
+      var eatable = RowFactory.CreateKeyValuePair();
+      eatable.Configure("Can be eaten", plant.CanBeEaten().ToString());
 
       return new List<MonoBehaviour> {saturation, eatable};
     }
 
     private static class RowFactory
     {
+      private const string BarName = "Bar";
+      private const string KeyValuePairTextName = "KeyValuePairText";
       private static readonly GameObject sliderPrefab;
-      private static readonly GameObject textPrefab;
+      private static readonly GameObject KeyValuePairTextPrefab;
 
       static RowFactory()
       {
@@ -75,8 +76,8 @@ namespace UI
 
         foreach (var gameObject in gameObjects) _goDictionary.Add(gameObject.name, gameObject);
 
-        sliderPrefab = _goDictionary["Bar"];
-        textPrefab = _goDictionary["Text"];
+        sliderPrefab = _goDictionary[BarName];
+        KeyValuePairTextPrefab = _goDictionary[KeyValuePairTextName];
       }
 
       public static Bar CreateSlider()
@@ -84,9 +85,9 @@ namespace UI
         return Object.Instantiate(sliderPrefab).GetComponent<Bar>();
       }
 
-      public static Text CreateText()
+      public static KeyValuePairText CreateKeyValuePair()
       {
-        return Object.Instantiate(textPrefab).GetComponent<Text>();
+        return Object.Instantiate(KeyValuePairTextPrefab).GetComponent<KeyValuePairText>();
       }
     }
   }

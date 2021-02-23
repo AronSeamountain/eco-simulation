@@ -10,7 +10,7 @@ namespace UI
 
     public void Configure(float value, float maxValue, Color backgroundColor)
     {
-      //slider = GetComponent<Slider>();
+      slider.targetGraphic.color = backgroundColor;
       SetProgress(value, maxValue);
     }
 
