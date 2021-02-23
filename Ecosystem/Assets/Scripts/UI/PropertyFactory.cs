@@ -54,42 +54,17 @@ namespace UI
 
     public static IList<MonoBehaviour> Create(Plant plant)
     {
+      var state = RowFactory.CreateKeyValuePair();
+      state.Configure("State", plant.GetCurrentStateEnum().ToString());
+      plant.StateChangedListeners += state.OnValueChanged;
+
       var saturation = RowFactory.CreateKeyValuePair();
       saturation.Configure("Saturation", plant.Saturation.ToString());
 
       var eatable = RowFactory.CreateKeyValuePair();
-      eatable.Configure("Can be eaten", plant.CanBeEaten().ToString());
+      eatable.Configure("Eatable", plant.CanBeEaten().ToString());
 
-      return new List<MonoBehaviour> {saturation, eatable};
-    }
-
-    private static class RowFactory
-    {
-      private const string BarName = "Bar";
-      private const string KeyValuePairTextName = "KeyValuePairText";
-      private static readonly GameObject sliderPrefab;
-      private static readonly GameObject KeyValuePairTextPrefab;
-
-      static RowFactory()
-      {
-        var gameObjects = Resources.LoadAll<GameObject>("Prefabs/UI");
-        var _goDictionary = new Dictionary<string, GameObject>(gameObjects.Length);
-
-        foreach (var gameObject in gameObjects) _goDictionary.Add(gameObject.name, gameObject);
-
-        sliderPrefab = _goDictionary[BarName];
-        KeyValuePairTextPrefab = _goDictionary[KeyValuePairTextName];
-      }
-
-      public static Bar CreateSlider()
-      {
-        return Object.Instantiate(sliderPrefab).GetComponent<Bar>();
-      }
-
-      public static KeyValuePairText CreateKeyValuePair()
-      {
-        return Object.Instantiate(KeyValuePairTextPrefab).GetComponent<KeyValuePairText>();
-      }
+      return new List<MonoBehaviour> {saturation, eatable, state};
     }
   }
 }

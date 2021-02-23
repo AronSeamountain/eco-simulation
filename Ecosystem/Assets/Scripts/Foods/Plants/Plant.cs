@@ -8,6 +8,8 @@ namespace Foods.Plants
 {
   public sealed class Plant : AbstractFood, ITickable, IInspectable
   {
+    public delegate void StateChanged(string state);
+
     private const int DaysAsSeed = 5;
     private const int SaturationPerDay = 10;
     [SerializeField] private Material seedMaterial;
@@ -15,6 +17,7 @@ namespace Foods.Plants
     [SerializeField] private Material matureMaterial;
     private int _ageInDays;
     private StateMachine<PlantState> _stateMachine;
+    public StateChanged StateChangedListeners;
     public bool LeaveSeedState { get; private set; }
 
     private void Awake()
@@ -28,6 +31,7 @@ namespace Foods.Plants
         new MatureState(this)
       };
       _stateMachine = new StateMachine<PlantState>(states, PlantState.Seed);
+      _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
     }
 
     /// <summary>
@@ -93,6 +97,11 @@ namespace Foods.Plants
     public override bool CanBeEaten()
     {
       return _stateMachine.GetCurrentStateEnum() == PlantState.Mature;
+    }
+
+    public PlantState GetCurrentStateEnum()
+    {
+      return _stateMachine.GetCurrentStateEnum();
     }
   }
 }
