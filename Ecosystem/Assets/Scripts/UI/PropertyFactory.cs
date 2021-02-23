@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Animal;
+using Animal.AnimalStates;
 using Foods.Plants;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,59 +9,59 @@ namespace UI
 {
   public static class PropertyFactory
   {
-    public static IList<GameObject> Create(AbstractAnimal animal)
+    public static IList<MonoBehaviour> Create(AbstractAnimal animal)
     {
-      var list = new List<GameObject>();
-
+      // Health
       var healthBar = RowFactory.CreateSlider();
-      healthBar.InitializeBar(animal.GetHealthDelegate().Health, animal.GetHealthDelegate().GetMaxHealth());
-      healthBar.Color = Color.red;
+      healthBar.Configure(
+        animal.GetHealthDelegate().Health,
+        animal.GetHealthDelegate().GetMaxHealth(),
+        Color.red
+      );
       animal.GetHealthDelegate().HealthChangedListeners += healthBar.OnValueChanged;
-      list.Add(healthBar.gameObject);
 
+      // Saturation
       var saturationSlider = RowFactory.CreateSlider();
-      saturationSlider.InitializeBar(animal.GetNourishmentDelegate().Saturation,
-        animal.GetNourishmentDelegate().MaxSaturation);
-      saturationSlider.Color = Color.green;
+      saturationSlider.Configure(
+        animal.GetNourishmentDelegate().Saturation,
+        animal.GetNourishmentDelegate().MaxSaturation,
+        Color.green
+      );
       animal.GetNourishmentDelegate().SaturationChangedListeners += saturationSlider.OnValueChanged;
-      list.Add(saturationSlider.gameObject);
 
+      // Hydration
       var hydrationSlider = RowFactory.CreateSlider();
-      hydrationSlider.InitializeBar(animal.GetNourishmentDelegate().Hydration,
-        animal.GetNourishmentDelegate().MaxHydration);
-      hydrationSlider.Color = Color.cyan;
-      animal.GetNourishmentDelegate().HydrationChangedListeners += hydrationSlider.OnValueChanged;
-      list.Add(hydrationSlider.gameObject);
+      hydrationSlider.Configure(
+        animal.GetNourishmentDelegate().Hydration,
+        animal.GetNourishmentDelegate().MaxHydration,
+        Color.blue
+      );
+      animal.GetNourishmentDelegate().SaturationChangedListeners += hydrationSlider.OnValueChanged;
 
-
+      // State name
       var state = RowFactory.CreateText();
       state.text = "State: " + animal.GetCurrentStateEnum();
-      list.Add(state.gameObject);
 
+      // Speed
       var speed = RowFactory.CreateText();
       speed.text = "Speed: " + animal.GetSpeedModifier();
-      list.Add(speed.gameObject);
 
+      // Size
       var size = RowFactory.CreateText();
       size.text = "Size: " + animal.GetSize();
-      list.Add(size.gameObject);
 
-      return list;
+      return new List<MonoBehaviour>() {healthBar, saturationSlider, hydrationSlider, state, speed, size};
     }
 
-    public static IList<GameObject> Create(Plant plant)
+    public static IList<MonoBehaviour> Create(Plant plant)
     {
-      var list = new List<GameObject>();
-
       var saturation = RowFactory.CreateText();
       saturation.text = "Saturation: " + plant.Saturation;
-      list.Add(saturation.gameObject);
 
       var eatable = RowFactory.CreateText();
       eatable.text = "Can be eaten: " + plant.CanBeEaten();
-      list.Add(eatable.gameObject);
 
-      return list;
+      return new List<MonoBehaviour>() {saturation, eatable};
     }
 
     private static class RowFactory

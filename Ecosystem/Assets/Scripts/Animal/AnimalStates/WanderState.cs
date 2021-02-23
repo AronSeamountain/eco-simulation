@@ -57,7 +57,7 @@ namespace Animal.AnimalStates
       if (_animal.KnowsWaterLocation && _animal.IsThirsty) return AnimalState.PursueWater;
       if (_animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
 
-      if (_animal.GetMateTarget() != null && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
+      //if (_animal.GetMateTarget() != null && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
         _animal.StopMoving();

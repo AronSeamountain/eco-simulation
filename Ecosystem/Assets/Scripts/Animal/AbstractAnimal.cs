@@ -14,7 +14,7 @@ namespace Animal
   /// <summary>
   ///   A very basic animal that searches for food.
   /// </summary>
-  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStatable
+  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable
   {
     public delegate void ChildSpawned(AbstractAnimal child);
 
@@ -134,7 +134,7 @@ namespace Animal
       _nourishmentDelegate.Saturation += saturation;
     }
 
-    public IList<GameObject> GetStats(bool isTargeted)
+    public IList<MonoBehaviour> GetStats(bool isTargeted)
     {
       var visualDetector = GetComponentInChildren<VisualDetector>();
       visualDetector.GetComponent<Renderer>().enabled = isTargeted;

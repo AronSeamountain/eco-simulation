@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Foods.Plants
 {
-  public sealed class Plant : AbstractFood, ITickable, IStatable
+  public sealed class Plant : AbstractFood, ITickable, IInspectable
   {
     private const int DaysAsSeed = 5;
     private const int SaturationPerDay = 10;
@@ -45,7 +45,7 @@ namespace Foods.Plants
       _stateMachine.Execute();
     }
 
-    public IList<GameObject> GetStats(bool getStats)
+    public IList<MonoBehaviour> GetStats(bool getStats)
     {
       return PropertyFactory.Create(this);
     }

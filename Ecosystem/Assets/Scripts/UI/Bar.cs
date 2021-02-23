@@ -1,37 +1,29 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI
 {
-  public class Bar : MonoBehaviour
+  public sealed class Bar : MonoBehaviour
   {
-    public Slider slider;
-    public Text text;
-    public float Value { get; set; }
+    [SerializeField] private Slider slider;
+    [SerializeField] private Text text;
 
-    public Color Color
+    public void Configure(float value, float maxValue, Color backgroundColor)
     {
-      get => Color;
-      set => slider.targetGraphic.color = value;
-    }
-
-    public Color BackgroundColor { get; set; }
-
-    public void InitializeBar(float value, float maxValue)
-    {
-      slider = GetComponent<Slider>();
-      text = slider.GetComponentInChildren<Text>();
-      Value = value;
-      slider.value = Value / maxValue;
-      text.text = Value + "/" + maxValue;
+      //slider = GetComponent<Slider>();
+      SetProgress(value, maxValue);
     }
 
     public void OnValueChanged(float value, float maxValue)
     {
-      if (!this) return;
-      Value = value;
-      slider.value = Value / maxValue;
-      text.text = Value + "/" + maxValue;
+      SetProgress(value, maxValue);
+    }
+
+    private void SetProgress(float value, float maxValue)
+    {
+      slider.value = value / maxValue;
+      text.text = value + "/" + maxValue;
     }
   }
 }

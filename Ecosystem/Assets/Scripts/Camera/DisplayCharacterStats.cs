@@ -9,7 +9,7 @@ namespace Camera
     [SerializeField] private UnityEngine.Camera mainCamera;
     [SerializeField] private PropertiesCard propertiesCard;
     private CameraControls _controls;
-    private IStatable _targetIS;
+    private IInspectable _targetIS;
 
     private void Awake()
     {
@@ -48,7 +48,7 @@ namespace Camera
       if (Physics.Raycast(ray, out var hitTarget))
       {
         if (_targetIS != null) OnCancelTarget(_);
-        var statable = hitTarget.collider.gameObject.GetComponent<IStatable>();
+        var statable = hitTarget.collider.gameObject.GetComponent<IInspectable>();
         if (statable == null) return;
         _targetIS = statable;
         propertiesCard.Populate(statable.GetStats(true));
