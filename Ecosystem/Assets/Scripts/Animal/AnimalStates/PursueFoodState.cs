@@ -57,9 +57,10 @@ namespace Animal.AnimalStates
           if (collider.GetComponent<AbstractFood>() is AbstractFood f)
             if (f == _foodTarget.Food)
             {
-              _animal.StopMoving();
-              _animal.Eat(_foodTarget.Food);
-              break;
+              return AnimalState.Eat;
+              //_animal.StopMoving();
+              //_animal.Eat(_foodTarget.Food);
+              //break;
             }
 
         _animal.Forget(_foodTarget);
