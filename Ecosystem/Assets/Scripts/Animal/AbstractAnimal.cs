@@ -170,12 +170,10 @@ namespace Animal
 
     private void OnAnimalHeard(IReadOnlyCollection<HearingManager.AnimalMemory> animal)
     {
-      Debug.Log("Can hear other animals");
     }
 
     private void OnAnimalLeftHearing(IReadOnlyCollection<HearingManager.AnimalMemory> animal)
     {
-      Debug.Log("Cannot hear animal anymore");
     }
 
     private void GenerateGender()

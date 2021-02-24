@@ -16,10 +16,10 @@ namespace Animal
     public delegate void AnimalLeftHearing(AbstractAnimal animal);
 
     [SerializeField] private Transform listeningArea;
+    private Renderer _component;
     private int _radius;
     public AnimalHeard AnimalHeardListeners;
     public AnimalLeftHearing AnimalLeftHearingListeners;
-    private Renderer _component;
 
     private int Radius
     {
@@ -51,7 +51,6 @@ namespace Animal
         AnimalLeftHearingListeners?.Invoke(animal);
         _component.material.SetColor("_Color", Color.white);
       }
-      
     }
   }
 }
