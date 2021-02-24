@@ -83,12 +83,15 @@ namespace UI
     {
       var list = new List<GameObject>();
       
+      var ecoSystemText = Object.Instantiate(text).GetComponent<Text>();
+      ecoSystemText.text = "Ecosystem";
+      list.Add(ecoSystemText.gameObject);
       var animalText = Object.Instantiate(text).GetComponent<Text>();
-      animalText.text = "Current number of animals: " + entityManager.Animals.Count;
+      animalText.text = "Animals: " + entityManager.Animals.Count;
       list.Add(animalText.gameObject);
       
       var plantText = Object.Instantiate(text).GetComponent<Text>();
-      plantText.text = "Current number of plants: " + entityManager.Plants.Count;
+      plantText.text = "Plants: " + entityManager.Plants.Count;
       list.Add(plantText.gameObject);
       return list;
     }
