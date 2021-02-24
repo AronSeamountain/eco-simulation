@@ -33,7 +33,11 @@ namespace Core
     private Tick _tickListeners;
     private float _unitsPassed;
     private float _unitTicker;
+    private int animalCount = 0;
 
+    public delegate void AnimalCountChanged(int animalCount);
+
+    public AnimalCountChanged AnimalCountChangedListeners; 
     private void Start()
     {
       _spawnLocationVector3 = spawnLocation.position;
@@ -58,6 +62,11 @@ namespace Core
 
     private void Update()
     {
+      if (animalCount != Animals.Count)
+      {
+        animalCount = Animals.Count;
+        AnimalCountChangedListeners.Invoke(animalCount);
+      }
       UpdateTick();
     }
 

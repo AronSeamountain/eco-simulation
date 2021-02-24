@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -22,6 +23,18 @@ namespace Camera
       _controls.CameraMovement.Movement.performed += ShowGlobalStats;
     }
 
+    private void Start()
+    {
+      entityManager.AnimalCountChangedListeners += AnimalCountChanged;
+    }
+
+    private void AnimalCountChanged(int animalCount)
+    {
+      if (_targetIS == null || _targetIS == entityManager)
+      {
+        ShowGlobalStats(new InputAction.CallbackContext());
+      }
+    }
     private void OnEnable()
     {
       _controls.Enable();
@@ -39,7 +52,6 @@ namespace Camera
     }
     private void OnCancelTarget(InputAction.CallbackContext _)
     {
-      Debug.Log("IN CANCEL TARGET");
       if (_targetIS != null)
         _targetIS.GetStats(false);
       propertiesCard.ClearContent();
