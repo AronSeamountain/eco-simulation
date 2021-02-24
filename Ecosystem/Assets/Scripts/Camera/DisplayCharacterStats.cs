@@ -1,4 +1,5 @@
-﻿using UI;
+﻿using Core;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,7 @@ namespace Camera
   {
     [SerializeField] private UnityEngine.Camera mainCamera;
     [SerializeField] private PropertiesCard propertiesCard;
+    [SerializeField] private EntityManager entityManager;
     private CameraControls _controls;
     private IStatable _targetIS;
 
@@ -49,7 +51,8 @@ namespace Camera
       {
         if (_targetIS != null) OnCancelTarget(_);
         var statable = hitTarget.collider.gameObject.GetComponent<IStatable>();
-        if (statable == null) return;
+        if (statable == null) statable = entityManager;
+       
         _targetIS = statable;
         propertiesCard.Populate(statable.GetStats(true));
       }
