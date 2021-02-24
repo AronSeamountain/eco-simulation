@@ -89,6 +89,7 @@ namespace Animal.AnimalStates
     {
       var point = NavMeshUtil.GetRandomClosePoint(_animal.transform.position);
       _destination = point;
+      Debug.Log("här är jag");
       _animal.GoTo(_destination);
     }
 

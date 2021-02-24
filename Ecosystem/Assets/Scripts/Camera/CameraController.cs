@@ -9,12 +9,12 @@ namespace Camera
     /// <summary>
     ///   The distance in the x-z plane to the target
     /// </summary>
-    private const int DistanceBehind = 20;
+    private const int DistanceBehind = 5;
 
     /// <summary>
     ///   The height we want the camera to be above the target
     /// </summary>
-    private const int DistanceOver = 10;
+    private const int DistanceOver = 5;
 
     private const int RotationSpeed = 10;
     private const int ViewSpeed = 10;

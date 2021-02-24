@@ -81,9 +81,11 @@ namespace Animal
       _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
 
       // Setup gender
+      Debug.Log("kaninen är här");
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
-
+      
+      
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
 
@@ -103,10 +105,12 @@ namespace Animal
       _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
 
       // Setup speed modifier
+      
       movement.SpeedFactor = _speedModifier;
-
+      
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
+      Debug.Log("slutet av start");
     }
 
     private void Update()
@@ -166,7 +170,7 @@ namespace Animal
     private void GenerateGender()
     {
       var random = Random.Range(0f, 1f);
-      var cubeRenderer = gameObject.GetComponent<Renderer>();
+      var cubeRenderer = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
       if (random > 0.5)
       {
         Gender = Gender.Male;
@@ -224,6 +228,7 @@ namespace Animal
     /// <param name="destination">The position to go to.</param>
     public void GoTo(Vector3 destination)
     {
+      Debug.Log("go to it boy");
       movement.GoTo(destination);
     }
 
@@ -252,8 +257,10 @@ namespace Animal
     /// </summary>
     private void DecreaseHealthIfStarving()
     {
+      Debug.Log("DECREASE HEALTH IF STARVING INNE");
       if (GetSaturation() <= 10 || GetHydration() <= 10)
         _healthDelegate.DecreaseHealth(1);
+        Debug.Log("TAR DMG");
     }
 
     public AbstractAnimal GetMateTarget()

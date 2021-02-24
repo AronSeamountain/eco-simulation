@@ -22,7 +22,9 @@ public sealed class GoToMovement : MonoBehaviour
   public void GoTo(Vector3 destination)
   {
     agent.SetDestination(destination);
+    Debug.Log("set destination");
     agent.isStopped = false;
+    Debug.Log("SPEED: " + agent.speed);
   }
 
   /// <summary>
