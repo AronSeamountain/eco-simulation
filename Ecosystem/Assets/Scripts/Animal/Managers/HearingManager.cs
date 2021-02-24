@@ -11,6 +11,7 @@ namespace Animal.Managers
     [SerializeField] private HearingDetector hearingDetector;
     private IList<AnimalMemory> _animalsHeard;
     public KnownAnimalsChanged KnownAnimalChangedListeners;
+    public KnownAnimalsChanged UnknownAnimalChangedListeners;
 
     public IReadOnlyList<AnimalMemory> KnownAnimals => new ReadOnlyCollection<AnimalMemory>(_animalsHeard);
 
@@ -18,7 +19,7 @@ namespace Animal.Managers
     {
       _animalsHeard = new List<AnimalMemory>();
       hearingDetector.AnimalHeardListeners += OnAnimalHeard;
-      hearingDetector.AnimalLeftHearingListeners += OnAnimalNotHeard;
+      hearingDetector.AnimalLeftHearingListeners += OnAnimalNotHeardAnymore;
     }
 
     private void OnAnimalHeard(AbstractAnimal animal)
@@ -29,15 +30,15 @@ namespace Animal.Managers
           alreadyKnowsAnimal = true;
 
       if (!alreadyKnowsAnimal)
-        _animalsHeard.Add(gameObject.AddComponent<AnimalMemory>());
+        _animalsHeard.Add(new AnimalMemory(animal));
 
       KnownAnimalChangedListeners?.Invoke(KnownAnimals);
     }
 
-    private void OnAnimalNotHeard(AbstractAnimal animal)
+    private void OnAnimalNotHeardAnymore(AbstractAnimal animal)
     {
-      _animalsHeard.Remove(gameObject.AddComponent<AnimalMemory>());
-      KnownAnimalChangedListeners?.Invoke(KnownAnimals);
+      _animalsHeard.Remove(new AnimalMemory(animal));
+      UnknownAnimalChangedListeners?.Invoke(KnownAnimals);
     }
 
     public class AnimalMemory : MonoBehaviour
