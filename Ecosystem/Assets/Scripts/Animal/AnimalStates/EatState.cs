@@ -41,6 +41,8 @@ namespace Animal.AnimalStates
       return AnimalState.Eat;
     }
 
+    //TODO test with corutine and an 'IsBusy' variable that could be used, ex: if IsBusy -> return AnimalState.Eat; else -> run the rest
+    
     public void Exit()
     {
       _animal.FoodAboutTooEat = null;
