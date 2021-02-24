@@ -86,6 +86,12 @@ namespace UI
       var ecoSystemText = Object.Instantiate(text).GetComponent<Text>();
       ecoSystemText.text = "Ecosystem";
       list.Add(ecoSystemText.gameObject);
+      
+      var ageText = Object.Instantiate(text).GetComponent<Text>();
+      ageText.text = "Days passed: " + entityManager.Days;
+      list.Add(ageText.gameObject);
+
+      
       var animalText = Object.Instantiate(text).GetComponent<Text>();
       animalText.text = "Animals: " + entityManager.Animals.Count;
       list.Add(animalText.gameObject);

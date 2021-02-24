@@ -25,10 +25,10 @@ namespace Camera
 
     private void Start()
     {
-      entityManager.AnimalCountChangedListeners += AnimalCountChanged;
+      entityManager.EcoSystemStatsChangedListeners += AnimalCountChanged;
     }
 
-    private void AnimalCountChanged(int animalCount)
+    private void AnimalCountChanged()
     {
       if (_targetIS == null || _targetIS == entityManager)
       {

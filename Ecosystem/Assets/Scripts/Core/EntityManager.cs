@@ -25,7 +25,7 @@ namespace Core
     [SerializeField] private Transform spawnLocation;
 
     public IList<AbstractAnimal> Animals { get; private set; }
-    private int _days;
+    public int Days { get; private set; }
     private DayTick _dayTickListeners;
     private DataLogger _logger;
     public IList<Plant> Plants { get; private set; }
@@ -34,10 +34,11 @@ namespace Core
     private float _unitsPassed;
     private float _unitTicker;
     private int animalCount = 0;
+    private int plantCount;
 
-    public delegate void AnimalCountChanged(int animalCount);
+    public delegate void EcoSystemStatsChanged();
 
-    public AnimalCountChanged AnimalCountChangedListeners; 
+    public EcoSystemStatsChanged EcoSystemStatsChangedListeners; 
     private void Start()
     {
       _spawnLocationVector3 = spawnLocation.position;
@@ -62,14 +63,22 @@ namespace Core
 
     private void Update()
     {
-      if (animalCount != Animals.Count)
-      {
-        animalCount = Animals.Count;
-        AnimalCountChangedListeners.Invoke(animalCount);
-      }
+      checkForStatchanges();
       UpdateTick();
     }
 
+    private void checkForStatchanges()
+    {
+      if (animalCount != Animals.Count)
+      {
+        animalCount = Animals.Count;
+        EcoSystemStatsChangedListeners.Invoke();
+      }else if (plantCount != Plants.Count)
+      {
+        plantCount = Plants.Count;
+        EcoSystemStatsChangedListeners.Invoke();
+      }
+    }
     private void OnChildSpawned(AbstractAnimal child)
     {
       ObserveAnimal(child, true);
@@ -161,11 +170,14 @@ namespace Core
 
         if (_unitsPassed >= UnitsPerDay)
         {
+          
+          
           _unitsPassed = 0;
-          _days++;
-
+          Days++;
+          EcoSystemStatsChangedListeners.Invoke();
+          
           _dayTickListeners?.Invoke();
-          _logger.Snapshot(_days, Animals);
+          _logger.Snapshot(Days, Animals);
         }
       }
     }
