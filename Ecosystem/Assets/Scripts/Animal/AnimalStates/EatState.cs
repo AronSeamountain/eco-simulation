@@ -1,5 +1,8 @@
-﻿using Core;
+﻿using System;
+using System.Collections;
+using Core;
 using Foods;
+using UnityEngine;
 
 namespace Animal.AnimalStates
 {
@@ -8,12 +11,11 @@ namespace Animal.AnimalStates
     private readonly AbstractAnimal _animal;
     private AbstractFood _food;
 
-    public EatState(AbstractAnimal animal, AbstractFood foodTarget)
+    public EatState(AbstractAnimal animal)
     {
       _animal = animal;
-      _food = foodTarget;
     }
-    
+
     public AnimalState GetStateEnum()
     {
       return AnimalState.Eat;
@@ -21,21 +23,28 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      //take bite
+      //retrieve target??
+      _food = _animal.FoodAboutTooEat;
     }
 
     public AnimalState Execute()
     {
-      //animation and stuff
+      if (!_food) return AnimalState.Wander;
+      if (!_food.CanBeEaten()) return AnimalState.Wander;
+      if (!_animal.CanEatMore()) return AnimalState.Wander;
       
-      //if eaten enough return wander
+      
+      _animal.StopMoving();
+      _animal.Eat(_food);
+      
 
       return AnimalState.Eat;
     }
 
     public void Exit()
     {
-      //stop eating
+      _animal.FoodAboutTooEat = null;
+      _food = null;
     }
   }
 }

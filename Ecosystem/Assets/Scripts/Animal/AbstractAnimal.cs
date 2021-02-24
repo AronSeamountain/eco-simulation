@@ -38,11 +38,14 @@ namespace Animal
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
+    public AbstractFood FoodAboutTooEat { get; set; }
     public ChildSpawned ChildSpawnedListeners;
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
+
+    public bool CanEatMore() => _nourishmentDelegate.SaturationIsFull();
 
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
@@ -130,7 +133,7 @@ namespace Animal
       return _nourishmentDelegate.Saturation;
     }
 
-    public void Eat(int saturation)
+    public void Eat(float saturation)
     {
       _nourishmentDelegate.Saturation += saturation;
     }
@@ -212,17 +215,24 @@ namespace Animal
 
     /// <summary>
     ///   Eats the provided food.
+    ///   Can only take bites proportionally to it's size and cannot eat more than there is room.
     /// </summary>
     /// <param name="food">The food to eat.</param>
     public void Eat(AbstractFood food)
     {
-      Eat(food.Consume((int) Math.Round(20*_sizeModifier*_sizeModifier)));
-      //insert code to pause and particles
-      mouthParticles.Play();
-      
+      //full bite or what is left for a full stomach
+      var biteSize = Math.Min(Math.Round(2* _sizeModifier * _sizeModifier),
+        _nourishmentDelegate.SaturationFromFull());
+      Eat(food.Consume((float) biteSize));
+      mouthParticles.Emit(5);
     }
 
-    public void StopEating()
+    public void StartParticles()
+    {
+      mouthParticles.Play();
+    }
+
+    public void StopParticles()
     {
       mouthParticles.Stop();
     }

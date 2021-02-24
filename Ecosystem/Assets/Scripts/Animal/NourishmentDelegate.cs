@@ -1,5 +1,6 @@
 using Core;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 
 namespace Animal
 {
@@ -15,12 +16,12 @@ namespace Animal
     /// <summary>
     ///   The value for which the animal is considered hungry.
     /// </summary>
-    private const float HungrySaturationLevel = 50;
+    private float HungrySaturationLevel { get; set; } = 50;
 
     /// <summary>
     ///   The value for which the animal is considered thirsty.
     /// </summary>
-    private const float ThirstyHydrationLevel = 50;
+    private float ThirstyHydrationLevel { get; set; }= 50;
 
     private float _hydration;
     private float _saturation;
@@ -31,12 +32,14 @@ namespace Animal
     {
       Saturation = 25;
       Hydration = 25;
-      MaxHydration = 100;
-      MaxSaturation = 100;
+    }
+
+    public float SaturationFromFull()
+    {
+      return MaxHydration - Hydration;
     }
 
     public float HydrationDecreasePerUnit { get; set; } = 1;
-
 
     public float SaturationDecreasePerUnit { get; set; } = 1;
 
@@ -65,6 +68,11 @@ namespace Animal
     public float MaxHydration { get; private set; }
     public float MaxSaturation { get; private set; }
 
+    public bool SaturationIsFull()
+    {
+      return ((MaxSaturation - Saturation) >= 5);
+    }
+
     public void Tick()
     {
       Saturation -= SaturationDecreasePerUnit;
@@ -82,6 +90,8 @@ namespace Animal
     {
       MaxHydration = maxValue;
       MaxSaturation = maxValue;
+      ThirstyHydrationLevel = maxValue / 2;
+      HungrySaturationLevel = maxValue / 2;
     }
 
     private void SaturationInvoker()

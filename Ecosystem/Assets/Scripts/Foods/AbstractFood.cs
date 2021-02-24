@@ -5,9 +5,9 @@ namespace Foods
   public abstract class AbstractFood : MonoBehaviour
   {
     [SerializeField] private FoodType foodType;
-    private int _saturation;
+    private float _saturation;
 
-    public int Saturation
+    public float Saturation
     {
       get => _saturation;
       protected set => _saturation = Mathf.Clamp(value, 0, MaxSaturation);
@@ -21,9 +21,9 @@ namespace Foods
     /// </summary>
     /// <param name="amount">The amount of food points to attempt to eat.</param>
     /// <returns>The amount of food point that was eaten.</returns>
-    public int Consume(int amount)
+    public float Consume(float amount)
     {
-      int consumedFood;
+      float consumedFood;
 
       if (Saturation >= amount)
       {
