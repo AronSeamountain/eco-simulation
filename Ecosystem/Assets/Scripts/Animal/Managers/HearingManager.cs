@@ -14,7 +14,6 @@ namespace Animal.Managers
 
     public IReadOnlyList<AnimalMemory> KnownAnimals => new ReadOnlyCollection<AnimalMemory>(_animalsHeard);
 
-
     private void Start()
     {
       _animalsHeard = new List<AnimalMemory>();

@@ -15,7 +15,6 @@ namespace Animal
 
     public delegate void AnimalLeftHearing(AbstractAnimal animal);
 
-    [SerializeField] private Transform listeningArea;
     private int _radius;
     public AnimalHeard AnimalHeardListeners;
     public AnimalLeftHearing AnimalLeftHearingListeners;
@@ -33,12 +32,14 @@ namespace Animal
 
     private void OnTriggerEnter(Collider other)
     {
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal) AnimalHeardListeners?.Invoke(animal);
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal &&
+          animal.transform.position != transform.parent.position) AnimalHeardListeners?.Invoke(animal);
     }
 
     private void OnTriggerExit(Collider other)
     {
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal) AnimalLeftHearingListeners?.Invoke(animal);
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal &&
+          animal.transform.position != transform.parent.position) AnimalLeftHearingListeners?.Invoke(animal);
     }
   }
 }
