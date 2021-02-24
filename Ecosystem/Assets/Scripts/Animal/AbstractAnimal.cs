@@ -81,7 +81,6 @@ namespace Animal
       _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
 
       // Setup gender
-      Debug.Log("kaninen är här");
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
       
@@ -110,7 +109,6 @@ namespace Animal
       
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
-      Debug.Log("slutet av start");
     }
 
     private void Update()
@@ -257,7 +255,6 @@ namespace Animal
     /// </summary>
     private void DecreaseHealthIfStarving()
     {
-      Debug.Log("DECREASE HEALTH IF STARVING INNE");
       if (GetSaturation() <= 10 || GetHydration() <= 10)
         _healthDelegate.DecreaseHealth(1);
         Debug.Log("TAR DMG");

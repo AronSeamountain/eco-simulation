@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 namespace Animal
 {
-  public class Rabbit : Herbivore
+  public class Rabbit : MonoBehaviour
   {
     [SerializeField] private Animator animator;
+    [SerializeField] private Herbivore animal;
     void Update()
     {
-      movement.SpeedFactor = 10;
-      animator.SetBool("isJumping", IsHungry);
-      animator.SetBool("isDead_1", !IsAlive);
+      animator.SetBool("isJumping", animal.IsHungry);
+      animator.SetBool("isDead_1", !animal.IsAlive);
     }
   }
 }
