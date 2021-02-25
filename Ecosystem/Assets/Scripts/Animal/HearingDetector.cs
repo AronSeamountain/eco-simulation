@@ -12,14 +12,10 @@ namespace Animal
     /// </summary>
     /// <param name="animal"></param>
     public delegate void AnimalHeard(AbstractAnimal animal);
-
-    public delegate void AnimalLeftHearing(AbstractAnimal animal);
-
-    [SerializeField] private Transform listeningArea;
-    private Renderer _component;
+    
+    [SerializeField] private Renderer listeningArea;
     private int _radius;
     public AnimalHeard AnimalHeardListeners;
-    public AnimalLeftHearing AnimalLeftHearingListeners;
 
     private int Radius
     {
@@ -30,7 +26,7 @@ namespace Animal
     private void Start()
     {
       Radius = 12;
-      _component = listeningArea.GetComponent<Renderer>();
+      listeningArea = gameObject.GetComponent<Renderer>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -39,7 +35,7 @@ namespace Animal
           animal.transform.position != transform.parent.position)
       {
         AnimalHeardListeners?.Invoke(animal);
-        _component.material.SetColor("_Color", Color.blue);
+        listeningArea.material.SetColor("_Color", Color.blue);
       }
     }
     private void OnTriggerExit(Collider other)
@@ -47,7 +43,7 @@ namespace Animal
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal &&
           animal.transform.position != transform.parent.position)
       {
-        _component.material.SetColor("_Color", Color.white);
+        listeningArea.material.SetColor("_Color", Color.white);
       }
     }
   }
