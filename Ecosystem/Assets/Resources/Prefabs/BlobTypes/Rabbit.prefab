@@ -34,7 +34,7 @@ PrefabInstance:
     - target: {fileID: 1210316967512776202, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.224
+      value: -0.744
       objectReference: {fileID: 0}
     - target: {fileID: 1210316967512776202, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}
@@ -236,6 +236,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 131f85d2788b17946989dddad8d90290, type: 2}
+    - target: {fileID: 9500000, guid: 63b5250ea377b104a8c56fd4f3aa55bc, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63b5250ea377b104a8c56fd4f3aa55bc, type: 3}
 --- !u!95 &1911112304498543283 stripped
