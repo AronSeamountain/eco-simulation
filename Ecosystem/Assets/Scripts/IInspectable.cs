@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
+using UI.Properties;
 
 public interface IInspectable
 {
   /// <summary>
   /// </summary>
   /// <param name="value">bool to show stats for the entity</param>
-  IList<MonoBehaviour> GetStats(bool getStats);
+  IList<AbstractProperty> GetStats(bool getStats);
 }

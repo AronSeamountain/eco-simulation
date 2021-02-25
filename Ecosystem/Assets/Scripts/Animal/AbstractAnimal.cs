@@ -6,6 +6,7 @@ using Animal.Managers;
 using Core;
 using Foods;
 using UI;
+using UI.Properties;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -143,14 +144,14 @@ namespace Animal
       _nourishmentDelegate.Saturation += saturation;
     }
 
-    public IList<MonoBehaviour> GetStats(bool isTargeted)
+    public IList<AbstractProperty> GetStats(bool isTargeted)
     {
       var visualDetector = GetComponentInChildren<VisualDetector>();
       visualDetector.GetComponent<Renderer>().enabled = isTargeted;
 
       if (!isTargeted) return null;
 
-      return PropertyFactory.Create(this);
+      return PropertiesFactory.Create(this);
     }
 
 

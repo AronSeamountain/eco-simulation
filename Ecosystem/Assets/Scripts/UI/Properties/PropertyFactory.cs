@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace UI
+namespace UI.Properties
 {
-  public static class RowFactory
+  public static class PropertyFactory
   {
     private const string BarName = "Bar";
     private const string KeyValuePairTextName = "KeyValuePairText";
     private static readonly GameObject sliderPrefab;
     private static readonly GameObject KeyValuePairTextPrefab;
 
-    static RowFactory()
+    static PropertyFactory()
     {
       var gameObjects = Resources.LoadAll<GameObject>("Prefabs/UI");
       var _goDictionary = new Dictionary<string, GameObject>(gameObjects.Length);

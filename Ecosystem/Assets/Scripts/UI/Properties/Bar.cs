@@ -2,9 +2,9 @@
 using UnityEngine.UI;
 using Utils;
 
-namespace UI
+namespace UI.Properties
 {
-  public sealed class Bar : MonoBehaviour
+  public sealed class Bar : AbstractProperty
   {
     [SerializeField] private Slider slider;
     [SerializeField] private Text text;

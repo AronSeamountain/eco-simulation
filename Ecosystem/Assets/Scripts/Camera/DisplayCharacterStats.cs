@@ -7,7 +7,7 @@ namespace Camera
   public class DisplayCharacterStats : MonoBehaviour
   {
     [SerializeField] private UnityEngine.Camera mainCamera;
-    [SerializeField] private PropertiesCard propertiesCard;
+    [SerializeField] private PropertiesContainer propertiesContainer;
     private CameraControls _controls;
     private IInspectable _targetIS;
 
@@ -34,7 +34,7 @@ namespace Camera
     {
       if (_targetIS != null)
         _targetIS.GetStats(false);
-      propertiesCard.ClearContent();
+      propertiesContainer.ClearContent();
       _targetIS = null;
     }
 
@@ -51,7 +51,7 @@ namespace Camera
         var statable = hitTarget.collider.gameObject.GetComponent<IInspectable>();
         if (statable == null) return;
         _targetIS = statable;
-        propertiesCard.Populate(statable.GetStats(true));
+        propertiesContainer.Populate(statable.GetStats(true));
       }
     }
 

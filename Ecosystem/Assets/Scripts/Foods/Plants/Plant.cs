@@ -2,6 +2,7 @@
 using Core;
 using Foods.Plants.PlantStates;
 using UI;
+using UI.Properties;
 using UnityEngine;
 
 namespace Foods.Plants
@@ -49,9 +50,9 @@ namespace Foods.Plants
       _stateMachine.Execute();
     }
 
-    public IList<MonoBehaviour> GetStats(bool getStats)
+    public IList<AbstractProperty> GetStats(bool getStats)
     {
-      return PropertyFactory.Create(this);
+      return PropertiesFactory.Create(this);
     }
 
     public void Tick()

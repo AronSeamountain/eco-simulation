@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace UI.Properties
 {
-  public sealed class KeyValuePairText : MonoBehaviour
+  public sealed class KeyValuePairText : AbstractProperty
   {
     [SerializeField] private Text text;
     private string _key;
@@ -21,7 +21,7 @@ namespace UI
 
     private void UpdateText(string key, string value)
     {
-      text.text = key + ": " + value;
+      text.text = $"{key}: {value}";
     }
   }
 }
