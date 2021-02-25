@@ -140,7 +140,9 @@ namespace Animal
 
     public IList<GameObject> GetStats(bool isTargeted)
     {
+      var hearingDetector = GetComponentInChildren<HearingDetector>();
       var visualDetector = GetComponentInChildren<VisualDetector>();
+      hearingDetector.GetComponent<Renderer>().enabled = isTargeted;
       visualDetector.GetComponent<Renderer>().enabled = isTargeted;
 
       if (!isTargeted) return null;
@@ -253,6 +255,7 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
+      
     }
 
     /// <summary>
