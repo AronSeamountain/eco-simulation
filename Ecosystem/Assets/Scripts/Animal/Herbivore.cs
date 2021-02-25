@@ -19,7 +19,8 @@ namespace Animal
         new BirthState(this),
         pursueFoodState,
         new PursueMateState(this),
-        new EatState(this)
+        new EatState(this),
+        new DrinkState(this)
       };
     }
 

@@ -21,7 +21,7 @@ namespace Animal
     /// <summary>
     ///   The value for which the animal is considered thirsty.
     /// </summary>
-    private float ThirstyHydrationLevel { get; set; }= 50;
+    private float ThirstyHydrationLevel { get; set; } = 50;
 
     private float _hydration;
     private float _saturation;
@@ -68,10 +68,9 @@ namespace Animal
     public float MaxHydration { get; private set; }
     public float MaxSaturation { get; private set; }
 
-    public bool SaturationIsFull()
-    {
-      return ((MaxSaturation - Saturation) >= 5);
-    }
+    public bool SaturationIsFull() => ((MaxSaturation - Saturation) >= 5);
+    public bool HydrationIsFull()  => ((MaxHydration - Hydration) >= 5);
+
 
     public void Tick()
     {

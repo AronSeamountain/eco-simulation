@@ -1,51 +1,48 @@
-using System;
-using System.Collections;
-using Core;
+﻿using Core;
 using Foods;
 using UnityEngine;
 
 namespace Animal.AnimalStates
 {
-  public sealed class EatState : IState<AnimalState>
+  public class DrinkState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
-    private AbstractFood _food;
+    private Water _water;
 
-    public EatState(AbstractAnimal animal)
+    public DrinkState(AbstractAnimal animal)
     {
       _animal = animal;
     }
 
     public AnimalState GetStateEnum()
     {
-      return AnimalState.Eat;
+      return AnimalState.Drink;
     }
 
     public void Enter()
     {
       //retrieve target
-      _food = _animal.FoodAboutTooEat;
+      _water = _animal.ClosestKnownWater;
     }
 
     public AnimalState Execute()
     {
-      if (!_food) return AnimalState.Wander;
-      if (!_food.CanBeEaten()) return AnimalState.Wander;
-      if (!_animal.CanEatMore()) return AnimalState.Wander;
+      if (!_water) return AnimalState.Wander;
+      if (!_animal.CanDrinkMore()) return AnimalState.Wander;
 
       _animal.StopMoving();
-      _animal.Eat(_food);
-      
+      _animal.Drink(_water);
 
-      return AnimalState.Eat;
+
+      return AnimalState.Drink;
     }
 
     //TODO test with corutine and an 'IsBusy' variable that could be used, ex: if IsBusy -> return AnimalState.Eat; else -> run the rest
-    
+
     public void Exit()
     {
       _animal.FoodAboutTooEat = null;
-      _food = null;
+      _water = null;
     }
   }
 }

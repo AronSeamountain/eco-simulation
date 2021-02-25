@@ -9,6 +9,7 @@
     Dead,
     Hunt,
     PursueMate,
-    Eat
+    Eat,
+    Drink
   }
 }

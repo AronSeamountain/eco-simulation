@@ -46,6 +46,7 @@ namespace Animal
     public Gender Gender { get; private set; }
 
     public bool CanEatMore() => _nourishmentDelegate.SaturationIsFull();
+    public bool CanDrinkMore() => _nourishmentDelegate.HydrationIsFull();
 
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
@@ -123,7 +124,7 @@ namespace Animal
       return _nourishmentDelegate.Hydration;
     }
 
-    public void Drink(int hydration)
+    public void Drink(float hydration)
     {
       _nourishmentDelegate.Hydration += hydration;
     }
@@ -221,20 +222,10 @@ namespace Animal
     public void Eat(AbstractFood food)
     {
       //full bite or what is left for a full stomach
-      var biteSize = Math.Min(Math.Round(2* _sizeModifier * _sizeModifier),
+      var biteSize = Math.Min(2 * _sizeModifier * _sizeModifier,
         _nourishmentDelegate.SaturationFromFull());
-      Eat(food.Consume((float) biteSize));
-      mouthParticles.Emit(5);
-    }
-
-    public void StartParticles()
-    {
-      mouthParticles.Play();
-    }
-
-    public void StopParticles()
-    {
-      mouthParticles.Stop();
+      Eat(food.Consume(biteSize));
+      mouthParticles.Emit(1);
     }
 
     /// <summary>
@@ -253,7 +244,9 @@ namespace Animal
 
     public void Drink(Water water)
     {
-      Drink(water.Hydration);
+      var sip = 5 * _sizeModifier * _sizeModifier;
+      Drink(water.SaturationModifier * sip);
+      mouthParticles.Emit(1);
     }
 
     public void SpawnChild()
@@ -267,11 +260,14 @@ namespace Animal
     }
 
     /// <summary>
-    ///   Decreases health if animal is starving and dehydrated
+    ///   Decreases health if animal is starving or dehydrated
     /// </summary>
     private void DecreaseHealthIfStarving()
     {
-      if (GetSaturation() <= 10 || GetHydration() <= 10)
+      if (GetSaturation() <= 1)
+        _healthDelegate.DecreaseHealth(1);
+
+      if (GetHydration() <= 1)
         _healthDelegate.DecreaseHealth(1);
     }
 
