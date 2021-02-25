@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Utils;
 
 namespace Core
@@ -11,8 +12,11 @@ namespace Core
   /// <typeparam name="TStateEnum">The enums for the state machine.</typeparam>
   public sealed class StateMachine<TStateEnum> where TStateEnum : Enum
   {
+    public delegate void StateChanged(TStateEnum state);
+    
     private readonly IList<IState<TStateEnum>> _states;
     private IState<TStateEnum> _currentState;
+    public StateChanged StateChangedListeners;
 
     /// <summary>
     ///   Creates a new state machine. Enters the start state.
@@ -24,6 +28,7 @@ namespace Core
       _states = Objects.RequireNonNull(stateList);
       _currentState = GetCorrelatingState(startState);
       _currentState.Enter();
+      StateChangedListeners?.Invoke(_currentState.GetStateEnum());
     }
 
     public void Execute()
@@ -35,6 +40,7 @@ namespace Core
       _currentState.Exit();
       _currentState = GetCorrelatingState(newState);
       _currentState.Enter();
+      StateChangedListeners?.Invoke(_currentState.GetStateEnum());
     }
 
     /// <summary>

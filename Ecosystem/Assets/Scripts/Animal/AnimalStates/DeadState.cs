@@ -19,7 +19,7 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      FallOver(_animal);
+      _animal.StopMoving();
     }
 
     public AnimalState Execute()
@@ -29,16 +29,6 @@ namespace Animal.AnimalStates
 
     public void Exit()
     {
-    }
-
-    /// <summary>
-    ///   Stops the animal from moving and lays it on the floor.
-    /// </summary>
-    private void FallOver(AbstractAnimal animal)
-    {
-      animal.StopMoving();
-      animal.transform.rotation = Quaternion.Euler(0, 0, 90);
-      animal.transform.position = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
     }
   }
 }

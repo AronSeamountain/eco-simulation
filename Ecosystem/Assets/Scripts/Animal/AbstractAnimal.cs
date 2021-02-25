@@ -30,6 +30,7 @@ namespace Animal
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
+    [SerializeField] private AnimationManager animationManager;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -79,7 +80,7 @@ namespace Animal
     {
       var states = GetStates(foodManager);
       _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
-
+      _stateMachine.StateChangedListeners += SendState;
       // Setup gender
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
@@ -226,7 +227,6 @@ namespace Animal
     /// <param name="destination">The position to go to.</param>
     public void GoTo(Vector3 destination)
     {
-      Debug.Log("go to it boy");
       movement.GoTo(destination);
     }
 
@@ -257,7 +257,6 @@ namespace Animal
     {
       if (GetSaturation() <= 10 || GetHydration() <= 10)
         _healthDelegate.DecreaseHealth(1);
-        Debug.Log("TAR DMG");
     }
 
     public AbstractAnimal GetMateTarget()
@@ -301,6 +300,11 @@ namespace Animal
     public float GetSpeedModifier()
     {
       return _speedModifier;
+    }
+
+    private void SendState(AnimalState state)
+    {
+      animationManager.ReceiveState(state);
     }
   }
 }
