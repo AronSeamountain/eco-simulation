@@ -82,13 +82,18 @@ namespace UI
       plant.StateChangedListeners += state.OnValueChanged;
       state.CleanupListeners += () => plant.StateChangedListeners -= state.OnValueChanged;
 
-      var saturation = PropertyFactory.CreateKeyValuePair();
-      saturation.Configure("Saturation", plant.Saturation.ToString());
+      var saturationBar = PropertyFactory.CreateKeyValuePair();
+      saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
-      var eatable = PropertyFactory.CreateKeyValuePair();
-      eatable.Configure("Eatable", plant.CanBeEaten().ToString());
+      void SaturationChangedImpl(int saturation)
+      {
+        saturationBar.OnValueChanged(Prettifier.Round(saturation, 2));
+      }
 
-      return new List<AbstractProperty> {saturation, eatable, state};
+      plant.SaturationChangedListeners += SaturationChangedImpl;
+      saturationBar.CleanupListeners += () => plant.SaturationChangedListeners -= SaturationChangedImpl;
+
+      return new List<AbstractProperty> {saturationBar, state};
     }
   }
 }
