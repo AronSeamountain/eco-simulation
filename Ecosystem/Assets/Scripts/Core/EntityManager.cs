@@ -22,6 +22,7 @@ namespace Core
     [SerializeField] private GameObject animalPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private Transform spawnLocation;
+    [SerializeField] private bool log;
     private IList<AbstractAnimal> _animals;
     private int _days;
     private DayTick _dayTickListeners;
@@ -154,7 +155,7 @@ namespace Core
           _days++;
 
           _dayTickListeners?.Invoke();
-          _logger.Snapshot(_days, _animals);
+          if (log) _logger.Snapshot(_days, _animals);
         }
       }
     }
