@@ -17,6 +17,8 @@ namespace Animal
   /// </summary>
   public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable
   {
+    public delegate void AgeChanged(int age);
+
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
     public delegate void StateChanged(string state);
@@ -40,8 +42,11 @@ namespace Animal
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
+
+    public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
+    public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
@@ -171,6 +176,8 @@ namespace Animal
 
     public void DayTick()
     {
+      AgeInDays++;
+      AgeChangedListeners?.Invoke(AgeInDays);
     }
 
     private void GenerateGender()

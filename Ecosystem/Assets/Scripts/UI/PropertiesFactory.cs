@@ -70,9 +70,22 @@ namespace UI
       }
 
       animal.ChildSpawnedListeners += ChildSpawnedImpl;
-      children.CleanupListeners += () => animal.ChildSpawnedListeners -= (AbstractAnimal.ChildSpawned) ChildSpawnedImpl;
+      children.CleanupListeners += () => animal.ChildSpawnedListeners -= ChildSpawnedImpl;
 
-      return new List<AbstractProperty> {healthBar, saturationSlider, hydrationSlider, state, speed, size, children};
+      // Age
+      var age = PropertyFactory.CreateKeyValuePair();
+      age.Configure("Age", $"{animal.AgeInDays} days");
+
+      void AgeChangedImpl(int newAge)
+      {
+        age.OnValueChanged($"{newAge} days");
+      }
+
+      animal.AgeChangedListeners += AgeChangedImpl;
+      age.CleanupListeners += () => animal.AgeChangedListeners -= AgeChangedImpl;
+
+      return new List<AbstractProperty>
+        {healthBar, saturationSlider, hydrationSlider, state, age, speed, size, children};
     }
 
     public static IList<AbstractProperty> Create(Plant plant)
