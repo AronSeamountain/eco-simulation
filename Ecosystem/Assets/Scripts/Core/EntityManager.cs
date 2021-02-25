@@ -52,7 +52,6 @@ namespace Core
       // Logger
       _logger = DataLogger.Instance;
       _logger.InitializeLogging();
-      _logger.Snapshot(0, _animals);
     }
 
     private void Update()
