@@ -2,6 +2,7 @@
 using Animal;
 using Foods.Plants;
 using UnityEngine;
+using Utils;
 
 namespace UI
 {
@@ -43,13 +44,18 @@ namespace UI
 
       // Speed
       var speed = RowFactory.CreateKeyValuePair();
-      speed.Configure("Speed", animal.GetSpeedModifier().ToString());
+      speed.Configure("Speed", Prettifier.Round(animal.GetSpeedModifier(), 2));
 
       // Size
       var size = RowFactory.CreateKeyValuePair();
-      size.Configure("Size", animal.GetSize().ToString());
+      size.Configure("Size", Prettifier.Round(animal.GetSize(), 2));
 
-      return new List<MonoBehaviour> {healthBar, saturationSlider, hydrationSlider, state, speed, size};
+      // Children
+      var children = RowFactory.CreateKeyValuePair();
+      children.Configure("Children", animal.Children.ToString());
+      animal.ChildSpawnedListeners += (child, parent) => children.OnValueChanged(parent.Children.ToString());
+
+      return new List<MonoBehaviour> {healthBar, saturationSlider, hydrationSlider, state, speed, size, children};
     }
 
     public static IList<MonoBehaviour> Create(Plant plant)

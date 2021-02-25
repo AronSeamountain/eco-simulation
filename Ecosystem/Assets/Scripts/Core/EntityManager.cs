@@ -59,7 +59,7 @@ namespace Core
       UpdateTick();
     }
 
-    private void OnChildSpawned(AbstractAnimal child)
+    private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
       ObserveAnimal(child, true);
     }

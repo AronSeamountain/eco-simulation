@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace UI
 {
@@ -22,7 +23,7 @@ namespace UI
     private void SetProgress(float value, float maxValue)
     {
       slider.value = value / maxValue;
-      text.text = value + "/" + maxValue;
+      text.text = Prettifier.Round(value, 2) + "/" + Prettifier.Round(maxValue, 2);
     }
   }
 }

@@ -16,7 +16,7 @@ namespace Animal
   /// </summary>
   public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable
   {
-    public delegate void ChildSpawned(AbstractAnimal child);
+    public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
     public delegate void StateChanged(string state);
 
@@ -45,6 +45,11 @@ namespace Animal
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
+
+    /// <summary>
+    ///   The amount of children that the animal has birthed.
+    /// </summary>
+    public int Children { get; private set; }
 
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
@@ -243,8 +248,9 @@ namespace Animal
 
     public void SpawnChild()
     {
+      Children++;
       var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
-      ChildSpawnedListeners?.Invoke(child);
+      ChildSpawnedListeners?.Invoke(child, this);
 
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
