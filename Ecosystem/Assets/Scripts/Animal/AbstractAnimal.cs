@@ -87,7 +87,6 @@ namespace Animal
 
       //Listen to hearing events
       hearingManager.KnownAnimalChangedListeners += OnAnimalHeard;
-      hearingManager.UnknownAnimalChangedListeners += OnAnimalLeftHearing;
 
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
@@ -168,11 +167,7 @@ namespace Animal
     {
     }
 
-    private void OnAnimalHeard(IReadOnlyCollection<HearingManager.AnimalMemory> animal)
-    {
-    }
-
-    private void OnAnimalLeftHearing(IReadOnlyCollection<HearingManager.AnimalMemory> animal)
+    private void OnAnimalHeard(AbstractAnimal animal)
     {
     }
 

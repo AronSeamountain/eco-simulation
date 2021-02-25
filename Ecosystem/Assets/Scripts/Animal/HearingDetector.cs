@@ -42,13 +42,11 @@ namespace Animal
         _component.material.SetColor("_Color", Color.blue);
       }
     }
-
     private void OnTriggerExit(Collider other)
     {
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal &&
           animal.transform.position != transform.parent.position)
       {
-        AnimalLeftHearingListeners?.Invoke(animal);
         _component.material.SetColor("_Color", Color.white);
       }
     }
