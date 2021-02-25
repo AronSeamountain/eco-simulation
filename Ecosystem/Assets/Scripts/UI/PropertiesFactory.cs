@@ -19,7 +19,10 @@ namespace UI
         Color.red
       );
       animal.GetHealthDelegate().HealthChangedListeners += healthBar.OnValueChanged;
-      healthBar.CleanupListeners += () => animal.GetHealthDelegate().HealthChangedListeners -= healthBar.OnValueChanged;
+      healthBar.CleanupListeners += () =>
+      {
+        animal.GetHealthDelegate().HealthChangedListeners -= healthBar.OnValueChanged;
+      };
 
       // Saturation
       var saturationSlider = PropertyFactory.CreateSlider();
@@ -77,6 +80,7 @@ namespace UI
       var state = PropertyFactory.CreateKeyValuePair();
       state.Configure("State", plant.GetCurrentStateEnum().ToString());
       plant.StateChangedListeners += state.OnValueChanged;
+      state.CleanupListeners += () => plant.StateChangedListeners -= state.OnValueChanged;
 
       var saturation = PropertyFactory.CreateKeyValuePair();
       saturation.Configure("Saturation", plant.Saturation.ToString());

@@ -4,12 +4,12 @@ using UnityEngine.InputSystem;
 
 namespace Camera
 {
-  public class DisplayCharacterStats : MonoBehaviour
+  public sealed class Inspector : MonoBehaviour
   {
     [SerializeField] private UnityEngine.Camera mainCamera;
     [SerializeField] private PropertiesContainer propertiesContainer;
     private CameraControls _controls;
-    private IInspectable _targetIS;
+    private IInspectable _lastSelected;
 
     private void Awake()
     {
@@ -32,10 +32,18 @@ namespace Camera
 
     private void OnCancelTarget(InputAction.CallbackContext obj)
     {
-      if (_targetIS != null)
-        _targetIS.GetStats(false);
+      ResetInspectStats();
+    }
+
+    private void ResetInspectStats()
+    {
       propertiesContainer.ClearContent();
-      _targetIS = null;
+
+      if (_lastSelected != null)
+      {
+        _lastSelected.GetStats(false);
+        _lastSelected = null;
+      }
     }
 
     /// <summary>
@@ -47,11 +55,12 @@ namespace Camera
       var ray = mainCamera.ScreenPointToRay(GetMousePos());
       if (Physics.Raycast(ray, out var hitTarget))
       {
-        if (_targetIS != null) OnCancelTarget(_);
-        var statable = hitTarget.collider.gameObject.GetComponent<IInspectable>();
-        if (statable == null) return;
-        _targetIS = statable;
-        propertiesContainer.Populate(statable.GetStats(true));
+        var inspectable = hitTarget.collider.gameObject.GetComponent<IInspectable>();
+        if (inspectable == null) return;
+
+        ResetInspectStats();
+        _lastSelected = inspectable;
+        propertiesContainer.Populate(inspectable.GetStats(true));
       }
     }
 

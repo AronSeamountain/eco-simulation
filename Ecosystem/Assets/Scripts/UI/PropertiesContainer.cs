@@ -32,6 +32,8 @@ namespace UI
         property.ExitCleanup();
         Destroy(property.gameObject);
       }
+
+      _properties.Clear();
     }
   }
 }
