@@ -4,7 +4,7 @@ namespace Foods
 {
   public abstract class AbstractFood : MonoBehaviour
   {
-    public delegate void SaturationChanged(int saturation);
+    public delegate void SaturationChanged(float saturation);
 
     [SerializeField] private FoodType foodType;
     private float _saturation;
