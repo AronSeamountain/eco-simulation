@@ -1,4 +1,6 @@
-﻿using UI;
+﻿using System;
+using Core;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +10,7 @@ namespace Camera
   {
     [SerializeField] private UnityEngine.Camera mainCamera;
     [SerializeField] private PropertiesCard propertiesCard;
+    [SerializeField] private EntityManager entityManager;
     private CameraControls _controls;
     private IStatable _targetIS;
 
@@ -15,11 +18,23 @@ namespace Camera
     {
       _controls = new CameraControls();
       _controls.CameraMovement.Selecting.performed += ClickedChar;
-      _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
-      _controls.CameraMovement.Rotate.performed += OnCancelTarget;
-      _controls.CameraMovement.Movement.performed += OnCancelTarget;
+      _controls.CameraMovement.CancelTarget.performed += ShowGlobalStats;
+      _controls.CameraMovement.Rotate.performed += ShowGlobalStats;
+      _controls.CameraMovement.Movement.performed += ShowGlobalStats;
     }
 
+    private void Start()
+    {
+      entityManager.EcoSystemStatsChangedListeners += AnimalCountChanged;
+    }
+
+    private void AnimalCountChanged()
+    {
+      if (_targetIS == null || _targetIS == entityManager)
+      {
+        ShowGlobalStats(new InputAction.CallbackContext());
+      }
+    }
     private void OnEnable()
     {
       _controls.Enable();
@@ -30,12 +45,23 @@ namespace Camera
       _controls.Disable();
     }
 
-    private void OnCancelTarget(InputAction.CallbackContext obj)
+    private void ShowGlobalStats(InputAction.CallbackContext _)
+    {
+      OnCancelTarget(_);
+      DisplayStat(entityManager);
+    }
+    private void OnCancelTarget(InputAction.CallbackContext _)
     {
       if (_targetIS != null)
         _targetIS.GetStats(false);
       propertiesCard.ClearContent();
       _targetIS = null;
+    }
+
+    private void DisplayStat(IStatable statable)
+    {
+      _targetIS = statable;
+      propertiesCard.Populate(statable.GetStats(true));
     }
 
     /// <summary>
@@ -47,11 +73,14 @@ namespace Camera
       var ray = mainCamera.ScreenPointToRay(GetMousePos());
       if (Physics.Raycast(ray, out var hitTarget))
       {
-        if (_targetIS != null) OnCancelTarget(_);
+        if (_targetIS != null)
+        {
+          OnCancelTarget(_);
+        }
         var statable = hitTarget.collider.gameObject.GetComponent<IStatable>();
-        if (statable == null) return;
-        _targetIS = statable;
-        propertiesCard.Populate(statable.GetStats(true));
+        if (statable == null) statable = entityManager;
+       
+        DisplayStat(statable);
       }
     }
 

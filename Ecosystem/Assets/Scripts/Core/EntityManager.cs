@@ -2,6 +2,7 @@
 using Animal;
 using Foods.Plants;
 using Logger;
+using UI;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,7 +10,7 @@ using Utils;
 
 namespace Core
 {
-  public sealed class EntityManager : MonoBehaviour
+  public sealed class EntityManager : MonoBehaviour, IStatable
   {
     /// <summary>
     ///   The amount of time that a "unit" is in.
@@ -22,43 +23,62 @@ namespace Core
     [SerializeField] private GameObject animalPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private Transform spawnLocation;
-    private IList<AbstractAnimal> _animals;
-    private int _days;
+
+    public IList<AbstractAnimal> Animals { get; private set; }
+    public int Days { get; private set; }
     private DayTick _dayTickListeners;
     private DataLogger _logger;
-    private IList<Plant> _plants;
+    public IList<Plant> Plants { get; private set; }
     private Vector3 _spawnLocationVector3;
     private Tick _tickListeners;
     private float _unitsPassed;
     private float _unitTicker;
+    private int animalCount = 0;
+    private int plantCount;
 
+    public delegate void EcoSystemStatsChanged();
+
+    public EcoSystemStatsChanged EcoSystemStatsChangedListeners; 
     private void Start()
     {
       _spawnLocationVector3 = spawnLocation.position;
 
       // Lists
-      _animals = new List<AbstractAnimal>();
+      Animals = new List<AbstractAnimal>();
       SpawnAndAddInitialAnimals();
-      _plants = new List<Plant>();
+      Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
 
-      foreach (var animal in _animals)
+      foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
-      foreach (var plant in _plants)
+      foreach (var plant in Plants)
         _dayTickListeners += plant.DayTick;
 
       // Logger
       _logger = DataLogger.Instance;
       _logger.InitializeLogging();
-      _logger.Snapshot(0, _animals);
+      _logger.Snapshot(0, Animals);
     }
 
     private void Update()
     {
+      checkForStatchanges();
       UpdateTick();
     }
 
+    private void checkForStatchanges()
+    {
+      if (animalCount != Animals.Count)
+      {
+        animalCount = Animals.Count;
+        EcoSystemStatsChangedListeners.Invoke();
+      }else if (plantCount != Plants.Count)
+      {
+        plantCount = Plants.Count;
+        EcoSystemStatsChangedListeners.Invoke();
+      }
+    }
     private void OnChildSpawned(AbstractAnimal child)
     {
       ObserveAnimal(child, true);
@@ -69,7 +89,7 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(initialAnimals, animalPrefab, _animals);
+      SpawnAndAddGeneric(initialAnimals, animalPrefab, Animals);
     }
 
     /// <summary>
@@ -77,7 +97,7 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialPlants()
     {
-      SpawnAndAddGeneric(initialPlants, plantPrefab, _plants);
+      SpawnAndAddGeneric(initialPlants, plantPrefab, Plants);
     }
 
     private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list) where T : MonoBehaviour
@@ -132,7 +152,7 @@ namespace Core
     private void ObserveAnimal(AbstractAnimal animal, bool addToList)
     {
       if (!animal) return;
-      if (addToList) _animals.Add(animal);
+      if (addToList) Animals.Add(animal);
       _tickListeners += animal.Tick;
       _dayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
@@ -150,11 +170,14 @@ namespace Core
 
         if (_unitsPassed >= UnitsPerDay)
         {
+          
+          
           _unitsPassed = 0;
-          _days++;
-
+          Days++;
+          EcoSystemStatsChangedListeners.Invoke();
+          
           _dayTickListeners?.Invoke();
-          _logger.Snapshot(_days, _animals);
+          _logger.Snapshot(Days, Animals);
         }
       }
     }
@@ -162,5 +185,10 @@ namespace Core
     private delegate void Tick();
 
     private delegate void DayTick();
+
+    public IList<GameObject> GetStats(bool getStats)
+    {
+      return PropertyFactory.MakeGlobalObjects(this);
+    }
   }
 }

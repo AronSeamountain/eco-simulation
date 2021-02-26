@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Animal;
+using Core;
 using Foods.Plants;
 using UnityEngine;
 using UnityEngine.UI;
@@ -75,6 +76,29 @@ namespace UI
       eatable.text = "Can be eaten: " + plant.CanBeEaten();
       list.Add(eatable.gameObject);
 
+      return list;
+    }
+
+    public static IList<GameObject> MakeGlobalObjects(EntityManager entityManager)
+    {
+      var list = new List<GameObject>();
+      
+      var ecoSystemText = Object.Instantiate(text).GetComponent<Text>();
+      ecoSystemText.text = "Ecosystem";
+      list.Add(ecoSystemText.gameObject);
+      
+      var ageText = Object.Instantiate(text).GetComponent<Text>();
+      ageText.text = "Days passed: " + entityManager.Days;
+      list.Add(ageText.gameObject);
+
+      
+      var animalText = Object.Instantiate(text).GetComponent<Text>();
+      animalText.text = "Animals: " + entityManager.Animals.Count;
+      list.Add(animalText.gameObject);
+      
+      var plantText = Object.Instantiate(text).GetComponent<Text>();
+      plantText.text = "Plants: " + entityManager.Plants.Count;
+      list.Add(plantText.gameObject);
       return list;
     }
   }
