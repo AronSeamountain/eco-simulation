@@ -7,6 +7,11 @@ namespace Animal
 {
   public sealed class Herbivore : AbstractAnimal
   {
+    protected override void SetAnimalType()
+    {
+      Type = AnimalType.Herbivore;
+    }
+
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
     {
       var pursueFoodState = new PursueFoodState(this);

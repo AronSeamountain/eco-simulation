@@ -23,6 +23,12 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
+    public enum AnimalType
+    {
+      Carnivore,
+      Herbivore
+    }
+
     private const int FertilityTimeInUnits = 5;
 
     /// <summary>
@@ -43,7 +49,6 @@ namespace Animal
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
-
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
@@ -52,6 +57,7 @@ namespace Animal
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
+    public AnimalType Type { get; protected set; }
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -83,6 +89,8 @@ namespace Animal
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
     public bool IsAlive => Health > 0;
+    public bool IsCarnivore => Type == AnimalType.Carnivore;
+    public bool IsHerbivore => Type == AnimalType.Herbivore;
 
     private void Awake()
     {
@@ -126,6 +134,8 @@ namespace Animal
 
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
+
+      SetAnimalType();
     }
 
     private void Update()
@@ -185,6 +195,8 @@ namespace Animal
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
     }
+
+    protected abstract void SetAnimalType();
 
     private void OnAnimalHeard(AbstractAnimal animal)
     {
@@ -273,7 +285,6 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
-      
     }
 
     /// <summary>

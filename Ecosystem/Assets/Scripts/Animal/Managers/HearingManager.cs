@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Animal.Managers
 {
@@ -9,8 +7,8 @@ namespace Animal.Managers
     public delegate void KnownAnimalsChanged(AbstractAnimal animal);
 
     [SerializeField] private HearingDetector hearingDetector;
-    public KnownAnimalsChanged KnownAnimalChangedListeners;
     private AbstractAnimal _knownAnimal;
+    public KnownAnimalsChanged KnownAnimalChangedListeners;
 
     private void Start()
     {
@@ -21,6 +19,5 @@ namespace Animal.Managers
     {
       KnownAnimalChangedListeners?.Invoke(_knownAnimal);
     }
-    
   }
 }

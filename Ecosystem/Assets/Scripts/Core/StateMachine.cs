@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 using Utils;
 
 namespace Core
@@ -52,12 +50,8 @@ namespace Core
     private IState<TStateEnum> GetCorrelatingState(TStateEnum stateEnum)
     {
       foreach (var state in _states)
-      {
         if (state.GetStateEnum().Equals(stateEnum))
-        {
           return state;
-        }
-      }
 
       throw new ArgumentOutOfRangeException(nameof(stateEnum), stateEnum,
         "State machine does not contain a " + stateEnum + " state");
