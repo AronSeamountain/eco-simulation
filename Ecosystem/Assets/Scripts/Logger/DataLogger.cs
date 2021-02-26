@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Animal;
 
 namespace Logger
 {
@@ -74,12 +75,12 @@ namespace Logger
       AppendRow(header);
     }
 
-    public void Snapshot(int day, IList<Animal> animals)
+    public void Snapshot(int day, IList<AbstractAnimal> animals)
     {
       AppendRow(CreateRow(day, animals));
     }
 
-    private string CreateRow(int day, IList<Animal> animals)
+    private string CreateRow(int day, IList<AbstractAnimal> animals)
     {
       // TODO: Could be converted to a string builder to enhance performance if we log often.
       var values = _loggableColumns.Select(column => column.GetValue(day, animals)).ToList();

@@ -13,3 +13,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse imperdiet, 
 ### Graph Data with Plotly
 1. Install python packages with `pip install -r requirements.txt` inside the Plotting folder.
 2. Run the script, it searches recursively for data_log.csv from the directory the script is ran from.
+
+### Render State Diagrams
+`java -jar plantuml.jar states.txt` in `Meta/StateDiagrams`

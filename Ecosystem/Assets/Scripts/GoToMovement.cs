@@ -1,49 +1,28 @@
 using UnityEngine;
-using Utils;
+using UnityEngine.AI;
 
 /// <summary>
-///   A movement that moves towards transform.
+///   A movement that moves towards transform. Does NOT stop when the agent has arrived.
 /// </summary>
 public sealed class GoToMovement : MonoBehaviour
 {
-  [SerializeField] private CharacterController controller;
-  [SerializeField] private int movementSpeed;
-  private Vector3 _target;
+  [SerializeField] private NavMeshAgent agent;
 
-  /// <summary>
-  ///   The target to go to.
-  /// </summary>
-  public Vector3 Target
-  {
-    get => _target;
-    set
-    {
-      _target = value;
-      HasTarget = true;
-    }
-  }
+  public float SpeedFactor { get; set; } = 1;
 
   /// <summary>
   ///   Whether the movement is currently in pursuit of travelling to a point.
   /// </summary>
-  public bool HasTarget { get; private set; }
+  public bool IsMoving => !agent.isStopped;
 
-  private void Update()
+  /// <summary>
+  ///   Moves the agent to the given destination.
+  /// </summary>
+  /// <param name="destination"></param>
+  public void GoTo(Vector3 destination)
   {
-    if (!HasTarget) return;
-
-    // Check if arrived
-    var hasArrived = Vector3Util.InRange(Target, transform.position, 1);
-    if (hasArrived)
-    {
-      Stop();
-      return;
-    }
-
-    // Move
-    var direction = (Target - transform.position).normalized;
-    controller.Move(direction * (movementSpeed * Time.deltaTime));
-    transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+    agent.SetDestination(destination);
+    agent.isStopped = false;
   }
 
   /// <summary>
@@ -51,6 +30,6 @@ public sealed class GoToMovement : MonoBehaviour
   /// </summary>
   public void Stop()
   {
-    HasTarget = false;
+    agent.isStopped = true;
   }
 }
