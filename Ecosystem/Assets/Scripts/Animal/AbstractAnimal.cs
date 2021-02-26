@@ -35,6 +35,8 @@ namespace Animal
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
+    [SerializeField] protected ParticleSystem mouthParticles;
+    [SerializeField] protected HearingManager hearingManager;
     [SerializeField] private AnimationManager animationManager;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -43,7 +45,7 @@ namespace Animal
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
-
+    public AbstractFood FoodAboutTooEat { get; set; }
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
@@ -52,6 +54,9 @@ namespace Animal
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
+
+    public bool CanEatMore() => _nourishmentDelegate.SaturationIsFull();
+    public bool CanDrinkMore() => _nourishmentDelegate.HydrationIsFull();
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -100,8 +105,10 @@ namespace Animal
       // Setup gender
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
-      
-      
+
+      //Listen to hearing events
+      hearingManager.KnownAnimalChangedListeners += OnAnimalHeard;
+
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
 
@@ -138,7 +145,7 @@ namespace Animal
       return _nourishmentDelegate.Hydration;
     }
 
-    public void Drink(int hydration)
+    public void Drink(float hydration)
     {
       _nourishmentDelegate.Hydration += hydration;
     }
@@ -148,14 +155,16 @@ namespace Animal
       return _nourishmentDelegate.Saturation;
     }
 
-    public void Eat(int saturation)
+    public void Eat(float saturation)
     {
       _nourishmentDelegate.Saturation += saturation;
     }
 
     public IList<AbstractProperty> GetStats(bool isTargeted)
     {
+      var hearingDetector = GetComponentInChildren<HearingDetector>();
       var visualDetector = GetComponentInChildren<VisualDetector>();
+      hearingDetector.GetComponent<Renderer>().enabled = isTargeted;
       visualDetector.GetComponent<Renderer>().enabled = isTargeted;
 
       if (!isTargeted) return null;
@@ -182,6 +191,10 @@ namespace Animal
     {
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+    }
+
+    private void OnAnimalHeard(AbstractAnimal animal)
+    {
     }
 
     private void GenerateGender()
@@ -232,11 +245,16 @@ namespace Animal
 
     /// <summary>
     ///   Eats the provided food.
+    ///   Can only take bites proportionally to it's size and cannot eat more than there is room.
     /// </summary>
     /// <param name="food">The food to eat.</param>
     public void Eat(AbstractFood food)
     {
-      Eat(food.Consume(int.MaxValue));
+      //full bite or what is left for a full stomach
+      var biteSize = Math.Min(2 * _sizeModifier * _sizeModifier,
+        _nourishmentDelegate.SaturationFromFull());
+      Eat(food.Consume(biteSize));
+      mouthParticles.Emit(1);
     }
 
     /// <summary>
@@ -255,7 +273,9 @@ namespace Animal
 
     public void Drink(Water water)
     {
-      Drink(water.Hydration);
+      var sip = 5 * _sizeModifier * _sizeModifier;
+      Drink(water.SaturationModifier * sip);
+      mouthParticles.Emit(1);
     }
 
     public void SpawnChild()
@@ -267,15 +287,25 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
+      
     }
 
     /// <summary>
-    ///   Decreases health if animal is starving and dehydrated
+    ///   Decreases health if animal is starving or dehydrated
     /// </summary>
     private void DecreaseHealthIfStarving()
     {
-      if (GetSaturation() <= 10 || GetHydration() <= 10)
+      if (GetSaturation() <= 1)
         _healthDelegate.DecreaseHealth(1);
+
+      if (GetHydration() <= 1)
+        _healthDelegate.DecreaseHealth(1);
+    }
+
+    public void SetMouthColor(Color color)
+    {
+      var main = mouthParticles.main;
+      main.startColor = new ParticleSystem.MinMaxGradient(color);
     }
 
     public AbstractAnimal GetMateTarget()

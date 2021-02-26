@@ -8,6 +8,8 @@
     Birth,
     Dead,
     Hunt,
-    PursueMate
+    PursueMate,
+    Eat,
+    Drink
   }
 }

@@ -123,4 +123,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a54ed25487c29d47bdd92d8cb640133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hydration: 40
+  saturationModifier: 1
