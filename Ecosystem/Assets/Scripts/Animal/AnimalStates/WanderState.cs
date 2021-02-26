@@ -66,7 +66,10 @@ namespace Animal.AnimalStates
       }
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
+      {
         _animal.StopMoving();
+      }
+        
 
       if (!_animal.IsMoving)
       {
@@ -83,7 +86,7 @@ namespace Animal.AnimalStates
           _timeIdled += Time.deltaTime;
         }
       }
-
+      
       return AnimalState.Wander;
     }
 

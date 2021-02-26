@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System.ComponentModel;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Foods
 {
   public class Water : MonoBehaviour
   {
-    [SerializeField] private int hydration;
-    public int Hydration => hydration;
+    [DefaultValue(1)] [SerializeField] private int saturationModifier;
+    public int SaturationModifier => saturationModifier;
   }
 }

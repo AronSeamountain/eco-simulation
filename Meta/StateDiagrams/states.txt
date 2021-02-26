@@ -17,10 +17,18 @@ rectangle "Herbivore" {
   (H.PursueFood) ---> (H.Escape) : Noticed an enemy
   (H.PursueFood) ---> (H.Dead) : No health
 
+  (H.Eat) ---> (H.Dead) : No health
+  (H.Eat) ---> (H.Wander) : Food gone or Stomach full
+  (H.Eat) ---> (H.Eat)
+
   (H.PursueWater) ---> (H.Escape) : Noticed an enemy
   (H.PursueWater) ---> (H.PursueWater)
-  (H.PursueWater) ---> (H.Wander) : Drank water
+  (H.PursueWater) ---> (H.Drink)
   (H.PursueWater) ---> (H.Dead) : No health
+
+  (H.Drink) ---> (H.Dead) : No health
+  (H.Drink) ---> (H.Wander) : Done drinking
+  (H.Drink) ---> (H.Drink)
 
   (H.PursueMate) ---> (H.PursueMate)
   (H.PursueMate) ---> (H.Birth) : Found mate & is female

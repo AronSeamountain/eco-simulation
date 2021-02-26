@@ -43,9 +43,9 @@ namespace UI
         animal.GetNourishmentDelegate().MaxHydration,
         Color.blue
       );
-      animal.GetNourishmentDelegate().SaturationChangedListeners += hydrationSlider.OnValueChanged;
+      animal.GetNourishmentDelegate().HydrationChangedListeners += hydrationSlider.OnValueChanged;
       hydrationSlider.CleanupListeners += () =>
-        animal.GetNourishmentDelegate().SaturationChangedListeners -= hydrationSlider.OnValueChanged;
+        animal.GetNourishmentDelegate().HydrationChangedListeners -= hydrationSlider.OnValueChanged;
 
       // State name
       var state = PropertyFactory.CreateKeyValuePair();
@@ -99,7 +99,7 @@ namespace UI
       var saturationBar = PropertyFactory.CreateKeyValuePair();
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
-      void SaturationChangedImpl(int saturation)
+      void SaturationChangedImpl(float saturation)
       {
         saturationBar.OnValueChanged(Prettifier.Round(saturation, 2));
       }

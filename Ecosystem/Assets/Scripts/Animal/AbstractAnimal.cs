@@ -35,7 +35,9 @@ namespace Animal
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
+    [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected HearingManager hearingManager;
+    [SerializeField] private AnimationManager animationManager;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -43,6 +45,7 @@ namespace Animal
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
+    public AbstractFood FoodAboutTooEat { get; set; }
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
@@ -52,6 +55,9 @@ namespace Animal
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
     public AnimalType Type { get; protected set; }
+
+    public bool CanEatMore() => _nourishmentDelegate.SaturationIsFull();
+    public bool CanDrinkMore() => _nourishmentDelegate.HydrationIsFull();
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -98,6 +104,7 @@ namespace Animal
       _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
       _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
 
+      _stateMachine.StateChangedListeners += SendState;
       // Setup gender
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
@@ -124,8 +131,9 @@ namespace Animal
       _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
 
       // Setup speed modifier
+      
       movement.SpeedFactor = _speedModifier;
-
+      
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
 
@@ -142,7 +150,7 @@ namespace Animal
       return _nourishmentDelegate.Hydration;
     }
 
-    public void Drink(int hydration)
+    public void Drink(float hydration)
     {
       _nourishmentDelegate.Hydration += hydration;
     }
@@ -152,7 +160,7 @@ namespace Animal
       return _nourishmentDelegate.Saturation;
     }
 
-    public void Eat(int saturation)
+    public void Eat(float saturation)
     {
       _nourishmentDelegate.Saturation += saturation;
     }
@@ -194,7 +202,7 @@ namespace Animal
     private void GenerateGender()
     {
       var random = Random.Range(0f, 1f);
-      var cubeRenderer = gameObject.GetComponent<Renderer>();
+      var cubeRenderer = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
       Fertile = false;
       if (random > 0.5)
       {
@@ -243,11 +251,16 @@ namespace Animal
 
     /// <summary>
     ///   Eats the provided food.
+    ///   Can only take bites proportionally to it's size and cannot eat more than there is room.
     /// </summary>
     /// <param name="food">The food to eat.</param>
     public void Eat(AbstractFood food)
     {
-      Eat(food.Consume(int.MaxValue));
+      //full bite or what is left for a full stomach
+      var biteSize = Math.Min(2 * _sizeModifier * _sizeModifier,
+        _nourishmentDelegate.SaturationFromFull());
+      Eat(food.Consume(biteSize));
+      mouthParticles.Emit(1);
     }
 
     /// <summary>
@@ -266,7 +279,9 @@ namespace Animal
 
     public void Drink(Water water)
     {
-      Drink(water.Hydration);
+      var sip = 5 * _sizeModifier * _sizeModifier;
+      Drink(water.SaturationModifier * sip);
+      mouthParticles.Emit(1);
     }
 
     public void SpawnChild()
@@ -281,12 +296,21 @@ namespace Animal
     }
 
     /// <summary>
-    ///   Decreases health if animal is starving and dehydrated
+    ///   Decreases health if animal is starving or dehydrated
     /// </summary>
     private void DecreaseHealthIfStarving()
     {
-      if (GetSaturation() <= 10 || GetHydration() <= 10)
+      if (GetSaturation() <= 1)
         _healthDelegate.DecreaseHealth(1);
+
+      if (GetHydration() <= 1)
+        _healthDelegate.DecreaseHealth(1);
+    }
+
+    public void SetMouthColor(Color color)
+    {
+      var main = mouthParticles.main;
+      main.startColor = new ParticleSystem.MinMaxGradient(color);
     }
 
     public AbstractAnimal GetMateTarget()
@@ -330,6 +354,11 @@ namespace Animal
     public float GetSpeedModifier()
     {
       return _speedModifier;
+    }
+
+    private void SendState(AnimalState state)
+    {
+      animationManager.ReceiveState(state);
     }
   }
 }

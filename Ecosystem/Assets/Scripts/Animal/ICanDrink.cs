@@ -15,6 +15,6 @@
     ///   Adds the amount of hydration to the entity.
     /// </summary>
     /// <param name="hydration">The amount of hydration to the entity, must be in the range [0, Max Integer Value].</param>
-    void Drink(int hydration);
+    void Drink(float hydration);
   }
 }

@@ -4,14 +4,14 @@ namespace Foods
 {
   public abstract class AbstractFood : MonoBehaviour
   {
-    public delegate void SaturationChanged(int saturation);
+    public delegate void SaturationChanged(float saturation);
 
     [SerializeField] private FoodType foodType;
-    private int _saturation;
+    private float _saturation;
 
     public SaturationChanged SaturationChangedListeners;
 
-    public int Saturation
+    public float Saturation
     {
       get => _saturation;
       protected set
@@ -29,9 +29,9 @@ namespace Foods
     /// </summary>
     /// <param name="amount">The amount of food points to attempt to eat.</param>
     /// <returns>The amount of food point that was eaten.</returns>
-    public int Consume(int amount)
+    public float Consume(float amount)
     {
-      int consumedFood;
+      float consumedFood;
 
       if (Saturation >= amount)
       {

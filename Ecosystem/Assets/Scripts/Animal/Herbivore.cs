@@ -5,7 +5,7 @@ using Core;
 
 namespace Animal
 {
-  public sealed class Herbivore : AbstractAnimal
+  public class Herbivore : AbstractAnimal
   {
     protected override void SetAnimalType()
     {
@@ -23,7 +23,9 @@ namespace Animal
         new PursueWaterState(this),
         new BirthState(this),
         pursueFoodState,
-        new PursueMateState(this)
+        new PursueMateState(this),
+        new EatState(this),
+        new DrinkState(this)
       };
     }
 
