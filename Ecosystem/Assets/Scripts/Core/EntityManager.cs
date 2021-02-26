@@ -27,6 +27,7 @@ namespace Core
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private GameObject animalPrefab;
     [SerializeField] private GameObject plantPrefab;
+    [SerializeField] private bool log;
     private DataLogger _logger;
     private float _unitsPassed;
     private float _unitTicker;
@@ -34,7 +35,7 @@ namespace Core
     public DayTick DayTickListeners;
     private int plantCount;
     public Tick TickListeners;
-    public IList<AbstractAnimal> Animals { get; private set; }
+    private IList<AbstractAnimal> Animals { get; set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
@@ -57,7 +58,6 @@ namespace Core
       // Logger
       _logger = DataLogger.Instance;
       _logger.InitializeLogging();
-      _logger.Snapshot(0, Animals);
     }
 
     private void Update()
@@ -176,7 +176,7 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          _logger.Snapshot(Days, Animals);
+          if (log) _logger.Snapshot(Days, Animals);
         }
       }
     }
