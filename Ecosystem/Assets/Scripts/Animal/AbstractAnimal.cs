@@ -222,7 +222,12 @@ namespace Animal
 
     private void OnMateFound(AbstractAnimal animal)
     {
-      if (animal.Gender != Gender && animal.Fertile) _mateTarget = animal;
+      var sameTypeOfAnimal = animal.Type == Type;
+      var oppositeGender = animal.Gender != Gender;
+      var fertile = animal.Fertile;
+
+      if (sameTypeOfAnimal && oppositeGender && fertile)
+        _mateTarget = animal;
     }
 
     public void ClearMateTarget()
