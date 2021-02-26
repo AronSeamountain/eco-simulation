@@ -8,7 +8,7 @@ namespace Animal
 {
   public sealed class Carnivore : AbstractAnimal
   {
-    private const float Range = 10;
+    private const float HuntRange = 15;
     public readonly float EatingRange = 2f;
     public Herbivore Target { get; private set; }
 
@@ -38,7 +38,8 @@ namespace Animal
 
     public bool ShouldHunt(Herbivore carnivoreTarget)
     {
-      return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, Range);
+      if (!carnivoreTarget || !carnivoreTarget.IsAlive) return false;
+      return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, HuntRange);
     }
 
     public void TakeABiteFromHerbivore(Herbivore carnivoreTarget)

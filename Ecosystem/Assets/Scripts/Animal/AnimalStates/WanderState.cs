@@ -52,10 +52,12 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
+      var isSatisfied = !_animal.IsHungry && !_animal.IsThirsty;
+
       if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
-      if (_animal.GetMateTarget() != null && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
+      if (isSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
       if (_animal is Carnivore carnivore) // TODO: no no :-)
       {

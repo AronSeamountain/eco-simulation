@@ -30,12 +30,6 @@ namespace Animal
     }
 
     private const int FertilityTimeInUnits = 5;
-
-    /// <summary>
-    ///   The probability in the range [0, 1] whether the animal will give birth.
-    /// </summary>
-    [SerializeField] [Range(0f, 1f)] private float birthProbabilityPerUnit;
-
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -178,13 +172,8 @@ namespace Animal
 
     public void Tick()
     {
-      ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
-
       if (!Fertile) _unitsUntilFertile--;
-
       if (_unitsUntilFertile <= 0) Fertile = true;
-
-      ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
       _nourishmentDelegate.Tick();
       foodManager.Tick();
       DecreaseHealthIfStarving();
@@ -206,16 +195,15 @@ namespace Animal
     {
       var random = Random.Range(0f, 1f);
       var cubeRenderer = gameObject.GetComponent<Renderer>();
+      Fertile = false;
       if (random > 0.5)
       {
         Gender = Gender.Male;
-        Fertile = false;
         cubeRenderer.material.SetColor("_Color", Color.cyan);
       }
       else
       {
         Gender = Gender.Female;
-        Fertile = false;
         cubeRenderer.material.SetColor("_Color", Color.magenta);
       }
     }
