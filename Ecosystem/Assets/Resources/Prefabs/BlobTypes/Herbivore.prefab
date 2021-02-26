@@ -20,6 +20,20 @@ MonoBehaviour:
   matingManager: {fileID: 6207474732365605746}
   mouthParticles: {fileID: 4908705577462801219}
   hearingManager: {fileID: 6311795476331734518}
+  animationManager: {fileID: 8410095186163081469}
+--- !u!114 &8410095186163081469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3994141988682731950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14735c1d23cf4cc0be6c34aae07fb0a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
 --- !u!1001 &8318338745849550080
 PrefabInstance:
   m_ObjectHideFlags: 0

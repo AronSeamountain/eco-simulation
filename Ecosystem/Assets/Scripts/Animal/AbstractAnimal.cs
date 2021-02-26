@@ -37,6 +37,7 @@ namespace Animal
     [SerializeField] private MatingManager matingManager;
     [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected HearingManager hearingManager;
+    [SerializeField] private AnimationManager animationManager;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -100,6 +101,7 @@ namespace Animal
       _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
       _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
 
+      _stateMachine.StateChangedListeners += SendState;
       // Setup gender
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
@@ -126,8 +128,9 @@ namespace Animal
       _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
 
       // Setup speed modifier
+      
       movement.SpeedFactor = _speedModifier;
-
+      
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
     }
@@ -197,7 +200,7 @@ namespace Animal
     private void GenerateGender()
     {
       var random = Random.Range(0f, 1f);
-      var cubeRenderer = gameObject.GetComponent<Renderer>();
+      var cubeRenderer = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
       if (random > 0.5)
       {
         Gender = Gender.Male;
@@ -346,6 +349,11 @@ namespace Animal
     public float GetSpeedModifier()
     {
       return _speedModifier;
+    }
+
+    private void SendState(AnimalState state)
+    {
+      animationManager.ReceiveState(state);
     }
   }
 }
