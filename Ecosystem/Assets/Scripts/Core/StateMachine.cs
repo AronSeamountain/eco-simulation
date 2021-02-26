@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Utils;
 
 namespace Core
@@ -50,10 +51,16 @@ namespace Core
     /// <exception cref="ArgumentOutOfRangeException">If the state machine has no state for the provided state enum.</exception>
     private IState<TStateEnum> GetCorrelatingState(TStateEnum stateEnum)
     {
-      var state = _states.First(s => s.GetStateEnum().Equals(stateEnum));
-      if (state != null) return state;
+      foreach (var state in _states)
+      {
+        if (state.GetStateEnum().Equals(stateEnum))
+        {
+          return state;
+        }
+      }
 
-      throw new ArgumentOutOfRangeException(nameof(state), stateEnum, null);
+      throw new ArgumentOutOfRangeException(nameof(stateEnum), stateEnum,
+        "State machine does not contain a " + stateEnum + " state");
     }
 
     public TStateEnum GetCurrentStateEnum()

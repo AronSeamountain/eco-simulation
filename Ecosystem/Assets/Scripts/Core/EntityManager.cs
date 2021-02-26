@@ -27,6 +27,7 @@ namespace Core
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private GameObject animalPrefab;
     [SerializeField] private GameObject plantPrefab;
+    [SerializeField] private GameObject carnviorePrefab;
     [SerializeField] private bool log;
     private DataLogger _logger;
     private float _unitsPassed;
@@ -92,6 +93,9 @@ namespace Core
     {
       SpawnAndAddGeneric(initialAnimals, animalPrefab, Animals);
       HerbivoreCount += initialAnimals;
+
+      SpawnAndAddGeneric(initialAnimals, carnviorePrefab, Animals);
+      CarnivoreCount += initialAnimals;
     }
 
     /// <summary>
