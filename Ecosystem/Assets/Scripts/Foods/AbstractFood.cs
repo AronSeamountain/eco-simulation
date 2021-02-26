@@ -4,13 +4,21 @@ namespace Foods
 {
   public abstract class AbstractFood : MonoBehaviour
   {
+    public delegate void SaturationChanged(int saturation);
+
     [SerializeField] private FoodType foodType;
     private int _saturation;
+
+    public SaturationChanged SaturationChangedListeners;
 
     public int Saturation
     {
       get => _saturation;
-      protected set => _saturation = Mathf.Clamp(value, 0, MaxSaturation);
+      protected set
+      {
+        _saturation = Mathf.Clamp(value, 0, MaxSaturation);
+        SaturationChangedListeners?.Invoke(Saturation);
+      }
     }
 
     public int MaxSaturation { get; protected set; }

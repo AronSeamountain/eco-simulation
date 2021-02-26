@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Animal;
@@ -21,7 +22,14 @@ namespace Logger
 
     private DataLogger()
     {
-      _loggableColumns = new List<LoggableColumn>
+      _loggableColumns = GetLoggableColumns();
+    }
+
+    public static DataLogger Instance { get; } = new DataLogger();
+
+    private IList<LoggableColumn> GetLoggableColumns()
+    {
+      return new List<LoggableColumn>
       {
         new LoggableColumn("day", (day, animals) =>
           day.ToString()
@@ -29,26 +37,42 @@ namespace Logger
         new LoggableColumn("amount", (day, animals) =>
           animals.Count.ToString()
         ),
-        new LoggableColumn("saturation", (day, animals) =>
-          {
-            if (animals.Any())
-              return (animals.Sum(animal => animal.GetSaturation()) / animals.Count).ToString();
-
-            return 0.ToString();
-          }
+        new LoggableColumn(
+          "saturation",
+          (day, animals) => CalcAverage(day, animals, animal => animal.GetSaturation())
         ),
-        new LoggableColumn("hydration", (day, animals) =>
-          {
-            if (animals.Any())
-              return (animals.Sum(animal => animal.GetHydration()) / animals.Count).ToString();
-
-            return 0.ToString();
-          }
+        new LoggableColumn(
+          "hydration",
+          (day, animals) => CalcAverage(day, animals, animal => animal.GetHydration())
+        ),
+        new LoggableColumn(
+          "speed",
+          (day, animals) => CalcAverage(day, animals, animal => animal.GetSpeedModifier())
+        ),
+        new LoggableColumn(
+          "age",
+          (day, animals) => CalcAverage(day, animals, animal => animal.AgeInDays)
+        ),
+        new LoggableColumn(
+          "size",
+          (day, animals) => CalcAverage(day, animals, animal => animal.GetSize())
         )
       };
     }
 
-    public static DataLogger Instance { get; } = new DataLogger();
+    #region Helper
+
+    private string CalcAverage(int day, ICollection<AbstractAnimal> animals, Func<AbstractAnimal, float> animalAspect)
+    {
+      if (animals.Any())
+        return (animals.Sum(animalAspect) / animals.Count).ToString();
+
+      return 0.ToString();
+    }
+
+    #endregion
+
+    #region RowHandling
 
     /// <summary>
     ///   Removes all the content from the file.
@@ -98,5 +122,7 @@ namespace Logger
       writer.WriteLine(row);
       writer.Close();
     }
+
+    #endregion
   }
 }

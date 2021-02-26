@@ -13,7 +13,7 @@ namespace Core
   public sealed class StateMachine<TStateEnum> where TStateEnum : Enum
   {
     public delegate void StateChanged(TStateEnum state);
-    
+
     private readonly IList<IState<TStateEnum>> _states;
     private IState<TStateEnum> _currentState;
     public StateChanged StateChangedListeners;

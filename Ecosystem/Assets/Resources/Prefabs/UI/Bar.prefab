@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 1614070849303720730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 2, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 1649382987820205948}
   - {fileID: 9031607926817340779}
@@ -111,6 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59f94551cc4245b4a5ab4adf1f8630b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slider: {fileID: 7576209141342034356}
+  text: {fileID: 7926676977018642676}
 --- !u!1 &2658700237682912240
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,7 +324,7 @@ RectTransform:
   m_GameObject: {fileID: 7938638343098448502}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 452307286107947417}
   m_RootOrder: 2
@@ -372,4 +374,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: some sample text
