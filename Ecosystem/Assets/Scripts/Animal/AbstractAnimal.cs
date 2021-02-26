@@ -6,6 +6,7 @@ using Animal.Managers;
 using Core;
 using Foods;
 using UI;
+using UI.Properties;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -14,9 +15,13 @@ namespace Animal
   /// <summary>
   ///   A very basic animal that searches for food.
   /// </summary>
-  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IStatable
+  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable
   {
-    public delegate void ChildSpawned(AbstractAnimal child);
+    public delegate void AgeChanged(int age);
+
+    public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
+
+    public delegate void StateChanged(string state);
 
     private const int FertilityTimeInUnits = 5;
 
@@ -37,11 +42,20 @@ namespace Animal
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
+
+    public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
+    public StateChanged StateChangedListeners;
+    public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
+
+    /// <summary>
+    ///   The amount of children that the animal has birthed.
+    /// </summary>
+    public int Children { get; set; }
 
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
@@ -79,6 +93,7 @@ namespace Animal
     {
       var states = GetStates(foodManager);
       _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
+      _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
 
       // Setup gender
       GenerateGender();
@@ -134,14 +149,14 @@ namespace Animal
       _nourishmentDelegate.Saturation += saturation;
     }
 
-    public IList<GameObject> GetStats(bool isTargeted)
+    public IList<AbstractProperty> GetStats(bool isTargeted)
     {
       var visualDetector = GetComponentInChildren<VisualDetector>();
       visualDetector.GetComponent<Renderer>().enabled = isTargeted;
 
       if (!isTargeted) return null;
 
-      return PropertyFactory.MakeAnimalObjects(this);
+      return PropertiesFactory.Create(this);
     }
 
 
@@ -161,6 +176,8 @@ namespace Animal
 
     public void DayTick()
     {
+      AgeInDays++;
+      AgeChangedListeners?.Invoke(AgeInDays);
     }
 
     private void GenerateGender()
@@ -239,8 +256,9 @@ namespace Animal
 
     public void SpawnChild()
     {
+      Children++;
       var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
-      ChildSpawnedListeners?.Invoke(child);
+      ChildSpawnedListeners?.Invoke(child, this);
 
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;

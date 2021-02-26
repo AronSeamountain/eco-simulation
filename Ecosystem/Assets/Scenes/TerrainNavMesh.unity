@@ -1068,6 +1068,11 @@ PrefabInstance:
       propertyPath: propertiesCard
       value: 
       objectReference: {fileID: 1729401970}
+    - target: {fileID: 2457495662526005553, guid: e8b6ff01e5e0d9e408b69eda9c5f2e61,
+        type: 3}
+      propertyPath: propertiesContainer
+      value: 
+      objectReference: {fileID: 1729401970}
     - target: {fileID: 2457495662526005562, guid: e8b6ff01e5e0d9e408b69eda9c5f2e61,
         type: 3}
       propertyPath: m_Name

@@ -3,6 +3,7 @@ using Animal;
 using Foods.Plants;
 using Logger;
 using UI;
+using UI.Properties;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -10,8 +11,12 @@ using Utils;
 
 namespace Core
 {
-  public sealed class EntityManager : MonoBehaviour, IStatable
+  public sealed class EntityManager : MonoBehaviour, IInspectable
   {
+    public delegate void DayTick();
+
+    public delegate void Tick();
+
     /// <summary>
     ///   The amount of time that a "unit" is in.
     /// </summary>
@@ -22,27 +27,21 @@ namespace Core
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private GameObject animalPrefab;
     [SerializeField] private GameObject plantPrefab;
-    [SerializeField] private Transform spawnLocation;
-
-    public IList<AbstractAnimal> Animals { get; private set; }
-    public int Days { get; private set; }
-    private DayTick _dayTickListeners;
     private DataLogger _logger;
-    public IList<Plant> Plants { get; private set; }
-    private Vector3 _spawnLocationVector3;
-    private Tick _tickListeners;
     private float _unitsPassed;
     private float _unitTicker;
     private int animalCount = 0;
+    public DayTick DayTickListeners;
     private int plantCount;
+    public Tick TickListeners;
+    public IList<AbstractAnimal> Animals { get; private set; }
+    public int Days { get; private set; }
+    public IList<Plant> Plants { get; private set; }
+    public int HerbivoreCount { get; private set; }
+    public int CarnivoreCount { get; private set; }
 
-    public delegate void EcoSystemStatsChanged();
-
-    public EcoSystemStatsChanged EcoSystemStatsChangedListeners; 
-    private void Start()
+    private void Awake()
     {
-      _spawnLocationVector3 = spawnLocation.position;
-
       // Lists
       Animals = new List<AbstractAnimal>();
       SpawnAndAddInitialAnimals();
@@ -53,7 +52,7 @@ namespace Core
         ObserveAnimal(animal, false);
 
       foreach (var plant in Plants)
-        _dayTickListeners += plant.DayTick;
+        DayTickListeners += plant.DayTick;
 
       // Logger
       _logger = DataLogger.Instance;
@@ -63,24 +62,26 @@ namespace Core
 
     private void Update()
     {
-      checkForStatchanges();
       UpdateTick();
     }
 
-    private void checkForStatchanges()
+    public IList<AbstractProperty> GetStats(bool getStats)
     {
-      if (animalCount != Animals.Count)
-      {
-        animalCount = Animals.Count;
-        EcoSystemStatsChangedListeners.Invoke();
-      }else if (plantCount != Plants.Count)
-      {
-        plantCount = Plants.Count;
-        EcoSystemStatsChangedListeners.Invoke();
-      }
+      return PropertiesFactory.Create(this);
     }
-    private void OnChildSpawned(AbstractAnimal child)
+
+    private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
+      switch (child)
+      {
+        case Herbivore _:
+          HerbivoreCount++;
+          break;
+        case Carnivore _:
+          CarnivoreCount++;
+          break;
+      }
+
       ObserveAnimal(child, true);
     }
 
@@ -90,6 +91,7 @@ namespace Core
     private void SpawnAndAddInitialAnimals()
     {
       SpawnAndAddGeneric(initialAnimals, animalPrefab, Animals);
+      HerbivoreCount += initialAnimals;
     }
 
     /// <summary>
@@ -153,8 +155,8 @@ namespace Core
     {
       if (!animal) return;
       if (addToList) Animals.Add(animal);
-      _tickListeners += animal.Tick;
-      _dayTickListeners += animal.DayTick;
+      TickListeners += animal.Tick;
+      DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
     }
 
@@ -166,29 +168,17 @@ namespace Core
       {
         _unitTicker = 0;
         _unitsPassed++;
-        _tickListeners?.Invoke();
+        TickListeners?.Invoke();
 
         if (_unitsPassed >= UnitsPerDay)
         {
-          
-          
           _unitsPassed = 0;
           Days++;
-          EcoSystemStatsChangedListeners.Invoke();
-          
-          _dayTickListeners?.Invoke();
+
+          DayTickListeners?.Invoke();
           _logger.Snapshot(Days, Animals);
         }
       }
-    }
-
-    private delegate void Tick();
-
-    private delegate void DayTick();
-
-    public IList<GameObject> GetStats(bool getStats)
-    {
-      return PropertyFactory.MakeGlobalObjects(this);
     }
   }
 }
