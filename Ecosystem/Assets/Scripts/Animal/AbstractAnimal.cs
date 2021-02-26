@@ -271,6 +271,12 @@ namespace Animal
         _healthDelegate.DecreaseHealth(1);
     }
 
+    public void SetMouthColor(Color color)
+    {
+      var main = mouthParticles.main;
+      main.startColor = new ParticleSystem.MinMaxGradient(color);
+    }
+
     public AbstractAnimal GetMateTarget()
     {
       return _mateTarget;

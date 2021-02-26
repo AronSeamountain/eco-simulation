@@ -25,6 +25,9 @@ namespace Animal.AnimalStates
     {
       //retrieve target
       _food = _animal.FoodAboutTooEat;
+      
+      //Set Color
+      _animal.SetMouthColor(Color.green);
     }
 
     public AnimalState Execute()
