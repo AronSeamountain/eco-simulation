@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4958774822770398}
   - component: {fileID: 33082171996283674}
   - component: {fileID: 23160685203907220}
+  - component: {fileID: 8660468837759208178}
   m_Layer: 0
   m_Name: floor_water
   m_TagString: Untagged
@@ -58,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 59a83a43793e4b74c81af5e29c9bfad1, type: 2}
+  - {fileID: 2100000, guid: 73d3e2d81727d9c4b924fb692e1e8838, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -79,3 +80,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &8660468837759208178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993993666642178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a54ed25487c29d47bdd92d8cb640133, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hydration: 50
