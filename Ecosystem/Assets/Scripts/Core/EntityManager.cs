@@ -2,6 +2,8 @@
 using Animal;
 using Foods.Plants;
 using Logger;
+using UI;
+using UI.Properties;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,8 +11,12 @@ using Utils;
 
 namespace Core
 {
-  public sealed class EntityManager : MonoBehaviour
+  public sealed class EntityManager : MonoBehaviour, IInspectable
   {
+    public delegate void DayTick();
+
+    public delegate void Tick();
+
     /// <summary>
     ///   The amount of time that a "unit" is in.
     /// </summary>
@@ -21,37 +27,37 @@ namespace Core
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private GameObject animalPrefab;
     [SerializeField] private GameObject plantPrefab;
-    [SerializeField] private Transform spawnLocation;
-    private IList<AbstractAnimal> _animals;
-    private int _days;
-    private DayTick _dayTickListeners;
     private DataLogger _logger;
-    private IList<Plant> _plants;
-    private Vector3 _spawnLocationVector3;
-    private Tick _tickListeners;
     private float _unitsPassed;
     private float _unitTicker;
+    private int animalCount = 0;
+    public DayTick DayTickListeners;
+    private int plantCount;
+    public Tick TickListeners;
+    public IList<AbstractAnimal> Animals { get; private set; }
+    public int Days { get; private set; }
+    public IList<Plant> Plants { get; private set; }
+    public int HerbivoreCount { get; private set; }
+    public int CarnivoreCount { get; private set; }
 
-    private void Start()
+    private void Awake()
     {
-      _spawnLocationVector3 = spawnLocation.position;
-
       // Lists
-      _animals = new List<AbstractAnimal>();
+      Animals = new List<AbstractAnimal>();
       SpawnAndAddInitialAnimals();
-      _plants = new List<Plant>();
+      Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
 
-      foreach (var animal in _animals)
+      foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
-      foreach (var plant in _plants)
-        _dayTickListeners += plant.DayTick;
+      foreach (var plant in Plants)
+        DayTickListeners += plant.DayTick;
 
       // Logger
       _logger = DataLogger.Instance;
       _logger.InitializeLogging();
-      _logger.Snapshot(0, _animals);
+      _logger.Snapshot(0, Animals);
     }
 
     private void Update()
@@ -59,8 +65,23 @@ namespace Core
       UpdateTick();
     }
 
+    public IList<AbstractProperty> GetStats(bool getStats)
+    {
+      return PropertiesFactory.Create(this);
+    }
+
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
+      switch (child)
+      {
+        case Herbivore _:
+          HerbivoreCount++;
+          break;
+        case Carnivore _:
+          CarnivoreCount++;
+          break;
+      }
+
       ObserveAnimal(child, true);
     }
 
@@ -69,7 +90,8 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(initialAnimals, animalPrefab, _animals);
+      SpawnAndAddGeneric(initialAnimals, animalPrefab, Animals);
+      HerbivoreCount += initialAnimals;
     }
 
     /// <summary>
@@ -77,7 +99,7 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialPlants()
     {
-      SpawnAndAddGeneric(initialPlants, plantPrefab, _plants);
+      SpawnAndAddGeneric(initialPlants, plantPrefab, Plants);
     }
 
     private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list) where T : MonoBehaviour
@@ -132,9 +154,9 @@ namespace Core
     private void ObserveAnimal(AbstractAnimal animal, bool addToList)
     {
       if (!animal) return;
-      if (addToList) _animals.Add(animal);
-      _tickListeners += animal.Tick;
-      _dayTickListeners += animal.DayTick;
+      if (addToList) Animals.Add(animal);
+      TickListeners += animal.Tick;
+      DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
     }
 
@@ -146,21 +168,17 @@ namespace Core
       {
         _unitTicker = 0;
         _unitsPassed++;
-        _tickListeners?.Invoke();
+        TickListeners?.Invoke();
 
         if (_unitsPassed >= UnitsPerDay)
         {
           _unitsPassed = 0;
-          _days++;
+          Days++;
 
-          _dayTickListeners?.Invoke();
-          _logger.Snapshot(_days, _animals);
+          DayTickListeners?.Invoke();
+          _logger.Snapshot(Days, Animals);
         }
       }
     }
-
-    private delegate void Tick();
-
-    private delegate void DayTick();
   }
 }

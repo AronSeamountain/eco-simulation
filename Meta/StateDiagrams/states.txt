@@ -1,0 +1,73 @@
+@startuml
+
+skinparam monochrome reverse
+skinparam dpi 150
+skinparam defaultFontSize 16
+
+rectangle "Herbivore" {
+  (H.Wander) ---> (H.Wander)
+  (H.Wander) ---> (H.Escape) : Noticed an enemy
+  (H.Wander) ---> (H.PursueFood) : Hungry & knows food
+  (H.Wander) ---> (H.PursueWater) : Thirsty & knows food
+  (H.Wander) ---> (H.PursueMate) : Fed, hydrated and saw a mate
+  (H.Wander) ---> (H.Dead) : No health
+
+  (H.PursueFood) ---> (H.PursueFood)
+  (H.PursueFood) ---> (H.Wander) : Food eaten
+  (H.PursueFood) ---> (H.Escape) : Noticed an enemy
+  (H.PursueFood) ---> (H.Dead) : No health
+
+  (H.PursueWater) ---> (H.Escape) : Noticed an enemy
+  (H.PursueWater) ---> (H.PursueWater)
+  (H.PursueWater) ---> (H.Wander) : Drank water
+  (H.PursueWater) ---> (H.Dead) : No health
+
+  (H.PursueMate) ---> (H.PursueMate)
+  (H.PursueMate) ---> (H.Birth) : Found mate & is female
+  (H.PursueMate) ---> (H.Wander) : (Mated & is male) or (is hungry or thirsty)
+  (H.PursueMate) ---> (H.Dead) : No health
+
+  (H.Escape) ---> (H.Escape)
+  (H.Escape) ---> (H.Wander) : No longer chased
+  (H.Escape) ---> (H.Dead) : No health
+
+  (H.Dead) ---> (H.Dead)
+
+  (H.Birth) ---> (H.Wander)
+  (H.Birth) ---> (H.Dead) : No health
+}
+
+rectangle "Carnivore" {
+  (C.Wander) ---> (C.Wander)
+  (C.Wander) ---> (C.Escape) : Noticed an enemy
+  (C.Wander) ---> (C.PursueFood) : Hungry & knows food
+  (C.Wander) ---> (C.PursueWater) : Thirsty & knows food
+  (C.Wander) ---> (C.PursueMate) : Fed, hydrated and saw a mate
+  (C.Wander) ---> (C.Dead) : No health
+  (C.Wander) ---> (C.Hunt) : Is hungry & saw target
+
+  (C.Hunt) ---> (C.Wander) : Target eaten or gave up
+  (C.Hunt) ---> (C.Escape) : Noticed an enemy
+  (C.Hunt) ---> (C.Dead) : No health
+
+  (C.PursueWater) ---> (C.Escape) : Noticed an enemy
+  (C.PursueWater) ---> (C.PursueWater)
+  (C.PursueWater) ---> (C.Wander) : Drank water
+  (C.PursueWater) ---> (C.Dead) : No health
+
+  (C.PursueMate) ---> (C.PursueMate)
+  (C.PursueMate) ---> (C.Birth) : Found mate & is female
+  (C.PursueMate) ---> (C.Wander) : (Mated & is male) or (is hungry or thirsty)
+  (C.PursueMate) ---> (C.Dead) : No health
+
+  (C.Escape) ---> (C.Escape)
+  (C.Escape) ---> (C.Wander) : No longer chased
+  (C.Escape) ---> (C.Dead) : No health
+
+  (C.Dead) ---> (C.Dead)
+
+  (C.Birth) ---> (C.Wander)
+  (C.Birth) ---> (C.Dead) : No health
+}
+
+@enduml

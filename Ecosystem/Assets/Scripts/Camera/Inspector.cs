@@ -1,4 +1,5 @@
-﻿using UI;
+﻿using Core;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,7 @@ namespace Camera
 {
   public sealed class Inspector : MonoBehaviour
   {
+    [SerializeField] private EntityManager entityManager;
     [SerializeField] private UnityEngine.Camera mainCamera;
     [SerializeField] private PropertiesContainer propertiesContainer;
     private CameraControls _controls;
@@ -20,6 +22,11 @@ namespace Camera
       _controls.CameraMovement.Movement.performed += OnCancelTarget;
     }
 
+    private void Start()
+    {
+      ShowGlobalStats();
+    }
+
     private void OnEnable()
     {
       _controls.Enable();
@@ -30,9 +37,19 @@ namespace Camera
       _controls.Disable();
     }
 
+    private void ShowGlobalStats()
+    {
+      propertiesContainer.ClearContent();
+      propertiesContainer.Populate(entityManager.GetStats(true));
+    }
+
     private void OnCancelTarget(InputAction.CallbackContext obj)
     {
-      ResetInspectStats();
+      if (_lastSelected != null) // Display
+      {
+        ResetInspectStats();
+        ShowGlobalStats();
+      }
     }
 
     private void ResetInspectStats()
