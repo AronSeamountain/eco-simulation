@@ -12,6 +12,7 @@ namespace Animal.Managers
     private const int Dead = 1;
     private const int Wander = 2;
     private const int Pursue = 3;
+    private const int Idle = 4;
 
     public void ReceiveState(AnimalState state)
     {
@@ -32,8 +33,10 @@ namespace Animal.Managers
         case AnimalState.Hunt:
           animator.SetInteger(State, Pursue);
           break;
-        //TODO add another state "idle" and include it in controller
-        //TODO as well as in the code to animate the rabbit standing still
+        case AnimalState.Eat:
+        case AnimalState.Drink:
+          animator.SetInteger(State, Idle);
+          break;
         default:
           throw new ArgumentOutOfRangeException(nameof(state), state, null);
       }
