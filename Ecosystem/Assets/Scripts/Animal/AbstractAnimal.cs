@@ -38,6 +38,7 @@ namespace Animal
     [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected HearingManager hearingManager;
     [SerializeField] private AnimationManager animationManager;
+    [SerializeField] private SkinnedMeshRenderer genderRenderer;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -202,17 +203,16 @@ namespace Animal
     private void GenerateGender()
     {
       var random = Random.Range(0f, 1f);
-      var cubeRenderer = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
       Fertile = false;
       if (random > 0.5)
       {
         Gender = Gender.Male;
-        cubeRenderer.material.SetColor("_Color", Color.cyan);
+        genderRenderer.material.SetColor("_Color", Color.cyan);
       }
       else
       {
         Gender = Gender.Female;
-        cubeRenderer.material.SetColor("_Color", Color.magenta);
+        genderRenderer.material.SetColor("_Color", Color.magenta);
       }
     }
 

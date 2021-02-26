@@ -25,9 +25,9 @@ namespace Core
     private const float UnitsPerDay = 2;
     [SerializeField] private int initialAnimals = 1;
     [SerializeField] private int initialPlants = 4;
-    [SerializeField] private GameObject animalPrefab;
+    [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject plantPrefab;
-    [SerializeField] private GameObject carnviorePrefab;
+    [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private bool log;
     private DataLogger _logger;
     private float _unitsPassed;
@@ -91,10 +91,10 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(initialAnimals, animalPrefab, Animals);
+      SpawnAndAddGeneric(initialAnimals, rabbitPrefab, Animals);
       HerbivoreCount += initialAnimals;
 
-      SpawnAndAddGeneric(initialAnimals, carnviorePrefab, Animals);
+      SpawnAndAddGeneric(initialAnimals, wolfPrefab, Animals);
       CarnivoreCount += initialAnimals;
     }
 
