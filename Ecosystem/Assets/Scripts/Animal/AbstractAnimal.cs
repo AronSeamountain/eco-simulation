@@ -35,6 +35,7 @@ namespace Animal
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
+    [SerializeField] protected HearingManager hearingManager;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -99,6 +100,9 @@ namespace Animal
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
 
+      //Listen to hearing events
+      hearingManager.KnownAnimalChangedListeners += OnAnimalHeard;
+
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
 
@@ -151,7 +155,9 @@ namespace Animal
 
     public IList<AbstractProperty> GetStats(bool isTargeted)
     {
+      var hearingDetector = GetComponentInChildren<HearingDetector>();
       var visualDetector = GetComponentInChildren<VisualDetector>();
+      hearingDetector.GetComponent<Renderer>().enabled = isTargeted;
       visualDetector.GetComponent<Renderer>().enabled = isTargeted;
 
       if (!isTargeted) return null;
@@ -178,6 +184,10 @@ namespace Animal
     {
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+    }
+
+    private void OnAnimalHeard(AbstractAnimal animal)
+    {
     }
 
     private void GenerateGender()
@@ -263,6 +273,7 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
+      
     }
 
     /// <summary>
