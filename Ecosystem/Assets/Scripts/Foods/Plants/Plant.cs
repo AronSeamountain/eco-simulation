@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Core;
 using Foods.Plants.PlantStates;
 using UI;
@@ -93,6 +93,7 @@ namespace Foods.Plants
 
     protected override void FoodFullyConsumed()
     {
+      Reset();
     }
 
     public override bool CanBeEaten()

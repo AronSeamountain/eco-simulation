@@ -99,7 +99,7 @@ namespace UI
       var saturationBar = PropertyFactory.CreateKeyValuePair();
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
-      void SaturationChangedImpl(int saturation)
+      void SaturationChangedImpl(float saturation)
       {
         saturationBar.OnValueChanged(Prettifier.Round(saturation, 2));
       }
