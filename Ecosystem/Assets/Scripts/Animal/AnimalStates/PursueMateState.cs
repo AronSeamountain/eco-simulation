@@ -28,7 +28,6 @@ namespace Animal.AnimalStates
       if (_animal.IsHungry && _animal.KnowsFoodLocation) return AnimalState.PursueFood;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
 
-
       var mateTarget = _animal.GetMateTarget();
       if (mateTarget == null) return AnimalState.Wander;
       if (!mateTarget.Fertile)
@@ -44,6 +43,7 @@ namespace Animal.AnimalStates
         mateTarget.StopMoving();
         mateTarget.Mate(_animal);
         _animal.ClearMateTarget();
+        _animal.Children++; // TODO: Small possibility that female dies before birthing
         return AnimalState.Wander;
       }
 

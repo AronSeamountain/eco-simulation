@@ -14,6 +14,6 @@ full_path = text_files[0]
 # Plot
 df = pd.read_csv(full_path)
 #fig = px.line(df, x = 'day', y = 'value', title='My Cool Graph')
-fig = px.scatter_3d(df, x='day', y='amount', z='saturation', color='hydration')
+fig = px.scatter_3d(df, x='day', y='speed', z='size', color='amount')
 
 fig.show()

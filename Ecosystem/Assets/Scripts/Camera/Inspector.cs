@@ -1,15 +1,17 @@
-﻿using UI;
+﻿using Core;
+using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Camera
 {
-  public class DisplayCharacterStats : MonoBehaviour
+  public sealed class Inspector : MonoBehaviour
   {
+    [SerializeField] private EntityManager entityManager;
     [SerializeField] private UnityEngine.Camera mainCamera;
-    [SerializeField] private PropertiesCard propertiesCard;
+    [SerializeField] private PropertiesContainer propertiesContainer;
     private CameraControls _controls;
-    private IStatable _targetIS;
+    private IInspectable _lastSelected;
 
     private void Awake()
     {
@@ -18,6 +20,11 @@ namespace Camera
       _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
       _controls.CameraMovement.Rotate.performed += OnCancelTarget;
       _controls.CameraMovement.Movement.performed += OnCancelTarget;
+    }
+
+    private void Start()
+    {
+      ShowGlobalStats();
     }
 
     private void OnEnable()
@@ -30,12 +37,30 @@ namespace Camera
       _controls.Disable();
     }
 
+    private void ShowGlobalStats()
+    {
+      propertiesContainer.ClearContent();
+      propertiesContainer.Populate(entityManager.GetStats(true));
+    }
+
     private void OnCancelTarget(InputAction.CallbackContext obj)
     {
-      if (_targetIS != null)
-        _targetIS.GetStats(false);
-      propertiesCard.ClearContent();
-      _targetIS = null;
+      if (_lastSelected != null) // Display
+      {
+        ResetInspectStats();
+        ShowGlobalStats();
+      }
+    }
+
+    private void ResetInspectStats()
+    {
+      propertiesContainer.ClearContent();
+
+      if (_lastSelected != null)
+      {
+        _lastSelected.GetStats(false);
+        _lastSelected = null;
+      }
     }
 
     /// <summary>
@@ -47,11 +72,12 @@ namespace Camera
       var ray = mainCamera.ScreenPointToRay(GetMousePos());
       if (Physics.Raycast(ray, out var hitTarget))
       {
-        if (_targetIS != null) OnCancelTarget(_);
-        var statable = hitTarget.collider.gameObject.GetComponent<IStatable>();
-        if (statable == null) return;
-        _targetIS = statable;
-        propertiesCard.Populate(statable.GetStats(true));
+        var inspectable = hitTarget.collider.gameObject.GetComponent<IInspectable>();
+        if (inspectable == null) return;
+
+        ResetInspectStats();
+        _lastSelected = inspectable;
+        propertiesContainer.Populate(inspectable.GetStats(true));
       }
     }
 

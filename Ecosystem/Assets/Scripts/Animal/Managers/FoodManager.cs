@@ -26,8 +26,6 @@ namespace Animal.Managers
 
     public PreyFound PreyFoundListeners;
 
-    //private CarnivoreScript carnivore;
-    //public HerbivoreScript target;
     public IReadOnlyList<FoodMemory> KnownFoodMemories => new ReadOnlyCollection<FoodMemory>(_knownFoodMemories);
 
     private void Start()
