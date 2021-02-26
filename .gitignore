@@ -1,6 +1,7 @@
 
 ### Custom ###
 
+venv/
 .ignore
 
 # Created by https://www.toptal.com/developers/gitignore/api/rider,jetbrains+all

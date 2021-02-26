@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Animal;
+using Core;
 using Foods.Plants;
 using UI.Properties;
 using UnityEngine;
@@ -107,6 +108,54 @@ namespace UI
       saturationBar.CleanupListeners += () => plant.SaturationChangedListeners -= SaturationChangedImpl;
 
       return new List<AbstractProperty> {saturationBar, state};
+    }
+
+    public static IList<AbstractProperty> Create(EntityManager entityManager)
+    {
+      var ecoSystemText = PropertyFactory.CreateKeyValuePair();
+      ecoSystemText.Configure("Ecosystem", "Forest");
+
+      // Age
+      var ageText = PropertyFactory.CreateKeyValuePair();
+      ageText.Configure("Day", entityManager.Days.ToString());
+
+      void DayChangeImpl()
+      {
+        ageText.OnValueChanged(entityManager.Days.ToString());
+      }
+
+      entityManager.DayTickListeners += DayChangeImpl;
+      ageText.CleanupListeners += () => entityManager.DayTickListeners -= DayChangeImpl;
+
+      // Animals (herbivores/rabbits)
+      var herbivoreText = PropertyFactory.CreateKeyValuePair();
+      herbivoreText.Configure("Rabbits", entityManager.HerbivoreCount.ToString());
+
+      void HerbivoreUpdateImpl()
+      {
+        herbivoreText.OnValueChanged(entityManager.HerbivoreCount.ToString());
+      }
+
+      entityManager.TickListeners += HerbivoreUpdateImpl;
+      herbivoreText.CleanupListeners += () => entityManager.TickListeners -= HerbivoreUpdateImpl;
+
+      // Animals (carnivores/wolfs)
+      var carnivoreText = PropertyFactory.CreateKeyValuePair();
+      carnivoreText.Configure("Wolfs", entityManager.CarnivoreCount.ToString());
+
+      void AnimalUpdateImpl()
+      {
+        carnivoreText.OnValueChanged(entityManager.CarnivoreCount.ToString());
+      }
+
+      entityManager.TickListeners += AnimalUpdateImpl;
+      carnivoreText.CleanupListeners += () => entityManager.TickListeners -= AnimalUpdateImpl;
+
+      // Plants
+      var plantText = PropertyFactory.CreateKeyValuePair();
+      plantText.Configure("Plants", entityManager.Plants.Count.ToString());
+
+      return new List<AbstractProperty> {ecoSystemText, ageText, herbivoreText, carnivoreText, plantText};
     }
   }
 }

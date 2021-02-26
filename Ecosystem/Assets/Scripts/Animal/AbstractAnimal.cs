@@ -55,7 +55,7 @@ namespace Animal
     /// <summary>
     ///   The amount of children that the animal has birthed.
     /// </summary>
-    public int Children { get; private set; }
+    public int Children { get; set; }
 
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
