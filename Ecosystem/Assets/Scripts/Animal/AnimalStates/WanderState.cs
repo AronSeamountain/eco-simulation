@@ -65,11 +65,8 @@ namespace Animal.AnimalStates
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
 
-      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
-      {
-        _animal.StopMoving();
-      }
-        
+      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination)) _animal.StopMoving();
+
 
       if (!_animal.IsMoving)
       {
@@ -86,7 +83,7 @@ namespace Animal.AnimalStates
           _timeIdled += Time.deltaTime;
         }
       }
-      
+
       return AnimalState.Wander;
     }
 

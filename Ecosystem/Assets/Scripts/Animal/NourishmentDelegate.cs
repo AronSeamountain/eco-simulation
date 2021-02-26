@@ -1,6 +1,5 @@
 using Core;
 using UnityEngine;
-using UnityEngine.Assertions.Comparers;
 
 namespace Animal
 {
@@ -13,16 +12,6 @@ namespace Animal
 
     public delegate void SaturationChanged(float saturation, float maxSaturation);
 
-    /// <summary>
-    ///   The value for which the animal is considered hungry.
-    /// </summary>
-    private float HungrySaturationLevel { get; set; } = 50;
-
-    /// <summary>
-    ///   The value for which the animal is considered thirsty.
-    /// </summary>
-    private float ThirstyHydrationLevel { get; set; } = 50;
-
     private float _hydration;
     private float _saturation;
     public HydrationChanged HydrationChangedListeners;
@@ -34,10 +23,15 @@ namespace Animal
       Hydration = 25;
     }
 
-    public float SaturationFromFull()
-    {
-      return MaxHydration - Hydration;
-    }
+    /// <summary>
+    ///   The value for which the animal is considered hungry.
+    /// </summary>
+    private float HungrySaturationLevel { get; set; } = 50;
+
+    /// <summary>
+    ///   The value for which the animal is considered thirsty.
+    /// </summary>
+    private float ThirstyHydrationLevel { get; set; } = 50;
 
     public float HydrationDecreasePerUnit { get; set; } = 1;
 
@@ -68,9 +62,6 @@ namespace Animal
     public float MaxHydration { get; private set; }
     public float MaxSaturation { get; private set; }
 
-    public bool SaturationIsFull() => ((MaxSaturation - Saturation) >= 5);
-    public bool HydrationIsFull()  => ((MaxHydration - Hydration) >= 5);
-
 
     public void Tick()
     {
@@ -83,6 +74,21 @@ namespace Animal
 
     public void DayTick()
     {
+    }
+
+    public float SaturationFromFull()
+    {
+      return MaxHydration - Hydration;
+    }
+
+    public bool SaturationIsFull()
+    {
+      return MaxSaturation - Saturation >= 5;
+    }
+
+    public bool HydrationIsFull()
+    {
+      return MaxHydration - Hydration >= 5;
     }
 
     public void SetMaxNourishment(float maxValue)

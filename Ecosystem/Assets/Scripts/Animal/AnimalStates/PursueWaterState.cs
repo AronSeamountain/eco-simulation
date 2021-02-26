@@ -36,7 +36,7 @@ namespace Animal.AnimalStates
       var reachesWater = Vector3Util.InRange(_animal.gameObject, _waterTarget.gameObject, _animal.Reach);
       if (reachesWater) return AnimalState.Drink;
 
-        var position = _waterTarget.transform.position;
+      var position = _waterTarget.transform.position;
       _animal.GoTo(position);
 
       return AnimalState.PursueWater;

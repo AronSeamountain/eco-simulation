@@ -46,19 +46,16 @@ namespace Animal
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
-    public AbstractFood FoodAboutTooEat { get; set; }
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
+    public AbstractFood FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
     public AnimalType Type { get; protected set; }
-
-    public bool CanEatMore() => _nourishmentDelegate.SaturationIsFull();
-    public bool CanDrinkMore() => _nourishmentDelegate.HydrationIsFull();
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -132,9 +129,9 @@ namespace Animal
       _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
 
       // Setup speed modifier
-      
+
       movement.SpeedFactor = _speedModifier;
-      
+
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
 
@@ -192,6 +189,16 @@ namespace Animal
     {
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+    }
+
+    public bool CanEatMore()
+    {
+      return _nourishmentDelegate.SaturationIsFull();
+    }
+
+    public bool CanDrinkMore()
+    {
+      return _nourishmentDelegate.HydrationIsFull();
     }
 
     protected abstract void SetAnimalType();
