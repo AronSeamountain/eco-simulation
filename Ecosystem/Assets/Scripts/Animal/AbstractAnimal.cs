@@ -264,9 +264,9 @@ namespace Animal
     public void Eat(AbstractFood food)
     {
       //full bite or what is left for a full stomach
-      var biteSize = Math.Min(2 * _sizeModifier * _sizeModifier,
+      var biteSize = Math.Min(20 * _sizeModifier * _sizeModifier,
         _nourishmentDelegate.SaturationFromFull());
-      Eat(food.Consume(biteSize));
+      Eat(food.Consume(biteSize*Time.deltaTime));
       mouthParticles.Emit(1);
     }
 
@@ -286,8 +286,8 @@ namespace Animal
 
     public void Drink(Water water)
     {
-      var sip = 5 * _sizeModifier * _sizeModifier;
-      Drink(water.SaturationModifier * sip);
+      var sip = 30 * _sizeModifier * _sizeModifier;
+      Drink(water.SaturationModifier * sip * Time.deltaTime);
       mouthParticles.Emit(1);
     }
 

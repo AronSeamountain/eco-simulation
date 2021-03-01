@@ -21,6 +21,7 @@ namespace Animal
     {
       Saturation = 25;
       Hydration = 25;
+      
     }
 
     /// <summary>
@@ -65,10 +66,10 @@ namespace Animal
 
     public void Tick()
     {
-      Saturation -= SaturationDecreasePerUnit;
+      Saturation -= SaturationDecreasePerUnit*0.5f;
       SaturationInvoker();
 
-      Hydration -= HydrationDecreasePerUnit;
+      Hydration -= HydrationDecreasePerUnit*0.5f;
       HydrationInvoker();
     }
 
@@ -95,6 +96,8 @@ namespace Animal
     {
       MaxHydration = maxValue;
       MaxSaturation = maxValue;
+      _hydration = maxValue;
+      _saturation = maxValue;
       ThirstyHydrationLevel = maxValue / 2;
       HungrySaturationLevel = maxValue / 2;
     }

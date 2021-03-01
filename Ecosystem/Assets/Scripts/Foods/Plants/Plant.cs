@@ -31,7 +31,7 @@ namespace Foods.Plants
         new GrowState(this),
         new MatureState(this)
       };
-      _stateMachine = new StateMachine<PlantState>(states, PlantState.Seed);
+      _stateMachine = new StateMachine<PlantState>(states, PlantState.Mature);
       _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
     }
 

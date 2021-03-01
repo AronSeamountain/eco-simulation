@@ -22,7 +22,7 @@ namespace Core
     /// </summary>
     private const float UnitTimeSeconds = 0.5f;
 
-    private const float UnitsPerDay = 2;
+    private const float UnitsPerDay = 10;
     [SerializeField] private int initialAnimals = 1;
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private GameObject rabbitPrefab;
