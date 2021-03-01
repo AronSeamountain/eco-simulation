@@ -1,4 +1,5 @@
 ﻿using Core;
+using Utils;
 
 namespace Animal.AnimalStates
 {
@@ -24,12 +25,14 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      if (_target && !_carnivore.IsHungry && _carnivore.IsThirsty) return AnimalState.Wander;
-      if (!_target) return AnimalState.Wander;
-      if (!_carnivore.ShouldHunt(_target)) return AnimalState.Wander;
-      if (!_target.IsAlive) return AnimalState.Wander;
+      if (!_carnivore.ShouldHunt(_target))
+        return AnimalState.Wander;
+
       _carnivore.GoTo(_target.transform.position);
-      _carnivore.TakeABiteFromHerbivore(_target);
+
+      if (Vector3Util.InRange(_carnivore, _target, _carnivore.EatingRange))
+        _carnivore.TakeABiteFromHerbivore(_target);
+
       return AnimalState.Hunt;
     }
 

@@ -23,13 +23,13 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
+    public enum AnimalType
+    {
+      Carnivore,
+      Herbivore
+    }
+
     private const int FertilityTimeInUnits = 5;
-
-    /// <summary>
-    ///   The probability in the range [0, 1] whether the animal will give birth.
-    /// </summary>
-    [SerializeField] [Range(0f, 1f)] private float birthProbabilityPerUnit;
-
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -38,6 +38,7 @@ namespace Animal
     [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected HearingManager hearingManager;
     [SerializeField] private AnimationManager animationManager;
+    [SerializeField] private SkinnedMeshRenderer genderRenderer;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -45,18 +46,16 @@ namespace Animal
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
-    public AbstractFood FoodAboutTooEat { get; set; }
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
+    public AbstractFood FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
-
-    public bool CanEatMore() => _nourishmentDelegate.SaturationIsFull();
-    public bool CanDrinkMore() => _nourishmentDelegate.HydrationIsFull();
+    public AnimalType Type { get; protected set; }
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -88,6 +87,8 @@ namespace Animal
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
     public bool IsAlive => Health > 0;
+    public bool IsCarnivore => Type == AnimalType.Carnivore;
+    public bool IsHerbivore => Type == AnimalType.Herbivore;
 
     private void Awake()
     {
@@ -128,11 +129,13 @@ namespace Animal
       _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
 
       // Setup speed modifier
-      
+
       movement.SpeedFactor = _speedModifier;
-      
+
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
+
+      SetAnimalType();
     }
 
     private void Update()
@@ -175,13 +178,8 @@ namespace Animal
 
     public void Tick()
     {
-      ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
-
       if (!Fertile) _unitsUntilFertile--;
-
       if (_unitsUntilFertile <= 0) Fertile = true;
-
-      ShouldBirth = Random.Range(0f, 1f) <= birthProbabilityPerUnit;
       _nourishmentDelegate.Tick();
       foodManager.Tick();
       DecreaseHealthIfStarving();
@@ -193,6 +191,18 @@ namespace Animal
       AgeChangedListeners?.Invoke(AgeInDays);
     }
 
+    public bool CanEatMore()
+    {
+      return _nourishmentDelegate.SaturationIsFull();
+    }
+
+    public bool CanDrinkMore()
+    {
+      return _nourishmentDelegate.HydrationIsFull();
+    }
+
+    protected abstract void SetAnimalType();
+
     private void OnAnimalHeard(AbstractAnimal animal)
     {
     }
@@ -200,24 +210,27 @@ namespace Animal
     private void GenerateGender()
     {
       var random = Random.Range(0f, 1f);
-      var cubeRenderer = gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+      Fertile = false;
       if (random > 0.5)
       {
         Gender = Gender.Male;
-        Fertile = false;
-        cubeRenderer.material.SetColor("_Color", Color.cyan);
+        genderRenderer.material.SetColor("_Color", Color.cyan);
       }
       else
       {
         Gender = Gender.Female;
-        Fertile = false;
-        cubeRenderer.material.SetColor("_Color", Color.magenta);
+        genderRenderer.material.SetColor("_Color", Color.magenta);
       }
     }
 
     private void OnMateFound(AbstractAnimal animal)
     {
-      if (animal.Gender != Gender && animal.Fertile) _mateTarget = animal;
+      var sameTypeOfAnimal = animal.Type == Type;
+      var oppositeGender = animal.Gender != Gender;
+      var fertile = animal.Fertile;
+
+      if (sameTypeOfAnimal && oppositeGender && fertile)
+        _mateTarget = animal;
     }
 
     public void ClearMateTarget()
@@ -287,7 +300,6 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
-      
     }
 
     /// <summary>

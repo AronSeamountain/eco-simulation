@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Core;
 using Foods;
 using UnityEngine;
@@ -25,7 +23,7 @@ namespace Animal.AnimalStates
     {
       //retrieve target
       _food = _animal.FoodAboutTooEat;
-      
+
       //Set Color
       _animal.SetMouthColor(Color.green);
     }
@@ -39,13 +37,13 @@ namespace Animal.AnimalStates
 
       _animal.StopMoving();
       _animal.Eat(_food);
-      
+
 
       return AnimalState.Eat;
     }
 
     //TODO test with corutine and an 'IsBusy' variable that could be used, ex: if IsBusy -> return AnimalState.Eat; else -> run the rest
-    
+
     public void Exit()
     {
       _animal.FoodAboutTooEat = null;

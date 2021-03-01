@@ -6,13 +6,13 @@ namespace Animal.Managers
 {
   public class AnimationManager : MonoBehaviour
   {
-    [SerializeField] private Animator animator;
-    private static readonly int State = Animator.StringToHash("State");
     private const int Birth = 0;
     private const int Dead = 1;
     private const int Wander = 2;
     private const int Pursue = 3;
     private const int Idle = 4;
+    private static readonly int State = Animator.StringToHash("State");
+    [SerializeField] private Animator animator;
 
     public void ReceiveState(AnimalState state)
     {
