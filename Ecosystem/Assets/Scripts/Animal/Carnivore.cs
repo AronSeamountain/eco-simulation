@@ -34,7 +34,8 @@ namespace Animal
         new HuntState(this),
         new PursueMateState(this),
         new EatState(this),
-        new DrinkState(this)
+        new DrinkState(this),
+        new FleeState(this)
       };
     }
 

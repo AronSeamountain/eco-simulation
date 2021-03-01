@@ -25,7 +25,8 @@ namespace Animal
         pursueFoodState,
         new PursueMateState(this),
         new EatState(this),
-        new DrinkState(this)
+        new DrinkState(this),
+        new FleeState(this)
       };
     }
 
@@ -38,5 +39,6 @@ namespace Animal
     {
       _healthDelegate.DecreaseHealth(1);
     }
+    
   }
 }

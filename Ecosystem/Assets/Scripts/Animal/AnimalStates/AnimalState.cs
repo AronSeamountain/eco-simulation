@@ -10,6 +10,7 @@
     Hunt,
     PursueMate,
     Eat,
-    Drink
+    Drink,
+    Flee
   }
 }

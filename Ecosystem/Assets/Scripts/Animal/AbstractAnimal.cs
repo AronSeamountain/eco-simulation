@@ -205,6 +205,7 @@ namespace Animal
 
     private void OnAnimalHeard(AbstractAnimal animal)
     {
+      // perform actions when a certain type of animal is heard.
     }
 
     private void GenerateGender()
