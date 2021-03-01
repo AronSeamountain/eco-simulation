@@ -21,9 +21,25 @@ namespace Animal.Managers
     private void OnWaterFound(Water water)
     {
       if (water == null) return;
-      ClosestKnownWater = water;
+      if (!ClosestKnownWater)
+      {
+        ClosestKnownWater = water;
+      }
+      else if (DistanceTo(water) < DistanceTo(ClosestKnownWater))
+      {
+        ClosestKnownWater = water;
+      }
+      else
+      {
+        return;
+      }
 
       WaterUpdateListeners?.Invoke(ClosestKnownWater);
+    }
+
+    private float DistanceTo(Water water)
+    {
+      return Vector3.Distance(water.transform.position, transform.position);
     }
   }
 }
