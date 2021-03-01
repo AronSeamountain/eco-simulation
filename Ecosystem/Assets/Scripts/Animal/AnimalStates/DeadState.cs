@@ -22,7 +22,8 @@ namespace Animal.AnimalStates
       _animal.StopMoving();
 
       _animal.DiedListeners?.Invoke(_animal);
-      Object.Destroy(_animal);
+      Object.Destroy(_animal.gameObject);
+      //AnimalPool.SharedInstance.Pool(_animal);
     }
 
     public AnimalState Execute()

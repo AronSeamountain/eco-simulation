@@ -162,16 +162,17 @@ namespace Animal
       _nourishmentDelegate.Saturation += saturation;
     }
 
-    public IList<AbstractProperty> GetStats(bool isTargeted)
+    public IEnumerable<AbstractProperty> GetProperties()
+    {
+      return PropertiesFactory.Create(this);
+    }
+
+    public void ShowGizmos(bool show)
     {
       var hearingDetector = GetComponentInChildren<HearingDetector>();
       var visualDetector = GetComponentInChildren<VisualDetector>();
-      hearingDetector.GetComponent<Renderer>().enabled = isTargeted;
-      visualDetector.GetComponent<Renderer>().enabled = isTargeted;
-
-      if (!isTargeted) return null;
-
-      return PropertiesFactory.Create(this);
+      hearingDetector.GetComponent<Renderer>().enabled = show;
+      visualDetector.GetComponent<Renderer>().enabled = show;
     }
 
 

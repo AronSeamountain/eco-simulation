@@ -4,7 +4,13 @@ using UI.Properties;
 public interface IInspectable
 {
   /// <summary>
+  ///   Returns a list of displayable properties.
   /// </summary>
-  /// <param name="value">bool to show stats for the entity</param>
-  IList<AbstractProperty> GetStats(bool getStats);
+  IEnumerable<AbstractProperty> GetProperties();
+
+  /// <summary>
+  ///   Tells the inspectable object whether it should show its gizmos.
+  /// </summary>
+  /// <param name="show">True if it should show.</param>
+  void ShowGizmos(bool show);
 }

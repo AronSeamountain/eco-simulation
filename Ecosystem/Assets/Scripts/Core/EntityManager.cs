@@ -67,9 +67,13 @@ namespace Core
       UpdateTick();
     }
 
-    public IList<AbstractProperty> GetStats(bool getStats)
+    public IEnumerable<AbstractProperty> GetProperties()
     {
       return PropertiesFactory.Create(this);
+    }
+
+    public void ShowGizmos(bool show)
+    {
     }
 
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
@@ -107,8 +111,8 @@ namespace Core
       SpawnAnimalSpecie(initialAnimals, AnimalSpecie.Rabbit);
       HerbivoreCount += initialAnimals;
 
-      SpawnAnimalSpecie(initialAnimals, AnimalSpecie.Wolf);
-      HerbivoreCount += initialAnimals;
+      //SpawnAnimalSpecie(initialAnimals, AnimalSpecie.Wolf);
+      //CarnivoreCount += initialAnimals;
     }
 
     private void SpawnAnimalSpecie(int amount, AnimalSpecie animalSpecie)
@@ -191,6 +195,7 @@ namespace Core
     private void OnAnimalDied(AbstractAnimal animal)
     {
       CountAnimal(animal, false);
+      Animals.Remove(animal);
 
       TickListeners -= animal.Tick;
       DayTickListeners -= animal.DayTick;

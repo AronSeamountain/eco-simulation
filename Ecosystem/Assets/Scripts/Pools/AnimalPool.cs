@@ -47,14 +47,14 @@ namespace Pools
       return Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<AbstractAnimal>();
     }
 
-    public void Pool(AbstractAnimal animal, AnimalSpecie animalSpecie)
+    public void Pool(AbstractAnimal animal)
     {
-      var stack = GetStack(animalSpecie);
+      var stack = GetStack(animal.Specie);
 
       if (stack.Count < AmountToPool)
         stack.Push(animal);
       else
-        Destroy(animal);
+        Destroy(animal.gameObject);
     }
   }
 }
