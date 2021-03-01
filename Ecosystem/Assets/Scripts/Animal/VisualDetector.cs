@@ -66,12 +66,14 @@ namespace Animal
     {
       if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten() && CanSee(food))
         FoodFoundListeners?.Invoke(food);
-      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten() && CanSee(animal))
+      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
         PreyFoundListeners?.Invoke(animal);
       if (other.GetComponent<Water>() is Water water && CanSee(water))
         WaterFoundListeners?.Invoke(water);
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal && CanSee(foundAnimal))
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
         AnimalFoundListeners?.Invoke(foundAnimal);
+      
+        
     }
 
     /// <summary>
