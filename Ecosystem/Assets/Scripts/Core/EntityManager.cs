@@ -32,7 +32,6 @@ namespace Core
     private DataLogger _logger;
     private float _unitsPassed;
     private float _unitTicker;
-    private int animalCount = 0;
     public DayTick DayTickListeners;
     private int plantCount;
     public Tick TickListeners;
