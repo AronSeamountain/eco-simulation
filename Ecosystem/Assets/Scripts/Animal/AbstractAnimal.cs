@@ -266,7 +266,7 @@ namespace Animal
       //full bite or what is left for a full stomach
       var biteSize = Math.Min(20 * _sizeModifier * _sizeModifier,
         _nourishmentDelegate.SaturationFromFull());
-      Eat(food.Consume(biteSize*Time.deltaTime));
+      Eat(food.Consume(biteSize * Time.deltaTime));
       mouthParticles.Emit(1);
     }
 

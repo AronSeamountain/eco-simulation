@@ -34,9 +34,9 @@ namespace Animal
     /// </summary>
     private float ThirstyHydrationLevel { get; set; } = 50;
 
-    public float HydrationDecreasePerUnit { get; set; } = 1;
+    public float HydrationDecreasePerUnit { get; set; } = 0.5f;
 
-    public float SaturationDecreasePerUnit { get; set; } = 1;
+    public float SaturationDecreasePerUnit { get; set; } = 0.5f;
 
     public float Saturation
     {
@@ -66,10 +66,10 @@ namespace Animal
 
     public void Tick()
     {
-      Saturation -= SaturationDecreasePerUnit*0.5f;
+      Saturation -= SaturationDecreasePerUnit;
       SaturationInvoker();
 
-      Hydration -= HydrationDecreasePerUnit*0.5f;
+      Hydration -= HydrationDecreasePerUnit;
       HydrationInvoker();
     }
 
