@@ -29,6 +29,8 @@ namespace Core
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private bool log;
+    [SerializeField] private bool spawnWolves;
+    [SerializeField] private bool spawnRabbits;
     private DataLogger _logger;
     private float _unitsPassed;
     private float _unitTicker;
@@ -91,11 +93,17 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(initialAnimals, rabbitPrefab, Animals);
-      HerbivoreCount += initialAnimals;
+      if (spawnRabbits)
+      {
+        SpawnAndAddGeneric(initialAnimals, rabbitPrefab, Animals);
+        HerbivoreCount += initialAnimals;
+      }
 
-      SpawnAndAddGeneric(initialAnimals, wolfPrefab, Animals);
-      CarnivoreCount += initialAnimals;
+      if (spawnWolves)
+      {
+        SpawnAndAddGeneric(initialAnimals, wolfPrefab, Animals);
+        CarnivoreCount += initialAnimals;
+      }
     }
 
     /// <summary>
