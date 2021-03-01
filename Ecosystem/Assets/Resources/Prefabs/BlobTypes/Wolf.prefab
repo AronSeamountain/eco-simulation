@@ -320,7 +320,7 @@ PrefabInstance:
         type: 3}
       propertyPath: animationManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3880049339338096485}
     - target: {fileID: 8672377695379901830, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_Name
