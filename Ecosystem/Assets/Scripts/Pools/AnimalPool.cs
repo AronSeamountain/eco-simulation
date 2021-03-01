@@ -9,8 +9,10 @@ namespace Pools
   {
     private const int AmountToPool = 10;
     public static AnimalPool SharedInstance;
-    [SerializeField] private GameObject objectPrefab;
+    [SerializeField] private GameObject wolfPrefab;
+    [SerializeField] private GameObject rabbitPrefab;
     private IDictionary<AnimalSpecie, Stack<AbstractAnimal>> _speciePoolMapping;
+    private IDictionary<AnimalSpecie, GameObject> _speciePrefabMapping;
 
     private void Awake()
     {
@@ -19,24 +21,30 @@ namespace Pools
       foreach (AnimalSpecie specie in Enum.GetValues(typeof(AnimalSpecie)))
         _speciePoolMapping[specie] = new Stack<AbstractAnimal>();
 
+      _speciePrefabMapping = new Dictionary<AnimalSpecie, GameObject>
+      {
+        {AnimalSpecie.Wolf, wolfPrefab},
+        {AnimalSpecie.Rabbit, rabbitPrefab}
+      };
+
       SharedInstance = this;
     }
 
-    public AbstractAnimal Get(AnimalSpecie animalSpecie)
+    public AbstractAnimal Get(AnimalSpecie specie)
     {
-      var stack = GetStack(animalSpecie);
-      return stack.Count > 0 ? stack.Pop() : CreateObject();
+      var stack = GetStack(specie);
+      return stack.Count > 0 ? stack.Pop() : CreateAnimal(specie);
     }
 
-    private Stack<AbstractAnimal> GetStack(AnimalSpecie animalSpecie)
+    private Stack<AbstractAnimal> GetStack(AnimalSpecie specie)
     {
-      return _speciePoolMapping[animalSpecie];
+      return _speciePoolMapping[specie];
     }
 
-    private AbstractAnimal CreateObject()
+    private AbstractAnimal CreateAnimal(AnimalSpecie specie)
     {
-      var instance = Instantiate(objectPrefab, Vector3.zero, Quaternion.identity).GetComponent<AbstractAnimal>();
-      return instance;
+      var prefab = _speciePrefabMapping[specie];
+      return Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<AbstractAnimal>();
     }
 
     public void Pool(AbstractAnimal animal, AnimalSpecie animalSpecie)

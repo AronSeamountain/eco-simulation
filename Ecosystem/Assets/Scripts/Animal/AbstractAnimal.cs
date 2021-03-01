@@ -82,7 +82,7 @@ namespace Animal
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
     public bool IsAlive => Health > 0;
-    public bool IsCarnivore => Specie == AnimalSpecie.Wolf;
+    public bool IsCarnivore => Specie == AnimalSpecie.Wolf; // TODO
     public bool IsHerbivore => Specie == AnimalSpecie.Rabbit;
 
     private void Awake()
@@ -289,7 +289,7 @@ namespace Animal
     public void SpawnChild()
     {
       Children++;
-      var child = RabbitPool.SharedInstance.Get();
+      var child = AnimalPool.SharedInstance.Get(Specie);
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 

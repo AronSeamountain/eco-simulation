@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Pools
 {
-  public abstract class AbstractMonoBehaviourPool<T> : MonoBehaviour, IPool<T> where T : MonoBehaviour
+  public class MonoBehaviourPool<T> : MonoBehaviour, IPool<T> where T : MonoBehaviour
   {
     private const int AmountToPool = 10;
-    public static AbstractMonoBehaviourPool<T> SharedInstance;
+    public static MonoBehaviourPool<T> SharedInstance;
     [SerializeField] private GameObject objectPrefab;
     private Stack<T> _pool;
 
@@ -21,18 +21,18 @@ namespace Pools
       return _pool.Count > 0 ? _pool.Pop() : CreateObject();
     }
 
-    private T CreateObject()
-    {
-      var instance = Instantiate(objectPrefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
-      return instance;
-    }
-
     public void Pool(T instance)
     {
       if (_pool.Count < AmountToPool)
         _pool.Push(instance);
       else
         Destroy(instance);
+    }
+
+    private T CreateObject()
+    {
+      var instance = Instantiate(objectPrefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
+      return instance;
     }
   }
 }

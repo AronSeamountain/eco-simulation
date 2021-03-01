@@ -28,6 +28,7 @@ namespace Core
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
+    private AnimalPool _animalPool;
     private DataLogger _logger;
     private float _unitsPassed;
     private float _unitTicker;
@@ -40,10 +41,11 @@ namespace Core
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
-    private AnimalPool _animalPool;
 
     private void Awake()
     {
+      _animalPool = AnimalPool.SharedInstance;
+
       // Lists
       Animals = new List<AbstractAnimal>();
       SpawnAndAddInitialAnimals();
