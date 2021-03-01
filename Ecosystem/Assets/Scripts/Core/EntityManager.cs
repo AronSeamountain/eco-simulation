@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Animal;
+using Foods;
 using Foods.Plants;
 using Logger;
 using UI;
@@ -28,7 +29,9 @@ namespace Core
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private GameObject wolfPrefab;
+    [SerializeField] private GameObject waterPrefab;
     [SerializeField] private bool log;
+    [SerializeField] private int waterAmount;
     private DataLogger _logger;
     private float _unitsPassed;
     private float _unitTicker;
@@ -50,6 +53,8 @@ namespace Core
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
 
+      SpawnWater();
+
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
@@ -69,6 +74,11 @@ namespace Core
     public IList<AbstractProperty> GetStats(bool getStats)
     {
       return PropertiesFactory.Create(this);
+    }
+
+    private void SpawnWater()
+    {
+      SpawnAndAddGeneric<Water>(waterAmount, waterPrefab);
     }
 
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
@@ -106,13 +116,14 @@ namespace Core
       SpawnAndAddGeneric(initialPlants, plantPrefab, Plants);
     }
 
-    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list) where T : MonoBehaviour
+    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list = null)
+      where T : MonoBehaviour
     {
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
         Place(instance);
-        list.Add(instance);
+        list?.Add(instance);
       }
     }
 
