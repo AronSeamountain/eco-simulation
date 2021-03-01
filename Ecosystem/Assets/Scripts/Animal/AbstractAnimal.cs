@@ -22,6 +22,8 @@ namespace Animal
 
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
+    public delegate void Died(AbstractAnimal animal);
+
     public delegate void StateChanged(string state);
 
     private const int FertilityTimeInUnits = 5;
@@ -43,6 +45,8 @@ namespace Animal
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
+
+    public Died DiedListeners;
     public StateChanged StateChangedListeners;
     public AbstractFood FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }

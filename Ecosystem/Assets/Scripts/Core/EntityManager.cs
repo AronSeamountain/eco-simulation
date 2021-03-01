@@ -74,17 +74,29 @@ namespace Core
 
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
-      switch (child)
-      {
-        case Herbivore _:
-          HerbivoreCount++;
-          break;
-        case Carnivore _:
-          CarnivoreCount++;
-          break;
-      }
+      CountAnimal(child, true);
 
       ObserveAnimal(child, true);
+    }
+
+    /// <summary>
+    ///   Updates the count variable for the matching animal type. Increases it in case of an addition of animals, decreases on
+    ///   death (not added).
+    /// </summary>
+    /// <param name="animal">The animal to count.</param>
+    /// <param name="added">Whether the animal was added or died.</param>
+    private void CountAnimal(AbstractAnimal animal, bool added)
+    {
+      var toAdd = added ? 1 : -1;
+      switch (animal)
+      {
+        case Herbivore _:
+          HerbivoreCount += toAdd;
+          break;
+        case Carnivore _:
+          CarnivoreCount += toAdd;
+          break;
+      }
     }
 
     /// <summary>
@@ -173,6 +185,15 @@ namespace Core
       TickListeners += animal.Tick;
       DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
+      animal.DiedListeners += OnAnimalDied;
+    }
+
+    private void OnAnimalDied(AbstractAnimal animal)
+    {
+      CountAnimal(animal, false);
+
+      TickListeners -= animal.Tick;
+      DayTickListeners -= animal.DayTick;
     }
 
     private void UpdateTick()

@@ -1,4 +1,5 @@
 ﻿using Core;
+using UnityEngine;
 
 namespace Animal.AnimalStates
 {
@@ -19,6 +20,9 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _animal.StopMoving();
+
+      _animal.DiedListeners?.Invoke(_animal);
+      Object.Destroy(_animal);
     }
 
     public AnimalState Execute()
