@@ -9,7 +9,7 @@ namespace Animal
   {
     protected override void SetAnimalType()
     {
-      Type = AnimalType.Herbivore;
+      Specie = AnimalSpecie.Rabbit;
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)

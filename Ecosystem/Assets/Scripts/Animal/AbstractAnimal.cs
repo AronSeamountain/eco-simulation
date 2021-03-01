@@ -5,6 +5,7 @@ using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
 using Foods;
+using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
@@ -22,12 +23,6 @@ namespace Animal
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
     public delegate void StateChanged(string state);
-
-    public enum AnimalType
-    {
-      Carnivore,
-      Herbivore
-    }
 
     private const int FertilityTimeInUnits = 5;
     [SerializeField] protected GoToMovement movement;
@@ -55,7 +50,7 @@ namespace Animal
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
-    public AnimalType Type { get; protected set; }
+    public AnimalSpecie Specie { get; protected set; }
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -87,8 +82,8 @@ namespace Animal
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
     public bool IsAlive => Health > 0;
-    public bool IsCarnivore => Type == AnimalType.Carnivore;
-    public bool IsHerbivore => Type == AnimalType.Herbivore;
+    public bool IsCarnivore => Specie == AnimalSpecie.Wolf;
+    public bool IsHerbivore => Specie == AnimalSpecie.Rabbit;
 
     private void Awake()
     {
@@ -225,7 +220,7 @@ namespace Animal
 
     private void OnMateFound(AbstractAnimal animal)
     {
-      var sameTypeOfAnimal = animal.Type == Type;
+      var sameTypeOfAnimal = animal.Specie == Specie;
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
 
@@ -294,7 +289,8 @@ namespace Animal
     public void SpawnChild()
     {
       Children++;
-      var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
+      var child = RabbitPool.SharedInstance.Get();
+      child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
       _unitsUntilFertile = FertilityTimeInUnits;

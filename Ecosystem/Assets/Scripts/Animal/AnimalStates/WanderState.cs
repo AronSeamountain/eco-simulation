@@ -53,6 +53,7 @@ namespace Animal.AnimalStates
     public AnimalState Execute()
     {
       var isSatisfied = !_animal.IsHungry && !_animal.IsThirsty;
+      isSatisfied = true;
 
       if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;

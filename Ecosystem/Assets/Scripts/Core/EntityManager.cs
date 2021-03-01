@@ -2,6 +2,7 @@
 using Animal;
 using Foods.Plants;
 using Logger;
+using Pools;
 using UI;
 using UI.Properties;
 using UnityEditor;
@@ -25,9 +26,7 @@ namespace Core
     private const float UnitsPerDay = 2;
     [SerializeField] private int initialAnimals = 1;
     [SerializeField] private int initialPlants = 4;
-    [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject plantPrefab;
-    [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private bool log;
     private DataLogger _logger;
     private float _unitsPassed;
@@ -41,6 +40,7 @@ namespace Core
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
+    private AnimalPool _animalPool;
 
     private void Awake()
     {
@@ -91,11 +91,21 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(initialAnimals, rabbitPrefab, Animals);
+      SpawnAnimalSpecie(initialAnimals, AnimalSpecie.Rabbit);
       HerbivoreCount += initialAnimals;
 
-      SpawnAndAddGeneric(initialAnimals, wolfPrefab, Animals);
-      CarnivoreCount += initialAnimals;
+      SpawnAnimalSpecie(initialAnimals, AnimalSpecie.Wolf);
+      HerbivoreCount += initialAnimals;
+    }
+
+    private void SpawnAnimalSpecie(int amount, AnimalSpecie animalSpecie)
+    {
+      for (var i = 0; i < initialPlants; i++)
+      {
+        var animal = _animalPool.Get(animalSpecie);
+        Place(animal);
+        Animals.Add(animal);
+      }
     }
 
     /// <summary>

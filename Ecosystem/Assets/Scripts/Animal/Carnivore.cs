@@ -19,7 +19,7 @@ namespace Animal
 
     protected override void SetAnimalType()
     {
-      Type = AnimalType.Carnivore;
+      Specie = AnimalSpecie.Wolf;
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
