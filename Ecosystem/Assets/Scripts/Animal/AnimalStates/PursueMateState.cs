@@ -25,8 +25,6 @@ namespace Animal.AnimalStates
     {
       if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.IsHungry && _animal.KnowsFoodLocation) return AnimalState.PursueFood;
-      if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
 
       var mateTarget = _animal.GetMateTarget();
       if (mateTarget == null) return AnimalState.Wander;

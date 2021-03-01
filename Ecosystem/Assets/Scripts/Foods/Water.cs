@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Foods
 {

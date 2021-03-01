@@ -52,17 +52,21 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
+      var isSatisfied = !_animal.IsHungry && !_animal.IsThirsty;
+
       if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.KnowsWaterLocation && _animal.IsThirsty) return AnimalState.PursueWater;
-      if (_animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
-      if (_animal.GetMateTarget() != null && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
-
-      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
+      if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
+      if (isSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
+      if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
+      if (_animal is Carnivore carnivore) // TODO: no no :-)
       {
-        _animal.StopMoving();
+        var target = carnivore.Target;
+        if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
-        
+
+      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination)) _animal.StopMoving();
+
 
       if (!_animal.IsMoving)
       {
@@ -79,7 +83,7 @@ namespace Animal.AnimalStates
           _timeIdled += Time.deltaTime;
         }
       }
-      
+
       return AnimalState.Wander;
     }
 

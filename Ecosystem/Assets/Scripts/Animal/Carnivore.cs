@@ -8,13 +8,18 @@ namespace Animal
 {
   public sealed class Carnivore : AbstractAnimal
   {
-    private const float Range = 10;
-    private const float EatingRange = 2f;
+    private const float HuntRange = 15;
+    public readonly float EatingRange = 2f;
     public Herbivore Target { get; private set; }
 
     private void OnPreyFound(Herbivore herbivore)
     {
       Target = herbivore;
+    }
+
+    protected override void SetAnimalType()
+    {
+      Type = AnimalType.Carnivore;
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
@@ -35,21 +40,14 @@ namespace Animal
 
     public bool ShouldHunt(Herbivore carnivoreTarget)
     {
-      return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, Range);
-    }
-
-    private bool IsInRange(Herbivore carnivoreTarget)
-    {
-      return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, EatingRange);
+      if (!carnivoreTarget || !carnivoreTarget.IsAlive) return false;
+      return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, HuntRange);
     }
 
     public void TakeABiteFromHerbivore(Herbivore carnivoreTarget)
     {
-      if (IsInRange(carnivoreTarget))
-      {
-        carnivoreTarget.TakeDamage();
-        _nourishmentDelegate.Saturation++;
-      }
+      carnivoreTarget.TakeDamage();
+      _nourishmentDelegate.Saturation++;
     }
   }
 }

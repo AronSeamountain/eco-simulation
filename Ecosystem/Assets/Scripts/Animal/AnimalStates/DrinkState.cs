@@ -23,7 +23,7 @@ namespace Animal.AnimalStates
     {
       //retrieve target
       _water = _animal.ClosestKnownWater;
-      
+
       //set Color
       _animal.SetMouthColor(Color.blue);
     }

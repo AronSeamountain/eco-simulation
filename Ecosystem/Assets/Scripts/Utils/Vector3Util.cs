@@ -19,6 +19,11 @@ namespace Utils
       return (g1.transform.position - g2.transform.position).magnitude <= distance;
     }
 
+    public static bool InRange(MonoBehaviour obj1, MonoBehaviour obj2, float distance)
+    {
+      return InRange(obj1.gameObject, obj2.gameObject, distance);
+    }
+
     public static bool InRange(Vector3 p1, Vector3 p2, float distance)
     {
       return (p1 - p2).magnitude <= distance;

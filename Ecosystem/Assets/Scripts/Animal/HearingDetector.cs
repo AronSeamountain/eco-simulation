@@ -12,7 +12,7 @@ namespace Animal
     /// </summary>
     /// <param name="animal"></param>
     public delegate void AnimalHeard(AbstractAnimal animal);
-    
+
     [SerializeField] private Renderer listeningArea;
     private int _radius;
     public AnimalHeard AnimalHeardListeners;
@@ -38,13 +38,12 @@ namespace Animal
         listeningArea.material.SetColor("_Color", Color.blue);
       }
     }
+
     private void OnTriggerExit(Collider other)
     {
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal &&
           animal.transform.position != transform.parent.position)
-      {
         listeningArea.material.SetColor("_Color", Color.white);
-      }
     }
   }
 }

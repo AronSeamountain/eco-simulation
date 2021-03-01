@@ -67,6 +67,12 @@ Animator:
     type: 3}
   m_PrefabInstance: {fileID: 140937291037153704}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &140937291025682952 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700000, guid: a2fbbf5d8f0eb614b863829be7c21396,
+    type: 3}
+  m_PrefabInstance: {fileID: 140937291037153704}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3215349556319510875
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -179,6 +185,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.909
       objectReference: {fileID: 0}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: genderRenderer
+      value: 
+      objectReference: {fileID: 140937291025682952}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: animationManager
