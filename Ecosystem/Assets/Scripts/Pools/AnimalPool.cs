@@ -7,7 +7,7 @@ namespace Pools
 {
   public sealed class AnimalPool : MonoBehaviour
   {
-    private const int AmountToPool = 10;
+    private const int AmountToPool = 500;
     public static AnimalPool SharedInstance;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject rabbitPrefab;
@@ -30,6 +30,11 @@ namespace Pools
       SharedInstance = this;
     }
 
+    /// <summary>
+    ///   Gets a pooled animal. The animal will have the active property set to false.
+    /// </summary>
+    /// <param name="specie">The type of animal to retrieve.</param>
+    /// <returns>The pooled animal.</returns>
     public AbstractAnimal Get(AnimalSpecie specie)
     {
       var stack = GetStack(specie);
@@ -50,11 +55,18 @@ namespace Pools
     public void Pool(AbstractAnimal animal)
     {
       var stack = GetStack(animal.Specie);
+      animal.gameObject.SetActive(false);
 
       if (stack.Count < AmountToPool)
+      {
         stack.Push(animal);
+        Debug.Log("pooled animal");
+      }
       else
+      {
         Destroy(animal.gameObject);
+        Debug.Log("pool full, destroyed animal >:)");
+      }
     }
   }
 }

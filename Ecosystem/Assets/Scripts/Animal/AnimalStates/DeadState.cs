@@ -1,4 +1,5 @@
 ﻿using Core;
+using Pools;
 using UnityEngine;
 
 namespace Animal.AnimalStates
@@ -22,8 +23,7 @@ namespace Animal.AnimalStates
       _animal.StopMoving();
 
       _animal.DiedListeners?.Invoke(_animal);
-      Object.Destroy(_animal.gameObject);
-      //AnimalPool.SharedInstance.Pool(_animal);
+      AnimalPool.SharedInstance.Pool(_animal);
     }
 
     public AnimalState Execute()

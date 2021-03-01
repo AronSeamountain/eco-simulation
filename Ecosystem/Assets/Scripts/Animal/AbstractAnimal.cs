@@ -16,7 +16,7 @@ namespace Animal
   /// <summary>
   ///   A very basic animal that searches for food.
   /// </summary>
-  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable
+  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IResetable
   {
     public delegate void AgeChanged(int age);
 
@@ -295,6 +295,7 @@ namespace Animal
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Specie);
+      child.ResetGameObject();
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
@@ -367,6 +368,10 @@ namespace Animal
     private void SendState(AnimalState state)
     {
       animationManager.ReceiveState(state);
+    }
+
+    public void ResetGameObject()
+    {
     }
   }
 }

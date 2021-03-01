@@ -41,8 +41,6 @@ namespace Camera
     {
       propertiesContainer.ClearContent();
       propertiesContainer.Populate(entityManager.GetProperties());
-
-      Debug.Log("r");
     }
 
     private void OnCancelTarget(InputAction.CallbackContext obj)
