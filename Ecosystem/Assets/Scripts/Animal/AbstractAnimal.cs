@@ -39,12 +39,12 @@ namespace Animal
     [SerializeField] protected HearingManager hearingManager;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] private SkinnedMeshRenderer genderRenderer;
-    protected HealthDelegate _healthDelegate;
-    private AbstractAnimal _mateTarget;
     public AbstractAnimal enemyToFleeFrom;
     private float _fleeSpeed;
-    private float _safeDistance;
+    protected HealthDelegate _healthDelegate;
+    private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
+    private float _safeDistance;
     private float _sizeModifier;
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
@@ -210,7 +210,8 @@ namespace Animal
     {
       // do different things in herbivore and carnivore.
     }
-    public void ClearEnemyTarget()
+
+    private void ClearEnemyTarget()
     {
       enemyToFleeFrom = null;
     }
@@ -376,19 +377,27 @@ namespace Animal
       animationManager.ReceiveState(state);
     }
 
-    public bool SafeDistanceFromEnemy()
+    public bool SafeDistanceFromEnemy(AbstractAnimal enemy)
     {
-      return _safeDistance == 20f;
+      var distance = Vector3.Distance(gameObject.transform.position, enemy.transform.position);
+      return 15f < distance;
     }
-    
+
+    private void SetSpeedModifier(float speed)
+    {
+      _speedModifier = GetSpeedModifier() + speed;
+    }
+
     public void Flee()
     {
-      //TODO: Rotate animal so that is doesn't run towards enemy.
-      if (enemyToFleeFrom) _fleeSpeed = GetSpeedModifier() + 20 * Time.deltaTime;
+      if (enemyToFleeFrom)
+        //TODO: make animal flee in opposite direction of incoming enemy.
+        SetSpeedModifier(20f);
     }
+
     public void StopFleeing()
     {
-      _fleeSpeed -= 20 * Time.deltaTime;
+      ClearEnemyTarget();
     }
   }
 }

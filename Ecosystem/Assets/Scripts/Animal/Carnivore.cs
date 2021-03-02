@@ -2,7 +2,6 @@
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
-using UnityEngine;
 using Utils;
 
 namespace Animal
@@ -11,6 +10,9 @@ namespace Animal
   {
     private const float HuntRange = 15;
     public readonly float EatingRange = 2f;
+    private bool _animalOfSameType;
+
+    private bool _largerSize;
     public Herbivore Target { get; private set; }
 
     private void OnPreyFound(Herbivore herbivore)
@@ -23,8 +25,6 @@ namespace Animal
       Type = AnimalType.Carnivore;
     }
 
-    private bool _largerSize;
-    private bool _animalOfSameType;
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
     {
       fManager.PreyFoundListeners += OnPreyFound;
@@ -52,20 +52,6 @@ namespace Animal
     {
       carnivoreTarget.TakeDamage();
       _nourishmentDelegate.Saturation++;
-    }
-    
-    protected override void OnAnimalHeard(AbstractAnimal animal)
-    {
-     
-      if (animal != null)
-      {
-        _animalOfSameType = animal.IsCarnivore;
-        _largerSize = animal.GetSize() > GetSize();
-      }
-      if (_animalOfSameType && _largerSize)
-      {
-        enemyToFleeFrom = animal;
-      }
     }
   }
 }

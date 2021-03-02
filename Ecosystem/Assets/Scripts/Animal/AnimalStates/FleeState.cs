@@ -1,6 +1,4 @@
 ﻿using Core;
-using Utils;
-
 
 namespace Animal.AnimalStates
 {
@@ -25,19 +23,14 @@ namespace Animal.AnimalStates
     public AnimalState Execute()
     {
       if (!_animal.IsAlive) return AnimalState.Dead;
-      if (_animal.enemyToFleeFrom != null)
-      {
-        _animal.Flee(); return AnimalState.Flee;
-      }
-      if(_animal.SafeDistanceFromEnemy()) return AnimalState.Wander;
+      if (_animal.SafeDistanceFromEnemy(_animal.enemyToFleeFrom)) return AnimalState.Wander;
+      if (_animal.enemyToFleeFrom != null) _animal.Flee();
       return AnimalState.Flee;
     }
 
     public void Exit()
     {
-      _animal.ClearEnemyTarget();
       _animal.StopFleeing();
     }
-    
   }
 }

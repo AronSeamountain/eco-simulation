@@ -19,8 +19,6 @@ namespace Animal.Managers
       switch (state)
       {
         case AnimalState.Flee:
-          animator.SetInteger(State, Wander); // Using wander animation since flee doesn't have its own animation?
-          break;
         case AnimalState.Birth:
           animator.SetInteger(State, Birth);
           break;
