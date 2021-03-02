@@ -18,6 +18,7 @@ namespace Foods.Plants.PlantStates
 
     public void Enter()
     {
+      _plant.Saturation = _plant.MaxSaturation;
       _plant.ShowAsMature();
     }
 
