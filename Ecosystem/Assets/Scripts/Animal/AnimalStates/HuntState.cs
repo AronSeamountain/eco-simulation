@@ -27,6 +27,7 @@ namespace Animal.AnimalStates
     {
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
+      if (_carnivore.enemyToFleeFrom) return AnimalState.Flee;
 
       _carnivore.GoTo(_target.transform.position);
 

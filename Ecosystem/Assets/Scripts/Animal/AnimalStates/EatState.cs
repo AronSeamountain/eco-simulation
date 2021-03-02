@@ -34,6 +34,7 @@ namespace Animal.AnimalStates
       if (!_food) return AnimalState.Wander;
       if (!_food.CanBeEaten()) return AnimalState.Wander;
       if (!_animal.CanEatMore()) return AnimalState.Wander;
+      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
 
       _animal.StopMoving();
       _animal.Eat(_food);

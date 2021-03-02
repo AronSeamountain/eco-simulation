@@ -2,6 +2,7 @@
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using UnityEngine;
 
 namespace Animal
 {
@@ -12,6 +13,7 @@ namespace Animal
       Type = AnimalType.Herbivore;
     }
 
+    private bool _isCarnivore;
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
     {
       var pursueFoodState = new PursueFoodState(this);
@@ -34,11 +36,20 @@ namespace Animal
     {
       return true;
     }
-
     public void TakeDamage()
     {
       _healthDelegate.DecreaseHealth(1);
     }
-    
+    protected override void OnAnimalHeard(AbstractAnimal animal)
+    {
+      if (animal != null)
+      {
+        _isCarnivore = animal.IsCarnivore;
+      }
+      if (_isCarnivore)
+      {
+        enemyToFleeFrom = animal;
+      }
+    }
   }
 }

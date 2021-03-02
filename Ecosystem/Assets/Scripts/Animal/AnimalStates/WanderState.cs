@@ -65,6 +65,8 @@ namespace Animal.AnimalStates
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
 
+      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
+
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination)) _animal.StopMoving();
 
 

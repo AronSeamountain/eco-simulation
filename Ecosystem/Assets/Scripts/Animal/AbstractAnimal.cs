@@ -41,6 +41,9 @@ namespace Animal
     [SerializeField] private SkinnedMeshRenderer genderRenderer;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
+    public AbstractAnimal enemyToFleeFrom;
+    private float _fleeSpeed;
+    private float _safeDistance;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _sizeModifier;
     private float _speedModifier;
@@ -203,9 +206,13 @@ namespace Animal
 
     protected abstract void SetAnimalType();
 
-    private void OnAnimalHeard(AbstractAnimal animal)
+    protected virtual void OnAnimalHeard(AbstractAnimal animal)
     {
-      // perform actions when a certain type of animal is heard.
+      // do different things in herbivore and carnivore.
+    }
+    public void ClearEnemyTarget()
+    {
+      enemyToFleeFrom = null;
     }
 
     private void GenerateGender()
@@ -367,6 +374,21 @@ namespace Animal
     private void SendState(AnimalState state)
     {
       animationManager.ReceiveState(state);
+    }
+
+    public bool SafeDistanceFromEnemy()
+    {
+      return _safeDistance == 20f;
+    }
+    
+    public void Flee()
+    {
+      //TODO: Rotate animal so that is doesn't run towards enemy.
+      if (enemyToFleeFrom) _fleeSpeed = GetSpeedModifier() + 20 * Time.deltaTime;
+    }
+    public void StopFleeing()
+    {
+      _fleeSpeed -= 20 * Time.deltaTime;
     }
   }
 }
