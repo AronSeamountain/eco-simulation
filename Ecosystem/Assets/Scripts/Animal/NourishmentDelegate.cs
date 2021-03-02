@@ -21,6 +21,7 @@ namespace Animal
     {
       Saturation = 25;
       Hydration = 25;
+      
     }
 
     /// <summary>
@@ -33,9 +34,9 @@ namespace Animal
     /// </summary>
     private float ThirstyHydrationLevel { get; set; } = 50;
 
-    public float HydrationDecreasePerUnit { get; set; } = 1;
+    public float HydrationDecreasePerUnit { get; set; } = 0.5f;
 
-    public float SaturationDecreasePerUnit { get; set; } = 1;
+    public float SaturationDecreasePerUnit { get; set; } = 0.5f;
 
     public float Saturation
     {
@@ -95,6 +96,8 @@ namespace Animal
     {
       MaxHydration = maxValue;
       MaxSaturation = maxValue;
+      _hydration = maxValue;
+      _saturation = maxValue;
       ThirstyHydrationLevel = maxValue / 2;
       HungrySaturationLevel = maxValue / 2;
     }
