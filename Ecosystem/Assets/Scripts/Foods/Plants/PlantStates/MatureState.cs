@@ -24,7 +24,7 @@ namespace Foods.Plants.PlantStates
 
     public PlantState Execute()
     {
-      if (_plant.Saturation <= 0) return PlantState.Seed;
+      if (_plant.Saturation <= 0.1f) return PlantState.Seed;
       return PlantState.Mature;
     }
 

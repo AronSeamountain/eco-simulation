@@ -21,9 +21,9 @@ namespace Core
     /// <summary>
     ///   The amount of time that a "unit" is in.
     /// </summary>
-    private const float UnitTimeSeconds = 0.5f;
+    private const float HoursInRealSeconds = 0.5f;
 
-    private const float UnitsPerDay = 10;
+    private const float HoursPerDay = 24;
     [SerializeField] private int initialAnimals = 1;
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private int waterAmount;
@@ -35,8 +35,8 @@ namespace Core
     [SerializeField] private bool spawnWolves;
     [SerializeField] private bool spawnRabbits;
     private DataLogger _logger;
-    private float _unitsPassed;
-    private float _unitTicker;
+    private float _hoursPassed;
+    private float _hourTicker;
     private int animalCount = 0;
     public DayTick DayTickListeners;
     private int plantCount;
@@ -178,24 +178,24 @@ namespace Core
     {
       if (!animal) return;
       if (addToList) Animals.Add(animal);
-      TickListeners += animal.Tick;
+      TickListeners += animal.HourTick;
       DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
     }
 
     private void UpdateTick()
     {
-      _unitTicker += Time.deltaTime;
+      _hourTicker += Time.deltaTime;
 
-      if (_unitTicker >= UnitTimeSeconds)
+      if (_hourTicker >= HoursInRealSeconds)
       {
-        _unitTicker = 0;
-        _unitsPassed++;
+        _hourTicker = 0;
+        _hoursPassed++;
         TickListeners?.Invoke();
 
-        if (_unitsPassed >= UnitsPerDay)
+        if (_hoursPassed >= HoursPerDay)
         {
-          _unitsPassed = 0;
+          _hoursPassed = 0;
           Days++;
 
           DayTickListeners?.Invoke();

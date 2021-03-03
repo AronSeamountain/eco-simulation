@@ -35,9 +35,9 @@ namespace Animal.Managers
       visualDetector.PreyFoundListeners += OnPreyFound;
     }
 
-    public void Tick()
+    public void HourTick()
     {
-      foreach (var memory in _knownFoodMemories) memory.Tick();
+      foreach (var memory in _knownFoodMemories) memory.HourTick();
 
       var size = _knownFoodMemories.Count;
       _knownFoodMemories = _knownFoodMemories.Where(memory => !memory.Forgotten).ToList();
@@ -91,7 +91,7 @@ namespace Animal.Managers
         Forgotten = false;
       }
 
-      public void Tick()
+      public void HourTick()
       {
         if (_timeToForget > 0) _timeToForget -= 1;
         else Forgotten = true;

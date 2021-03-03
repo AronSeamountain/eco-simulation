@@ -45,7 +45,7 @@ namespace Animal
     private float _sizeModifier;
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
-    private int _unitsUntilFertile = FertilityTimeInUnits;
+    private int _daysUntilFertile = FertilityTimeInUnits;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
@@ -124,8 +124,8 @@ namespace Animal
 
       var decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
 
-      _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
+      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
 
       // Setup speed modifier
@@ -176,17 +176,17 @@ namespace Animal
     }
 
 
-    public void Tick()
+    public void HourTick()
     {
-      if (!Fertile) _unitsUntilFertile--;
-      if (_unitsUntilFertile <= 0) Fertile = true;
-      _nourishmentDelegate.Tick();
-      foodManager.Tick();
+      _nourishmentDelegate.HourTick();
+      foodManager.HourTick();
       DecreaseHealthIfStarving();
     }
 
     public void DayTick()
     {
+      if (!Fertile) _daysUntilFertile--;
+      if (_daysUntilFertile <= 0) Fertile = true;
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
     }
@@ -297,7 +297,7 @@ namespace Animal
       var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _unitsUntilFertile = FertilityTimeInUnits;
+      _daysUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
     }

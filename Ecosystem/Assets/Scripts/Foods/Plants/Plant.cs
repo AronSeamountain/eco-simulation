@@ -11,12 +11,12 @@ namespace Foods.Plants
   {
     public delegate void StateChanged(string state);
 
-    private const int DaysAsSeed = 5;
-    private const int SaturationPerDay = 10;
+    private const int HoursAsSeed = 24;
+    private const int SaturationPerHour = 3;
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
-    private int _ageInDays;
+    public int AgeInHours { get; set; }
     private StateMachine<PlantState> _stateMachine;
     public StateChanged StateChangedListeners;
     public bool LeaveSeedState { get; private set; }
@@ -40,7 +40,7 @@ namespace Foods.Plants
     /// </summary>
     public void Reset()
     {
-      _ageInDays = 0;
+      AgeInHours = 0;
       Saturation = 0;
       LeaveSeedState = false;
     }
@@ -55,19 +55,19 @@ namespace Foods.Plants
       return PropertiesFactory.Create(this);
     }
 
-    public void Tick()
+    public void HourTick()
     {
+      AgeInHours++;
+
+      if (AgeInHours >= HoursAsSeed)
+        LeaveSeedState = true;
+
+      if (LeaveSeedState)
+        Saturation += SaturationPerHour;
     }
 
     public void DayTick()
     {
-      _ageInDays++;
-
-      if (_ageInDays >= DaysAsSeed)
-        LeaveSeedState = true;
-
-      if (LeaveSeedState)
-        Saturation += SaturationPerDay;
     }
 
     public void ShowAsSeed()
@@ -93,7 +93,6 @@ namespace Foods.Plants
 
     protected override void FoodFullyConsumed()
     {
-      Reset();
     }
 
     public override bool CanBeEaten()

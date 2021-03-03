@@ -99,6 +99,9 @@ namespace UI
       var saturationBar = PropertyFactory.CreateKeyValuePair();
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
+      var age = PropertyFactory.CreateKeyValuePair();
+      age.Configure("Age", plant.AgeInHours.ToString());
+
       void SaturationChangedImpl(float saturation)
       {
         saturationBar.OnValueChanged(Prettifier.Round(saturation, 2));
@@ -107,7 +110,7 @@ namespace UI
       plant.SaturationChangedListeners += SaturationChangedImpl;
       saturationBar.CleanupListeners += () => plant.SaturationChangedListeners -= SaturationChangedImpl;
 
-      return new List<AbstractProperty> {saturationBar, state};
+      return new List<AbstractProperty> {saturationBar, state, age};
     }
 
     public static IList<AbstractProperty> Create(EntityManager entityManager)
