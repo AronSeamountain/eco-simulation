@@ -40,7 +40,7 @@ namespace Animal
 
     public bool ShouldHunt(Herbivore carnivoreTarget)
     {
-      if (!carnivoreTarget || !_nourishmentDelegate.IsHungry) return false;
+      if (!carnivoreTarget || !_nourishmentDelegate.IsHungry || !carnivoreTarget.CanBeEaten()) return false;
       return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, HuntRange);
     }
 

@@ -385,8 +385,8 @@ namespace Animal
       else
       {
         // Eat whole food
-        _nutritionalValue = 0;
         consumedFood = _nutritionalValue;
+        _nutritionalValue = 0;
       }
 
       if (_nutritionalValue < 0.1)
