@@ -18,7 +18,6 @@ namespace Animal.Managers
     {
       switch (state)
       {
-        case AnimalState.Flee:
         case AnimalState.Birth:
           animator.SetInteger(State, Birth);
           break;
@@ -31,6 +30,7 @@ namespace Animal.Managers
         case AnimalState.PursueFood:
         case AnimalState.PursueMate:
         case AnimalState.PursueWater:
+        case AnimalState.Flee:  
         case AnimalState.Hunt:
           animator.SetInteger(State, Pursue);
           break;

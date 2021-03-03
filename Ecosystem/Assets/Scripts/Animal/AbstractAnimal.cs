@@ -383,16 +383,21 @@ namespace Animal
       return 15f < distance;
     }
 
-    private void SetSpeedModifier(float speed)
+    private Vector3 GetEnemyPosition(AbstractAnimal enemy)
     {
-      _speedModifier = GetSpeedModifier() + speed;
+      return enemy.transform.position;
     }
-
-    public void Flee()
+    
+    public void Flee(AbstractAnimal enemy)
     {
       if (enemyToFleeFrom)
-        //TODO: make animal flee in opposite direction of incoming enemy.
-        SetSpeedModifier(20f);
+      {
+        var enemyPos = GetEnemyPosition(enemy);
+        var vectorToEnemy = transform.position - enemy.transform.position;
+        transform.LookAt(-enemyPos, Vector3.up);
+        GoTo(-vectorToEnemy);
+        //TODO: Increase speed
+      }
     }
 
     public void StopFleeing()
