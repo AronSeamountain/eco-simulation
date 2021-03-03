@@ -110,6 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 140937291029867720}
   audioSource: {fileID: 829850726712899695}
+  agent: {fileID: 1783928942632099552}
 --- !u!1001 &140937291037153704
 PrefabInstance:
   m_ObjectHideFlags: 0
