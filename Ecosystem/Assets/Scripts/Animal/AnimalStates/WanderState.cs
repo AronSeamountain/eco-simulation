@@ -42,7 +42,7 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       GoToClosePoint();
-      UpdateIdleTime();
+      
     }
 
     public void Exit()
@@ -65,24 +65,8 @@ namespace Animal.AnimalStates
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
 
-      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination)) _animal.StopMoving();
-
-
-      if (!_animal.IsMoving)
-      {
-        var haveIdledSufficiently = _timeIdled >= _idleTime;
-
-        if (haveIdledSufficiently)
-        {
-          GoToClosePoint();
-          UpdateIdleTime();
-          _timeIdled = 0;
-        }
-        else
-        {
-          _timeIdled += Time.deltaTime;
-        }
-      }
+      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination)) return AnimalState.Idle;
+      
 
       return AnimalState.Wander;
     }
@@ -98,12 +82,6 @@ namespace Animal.AnimalStates
       _animal.GoTo(_destination);
     }
 
-    /// <summary>
-    ///   Sets the idle time to a value between 0 and the max idle time.
-    /// </summary>
-    private void UpdateIdleTime()
-    {
-      _idleTime = Random.Range(0, MaxIdle);
-    }
+    
   }
 }

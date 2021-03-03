@@ -25,7 +25,8 @@ namespace Animal
         pursueFoodState,
         new PursueMateState(this),
         new EatState(this),
-        new DrinkState(this)
+        new DrinkState(this),
+        new IdleState(this)
       };
     }
 

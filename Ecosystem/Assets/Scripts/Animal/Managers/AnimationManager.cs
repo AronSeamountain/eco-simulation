@@ -36,6 +36,7 @@ namespace Animal.Managers
           break;
         case AnimalState.Eat:
         case AnimalState.Drink:
+        case AnimalState.Idle:  
           animator.SetInteger(State, Idle);
           break;
         default:
