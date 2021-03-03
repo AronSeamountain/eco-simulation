@@ -7,7 +7,7 @@ namespace Animal.AnimalStates
   public sealed class EatState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
-    private AbstractFood _food;
+    private IEatable _food;
 
     public EatState(AbstractAnimal animal)
     {
@@ -31,7 +31,7 @@ namespace Animal.AnimalStates
     public AnimalState Execute()
     {
       if (!_animal.IsAlive) return AnimalState.Dead;
-      if (!_food) return AnimalState.Wander;
+      if (_food == null) return AnimalState.Wander;
       if (!_food.CanBeEaten()) return AnimalState.Wander;
       if (!_animal.CanEatMore()) return AnimalState.Wander;
 
