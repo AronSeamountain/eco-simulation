@@ -23,38 +23,36 @@ namespace Animal.Managers
       switch (state)
       {
         case AnimalState.Birth:
-          animator.SetInteger(State, Birth);
-          animator.SetFloat(AnimationSpeed, 1);
+          SetAnimation(Birth, 1);
           break;
         case AnimalState.Dead:
-          animator.SetInteger(State, Dead);
-          animator.SetFloat(AnimationSpeed, 1);
+          SetAnimation(Dead, 1);
           break;
         case AnimalState.Wander:
-          animator.SetInteger(State, Wander);
-          agent.speed = 1;
-          animator.SetFloat(AnimationSpeed, 1);
+          SetAnimation(Wander, 1);
           break;
         case AnimalState.PursueFood:
         case AnimalState.PursueMate:
         case AnimalState.PursueWater:
         case AnimalState.Hunt:
-          animator.SetInteger(State, Pursue);
-          agent.speed = 4;
-          animator.SetFloat(AnimationSpeed, 1.5f);
+          SetAnimation(Pursue, 1.5f);
           break;
         case AnimalState.Eat:
         case AnimalState.Drink:
-          animator.SetInteger(State, Idle);
-          animator.SetFloat(AnimationSpeed, 2.5f);
+          SetAnimation(Idle, 2.5f);
           break;
-        case AnimalState.Idle:  
-          animator.SetInteger(State, Idle);
-          animator.SetFloat(AnimationSpeed, 1);
+        case AnimalState.Idle:
+          SetAnimation(Idle, 1);
           break;
         default:
           throw new ArgumentOutOfRangeException(nameof(state), state, null);
       }
+    }
+
+    private void SetAnimation(int state, float animationSpeed)
+    {
+      animator.SetInteger(State, state);
+      animator.SetFloat(AnimationSpeed, animationSpeed);
     }
 
     public void AnimalSound()
