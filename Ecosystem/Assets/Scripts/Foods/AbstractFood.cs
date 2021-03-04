@@ -2,7 +2,7 @@
 
 namespace Foods
 {
-  public abstract class AbstractFood : MonoBehaviour
+  public abstract class AbstractFood : MonoBehaviour, IEatable
   {
     public delegate void SaturationChanged(float saturation);
 

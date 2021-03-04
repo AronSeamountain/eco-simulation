@@ -40,14 +40,13 @@ namespace Animal
 
     public bool ShouldHunt(Herbivore carnivoreTarget)
     {
-      if (!carnivoreTarget || !carnivoreTarget.IsAlive) return false;
+      if (!carnivoreTarget || !_nourishmentDelegate.IsHungry || !carnivoreTarget.CanBeEaten()) return false;
       return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, HuntRange);
     }
 
-    public void TakeABiteFromHerbivore(Herbivore carnivoreTarget)
+    public void AttackTarget(Herbivore carnivoreTarget)
     {
-      carnivoreTarget.TakeDamage();
-      _nourishmentDelegate.Saturation++;
+      carnivoreTarget.TakeDamage(1);
     }
   }
 }
