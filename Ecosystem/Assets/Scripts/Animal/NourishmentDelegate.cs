@@ -21,7 +21,6 @@ namespace Animal
     {
       Saturation = 25;
       Hydration = 25;
-      
     }
 
     /// <summary>

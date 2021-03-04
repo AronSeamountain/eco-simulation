@@ -1,5 +1,4 @@
 ﻿using Core;
-using Foods;
 using UnityEngine;
 using Utils;
 

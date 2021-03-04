@@ -1,6 +1,5 @@
 ﻿using Core;
 using Pools;
-using UnityEngine;
 
 namespace Animal.AnimalStates
 {

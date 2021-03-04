@@ -52,13 +52,13 @@ namespace Foods
       return consumedFood;
     }
 
+    public abstract bool CanBeEaten();
+
     protected abstract void FoodFullyConsumed();
 
     public FoodType FoodType()
     {
       return foodType;
     }
-
-    public abstract bool CanBeEaten();
   }
 }

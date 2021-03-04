@@ -7,7 +7,7 @@ namespace Pools
 {
   public sealed class AnimalPool : MonoBehaviour
   {
-    private const int AmountToPool = 500;
+    private const int AmountToPool = 50;
     public static AnimalPool SharedInstance;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject rabbitPrefab;
@@ -58,15 +58,9 @@ namespace Pools
       animal.gameObject.SetActive(false);
 
       if (stack.Count < AmountToPool)
-      {
         stack.Push(animal);
-        Debug.Log("pooled animal");
-      }
       else
-      {
         Destroy(animal.gameObject);
-        Debug.Log("pool full, destroyed animal >:)");
-      }
     }
   }
 }

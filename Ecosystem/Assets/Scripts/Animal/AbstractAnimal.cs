@@ -9,7 +9,6 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
-using UnityEngine.Assertions.Comparers;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -40,9 +39,9 @@ namespace Animal
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
+    private float _nutritionalValue;
     private float _sizeModifier;
     private float _speedModifier;
-    private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public AgeChanged AgeChangedListeners;
@@ -163,6 +162,33 @@ namespace Animal
     public void SwallowEat(float saturation)
     {
       _nourishmentDelegate.Saturation += saturation;
+    }
+
+    public float Consume(float amount)
+    {
+      float consumedFood;
+
+      if (_nutritionalValue >= amount)
+      {
+        // Eat partially
+        _nutritionalValue -= amount;
+        consumedFood = amount;
+      }
+      else
+      {
+        // Eat whole food
+        consumedFood = _nutritionalValue;
+        _nutritionalValue = 0;
+      }
+
+      if (_nutritionalValue < 0.1) FullyConsumed();
+
+      return consumedFood;
+    }
+
+    public bool CanBeEaten()
+    {
+      return _nutritionalValue > 0.1;
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -374,55 +400,22 @@ namespace Animal
       animationManager.ReceiveState(state);
     }
 
-    public float Consume(float amount)
-    {
-      float consumedFood;
-
-      if (_nutritionalValue >= amount)
-      {
-        // Eat partially
-        _nutritionalValue -= amount;
-        consumedFood = amount;
-      }
-      else
-      {
-        // Eat whole food
-        consumedFood = _nutritionalValue;
-        _nutritionalValue = 0;
-      }
-
-      if (_nutritionalValue < 0.1)
-      {
-        FullyConsumed();
-      }
-
-      return consumedFood;
-    }
-
     /// <summary>
-    /// Removes the animal
+    ///   Removes the animal
     /// </summary>
     private void FullyConsumed()
     {
       transform.position = new Vector3(0, 10, 0); //TODO put back in ObjectPool
     }
 
-    public bool CanBeEaten()
-    {
-      return _nutritionalValue > 0.1;
-    }
-
     /// <summary>
-    /// slightly decreases the nutritional value by 1 each second
-    /// removed if nutritional value is nothing
+    ///   slightly decreases the nutritional value by 1 each second
+    ///   removed if nutritional value is nothing
     /// </summary>
     public void Decay()
     {
       _nutritionalValue -= Time.deltaTime;
-      if (_nutritionalValue < 0.1)
-      {
-        FullyConsumed();
-      }
+      if (_nutritionalValue < 0.1) FullyConsumed();
     }
 
     public void ResetGameObject()
