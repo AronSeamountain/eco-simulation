@@ -38,7 +38,7 @@ namespace Animal
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
     [SerializeField] protected ParticleSystem mouthParticles;
-    [SerializeField] protected HearingManager hearingManager;
+    [SerializeField] protected Managers.HearingDetector hearingDetector;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] private SkinnedMeshRenderer genderRenderer;
     protected HealthDelegate _healthDelegate;
@@ -113,7 +113,7 @@ namespace Animal
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
 
       //Listen to hearing events
-      hearingManager.KnownAnimalChangedListeners += OnAnimalHeard;
+      hearingDetector.KnownAnimalChangedListeners += OnAnimalHeard;
 
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;

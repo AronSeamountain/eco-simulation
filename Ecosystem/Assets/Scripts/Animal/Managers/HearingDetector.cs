@@ -2,11 +2,11 @@
 
 namespace Animal.Managers
 {
-  public sealed class HearingManager : MonoBehaviour
+  public sealed class HearingDetector : MonoBehaviour
   {
     public delegate void KnownAnimalsChanged(AbstractAnimal animal);
 
-    [SerializeField] private HearingDetector hearingDetector;
+    [SerializeField] private Animal.HearingDetector hearingDetector;
     private AbstractAnimal _knownAnimal;
     public KnownAnimalsChanged KnownAnimalChangedListeners;
 

@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fc25ac054d542c8be26bc6ed03a5e8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  birthProbabilityPerUnit: 0
+  VisualSizeModifier: 0
   movement: {fileID: 2283762596506970916}
   foodManager: {fileID: 1069567349259084597}
   waterManager: {fileID: 8016985608681985207}
   childPrefab: {fileID: 3994141988682731950}
   matingManager: {fileID: 6207474732365605746}
   mouthParticles: {fileID: 4908705577462801219}
-  hearingManager: {fileID: 6311795476331734518}
+  hearingDetector: {fileID: 6311795476331734518}
   animationManager: {fileID: 8410095186163081469}
+  genderRenderer: {fileID: 0}
 --- !u!114 &8410095186163081469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34,6 +35,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!1001 &8318338745849550080
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44,7 +46,7 @@ PrefabInstance:
     - target: {fileID: 7896901032346604, guid: bf200501b32dda54c93cca32e5f22aba, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 7750e82c8c0b6fb40accf7c039c64233, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 1008075089679007342, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
       propertyPath: m_Pivot.x
@@ -271,12 +273,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a01267a139454c07a4663795998ac9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!198 &4908705577462801219 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 3994574892230850115, guid: bf200501b32dda54c93cca32e5f22aba,
-    type: 3}
-  m_PrefabInstance: {fileID: 8318338745849550080}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6311795476331734518 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2659566409890181366, guid: bf200501b32dda54c93cca32e5f22aba,
@@ -289,3 +285,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30efd526357c3d842882e7092a7d45e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!198 &4908705577462801219 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3994574892230850115, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 8318338745849550080}
+  m_PrefabAsset: {fileID: 0}

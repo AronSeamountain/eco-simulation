@@ -1,26 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &8261543688819276837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8672377695379901830}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 809eae12739d8384f8e02f6c459f7b71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  birthProbabilityPerUnit: 0
-  movement: {fileID: 5802323596056786700}
-  foodManager: {fileID: 4747830557226467101}
-  waterManager: {fileID: 2339196169049295007}
-  childPrefab: {fileID: 8672377695379901830}
-  matingManager: {fileID: 1806244766759171930}
-  mouthParticles: {fileID: 804819275111858027}
-  hearingManager: {fileID: 1777923365783239134}
-  animationManager: {fileID: 5220632170581853533}
 --- !u!114 &5220632170581853533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34,6 +13,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
+  audioSource: {fileID: 0}
+--- !u!114 &8261543688819276837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8672377695379901830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 809eae12739d8384f8e02f6c459f7b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VisualSizeModifier: 0
+  movement: {fileID: 5802323596056786700}
+  foodManager: {fileID: 4747830557226467101}
+  waterManager: {fileID: 2339196169049295007}
+  childPrefab: {fileID: 8672377695379901830}
+  matingManager: {fileID: 1806244766759171930}
+  mouthParticles: {fileID: 804819275111858027}
+  hearingDetector: {fileID: 1777923365783239134}
+  animationManager: {fileID: 5220632170581853533}
+  genderRenderer: {fileID: 0}
 --- !u!1001 &4342840507159857448
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44,7 +46,7 @@ PrefabInstance:
     - target: {fileID: 7896901032346604, guid: bf200501b32dda54c93cca32e5f22aba, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c6fbb3104b7d4734d80a423008bda1f0, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 1008075089679007342, guid: bf200501b32dda54c93cca32e5f22aba,
         type: 3}
       propertyPath: m_Pivot.x
@@ -184,12 +186,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4342840507159857448}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1485489812116895926 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2943484383253803422, guid: bf200501b32dda54c93cca32e5f22aba,
-    type: 3}
-  m_PrefabInstance: {fileID: 4342840507159857448}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5802323596056786700 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7836581106720980516, guid: bf200501b32dda54c93cca32e5f22aba,
@@ -238,12 +234,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a01267a139454c07a4663795998ac9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!198 &804819275111858027 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 3994574892230850115, guid: bf200501b32dda54c93cca32e5f22aba,
-    type: 3}
-  m_PrefabInstance: {fileID: 4342840507159857448}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1777923365783239134 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2659566409890181366, guid: bf200501b32dda54c93cca32e5f22aba,
@@ -256,3 +246,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30efd526357c3d842882e7092a7d45e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!198 &804819275111858027 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3994574892230850115, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 4342840507159857448}
+  m_PrefabAsset: {fileID: 0}

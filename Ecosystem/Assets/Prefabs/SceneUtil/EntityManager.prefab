@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deedc081df08e474495d338fe8fe268d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAnimals: 100
+  initialAnimals: 50
   initialPlants: 50
   waterAmount: 50
   plantPrefab: {fileID: 8397035145334695597, guid: fb4276b6e821a084caebb0c6d6579005,

@@ -1,7 +1,7 @@
 ﻿using Foods;
 using UnityEngine;
 
-namespace Animal
+namespace Animal.Managers
 {
   /// <summary>
   ///   Scans for food and calls a delegate when food is found.
@@ -35,6 +35,7 @@ namespace Animal
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
+    private int IgnoreLayers;
 
     private int Distance
     {
@@ -60,17 +61,22 @@ namespace Animal
     {
       Radius = 10;
       Distance = 20;
+
+      IgnoreLayers = LayerMask.GetMask("AnimalVision", "AnimalHearing", "Ignore Raycast");
     }
 
     private void OnTriggerEnter(Collider other)
     {
       if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten() && CanSee(food))
         FoodFoundListeners?.Invoke(food);
-      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
+
+      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten() && CanSee(animal))
         PreyFoundListeners?.Invoke(animal);
+
       if (other.GetComponent<Water>() is Water water && CanSee(water))
         WaterFoundListeners?.Invoke(water);
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
+
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal && CanSee(foundAnimal))
         AnimalFoundListeners?.Invoke(foundAnimal);
     }
 
@@ -83,7 +89,8 @@ namespace Animal
     private bool CanSee<T>(T objectToSee) where T : MonoBehaviour
     {
       var dirToObject = objectToSee.transform.position - eyesTransform.position;
-      var raycastHitSomething = Physics.Raycast(eyesTransform.position, dirToObject, out var hitObject);
+      var raycastHitSomething =
+        Physics.Raycast(eyesTransform.position, dirToObject, out var hitObject, Distance, ~IgnoreLayers);
 
       if (raycastHitSomething)
         if (hitObject.transform.GetComponent<T>() is T hitObjectOfTypeT)
@@ -93,7 +100,7 @@ namespace Animal
             return true;
           }
 
-      Debug.DrawRay(eyesTransform.position, dirToObject, Color.red, 5);
+      Debug.DrawRay(eyesTransform.position, dirToObject, Color.red, 0.5f);
       return false;
     }
 
