@@ -37,9 +37,9 @@ namespace Animal
       return true;
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int damage)
     {
-      _healthDelegate.DecreaseHealth(1);
+      _healthDelegate.DecreaseHealth(damage);
     }
   }
 }

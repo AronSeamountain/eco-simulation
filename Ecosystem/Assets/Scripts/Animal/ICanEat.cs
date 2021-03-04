@@ -15,6 +15,6 @@
     ///   Adds the amount of saturation to the entity.
     /// </summary>
     /// <param name="saturation">The amount of saturation to add to the entity, must be in the range [0, Max Integer Value].</param>
-    void Eat(float saturation);
+    void SwallowEat(float saturation);
   }
 }
