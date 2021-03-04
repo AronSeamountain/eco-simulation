@@ -296,8 +296,9 @@ namespace Animal
 
     /// <summary>
     ///   This method will only be called in a female animal.
+    /// make this return the child if it needs to be overridden in the future
     /// </summary>
-    public virtual AbstractAnimal SpawnChild(AbstractAnimal father)
+    public void SpawnChild(AbstractAnimal father)
     {
       Children++;
       var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
@@ -307,18 +308,14 @@ namespace Animal
       Fertile = false;
       ShouldBirth = false;
       
-      Herbivore _father = (Herbivore) father;
-
-      float speedMin = Math.Min(_father.GetSpeedModifier(), GetSpeedModifier());
-      float speedMax = Math.Max(_father.GetSpeedModifier(), GetSpeedModifier());
+      var speedMin = Math.Min(father.GetSpeedModifier(), GetSpeedModifier());
+      var speedMax = Math.Max(father.GetSpeedModifier(), GetSpeedModifier());
       
-      float sizeMin = Math.Min(_father.GetSize(), GetSize());
-      float sizeMax = Math.Max(_father.GetSize(), GetSize());
+      var sizeMin = Math.Min(father.GetSize(), GetSize());
+      var sizeMax = Math.Max(father.GetSize(), GetSize());
 
-      
       child.setPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin,sizeMax));
-      
-      return child;
+
     }
 
     /// <summary>
@@ -392,7 +389,7 @@ namespace Animal
       animationManager.ReceiveState(state);
     }
 
-    public virtual void setPropertiesOnBirth(float speed, float size)
+    private void setPropertiesOnBirth(float speed, float size)
     {
       _speedModifier = speed;
       _sizeModifier = size;

@@ -41,12 +41,5 @@ namespace Animal
     {
       _healthDelegate.DecreaseHealth(1);
     }
-
-    public override AbstractAnimal SpawnChild(AbstractAnimal father)
-    {
-      Herbivore child = (Herbivore) base.SpawnChild(father);
-      
-      return child;
-    }
   }
 }
