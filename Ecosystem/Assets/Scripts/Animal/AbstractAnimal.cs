@@ -7,6 +7,7 @@ using Core;
 using Foods;
 using UI;
 using UI.Properties;
+using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
 using Random = UnityEngine.Random;
@@ -54,6 +55,9 @@ namespace Animal
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
+
+    private float _mutationPercentPerDay = 50f;
+    private float _biggestMutationChange = 0.1f;
     
     public AbstractAnimal FatherToChildren { get; private set; }
     
@@ -197,8 +201,20 @@ namespace Animal
     {
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+      Mutate();
     }
 
+    private void Mutate()
+    {
+      if (_mutationPercentPerDay > Random.Range(0,100))
+      {
+        SpeedModifier = Random.Range(SpeedModifier * (1 - _biggestMutationChange),
+          SpeedModifier * (1 + _biggestMutationChange));
+        
+        SizeModifier = Random.Range(SizeModifier * (1 - _biggestMutationChange),
+          SizeModifier * (1 + _biggestMutationChange));
+      }
+    }
     public bool CanEatMore()
     {
       return _nourishmentDelegate.SaturationIsFull();

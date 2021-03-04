@@ -55,7 +55,7 @@ namespace UI
 
       // Speed
       var speed = PropertyFactory.CreateKeyValuePair();
-      speed.Configure("Speed", Prettifier.Round(animal.SizeModifier, 2));
+      speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));
 
       // Size
       var size = PropertyFactory.CreateKeyValuePair();
