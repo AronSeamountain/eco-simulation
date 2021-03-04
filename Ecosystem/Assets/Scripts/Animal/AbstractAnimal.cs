@@ -9,6 +9,7 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -16,7 +17,7 @@ namespace Animal
   /// <summary>
   ///   A very basic animal that searches for food.
   /// </summary>
-  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IResetable
+  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable
   {
     public delegate void AgeChanged(int age);
 
@@ -41,6 +42,7 @@ namespace Animal
     protected NourishmentDelegate _nourishmentDelegate;
     private float _sizeModifier;
     private float _speedModifier;
+    private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public AgeChanged AgeChangedListeners;
@@ -48,7 +50,7 @@ namespace Animal
 
     public Died DiedListeners;
     public StateChanged StateChangedListeners;
-    public AbstractFood FoodAboutTooEat { get; set; }
+    public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
     public bool Fertile { get; private set; }
@@ -120,8 +122,8 @@ namespace Animal
       const float rangeMax = 1.2f;
       _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
       _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-
-      var decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
+      var sizeCubed = _sizeModifier * _sizeModifier * _sizeModifier;
+      var decreaseFactor = (float) (sizeCubed + Math.Pow(_speedModifier, 2));
 
       _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
@@ -133,6 +135,7 @@ namespace Animal
 
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
+      _nutritionalValue = 100 * sizeCubed;
 
       SetAnimalType();
     }
@@ -157,7 +160,7 @@ namespace Animal
       return _nourishmentDelegate.Saturation;
     }
 
-    public void Eat(float saturation)
+    public void SwallowEat(float saturation)
     {
       _nourishmentDelegate.Saturation += saturation;
     }
@@ -261,12 +264,12 @@ namespace Animal
     ///   Can only take bites proportionally to it's size and cannot eat more than there is room.
     /// </summary>
     /// <param name="food">The food to eat.</param>
-    public void Eat(AbstractFood food)
+    public void Eat(IEatable food)
     {
       //full bite or what is left for a full stomach
-      var biteSize = Math.Min(2 * _sizeModifier * _sizeModifier,
+      var biteSize = Math.Min(20 * _sizeModifier * _sizeModifier,
         _nourishmentDelegate.SaturationFromFull());
-      Eat(food.Consume(biteSize));
+      SwallowEat(food.Consume(biteSize * Time.deltaTime));
       mouthParticles.Emit(1);
     }
 
@@ -286,8 +289,8 @@ namespace Animal
 
     public void Drink(Water water)
     {
-      var sip = 5 * _sizeModifier * _sizeModifier;
-      Drink(water.SaturationModifier * sip);
+      var sip = 30 * _sizeModifier * _sizeModifier;
+      Drink(water.SaturationModifier * sip * Time.deltaTime);
       mouthParticles.Emit(1);
     }
 
@@ -320,6 +323,7 @@ namespace Animal
     {
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
+      mouthParticles.Emit(1);
     }
 
     public AbstractAnimal GetMateTarget()
@@ -368,6 +372,57 @@ namespace Animal
     private void SendState(AnimalState state)
     {
       animationManager.ReceiveState(state);
+    }
+
+    public float Consume(float amount)
+    {
+      float consumedFood;
+
+      if (_nutritionalValue >= amount)
+      {
+        // Eat partially
+        _nutritionalValue -= amount;
+        consumedFood = amount;
+      }
+      else
+      {
+        // Eat whole food
+        consumedFood = _nutritionalValue;
+        _nutritionalValue = 0;
+      }
+
+      if (_nutritionalValue < 0.1)
+      {
+        FullyConsumed();
+      }
+
+      return consumedFood;
+    }
+
+    /// <summary>
+    /// Removes the animal
+    /// </summary>
+    private void FullyConsumed()
+    {
+      transform.position = new Vector3(0, 10, 0); //TODO put back in ObjectPool
+    }
+
+    public bool CanBeEaten()
+    {
+      return _nutritionalValue > 0.1;
+    }
+
+    /// <summary>
+    /// slightly decreases the nutritional value by 1 each second
+    /// removed if nutritional value is nothing
+    /// </summary>
+    public void Decay()
+    {
+      _nutritionalValue -= Time.deltaTime;
+      if (_nutritionalValue < 0.1)
+      {
+        FullyConsumed();
+      }
     }
 
     public void ResetGameObject()

@@ -1,4 +1,6 @@
 ﻿using Core;
+using Foods;
+using UnityEngine;
 using Utils;
 
 namespace Animal.AnimalStates
@@ -28,10 +30,20 @@ namespace Animal.AnimalStates
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
 
+
       _carnivore.GoTo(_target.transform.position);
 
       if (Vector3Util.InRange(_carnivore, _target, _carnivore.EatingRange))
-        _carnivore.TakeABiteFromHerbivore(_target);
+      {
+        if (!_target.IsAlive)
+        {
+          _carnivore.FoodAboutTooEat = _target;
+          return AnimalState.Eat;
+        }
+
+        _carnivore.SetMouthColor(Color.red);
+        _carnivore.AttackTarget(_target);
+      }
 
       return AnimalState.Hunt;
     }

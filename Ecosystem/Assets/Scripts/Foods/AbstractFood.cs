@@ -2,7 +2,7 @@
 
 namespace Foods
 {
-  public abstract class AbstractFood : MonoBehaviour
+  public abstract class AbstractFood : MonoBehaviour, IEatable
   {
     public delegate void SaturationChanged(float saturation);
 
@@ -14,7 +14,7 @@ namespace Foods
     public float Saturation
     {
       get => _saturation;
-      protected set
+      set
       {
         _saturation = Mathf.Clamp(value, 0, MaxSaturation);
         SaturationChangedListeners?.Invoke(Saturation);
