@@ -30,7 +30,7 @@ namespace Animal
     }
 
     private const int FertilityTimeInUnits = 5;
-    [SerializeField] public GoToMovement movement;
+    [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
@@ -400,6 +400,10 @@ namespace Animal
         Turn(animal);
         GoTo(transform.position + transform.forward);
       }
+    }
+    public void IncreaseSpeed()
+    {
+      movement.SpeedFactor = movement.SpeedFactor + 5;
     }
 
     public void StopFleeing()
