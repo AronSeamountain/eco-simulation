@@ -50,9 +50,9 @@ namespace Animal
       if (_hearsCarnivore) enemyToFleeFrom = animal;
     }
 
-    public override bool SafeDistanceFromEnemy(AbstractAnimal animal)
+    public override bool SafeDistanceFromEnemy()
     {
-      var distance = Vector3.Distance(gameObject.transform.position, animal.transform.position);
+      var distance = Vector3.Distance(gameObject.transform.position, enemyToFleeFrom.transform.position);
       return _safeDistance < distance;
     }
   }

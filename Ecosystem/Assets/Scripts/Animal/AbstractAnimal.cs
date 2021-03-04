@@ -376,7 +376,7 @@ namespace Animal
       animationManager.ReceiveState(state);
     }
 
-    public virtual bool SafeDistanceFromEnemy(AbstractAnimal animal)
+    public virtual bool SafeDistanceFromEnemy()
     {
       return true;
     }
@@ -393,11 +393,11 @@ namespace Animal
       transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * Time.deltaTime);
     }
 
-    public void Flee(AbstractAnimal animal)
+    public void Flee()
     {
       if (enemyToFleeFrom)
       {
-        Turn(animal);
+        Turn(enemyToFleeFrom);
         GoTo(transform.position + transform.forward);
       }
     }

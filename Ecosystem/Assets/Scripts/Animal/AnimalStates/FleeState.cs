@@ -24,8 +24,8 @@ namespace Animal.AnimalStates
     public AnimalState Execute()
     {
       if (!_animal.IsAlive) return AnimalState.Dead;
-      if (_animal.SafeDistanceFromEnemy(_animal.enemyToFleeFrom)) return AnimalState.Wander;
-      if (_animal.enemyToFleeFrom) _animal.Flee(_animal.enemyToFleeFrom);
+      if (_animal.SafeDistanceFromEnemy()) return AnimalState.Wander;
+      if (_animal.enemyToFleeFrom) _animal.Flee();
       return AnimalState.Flee;
     }
 
