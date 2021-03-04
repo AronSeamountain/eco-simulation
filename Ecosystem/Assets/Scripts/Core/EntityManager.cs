@@ -40,7 +40,7 @@ namespace Core
     private int animalCount = 0;
     public DayTick DayTickListeners;
     private int plantCount;
-    public Tick TickListeners;
+    public Tick HourTickListeners;
     private IList<AbstractAnimal> Animals { get; set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
@@ -61,7 +61,10 @@ namespace Core
         ObserveAnimal(animal, false);
 
       foreach (var plant in Plants)
+      {
         DayTickListeners += plant.DayTick;
+        HourTickListeners += plant.HourTick;
+      }
 
       // Logger
       _logger = DataLogger.Instance;
@@ -178,7 +181,7 @@ namespace Core
     {
       if (!animal) return;
       if (addToList) Animals.Add(animal);
-      TickListeners += animal.HourTick;
+      HourTickListeners += animal.HourTick;
       DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
     }
@@ -191,7 +194,7 @@ namespace Core
       {
         _hourTicker = 0;
         _hoursPassed++;
-        TickListeners?.Invoke();
+        HourTickListeners?.Invoke();
 
         if (_hoursPassed >= HoursPerDay)
         {

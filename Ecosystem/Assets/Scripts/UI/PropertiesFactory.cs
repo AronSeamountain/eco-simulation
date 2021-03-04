@@ -100,7 +100,7 @@ namespace UI
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
       var age = PropertyFactory.CreateKeyValuePair();
-      age.Configure("Age", plant.AgeInHours.ToString());
+      age.Configure("Age", ((int) plant.AgeInHours/24).ToString());
 
       void SaturationChangedImpl(float saturation)
       {
@@ -139,8 +139,8 @@ namespace UI
         herbivoreText.OnValueChanged(entityManager.HerbivoreCount.ToString());
       }
 
-      entityManager.TickListeners += HerbivoreUpdateImpl;
-      herbivoreText.CleanupListeners += () => entityManager.TickListeners -= HerbivoreUpdateImpl;
+      entityManager.HourTickListeners += HerbivoreUpdateImpl;
+      herbivoreText.CleanupListeners += () => entityManager.HourTickListeners -= HerbivoreUpdateImpl;
 
       // Animals (carnivores/wolfs)
       var carnivoreText = PropertyFactory.CreateKeyValuePair();
@@ -151,8 +151,8 @@ namespace UI
         carnivoreText.OnValueChanged(entityManager.CarnivoreCount.ToString());
       }
 
-      entityManager.TickListeners += AnimalUpdateImpl;
-      carnivoreText.CleanupListeners += () => entityManager.TickListeners -= AnimalUpdateImpl;
+      entityManager.HourTickListeners += AnimalUpdateImpl;
+      carnivoreText.CleanupListeners += () => entityManager.HourTickListeners -= AnimalUpdateImpl;
 
       // Plants
       var plantText = PropertyFactory.CreateKeyValuePair();
