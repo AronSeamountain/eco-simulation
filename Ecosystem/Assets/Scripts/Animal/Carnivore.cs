@@ -12,7 +12,7 @@ namespace Animal
     public readonly float EatingRange = 2f;
     private bool _animalOfSameType;
 
-    private bool _isHerbivore;
+    private bool _hearsHerbivore;
     public Herbivore Target { get; private set; }
 
     private void OnPreyFound(Herbivore herbivore)
@@ -56,8 +56,8 @@ namespace Animal
 
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
-      if (animal != null) _isHerbivore = animal.IsHerbivore;
-      if (_isHerbivore) Turn(animal);
+      _hearsHerbivore = animal.IsHerbivore;
+      if (_hearsHerbivore) Turn(animal);
     }
   }
 }

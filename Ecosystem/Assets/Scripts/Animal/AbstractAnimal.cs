@@ -30,7 +30,7 @@ namespace Animal
     }
 
     private const int FertilityTimeInUnits = 5;
-    [SerializeField] protected GoToMovement movement;
+    [SerializeField] public GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
@@ -44,7 +44,6 @@ namespace Animal
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
-    private float _safeDistance;
     private float _sizeModifier;
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
@@ -377,12 +376,15 @@ namespace Animal
       animationManager.ReceiveState(state);
     }
 
-    public bool SafeDistanceFromEnemy(AbstractAnimal enemy)
+    public virtual bool SafeDistanceFromEnemy(AbstractAnimal animal)
     {
-      var distance = Vector3.Distance(gameObject.transform.position, enemy.transform.position);
-      return 15f < distance;
+      return true;
     }
 
+    /// <summary>
+    ///   Turns the animal either away from an animal (Flee())or towards an animal (in carnivore class)
+    /// </summary>
+    /// <param name="animal">The animal to turn to/away from.</param>
     public void Turn(AbstractAnimal animal)
     {
       var turnSpeed = 3;
@@ -395,11 +397,8 @@ namespace Animal
     {
       if (enemyToFleeFrom)
       {
-        var rabbitPos = transform.position;
-        var vectorToEnemy = rabbitPos - animal.transform.position;
         Turn(animal);
-        movement.SpeedFactor = movement.SpeedFactor + 5;
-        GoTo(-vectorToEnemy);
+        GoTo(transform.position + transform.forward);
       }
     }
 

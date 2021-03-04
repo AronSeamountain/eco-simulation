@@ -28,8 +28,8 @@ namespace Animal.AnimalStates
       if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsThirsty) return AnimalState.Wander;
-      if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
       if (_animal.enemyToFleeFrom) return AnimalState.Flee;
+      if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
 
       _waterTarget = _animal.ClosestKnownWater;
       if (_waterTarget == null) return AnimalState.Wander;

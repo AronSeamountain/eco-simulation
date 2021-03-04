@@ -56,6 +56,7 @@ namespace Animal.AnimalStates
 
       if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
+      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
       if (isSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
@@ -64,8 +65,6 @@ namespace Animal.AnimalStates
         var target = carnivore.Target;
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
-
-      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination)) _animal.StopMoving();
 

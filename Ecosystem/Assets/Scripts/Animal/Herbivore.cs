@@ -2,12 +2,14 @@
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using UnityEngine;
 
 namespace Animal
 {
   public class Herbivore : AbstractAnimal
   {
-    private bool _isCarnivore;
+    private bool _hearsCarnivore;
+    private readonly float _safeDistance = 15f;
 
     protected override void SetAnimalType()
     {
@@ -44,8 +46,14 @@ namespace Animal
 
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
-      if (animal != null) _isCarnivore = animal.IsCarnivore;
-      if (_isCarnivore) enemyToFleeFrom = animal;
+      _hearsCarnivore = animal.IsCarnivore;
+      if (_hearsCarnivore) enemyToFleeFrom = animal;
+    }
+
+    public override bool SafeDistanceFromEnemy(AbstractAnimal animal)
+    {
+      var distance = Vector3.Distance(gameObject.transform.position, animal.transform.position);
+      return _safeDistance < distance;
     }
   }
 }
