@@ -47,7 +47,7 @@ namespace Logger
         ),
         new LoggableColumn(
           "speed",
-          (day, animals) => CalcAverage(day, animals, animal => animal.GetSpeedModifier())
+          (day, animals) => CalcAverage(day, animals, animal => animal.SpeedModifier)
         ),
         new LoggableColumn(
           "age",
@@ -55,7 +55,7 @@ namespace Logger
         ),
         new LoggableColumn(
           "size",
-          (day, animals) => CalcAverage(day, animals, animal => animal.GetSize())
+          (day, animals) => CalcAverage(day, animals, animal => animal.SizeModifier)
         )
       };
     }

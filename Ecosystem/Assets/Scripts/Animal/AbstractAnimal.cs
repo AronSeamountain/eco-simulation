@@ -42,8 +42,8 @@ namespace Animal
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
-    private float _sizeModifier;
-    private float _speedModifier;
+    public float SizeModifier { get; private set; }
+    public float SpeedModifier { get; private set; }
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public AgeChanged AgeChangedListeners;
@@ -122,21 +122,21 @@ namespace Animal
       // Setup speed and size variables for nourishment modifiers
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
-      _speedModifier = Random.Range(rangeMin, rangeMax); 
-      _sizeModifier = Random.Range(rangeMin, rangeMax); 
+      SpeedModifier = Random.Range(rangeMin, rangeMax); 
+      SizeModifier = Random.Range(rangeMin, rangeMax); 
 
-      var decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
+      var decreaseFactor = (float) (Math.Pow(SizeModifier, 3) + Math.Pow(SpeedModifier, 2));
 
       _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
-      _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
+      _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(SizeModifier, 3) * 100);
 
       // Setup speed modifier
 
-      movement.SpeedFactor = _speedModifier;
+      movement.SpeedFactor = SpeedModifier;
 
       // Setup size modification
-      transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
+      transform.localScale = new Vector3(SizeModifier, SizeModifier, SizeModifier);
 
       SetAnimalType();
     }
@@ -267,7 +267,7 @@ namespace Animal
     public void Eat(AbstractFood food)
     {
       //full bite or what is left for a full stomach
-      var biteSize = Math.Min(20 * _sizeModifier * _sizeModifier,
+      var biteSize = Math.Min(20 * SizeModifier * SizeModifier,
         _nourishmentDelegate.SaturationFromFull());
       Eat(food.Consume(biteSize * Time.deltaTime));
       mouthParticles.Emit(1);
@@ -289,7 +289,7 @@ namespace Animal
 
     public void Drink(Water water)
     {
-      var sip = 30 * _sizeModifier * _sizeModifier;
+      var sip = 30 * SizeModifier * SizeModifier;
       Drink(water.SaturationModifier * sip * Time.deltaTime);
       mouthParticles.Emit(1);
     }
@@ -308,11 +308,11 @@ namespace Animal
       Fertile = false;
       ShouldBirth = false;
       
-      var speedMin = Math.Min(father.GetSpeedModifier(), GetSpeedModifier());
-      var speedMax = Math.Max(father.GetSpeedModifier(), GetSpeedModifier());
+      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
+      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
       
-      var sizeMin = Math.Min(father.GetSize(), GetSize());
-      var sizeMax = Math.Max(father.GetSize(), GetSize());
+      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
+      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
 
       child.setPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin,sizeMax));
 
@@ -364,11 +364,6 @@ namespace Animal
       return _stateMachine.GetCurrentStateEnum();
     }
 
-    public float GetSize()
-    {
-      return transform.localScale.x;
-    }
-
     public HealthDelegate GetHealthDelegate()
     {
       return _healthDelegate;
@@ -379,10 +374,6 @@ namespace Animal
       return _nourishmentDelegate;
     }
 
-    public float GetSpeedModifier()
-    {
-      return _speedModifier;
-    }
 
     private void SendState(AnimalState state)
     {
@@ -391,8 +382,8 @@ namespace Animal
 
     private void setPropertiesOnBirth(float speed, float size)
     {
-      _speedModifier = speed;
-      _sizeModifier = size;
+      SpeedModifier = speed;
+      SizeModifier = size;
     }
   }
 }
