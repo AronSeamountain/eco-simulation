@@ -18,6 +18,11 @@ namespace Animal
   /// </summary>
   public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable
   {
+    /// <summary>
+    ///   Scales the animal, is not correlated to actual size for the model logic.
+    /// </summary>
+    [SerializeField] private float VisualSizeModifier;
+
     public delegate void AgeChanged(int age);
 
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
@@ -46,7 +51,6 @@ namespace Animal
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
-
     public Died DiedListeners;
     public StateChanged StateChangedListeners;
     public IEatable FoodAboutTooEat { get; set; }
@@ -134,7 +138,8 @@ namespace Animal
       movement.SpeedFactor = _speedModifier;
 
       // Setup size modification
-      transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
+      var scale = _sizeModifier + VisualSizeModifier;
+      transform.localScale = new Vector3(scale, scale, scale);
       _nutritionalValue = 100 * sizeCubed;
 
       SetAnimalType();
@@ -239,18 +244,8 @@ namespace Animal
 
     private void GenerateGender()
     {
-      var random = Random.Range(0f, 1f);
       Fertile = false;
-      if (random > 0.5)
-      {
-        Gender = Gender.Male;
-        genderRenderer.material.SetColor("_Color", Color.cyan);
-      }
-      else
-      {
-        Gender = Gender.Female;
-        genderRenderer.material.SetColor("_Color", Color.magenta);
-      }
+      Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
     }
 
     private void OnMateFound(AbstractAnimal animal)
