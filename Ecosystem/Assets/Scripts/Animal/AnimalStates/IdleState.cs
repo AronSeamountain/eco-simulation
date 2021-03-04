@@ -29,6 +29,8 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
+      if (!_animal.IsAlive) return AnimalState.Dead;
+      if (_animal.ShouldBirth) return AnimalState.Birth;
       var haveIdledSufficiently = _timeIdled >= _idleTime;
 
       if (haveIdledSufficiently)
