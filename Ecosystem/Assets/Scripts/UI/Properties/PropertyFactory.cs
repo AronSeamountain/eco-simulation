@@ -1,34 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UI.Properties
 {
-  public static class PropertyFactory
+  public sealed class PropertyFactory : MonoBehaviour
   {
-    private const string BarName = "Bar";
-    private const string KeyValuePairTextName = "KeyValuePairText";
-    private static readonly GameObject sliderPrefab;
-    private static readonly GameObject KeyValuePairTextPrefab;
+    [SerializeField] private GameObject barPrefab;
+    [SerializeField] private GameObject KeyValuePairTextPrefab;
+    public static PropertyFactory SharedInstance;
 
-    static PropertyFactory()
+    private void Awake()
     {
-      var gameObjects = Resources.LoadAll<GameObject>("Prefabs/UI");
-      var _goDictionary = new Dictionary<string, GameObject>(gameObjects.Length);
-
-      foreach (var gameObject in gameObjects) _goDictionary.Add(gameObject.name, gameObject);
-
-      sliderPrefab = _goDictionary[BarName];
-      KeyValuePairTextPrefab = _goDictionary[KeyValuePairTextName];
+      SharedInstance = this;
     }
 
-    public static Bar CreateSlider()
+    public Bar CreateSlider()
     {
-      return Object.Instantiate(sliderPrefab).GetComponent<Bar>();
+      return Instantiate(barPrefab).GetComponent<Bar>();
     }
 
-    public static KeyValuePairText CreateKeyValuePair()
+    public KeyValuePairText CreateKeyValuePair()
     {
-      return Object.Instantiate(KeyValuePairTextPrefab).GetComponent<KeyValuePairText>();
+      return Instantiate(KeyValuePairTextPrefab).GetComponent<KeyValuePairText>();
     }
   }
 }
