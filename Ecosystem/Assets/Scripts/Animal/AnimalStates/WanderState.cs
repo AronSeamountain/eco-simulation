@@ -55,7 +55,7 @@ namespace Animal.AnimalStates
       var isSatisfied = !_animal.IsHungry && !_animal.IsThirsty;
       isSatisfied = true;
 
-      if (!_animal.IsAlive) return AnimalState.Dead;
+      if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
       if (isSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male) return AnimalState.PursueMate;

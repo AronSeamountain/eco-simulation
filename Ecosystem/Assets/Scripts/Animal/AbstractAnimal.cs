@@ -86,7 +86,8 @@ namespace Animal
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
-    public bool IsAlive => Health > 0;
+    public bool Alive => Health > 0;
+    public bool Dead => !Alive;
     public bool IsCarnivore => Specie == AnimalSpecie.Wolf; // TODO
     public bool IsHerbivore => Specie == AnimalSpecie.Rabbit;
 

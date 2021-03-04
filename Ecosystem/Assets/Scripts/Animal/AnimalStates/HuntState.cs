@@ -34,7 +34,7 @@ namespace Animal.AnimalStates
 
       if (Vector3Util.InRange(_carnivore, _target, _carnivore.EatingRange))
       {
-        if (!_target.IsAlive)
+        if (!_target.Alive)
         {
           _carnivore.FoodAboutTooEat = _target;
           return AnimalState.Eat;

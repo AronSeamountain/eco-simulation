@@ -25,7 +25,7 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      if (!_animal.IsAlive) return AnimalState.Dead;
+      if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsThirsty) return AnimalState.Wander;
       if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
