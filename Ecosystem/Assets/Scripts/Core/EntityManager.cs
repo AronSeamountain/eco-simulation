@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Animal;
+using Foods;
 using Foods.Plants;
 using Logger;
 using UI;
@@ -22,13 +23,17 @@ namespace Core
     /// </summary>
     private const float UnitTimeSeconds = 0.5f;
 
-    private const float UnitsPerDay = 2;
+    private const float UnitsPerDay = 10;
     [SerializeField] private int initialAnimals = 1;
     [SerializeField] private int initialPlants = 4;
+    [SerializeField] private int waterAmount;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private GameObject wolfPrefab;
+    [SerializeField] private GameObject waterPrefab;
     [SerializeField] private bool log;
+    [SerializeField] private bool spawnWolves;
+    [SerializeField] private bool spawnRabbits;
     private DataLogger _logger;
     private float _unitsPassed;
     private float _unitTicker;
@@ -49,6 +54,8 @@ namespace Core
       SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
+
+      SpawnWater();
 
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
@@ -71,6 +78,11 @@ namespace Core
       return PropertiesFactory.Create(this);
     }
 
+    private void SpawnWater()
+    {
+      SpawnAndAddGeneric<Water>(waterAmount, waterPrefab);
+    }
+
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
       switch (child)
@@ -91,11 +103,17 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(initialAnimals, rabbitPrefab, Animals);
-      HerbivoreCount += initialAnimals;
+      if (spawnRabbits)
+      {
+        SpawnAndAddGeneric(initialAnimals, rabbitPrefab, Animals);
+        HerbivoreCount += initialAnimals;
+      }
 
-      SpawnAndAddGeneric(initialAnimals, wolfPrefab, Animals);
-      CarnivoreCount += initialAnimals;
+      if (spawnWolves)
+      {
+        SpawnAndAddGeneric(initialAnimals, wolfPrefab, Animals);
+        CarnivoreCount += initialAnimals;
+      }
     }
 
     /// <summary>
@@ -106,13 +124,14 @@ namespace Core
       SpawnAndAddGeneric(initialPlants, plantPrefab, Plants);
     }
 
-    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list) where T : MonoBehaviour
+    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list = null)
+      where T : MonoBehaviour
     {
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
         Place(instance);
-        list.Add(instance);
+        list?.Add(instance);
       }
     }
 

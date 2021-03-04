@@ -13,6 +13,7 @@ namespace Animal.Managers
     private const int Idle = 4;
     private static readonly int State = Animator.StringToHash("State");
     [SerializeField] private Animator animator;
+    [SerializeField] private AudioSource audioSource;
 
     public void ReceiveState(AnimalState state)
     {
@@ -41,6 +42,11 @@ namespace Animal.Managers
         default:
           throw new ArgumentOutOfRangeException(nameof(state), state, null);
       }
+    }
+
+    public void AnimalSound()
+    {
+      audioSource.Play();
     }
   }
 }
