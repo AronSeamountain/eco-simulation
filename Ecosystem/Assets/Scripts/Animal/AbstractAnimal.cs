@@ -383,25 +383,29 @@ namespace Animal
       return 15f < distance;
     }
 
-    private Vector3 GetEnemyPosition(AbstractAnimal enemy)
+    public void Turn(AbstractAnimal animal)
     {
-      return enemy.transform.position;
+      var turnSpeed = 3;
+      var vectorToEnemy = transform.position - animal.transform.position;
+      var rotation = Quaternion.LookRotation(vectorToEnemy);
+      transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * Time.deltaTime);
     }
-    
-    public void Flee(AbstractAnimal enemy)
+
+    public void Flee(AbstractAnimal animal)
     {
       if (enemyToFleeFrom)
       {
-        var enemyPos = GetEnemyPosition(enemy);
-        var vectorToEnemy = transform.position - enemy.transform.position;
-        transform.LookAt(-enemyPos, Vector3.up);
+        var rabbitPos = transform.position;
+        var vectorToEnemy = rabbitPos - animal.transform.position;
+        Turn(animal);
+        movement.SpeedFactor = movement.SpeedFactor + 5;
         GoTo(-vectorToEnemy);
-        //TODO: Increase speed
       }
     }
 
     public void StopFleeing()
     {
+      movement.SpeedFactor = movement.SpeedFactor - 5;
       ClearEnemyTarget();
     }
   }

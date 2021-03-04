@@ -18,13 +18,14 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
+      if (_animal.enemyToFleeFrom != null) _animal.Flee(_animal.enemyToFleeFrom);
     }
 
     public AnimalState Execute()
     {
       if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.SafeDistanceFromEnemy(_animal.enemyToFleeFrom)) return AnimalState.Wander;
-      if (_animal.enemyToFleeFrom != null) _animal.Flee(_animal.enemyToFleeFrom);
+
       return AnimalState.Flee;
     }
 

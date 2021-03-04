@@ -7,8 +7,17 @@ using UnityEngine.AI;
 public sealed class GoToMovement : MonoBehaviour
 {
   [SerializeField] private NavMeshAgent agent;
+  private float _speedFactor = 1;
 
-  public float SpeedFactor { get; set; } = 1;
+  public float SpeedFactor
+  {
+    get => _speedFactor;
+    set
+    {
+      _speedFactor = value;
+      agent.speed = _speedFactor;
+    }
+  }
 
   /// <summary>
   ///   Whether the movement is currently in pursuit of travelling to a point.

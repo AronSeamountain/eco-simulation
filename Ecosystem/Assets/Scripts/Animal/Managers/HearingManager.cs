@@ -7,7 +7,7 @@ namespace Animal.Managers
     public delegate void KnownAnimalsChanged(AbstractAnimal animal);
 
     [SerializeField] private HearingDetector hearingDetector;
-    
+
     public KnownAnimalsChanged KnownAnimalChangedListeners;
 
     private void Start()

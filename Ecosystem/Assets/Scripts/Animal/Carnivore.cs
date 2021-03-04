@@ -53,11 +53,11 @@ namespace Animal
       carnivoreTarget.TakeDamage();
       _nourishmentDelegate.Saturation++;
     }
-    
+
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
       if (animal != null) _isHerbivore = animal.IsHerbivore;
-      if (_isHerbivore) Target = (Herbivore) animal;
+      if (_isHerbivore) Turn(animal);
     }
   }
 }
