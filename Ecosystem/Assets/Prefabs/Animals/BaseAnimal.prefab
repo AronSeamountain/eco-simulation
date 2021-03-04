@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 9164101030897492896}
   - component: {fileID: 4865815848461791069}
   - component: {fileID: 3254812618266142070}
-  m_Layer: 2
-  m_Name: DetectionArea
+  m_Layer: 11
+  m_Name: VisionArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1002,7 +1002,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8005206234950264684}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5790,7 +5790,7 @@ GameObject:
   - component: {fileID: 4396058153644258340}
   - component: {fileID: 8526265895815238811}
   - component: {fileID: 5299853235773772219}
-  m_Layer: 2
+  m_Layer: 12
   m_Name: ListeningArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
