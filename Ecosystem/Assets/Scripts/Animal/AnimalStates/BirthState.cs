@@ -4,11 +4,13 @@ namespace Animal.AnimalStates
 {
   public sealed class BirthState : IState<AnimalState>
   {
-    private readonly AbstractAnimal _animal;
+    private readonly AbstractAnimal _self;
+    private readonly AbstractAnimal _father;
 
-    public BirthState(AbstractAnimal animal)
+    public BirthState(AbstractAnimal self)
     {
-      _animal = animal;
+      _self = self;
+      _father = self.FatherToChildren;
     }
 
     public AnimalState GetStateEnum()
@@ -22,7 +24,7 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      _animal.SpawnChild();
+      _self.SpawnChild(_father);
       return AnimalState.Wander;
     }
 

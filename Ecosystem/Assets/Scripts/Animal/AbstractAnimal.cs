@@ -52,6 +52,9 @@ namespace Animal
     public AbstractFood FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
+    
+    public AbstractAnimal FatherToChildren { get; private set; }
+    
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
@@ -119,8 +122,8 @@ namespace Animal
       // Setup speed and size variables for nourishment modifiers
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
-      _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+      _speedModifier = Random.Range(rangeMin, rangeMax); 
+      _sizeModifier = Random.Range(rangeMin, rangeMax); 
 
       var decreaseFactor = (float) (Math.Pow(_sizeModifier, 3) + Math.Pow(_speedModifier, 2));
 
@@ -291,7 +294,10 @@ namespace Animal
       mouthParticles.Emit(1);
     }
 
-    public void SpawnChild()
+    /// <summary>
+    ///   This method will only be called in a female animal.
+    /// </summary>
+    public virtual AbstractAnimal SpawnChild(AbstractAnimal father)
     {
       Children++;
       var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
@@ -300,6 +306,19 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
+      
+      Herbivore _father = (Herbivore) father;
+
+      float speedMin = Math.Min(_father.GetSpeedModifier(), GetSpeedModifier());
+      float speedMax = Math.Max(_father.GetSpeedModifier(), GetSpeedModifier());
+      
+      float sizeMin = Math.Min(_father.GetSize(), GetSize());
+      float sizeMax = Math.Max(_father.GetSize(), GetSize());
+
+      
+      child.setPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin,sizeMax));
+      
+      return child;
     }
 
     /// <summary>
@@ -330,7 +349,12 @@ namespace Animal
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if (Gender == Gender.Female) ShouldBirth = true;
+      if (Gender == Gender.Female)
+      {
+        FatherToChildren = father;
+        ShouldBirth = true;
+        
+      }
     }
 
     public void Forget(FoodManager.FoodMemory memory)
@@ -366,6 +390,12 @@ namespace Animal
     private void SendState(AnimalState state)
     {
       animationManager.ReceiveState(state);
+    }
+
+    public virtual void setPropertiesOnBirth(float speed, float size)
+    {
+      _speedModifier = speed;
+      _sizeModifier = size;
     }
   }
 }

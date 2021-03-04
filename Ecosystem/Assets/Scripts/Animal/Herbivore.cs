@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Animal
 {
@@ -37,6 +40,13 @@ namespace Animal
     public void TakeDamage()
     {
       _healthDelegate.DecreaseHealth(1);
+    }
+
+    public override AbstractAnimal SpawnChild(AbstractAnimal father)
+    {
+      Herbivore child = (Herbivore) base.SpawnChild(father);
+      
+      return child;
     }
   }
 }
