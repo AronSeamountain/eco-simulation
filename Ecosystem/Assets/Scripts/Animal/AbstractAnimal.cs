@@ -216,7 +216,14 @@ namespace Animal
         SizeModifier = Random.Range(SizeModifier * (1 - _biggestMutationChange),
           SizeModifier * (1 + _biggestMutationChange));
         PropertiesChangedListeners?.Invoke();
+        
+        UpdateScale();
       }
+    }
+
+    private void UpdateScale()
+    {
+      transform.localScale = new Vector3(1, 1, 1) * SizeModifier; 
     }
     public bool CanEatMore()
     {
