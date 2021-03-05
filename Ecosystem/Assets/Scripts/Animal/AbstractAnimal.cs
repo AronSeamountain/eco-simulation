@@ -7,6 +7,7 @@ using Core;
 using Foods;
 using UI;
 using UI.Properties;
+using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
 using Random = UnityEngine.Random;
@@ -20,6 +21,7 @@ namespace Animal
   {
     public delegate void AgeChanged(int age);
 
+    public delegate void PropertiesChanged();
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
     public delegate void StateChanged(string state);
@@ -53,12 +55,14 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
+    public PropertiesChanged PropertiesChangedListeners;
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
 
     public AbstractAnimal LastMaleMate { get; private set; }
-
+    private float _mutationPercentPerDay = 10f;
+    private float _biggestMutationChange = 0.3f;
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
@@ -198,8 +202,28 @@ namespace Animal
     {
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+      Mutate();
     }
 
+    private void Mutate()
+    {
+      if (_mutationPercentPerDay > Random.Range(0,100))
+      {
+        SpeedModifier = Random.Range(SpeedModifier * (1 - _biggestMutationChange),
+          SpeedModifier * (1 + _biggestMutationChange));
+        
+        SizeModifier = Random.Range(SizeModifier * (1 - _biggestMutationChange),
+          SizeModifier * (1 + _biggestMutationChange));
+        PropertiesChangedListeners?.Invoke();
+        
+        UpdateScale();
+      }
+    }
+
+    private void UpdateScale()
+    {
+      transform.localScale = new Vector3(1, 1, 1) * SizeModifier; 
+    }
     public bool CanEatMore()
     {
       return _nourishmentDelegate.SaturationIsFull();
