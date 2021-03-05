@@ -211,7 +211,6 @@ namespace Animal
       visualDetector.GetComponent<Renderer>().enabled = show;
     }
 
-
     public void Tick()
     {
       if (!Fertile) _unitsUntilFertile--;
@@ -247,6 +246,8 @@ namespace Animal
     {
       Fertile = false;
       Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
+
+      genderRenderer.material.color = Color.black;
     }
 
     private void OnMateFound(AbstractAnimal animal)
