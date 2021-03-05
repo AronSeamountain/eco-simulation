@@ -216,7 +216,7 @@ namespace Animal
 
     private void UpdateScale()
     {
-      transform.localScale = new Vector3(1, 1, 1) * SizeModifier;
+      transform.localScale = Vector3.one * SizeModifier;
     }
 
     public bool CanEatMore()
@@ -229,10 +229,7 @@ namespace Animal
       return _nourishmentDelegate.HydrationIsFull();
     }
 
-    protected virtual void OnAnimalHeard(AbstractAnimal animal)
-    {
-      // do different things in herbivore and carnivore.
-    }
+    protected abstract void OnAnimalHeard(AbstractAnimal animal);
 
     protected abstract void RenderAnimalSpecificColors();
 
@@ -272,7 +269,6 @@ namespace Animal
     {
       KnowsFoodLocation = foods.Any();
     }
-
 
     /// <summary>
     ///   Eats the provided food.

@@ -8,7 +8,7 @@ namespace Animal
 {
   public sealed class Herbivore : AbstractAnimal
   {
-    private readonly float _safeDistance = 15f;
+    private const float SafeDistance = 15f;
     private bool _hearsCarnivore;
 
     protected override void InitAnimalSpecies()
@@ -55,7 +55,6 @@ namespace Animal
 
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
-      if (animal == null) Debug.LogError("wawaaaaaaaaaaa");
       _hearsCarnivore = animal.IsCarnivore;
       if (_hearsCarnivore) EnemyToFleeFrom = animal;
     }
@@ -63,7 +62,7 @@ namespace Animal
     public override bool SafeDistanceFromEnemy()
     {
       var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
-      return _safeDistance < distance;
+      return SafeDistance < distance;
     }
   }
 }
