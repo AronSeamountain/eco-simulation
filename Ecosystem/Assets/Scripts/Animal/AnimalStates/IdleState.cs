@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Animal.AnimalStates
 {
-  public class IdleState : IState<AnimalState>
+  public sealed class IdleState : IState<AnimalState>
   {
     /// <summary>
     ///   The time to stand still in seconds.

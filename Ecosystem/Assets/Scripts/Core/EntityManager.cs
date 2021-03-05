@@ -112,22 +112,22 @@ namespace Core
     {
       if (spawnRabbits)
       {
-        SpawnAnimalSpecie(initialAnimals, AnimalSpecie.Rabbit);
+        SpawnAnimalSpecie(initialAnimals, AnimalSpecies.Rabbit);
         HerbivoreCount += initialAnimals;
       }
 
       if (spawnWolves)
       {
-        SpawnAnimalSpecie(initialAnimals, AnimalSpecie.Wolf);
+        SpawnAnimalSpecie(initialAnimals, AnimalSpecies.Wolf);
         CarnivoreCount += initialAnimals;
       }
     }
 
-    private void SpawnAnimalSpecie(int amount, AnimalSpecie animalSpecie)
+    private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
     {
       for (var i = 0; i < initialPlants; i++)
       {
-        var animal = _animalPool.Get(animalSpecie);
+        var animal = _animalPool.Get(animalSpecies);
         Place(animal);
         Animals.Add(animal);
       }

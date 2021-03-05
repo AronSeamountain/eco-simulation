@@ -11,20 +11,20 @@ namespace Pools
     public static AnimalPool SharedInstance;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject rabbitPrefab;
-    private IDictionary<AnimalSpecie, Stack<AbstractAnimal>> _speciePoolMapping;
-    private IDictionary<AnimalSpecie, GameObject> _speciePrefabMapping;
+    private IDictionary<AnimalSpecies, Stack<AbstractAnimal>> _speciePoolMapping;
+    private IDictionary<AnimalSpecies, GameObject> _speciePrefabMapping;
 
     private void Awake()
     {
-      _speciePoolMapping = new Dictionary<AnimalSpecie, Stack<AbstractAnimal>>();
+      _speciePoolMapping = new Dictionary<AnimalSpecies, Stack<AbstractAnimal>>();
 
-      foreach (AnimalSpecie specie in Enum.GetValues(typeof(AnimalSpecie)))
+      foreach (AnimalSpecies specie in Enum.GetValues(typeof(AnimalSpecies)))
         _speciePoolMapping[specie] = new Stack<AbstractAnimal>();
 
-      _speciePrefabMapping = new Dictionary<AnimalSpecie, GameObject>
+      _speciePrefabMapping = new Dictionary<AnimalSpecies, GameObject>
       {
-        {AnimalSpecie.Wolf, wolfPrefab},
-        {AnimalSpecie.Rabbit, rabbitPrefab}
+        {AnimalSpecies.Wolf, wolfPrefab},
+        {AnimalSpecies.Rabbit, rabbitPrefab}
       };
 
       SharedInstance = this;
@@ -33,28 +33,28 @@ namespace Pools
     /// <summary>
     ///   Gets a pooled animal. The animal will have the active property set to false.
     /// </summary>
-    /// <param name="specie">The type of animal to retrieve.</param>
+    /// <param name="species">The type of animal to retrieve.</param>
     /// <returns>The pooled animal.</returns>
-    public AbstractAnimal Get(AnimalSpecie specie)
+    public AbstractAnimal Get(AnimalSpecies species)
     {
-      var stack = GetStack(specie);
-      return stack.Count > 0 ? stack.Pop() : CreateAnimal(specie);
+      var stack = GetStack(species);
+      return stack.Count > 0 ? stack.Pop() : CreateAnimal(species);
     }
 
-    private Stack<AbstractAnimal> GetStack(AnimalSpecie specie)
+    private Stack<AbstractAnimal> GetStack(AnimalSpecies species)
     {
-      return _speciePoolMapping[specie];
+      return _speciePoolMapping[species];
     }
 
-    private AbstractAnimal CreateAnimal(AnimalSpecie specie)
+    private AbstractAnimal CreateAnimal(AnimalSpecies species)
     {
-      var prefab = _speciePrefabMapping[specie];
+      var prefab = _speciePrefabMapping[species];
       return Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<AbstractAnimal>();
     }
 
     public void Pool(AbstractAnimal animal)
     {
-      var stack = GetStack(animal.Specie);
+      var stack = GetStack(animal.Species);
       animal.gameObject.SetActive(false);
 
       if (stack.Count < AmountToPool)

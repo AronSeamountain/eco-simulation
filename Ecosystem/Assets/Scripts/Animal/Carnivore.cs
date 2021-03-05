@@ -10,7 +10,7 @@ namespace Animal
   public sealed class Carnivore : AbstractAnimal
   {
     private const float HuntRange = 15;
-    public readonly float EatingRange = 2f;
+    public const float EatingRange = 2f;
     private bool _animalOfSameType;
 
     private bool _hearsHerbivore;
@@ -21,9 +21,9 @@ namespace Animal
       Target = herbivore;
     }
 
-    protected override void SetAnimalType()
+    protected override void InitAnimalSpecies()
     {
-      Specie = AnimalSpecie.Wolf;
+      Species = AnimalSpecies.Wolf;
     }
 
     protected override void RenderAnimalSpecificColors()

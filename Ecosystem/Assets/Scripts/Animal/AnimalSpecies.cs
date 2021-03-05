@@ -1,6 +1,6 @@
 ﻿namespace Animal
 {
-  public enum AnimalSpecie
+  public enum AnimalSpecies
   {
     Wolf,
     Rabbit

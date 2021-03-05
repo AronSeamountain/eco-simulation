@@ -29,6 +29,8 @@ namespace Animal
     public delegate void StateChanged(string state);
 
     private const int FertilityTimeInUnits = 5;
+    private const float BiggestMutationChange = 0.3f;
+    private const float MutationPercentPerDay = 10f;
 
     /// <summary>
     ///   Scales the animal, is not correlated to actual size for the model logic.
@@ -45,11 +47,9 @@ namespace Animal
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer genderRenderer;
     public AbstractAnimal enemyToFleeFrom;
-    private readonly float _biggestMutationChange = 0.3f;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
-    private readonly float _mutationPercentPerDay = 10f;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
@@ -64,12 +64,18 @@ namespace Animal
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
-
     public AbstractAnimal LastMaleMate { get; private set; }
     public bool Fertile { get; private set; }
-    public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
-    public AnimalSpecie Specie { get; protected set; }
+    public AnimalSpecies Species { get; protected set; }
+    public Water ClosestKnownWater => waterManager.ClosestKnownWater;
+    public bool IsHungry => _nourishmentDelegate.IsHungry;
+    public bool IsThirsty => _nourishmentDelegate.IsThirsty;
+    private float Health => _healthDelegate.Health;
+    public bool Alive => Health > 0;
+    public bool Dead => !Alive;
+    public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
+    public bool IsHerbivore => Species == AnimalSpecies.Rabbit;
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -96,15 +102,6 @@ namespace Animal
     /// </summary>
     public IEnumerable<FoodManager.FoodMemory> KnownFoods => foodManager.KnownFoodMemories;
 
-    public Water ClosestKnownWater => waterManager.ClosestKnownWater;
-    public bool IsHungry => _nourishmentDelegate.IsHungry;
-    public bool IsThirsty => _nourishmentDelegate.IsThirsty;
-    private float Health => _healthDelegate.Health;
-    public bool Alive => Health > 0;
-    public bool Dead => !Alive;
-    public bool IsCarnivore => Specie == AnimalSpecie.Wolf; // TODO
-    public bool IsHerbivore => Specie == AnimalSpecie.Rabbit;
-
     private void Awake()
     {
       _nourishmentDelegate = new NourishmentDelegate();
@@ -115,7 +112,7 @@ namespace Animal
     {
       InitStateMachine();
       InitSensoryEvents();
-      SetAnimalType();
+      InitAnimalSpecies();
 
       ResetGameObject();
     }
@@ -203,13 +200,13 @@ namespace Animal
 
     private void Mutate()
     {
-      if (_mutationPercentPerDay > Random.Range(0, 100))
+      if (MutationPercentPerDay > Random.Range(0, 100))
       {
-        SpeedModifier = Random.Range(SpeedModifier * (1 - _biggestMutationChange),
-          SpeedModifier * (1 + _biggestMutationChange));
+        SpeedModifier = Random.Range(SpeedModifier * (1 - BiggestMutationChange),
+          SpeedModifier * (1 + BiggestMutationChange));
 
-        SizeModifier = Random.Range(SizeModifier * (1 - _biggestMutationChange),
-          SizeModifier * (1 + _biggestMutationChange));
+        SizeModifier = Random.Range(SizeModifier * (1 - BiggestMutationChange),
+          SizeModifier * (1 + BiggestMutationChange));
         PropertiesChangedListeners?.Invoke();
 
         UpdateScale();
@@ -231,8 +228,6 @@ namespace Animal
       return _nourishmentDelegate.HydrationIsFull();
     }
 
-    protected abstract void SetAnimalType();
-
     protected virtual void OnAnimalHeard(AbstractAnimal animal)
     {
       // do different things in herbivore and carnivore.
@@ -247,7 +242,7 @@ namespace Animal
 
     private void OnMateFound(AbstractAnimal animal)
     {
-      var sameTypeOfAnimal = animal.Specie == Specie;
+      var sameTypeOfAnimal = animal.Species == Species;
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
 
@@ -320,7 +315,7 @@ namespace Animal
     public void SpawnChild(AbstractAnimal father)
     {
       Children++;
-      var child = AnimalPool.SharedInstance.Get(Specie);
+      var child = AnimalPool.SharedInstance.Get(Species);
       child.ResetGameObject();
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
@@ -422,7 +417,6 @@ namespace Animal
     {
       ResetGender();
       ResetSpeedSize();
-      SetAnimalType();
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -453,7 +447,7 @@ namespace Animal
 
     public void IncreaseSpeed()
     {
-      movement.SpeedFactor = movement.SpeedFactor + 5;
+      movement.SpeedFactor += 5;
     }
 
     public void StopFleeing()
@@ -501,6 +495,8 @@ namespace Animal
     #endregion
 
     #region CreationSetup
+
+    protected abstract void InitAnimalSpecies();
 
     private void InitSensoryEvents()
     {

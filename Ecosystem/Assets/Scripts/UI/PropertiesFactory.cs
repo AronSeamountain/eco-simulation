@@ -58,12 +58,12 @@ namespace UI
       // Speed
       var speed = RowFactory.CreateKeyValuePair();
       speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));
-  
+
       // Size
       var size = RowFactory.CreateKeyValuePair();
       size.Configure("Size", Prettifier.Round(animal.SizeModifier, 2));
 
-   
+
       animal.PropertiesChangedListeners += () =>
       {
         speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));

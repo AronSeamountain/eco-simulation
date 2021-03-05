@@ -11,9 +11,9 @@ namespace Animal
     private readonly float _safeDistance = 15f;
     private bool _hearsCarnivore;
 
-    protected override void SetAnimalType()
+    protected override void InitAnimalSpecies()
     {
-      Specie = AnimalSpecie.Rabbit;
+      Species = AnimalSpecies.Rabbit;
     }
 
     protected override void RenderAnimalSpecificColors()
@@ -55,6 +55,7 @@ namespace Animal
 
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
+      if (animal == null) Debug.LogError("wawaaaaaaaaaaa");
       _hearsCarnivore = animal.IsCarnivore;
       if (_hearsCarnivore) enemyToFleeFrom = animal;
     }
