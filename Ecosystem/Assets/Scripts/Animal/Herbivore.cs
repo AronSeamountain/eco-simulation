@@ -2,6 +2,7 @@
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using UnityEngine;
 
 namespace Animal
 {
@@ -11,13 +12,13 @@ namespace Animal
     {
       Specie = AnimalSpecie.Rabbit;
     }
-  
+
     protected override void RenderAnimalSpecificColors()
     {
       if (Gender == Gender.Male)
-        genderRenderer.material.color = new UnityEngine.Color(1f, 0.8f, 0.8f);
+        genderRenderer.material.color = new Color(1f, 0.8f, 0.8f);
       else
-        genderRenderer.material.color = new UnityEngine.Color(1f, 0.72f, 0.72f);
+        genderRenderer.material.color = new Color(1f, 0.72f, 0.72f);
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
