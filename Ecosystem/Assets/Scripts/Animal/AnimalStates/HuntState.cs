@@ -22,7 +22,6 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _target = _carnivore.Target;
-      Debug.Log("entered hunt state");
     }
 
     public AnimalState Execute()

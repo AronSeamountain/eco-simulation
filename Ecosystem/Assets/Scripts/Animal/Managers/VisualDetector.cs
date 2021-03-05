@@ -1,4 +1,5 @@
-﻿using Foods;
+﻿using System;
+using Foods;
 using UnityEngine;
 using Utils;
 
@@ -34,7 +35,6 @@ namespace Animal.Managers
     private int _radius;
     public AnimalFound AnimalFoundListeners;
     public FoodFound FoodFoundListeners;
-    private int IgnoreLayers;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
 
@@ -62,22 +62,20 @@ namespace Animal.Managers
     {
       Radius = 10;
       Distance = 20;
-
-      IgnoreLayers = RayCastUtil.GetDontCast();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-      if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten() && CanSee(food))
+      if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten())
         FoodFoundListeners?.Invoke(food);
 
-      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten() && CanSee(animal))
+      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
         PreyFoundListeners?.Invoke(animal);
 
-      if (other.GetComponent<Water>() is Water water && CanSee(water))
+      if (other.GetComponent<Water>() is Water water)
         WaterFoundListeners?.Invoke(water);
 
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal && CanSee(foundAnimal))
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
         AnimalFoundListeners?.Invoke(foundAnimal);
     }
 
@@ -89,9 +87,11 @@ namespace Animal.Managers
     /// <returns>True if it can see the provided object.</returns>
     private bool CanSee<T>(T objectToSee) where T : MonoBehaviour
     {
+      throw new NotImplementedException("Update me to check layers correctly!!!!");
+
       var dirToObject = objectToSee.transform.position - eyesTransform.position;
       var raycastHitSomething =
-        Physics.Raycast(eyesTransform.position, dirToObject, out var hitObject, Distance, ~IgnoreLayers);
+        Physics.Raycast(eyesTransform.position, dirToObject, out var hitObject, Distance, RayCastUtil.CastableLayers);
 
       if (raycastHitSomething)
         if (hitObject.transform.GetComponent<T>() is T hitObjectOfTypeT)
