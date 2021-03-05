@@ -3,12 +3,12 @@ using Foods;
 using UnityEngine;
 using Utils;
 
-namespace Animal.Managers
+namespace Animal.Sensor
 {
   /// <summary>
   ///   Scans for food and calls a delegate when food is found.
   /// </summary>
-  public sealed class VisualDetector : MonoBehaviour
+  public sealed class Vision : MonoBehaviour
   {
     public delegate void AnimalFound(AbstractAnimal animal);
 

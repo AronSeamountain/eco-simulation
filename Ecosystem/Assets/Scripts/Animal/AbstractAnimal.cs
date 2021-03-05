@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Animal.AnimalStates;
 using Animal.Managers;
+using Animal.Sensor;
 using Core;
 using Foods;
 using Pools;
@@ -43,7 +44,7 @@ namespace Animal
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
     [SerializeField] protected ParticleSystem mouthParticles;
-    [SerializeField] protected Managers.HearingDetector hearingDetector;
+    [SerializeField] protected Hearing hearing;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer genderRenderer;
     public AbstractAnimal enemyToFleeFrom;
@@ -176,8 +177,8 @@ namespace Animal
 
     public void ShowGizmos(bool show)
     {
-      var hearingDetector = GetComponentInChildren<HearingDetector>();
-      var visualDetector = GetComponentInChildren<VisualDetector>();
+      var hearingDetector = GetComponentInChildren<Hearing>();
+      var visualDetector = GetComponentInChildren<Vision>();
       hearingDetector.GetComponent<Renderer>().enabled = show;
       visualDetector.GetComponent<Renderer>().enabled = show;
     }
@@ -500,7 +501,7 @@ namespace Animal
 
     private void InitSensoryEvents()
     {
-      hearingDetector.KnownAnimalChangedListeners += OnAnimalHeard;
+      hearing.AnimalHeardListeners += OnAnimalHeard;
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
     }

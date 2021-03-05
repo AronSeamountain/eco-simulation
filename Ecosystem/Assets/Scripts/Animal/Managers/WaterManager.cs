@@ -1,4 +1,5 @@
-﻿using Foods;
+﻿using Animal.Sensor;
+using Foods;
 using UnityEngine;
 
 namespace Animal.Managers
@@ -7,7 +8,7 @@ namespace Animal.Managers
   {
     public delegate void KnownClosestWaterChanged(Water water);
 
-    [SerializeField] private VisualDetector visualDetector;
+    [SerializeField] private Vision vision;
 
     public KnownClosestWaterChanged WaterUpdateListeners;
     public Water ClosestKnownWater { get; private set; }
@@ -15,7 +16,7 @@ namespace Animal.Managers
     // Start is called before the first frame update
     private void Start()
     {
-      visualDetector.WaterFoundListeners += OnWaterFound;
+      vision.WaterFoundListeners += OnWaterFound;
     }
 
     private void OnWaterFound(Water water)
