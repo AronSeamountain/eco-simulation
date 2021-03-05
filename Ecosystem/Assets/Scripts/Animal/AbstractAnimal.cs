@@ -27,15 +27,21 @@ namespace Animal
     public delegate void StateChanged(string state);
 
     private const int FertilityTimeInUnits = 5;
+
+    /// <summary>
+    ///   Scales the animal, is not correlated to actual size for the model logic.
+    /// </summary>
+    [SerializeField] private float VisualSizeModifier;
+
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
     [SerializeField] protected ParticleSystem mouthParticles;
-    [SerializeField] protected HearingManager hearingManager;
+    [SerializeField] protected Managers.HearingDetector hearingDetector;
     [SerializeField] private AnimationManager animationManager;
-    [SerializeField] private SkinnedMeshRenderer genderRenderer;
+    [SerializeField] protected SkinnedMeshRenderer genderRenderer;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -46,7 +52,6 @@ namespace Animal
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
-
     public Died DiedListeners;
     public StateChanged StateChangedListeners;
     public IEatable FoodAboutTooEat { get; set; }
@@ -109,7 +114,7 @@ namespace Animal
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
 
       //Listen to hearing events
-      hearingManager.KnownAnimalChangedListeners += OnAnimalHeard;
+      hearingDetector.KnownAnimalChangedListeners += OnAnimalHeard;
 
       // Listen to food events
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
@@ -134,7 +139,8 @@ namespace Animal
       movement.SpeedFactor = _speedModifier;
 
       // Setup size modification
-      transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
+      var scale = _sizeModifier + VisualSizeModifier;
+      transform.localScale = new Vector3(scale, scale, scale);
       _nutritionalValue = 100 * sizeCubed;
 
       SetAnimalType();
@@ -205,7 +211,6 @@ namespace Animal
       visualDetector.GetComponent<Renderer>().enabled = show;
     }
 
-
     public void Tick()
     {
       if (!Fertile) _unitsUntilFertile--;
@@ -239,19 +244,13 @@ namespace Animal
 
     private void GenerateGender()
     {
-      var random = Random.Range(0f, 1f);
       Fertile = false;
-      if (random > 0.5)
-      {
-        Gender = Gender.Male;
-        genderRenderer.material.SetColor("_Color", Color.cyan);
-      }
-      else
-      {
-        Gender = Gender.Female;
-        genderRenderer.material.SetColor("_Color", Color.magenta);
-      }
+      Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
+
+      RenderAnimalSpecificColors();
     }
+
+    protected abstract void RenderAnimalSpecificColors();
 
     private void OnMateFound(AbstractAnimal animal)
     {

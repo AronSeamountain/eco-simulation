@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Animal;
-using Foods;
 using Foods.Plants;
 using Logger;
 using Pools;
@@ -27,10 +26,8 @@ namespace Core
     private const float UnitsPerDay = 10;
     [SerializeField] private int initialAnimals;
     [SerializeField] private int initialPlants;
-    [SerializeField] private int waterAmount;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
-    [SerializeField] private GameObject waterPrefab;
     [SerializeField] private bool spawnWolves;
     [SerializeField] private bool spawnRabbits;
     private AnimalPool _animalPool;
@@ -56,8 +53,6 @@ namespace Core
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
 
-      SpawnWater();
-
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
@@ -81,11 +76,6 @@ namespace Core
 
     public void ShowGizmos(bool show)
     {
-    }
-
-    private void SpawnWater()
-    {
-      SpawnAndAddGeneric<Water>(waterAmount, waterPrefab);
     }
 
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
@@ -236,7 +226,7 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log) _logger.Snapshot(Days, Animals);
+          if (log) _logger.Snapshot(Days, Animals, this);
         }
       }
     }

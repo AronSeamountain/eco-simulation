@@ -2,6 +2,7 @@
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Utils;
 
 namespace Camera
 {
@@ -16,7 +17,7 @@ namespace Camera
     private void Awake()
     {
       _controls = new CameraControls();
-      _controls.CameraMovement.Selecting.performed += ClickedChar;
+      _controls.CameraMovement.Selecting.performed += SelectClicked;
       _controls.CameraMovement.CancelTarget.performed += OnCancelTarget;
       _controls.CameraMovement.Rotate.performed += OnCancelTarget;
       _controls.CameraMovement.Movement.performed += OnCancelTarget;
@@ -68,10 +69,10 @@ namespace Camera
     ///   Display stats of the clicked animal.
     /// </summary>
     /// <param name="_"></param>
-    private void ClickedChar(InputAction.CallbackContext _)
+    private void SelectClicked(InputAction.CallbackContext _)
     {
       var ray = mainCamera.ScreenPointToRay(GetMousePos());
-      if (Physics.Raycast(ray, out var hitTarget))
+      if (Physics.Raycast(ray, out var hitTarget, 1000, RayCastUtil.CastableLayers))
       {
         var go = hitTarget.collider.gameObject;
         var inspectable = go.GetComponent<IInspectable>();

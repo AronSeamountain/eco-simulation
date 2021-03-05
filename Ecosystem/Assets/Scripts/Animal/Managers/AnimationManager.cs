@@ -45,7 +45,7 @@ namespace Animal.Managers
 
     public void AnimalSound()
     {
-      audioSource.Play();
+      //audioSource.Play();
     }
   }
 }

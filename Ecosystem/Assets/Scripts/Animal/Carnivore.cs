@@ -2,6 +2,7 @@
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using UnityEngine;
 using Utils;
 
 namespace Animal
@@ -20,6 +21,14 @@ namespace Animal
     protected override void SetAnimalType()
     {
       Specie = AnimalSpecie.Wolf;
+    }
+
+    protected override void RenderAnimalSpecificColors()
+    {
+      if (Gender == Gender.Male)
+        genderRenderer.material.color = new Color(0.12f, 0.15f, 0.18f);
+      else
+        genderRenderer.material.color = new Color(0.5f, 0.56f, 0.61f);
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)

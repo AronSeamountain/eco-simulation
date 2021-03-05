@@ -6,16 +6,6 @@ namespace Camera
 {
   public sealed class CameraController : MonoBehaviour
   {
-    /// <summary>
-    ///   The distance in the x-z plane to the target
-    /// </summary>
-    private const int DistanceBehind = 5;
-
-    /// <summary>
-    ///   The height we want the camera to be above the target
-    /// </summary>
-    private const int DistanceOver = 5;
-
     private const int RotationSpeed = 10;
     private const int ViewSpeed = 10;
     private const int FreeMovementStandardSpeed = 10;
@@ -28,6 +18,17 @@ namespace Camera
     private bool _moveFast;
     private bool _rotate;
     private Transform _target;
+
+    /// <summary>
+    ///   The distance in the x-z plane to the target
+    /// </summary>
+    private int DistanceBehind = 5;
+
+    /// <summary>
+    ///   The height we want the camera to be above the target
+    /// </summary>
+    private int DistanceOver = 5;
+
     private int FreeMovementSpeed => _moveFast ? FreeMovementFastSpeed : FreeMovementStandardSpeed;
 
     private Transform Target
@@ -66,6 +67,8 @@ namespace Camera
       _controls.CameraMovement.Movement.performed += OnMovement;
       _controls.CameraMovement.MoveFast.started += OnMoveFast;
       _controls.CameraMovement.MoveFast.canceled += OnMoveFast;
+      _controls.CameraMovement.ZoomIn.performed += OnZoomIn;
+      _controls.CameraMovement.ZoomOut.performed += OnZoomOut;
     }
 
     private void Start()
@@ -89,6 +92,26 @@ namespace Camera
     private void OnDisable()
     {
       _controls.Disable();
+    }
+
+    private void OnZoomIn(InputAction.CallbackContext _)
+    {
+      ChangeZoom(true);
+    }
+
+    private void OnZoomOut(InputAction.CallbackContext _)
+    {
+      ChangeZoom(false);
+    }
+
+    private void ChangeZoom(bool increase)
+    {
+      var delta = increase ? -5 : 5;
+      DistanceBehind += delta;
+      DistanceOver += delta;
+
+      DistanceBehind = Mathf.Clamp(DistanceBehind, 0, 10000);
+      DistanceOver = Mathf.Clamp(DistanceOver, 0, 10000);
     }
 
     private void OnMoveFast(InputAction.CallbackContext context)
@@ -146,7 +169,7 @@ namespace Camera
     {
       var ray = mainCamera.ScreenPointToRay(GetMousePos());
 
-      if (Physics.Raycast(ray, out var hitTarget))
+      if (Physics.Raycast(ray, out var hitTarget, 1000, RayCastUtil.CastableLayers))
         if (selectableLayers.Contains(hitTarget.collider.gameObject.layer))
           Target = hitTarget.transform;
     }
