@@ -11,33 +11,42 @@ rectangle "Herbivore" {
   (H.Wander) ---> (H.PursueWater) : Thirsty & knows food
   (H.Wander) ---> (H.PursueMate) : Fed, hydrated and saw a mate
   (H.Wander) ---> (H.Dead) : No health
+  (H.Wander) ---> (H.Flee) : Carnivore is heard
+
 
   (H.PursueFood) ---> (H.PursueFood)
   (H.PursueFood) ---> (H.Wander) : Food eaten
   (H.PursueFood) ---> (H.Escape) : Noticed an enemy
   (H.PursueFood) ---> (H.Dead) : No health
+  (H.PursueFood) ---> (H.Flee) : Carnivore is heard
 
   (H.Eat) ---> (H.Dead) : No health
   (H.Eat) ---> (H.Wander) : Food gone or Stomach full
+  (H.Eat) ---> (H.Flee) : Carnivore is heard
   (H.Eat) ---> (H.Eat)
+  
 
   (H.PursueWater) ---> (H.Escape) : Noticed an enemy
   (H.PursueWater) ---> (H.PursueWater)
   (H.PursueWater) ---> (H.Drink)
   (H.PursueWater) ---> (H.Dead) : No health
+  (H.PursueWater) ---> (H.Flee) : Carnivore is heard
+
 
   (H.Drink) ---> (H.Dead) : No health
   (H.Drink) ---> (H.Wander) : Done drinking
+  (H.Drink) ---> (H.Flee) : Carnivore is heard
   (H.Drink) ---> (H.Drink)
 
   (H.PursueMate) ---> (H.PursueMate)
   (H.PursueMate) ---> (H.Birth) : Found mate & is female
   (H.PursueMate) ---> (H.Wander) : (Mated & is male) or (is hungry or thirsty)
   (H.PursueMate) ---> (H.Dead) : No health
+  (H.PursueMate) ---> (H.Flee) : Carnivore is heard
 
-  (H.Escape) ---> (H.Escape)
-  (H.Escape) ---> (H.Wander) : No longer chased
-  (H.Escape) ---> (H.Dead) : No health
+  (H.Flee) ---> (H.Flee)
+  (H.Flee) ---> (H.Wander) : No longer chased
+  (H.Flee) ---> (H.Dead) : No health
 
   (H.Dead) ---> (H.Dead)
 
