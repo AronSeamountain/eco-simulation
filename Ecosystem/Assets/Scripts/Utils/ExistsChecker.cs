@@ -11,10 +11,7 @@ namespace Utils
     /// <param name="monoBehaviour">The mono behaviour to check.</param>
     public static bool Exists(this MonoBehaviour monoBehaviour)
     {
-      if (monoBehaviour == null) return false; // Actually null
-      if (!monoBehaviour) return false; // Unity "null"
-
-      return monoBehaviour.isActiveAndEnabled;
+      return monoBehaviour && monoBehaviour.isActiveAndEnabled;
     }
 
     /// <summary>

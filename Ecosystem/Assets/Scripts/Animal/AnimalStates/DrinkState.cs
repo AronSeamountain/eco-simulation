@@ -37,7 +37,6 @@ namespace Animal.AnimalStates
       _animal.StopMoving();
       _animal.Drink(_water);
 
-
       return AnimalState.Drink;
     }
 

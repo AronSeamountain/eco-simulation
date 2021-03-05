@@ -18,11 +18,6 @@ namespace Animal
   /// </summary>
   public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable
   {
-    /// <summary>
-    ///   Scales the animal, is not correlated to actual size for the model logic.
-    /// </summary>
-    [SerializeField] private float VisualSizeModifier;
-
     public delegate void AgeChanged(int age);
 
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
@@ -32,6 +27,12 @@ namespace Animal
     public delegate void StateChanged(string state);
 
     private const int FertilityTimeInUnits = 5;
+
+    /// <summary>
+    ///   Scales the animal, is not correlated to actual size for the model logic.
+    /// </summary>
+    [SerializeField] private float VisualSizeModifier;
+
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;

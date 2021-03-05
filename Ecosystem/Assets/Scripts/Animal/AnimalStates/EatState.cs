@@ -38,7 +38,6 @@ namespace Animal.AnimalStates
       _animal.StopMoving();
       _animal.Eat(_food);
 
-
       return AnimalState.Eat;
     }
 

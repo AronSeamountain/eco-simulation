@@ -11,7 +11,7 @@ namespace UI
   public static class PropertiesFactory
   {
     private static PropertyFactory RowFactory => PropertyFactory.SharedInstance;
-    
+
     public static IEnumerable<AbstractProperty> Create(AbstractAnimal animal)
     {
       // Health

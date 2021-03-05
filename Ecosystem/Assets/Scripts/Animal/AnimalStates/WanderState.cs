@@ -67,7 +67,6 @@ namespace Animal.AnimalStates
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination)) _animal.StopMoving();
 
-
       if (!_animal.IsMoving)
       {
         var haveIdledSufficiently = _timeIdled >= _idleTime;

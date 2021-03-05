@@ -33,9 +33,9 @@ namespace Animal.Managers
     private int _radius;
     public AnimalFound AnimalFoundListeners;
     public FoodFound FoodFoundListeners;
+    private int IgnoreLayers;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
-    private int IgnoreLayers;
 
     private int Distance
     {

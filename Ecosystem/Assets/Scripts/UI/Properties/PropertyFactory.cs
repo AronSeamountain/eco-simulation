@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UI.Properties
 {
   public sealed class PropertyFactory : MonoBehaviour
   {
+    public static PropertyFactory SharedInstance;
     [SerializeField] private GameObject barPrefab;
     [SerializeField] private GameObject KeyValuePairTextPrefab;
-    public static PropertyFactory SharedInstance;
 
     private void Awake()
     {
