@@ -1,5 +1,6 @@
 ﻿using Foods;
 using UnityEngine;
+using Utils;
 
 namespace Animal.Managers
 {
@@ -62,7 +63,7 @@ namespace Animal.Managers
       Radius = 10;
       Distance = 20;
 
-      IgnoreLayers = LayerMask.GetMask("AnimalVision", "AnimalHearing", "Ignore Raycast");
+      IgnoreLayers = RayCastUtil.GetDontCast();
     }
 
     private void OnTriggerEnter(Collider other)

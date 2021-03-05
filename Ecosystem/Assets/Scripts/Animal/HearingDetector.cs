@@ -26,24 +26,32 @@ namespace Animal
     private void Start()
     {
       Radius = 12;
-      listeningArea = gameObject.GetComponent<Renderer>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal &&
-          animal.transform.position != transform.parent.position)
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal && NotSelf(animal))
       {
         AnimalHeardListeners?.Invoke(animal);
-        listeningArea.material.SetColor("_Color", Color.blue);
+        IndicateSomethingInside(true);
       }
     }
 
     private void OnTriggerExit(Collider other)
     {
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal &&
-          animal.transform.position != transform.parent.position)
-        listeningArea.material.SetColor("_Color", Color.white);
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal && NotSelf(animal))
+        IndicateSomethingInside(false);
+    }
+
+    private bool NotSelf(Component animal)
+    {
+      return animal.transform.position != transform.parent.position;
+    }
+
+    private void IndicateSomethingInside(bool canHear)
+    {
+      var color = canHear ? Color.blue : Color.white;
+      listeningArea.material.SetColor("_Color", color);
     }
   }
 }
