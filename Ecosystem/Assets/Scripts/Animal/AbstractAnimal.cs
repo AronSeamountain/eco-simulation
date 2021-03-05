@@ -104,46 +104,10 @@ namespace Animal
 
     private void Start()
     {
-      var states = GetStates(foodManager);
-      _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
-      _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
+      InitStateMachine();
+      InitSensoryEvents();
 
-      _stateMachine.StateChangedListeners += SendState;
-      // Setup gender
-      GenerateGender();
-      if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
-
-      //Listen to hearing events
-      hearingDetector.KnownAnimalChangedListeners += OnAnimalHeard;
-
-      // Listen to food events
-      foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
-
-      // Listen to water events
-      waterManager.WaterUpdateListeners += OnWaterLocationChanged;
-
-      // Setup speed and size variables for nourishment modifiers
-      const float rangeMin = 0.8f;
-      const float rangeMax = 1.2f;
-      _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      var sizeCubed = _sizeModifier * _sizeModifier * _sizeModifier;
-      var decreaseFactor = (float) (sizeCubed + Math.Pow(_speedModifier, 2));
-
-      _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
-      _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
-
-      // Setup speed modifier
-
-      movement.SpeedFactor = _speedModifier;
-
-      // Setup size modification
-      var scale = _sizeModifier + VisualSizeModifier;
-      transform.localScale = new Vector3(scale, scale, scale);
-      _nutritionalValue = 100 * sizeCubed;
-
-      SetAnimalType();
+      ResetGameObject();
     }
 
     private void Update()
@@ -240,14 +204,6 @@ namespace Animal
 
     private void OnAnimalHeard(AbstractAnimal animal)
     {
-    }
-
-    private void GenerateGender()
-    {
-      Fertile = false;
-      Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
-
-      RenderAnimalSpecificColors();
     }
 
     protected abstract void RenderAnimalSpecificColors();
@@ -395,7 +351,7 @@ namespace Animal
       return _speedModifier;
     }
 
-    private void SendState(AnimalState state)
+    private void OnStateChanged(AnimalState state)
     {
       animationManager.ReceiveState(state);
     }
@@ -420,6 +376,61 @@ namespace Animal
 
     public void ResetGameObject()
     {
+      RestGender();
+      ResetSpeedSize();
+      SetAnimalType();
     }
+
+    #region ResetSetup
+
+    private void RestGender()
+    {
+      Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
+      RenderAnimalSpecificColors();
+      if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+    }
+
+    private void ResetSpeedSize()
+    {
+      const float rangeMin = 0.8f;
+      const float rangeMax = 1.2f;
+      _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+      _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+      var sizeCubed = _sizeModifier * _sizeModifier * _sizeModifier;
+      var decreaseFactor = (float) (sizeCubed + Math.Pow(_speedModifier, 2));
+
+      _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
+      _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
+      _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
+
+      movement.SpeedFactor = _speedModifier;
+
+      // Setup size modification
+      var scale = _sizeModifier + VisualSizeModifier;
+      transform.localScale = new Vector3(scale, scale, scale);
+      _nutritionalValue = 100 * sizeCubed;
+    }
+
+    #endregion
+
+    #region CreationSetup
+
+    private void InitSensoryEvents()
+    {
+      hearingDetector.KnownAnimalChangedListeners += OnAnimalHeard;
+      foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
+      waterManager.WaterUpdateListeners += OnWaterLocationChanged;
+    }
+
+    private void InitStateMachine()
+    {
+      var states = GetStates(foodManager);
+      _stateMachine = new StateMachine<AnimalState>(states, AnimalState.Wander);
+      _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
+
+      _stateMachine.StateChangedListeners += OnStateChanged;
+    }
+
+    #endregion
   }
 }
