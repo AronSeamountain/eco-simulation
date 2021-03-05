@@ -110,6 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 140937291029867720}
   audioSource: {fileID: 829850726712899695}
+  agent: {fileID: 1783928942632099552}
 --- !u!1001 &140937291037153704
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -275,6 +276,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3773733403073822651, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: m_Speed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3773733403073822651, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
