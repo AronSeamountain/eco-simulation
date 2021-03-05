@@ -29,7 +29,7 @@ namespace Animal
       Herbivore
     }
 
-    private const int FertilityTimeInUnits = 5;
+    private int FertilityTimeInDays = 5;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -45,7 +45,7 @@ namespace Animal
     private float _sizeModifier;
     private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
-    private int _daysUntilFertile = FertilityTimeInUnits;
+    private int _daysUntilFertile;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
@@ -103,10 +103,12 @@ namespace Animal
       _stateMachine.StateChangedListeners += state => StateChangedListeners?.Invoke(state.ToString());
 
       _stateMachine.StateChangedListeners += SendState;
+      
       // Setup gender
       GenerateGender();
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
 
+      FertilitySetup(FertilityTimeInDays);
       //Listen to hearing events
       hearingManager.KnownAnimalChangedListeners += OnAnimalHeard;
 
@@ -135,7 +137,13 @@ namespace Animal
       // Setup size modification
       transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
 
-      SetAnimalType();
+      AnimalSetup();
+    }
+
+    public void FertilitySetup(int time)
+    {
+      _daysUntilFertile = time;
+      FertilityTimeInDays = time;
     }
 
     private void Update()
@@ -201,7 +209,7 @@ namespace Animal
       return _nourishmentDelegate.HydrationIsFull();
     }
 
-    protected abstract void SetAnimalType();
+    protected abstract void AnimalSetup();
 
     private void OnAnimalHeard(AbstractAnimal animal)
     {
@@ -297,7 +305,7 @@ namespace Animal
       var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _daysUntilFertile = FertilityTimeInUnits;
+      _daysUntilFertile = FertilityTimeInDays;
       Fertile = false;
       ShouldBirth = false;
     }

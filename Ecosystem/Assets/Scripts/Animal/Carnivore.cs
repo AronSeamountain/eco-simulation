@@ -2,12 +2,14 @@
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using UnityEngine;
 using Utils;
 
 namespace Animal
 {
   public sealed class Carnivore : AbstractAnimal
   {
+    [SerializeField] private int fertilityTimeInDays = 5;
     private const float HuntRange = 15;
     public readonly float EatingRange = 2f;
     public Herbivore Target { get; private set; }
@@ -17,8 +19,10 @@ namespace Animal
       Target = herbivore;
     }
 
-    protected override void SetAnimalType()
+
+    protected override void AnimalSetup()
     {
+      FertilitySetup(fertilityTimeInDays);
       Type = AnimalType.Carnivore;
     }
 

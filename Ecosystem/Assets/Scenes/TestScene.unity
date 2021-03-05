@@ -197,7 +197,12 @@ PrefabInstance:
     - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
         type: 3}
       propertyPath: spawnWolves
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
+        type: 3}
+      propertyPath: waterAmount
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
         type: 3}
@@ -221,7 +226,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7256537024960903, guid: 3655dbceeb698894e8d480c33a998f25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000052422485
+      value: -0.0000031085854
       objectReference: {fileID: 0}
     - target: {fileID: 1540518878665180749, guid: 3655dbceeb698894e8d480c33a998f25,
         type: 3}

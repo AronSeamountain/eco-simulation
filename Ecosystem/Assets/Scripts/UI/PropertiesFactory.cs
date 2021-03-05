@@ -12,6 +12,8 @@ namespace UI
   {
     public static IList<AbstractProperty> Create(AbstractAnimal animal)
     {
+      var properties = new List<AbstractProperty>();
+
       // Health
       var healthBar = PropertyFactory.CreateSlider();
       healthBar.Configure(
@@ -25,6 +27,8 @@ namespace UI
         animal.GetHealthDelegate().HealthChangedListeners -= healthBar.OnValueChanged;
       };
 
+      properties.Add(healthBar);
+
       // Saturation
       var saturationSlider = PropertyFactory.CreateSlider();
       saturationSlider.Configure(
@@ -35,6 +39,8 @@ namespace UI
       animal.GetNourishmentDelegate().SaturationChangedListeners += saturationSlider.OnValueChanged;
       saturationSlider.CleanupListeners += () =>
         animal.GetNourishmentDelegate().SaturationChangedListeners -= saturationSlider.OnValueChanged;
+
+      properties.Add(saturationSlider);
 
       // Hydration
       var hydrationSlider = PropertyFactory.CreateSlider();
@@ -47,19 +53,38 @@ namespace UI
       hydrationSlider.CleanupListeners += () =>
         animal.GetNourishmentDelegate().HydrationChangedListeners -= hydrationSlider.OnValueChanged;
 
+      properties.Add(hydrationSlider);
+
       // State name
       var state = PropertyFactory.CreateKeyValuePair();
       state.Configure("State", animal.GetCurrentStateEnum().ToString());
       animal.StateChangedListeners += state.OnValueChanged;
       state.CleanupListeners += () => animal.StateChangedListeners -= state.OnValueChanged;
 
+      properties.Add(state);
+
       // Speed
       var speed = PropertyFactory.CreateKeyValuePair();
       speed.Configure("Speed", Prettifier.Round(animal.GetSpeedModifier(), 2));
 
+      properties.Add(speed);
+
       // Size
       var size = PropertyFactory.CreateKeyValuePair();
       size.Configure("Size", Prettifier.Round(animal.GetSize(), 2));
+
+      properties.Add(size);
+      
+      //Gender
+      var gender = PropertyFactory.CreateKeyValuePair();
+      gender.Configure("Gender", animal.Gender.ToString());
+      properties.Add(gender);
+      if (animal.Gender == Gender.Female)
+      {
+        var isFertile = PropertyFactory.CreateKeyValuePair();
+        gender.Configure("Fertile", animal.Fertile.ToString());
+        properties.Add(isFertile);
+      }
 
       // Children
       var children = PropertyFactory.CreateKeyValuePair();
@@ -69,6 +94,7 @@ namespace UI
       {
         children.OnValueChanged(parent.Children.ToString());
       }
+      properties.Add(children);
 
       animal.ChildSpawnedListeners += ChildSpawnedImpl;
       children.CleanupListeners += () => animal.ChildSpawnedListeners -= ChildSpawnedImpl;
@@ -81,12 +107,13 @@ namespace UI
       {
         age.OnValueChanged($"{newAge} days");
       }
+      
+      properties.Add(age);
 
       animal.AgeChangedListeners += AgeChangedImpl;
       age.CleanupListeners += () => animal.AgeChangedListeners -= AgeChangedImpl;
 
-      return new List<AbstractProperty>
-        {healthBar, saturationSlider, hydrationSlider, state, age, speed, size, children};
+      return properties;
     }
 
     public static IList<AbstractProperty> Create(Plant plant)
@@ -100,7 +127,7 @@ namespace UI
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
       var age = PropertyFactory.CreateKeyValuePair();
-      age.Configure("Age", ((int) plant.AgeInHours/24).ToString());
+      age.Configure("Age", ((int) plant.AgeInHours / 24).ToString());
 
       void SaturationChangedImpl(float saturation)
       {
