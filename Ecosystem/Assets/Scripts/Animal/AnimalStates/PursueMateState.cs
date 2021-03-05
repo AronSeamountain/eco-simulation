@@ -23,7 +23,7 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
       var mateTarget = _animal.GetMateTarget();
 
       if (_animal.Dead) return AnimalState.Dead;

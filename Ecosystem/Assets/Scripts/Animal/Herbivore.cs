@@ -57,12 +57,12 @@ namespace Animal
     {
       if (animal == null) Debug.LogError("wawaaaaaaaaaaa");
       _hearsCarnivore = animal.IsCarnivore;
-      if (_hearsCarnivore) enemyToFleeFrom = animal;
+      if (_hearsCarnivore) EnemyToFleeFrom = animal;
     }
 
     public override bool SafeDistanceFromEnemy()
     {
-      var distance = Vector3.Distance(gameObject.transform.position, enemyToFleeFrom.transform.position);
+      var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
       return _safeDistance < distance;
     }
   }

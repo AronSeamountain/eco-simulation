@@ -47,7 +47,6 @@ namespace Animal
     [SerializeField] protected Hearing hearing;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
-    public AbstractAnimal enemyToFleeFrom;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -60,6 +59,7 @@ namespace Animal
     public Died DiedListeners;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
+    public AbstractAnimal EnemyToFleeFrom { get; set; }
     public float SizeModifier { get; private set; }
     public float SpeedModifier { get; private set; }
     public IEatable FoodAboutTooEat { get; set; }
@@ -238,7 +238,7 @@ namespace Animal
 
     private void ClearEnemyTarget()
     {
-      enemyToFleeFrom = null;
+      EnemyToFleeFrom = null;
     }
 
     private void OnMateFound(AbstractAnimal animal)
@@ -439,9 +439,9 @@ namespace Animal
 
     public void Flee()
     {
-      if (enemyToFleeFrom)
+      if (EnemyToFleeFrom)
       {
-        Turn(enemyToFleeFrom);
+        Turn(EnemyToFleeFrom);
         GoTo(transform.position + transform.forward);
       }
     }

@@ -40,7 +40,7 @@ namespace Animal.AnimalStates
     {
       if (_animal.Dead) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
 
       var haveIdledSufficiently = _timeIdled >= _idleTime;
       if (haveIdledSufficiently)
