@@ -23,6 +23,7 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
+      _animal.Decay();
       return AnimalState.Dead;
     }
 
