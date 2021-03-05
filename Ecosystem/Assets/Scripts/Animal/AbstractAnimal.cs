@@ -45,8 +45,8 @@ namespace Animal
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
-    private float _sizeModifier;
-    private float _speedModifier;
+    public float SizeModifier { get; private set; }
+    public float SpeedModifier { get; private set; }
     private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
@@ -56,6 +56,9 @@ namespace Animal
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
+
+    public AbstractAnimal LastMaleMate { get; private set; }
+
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
@@ -123,22 +126,23 @@ namespace Animal
       // Setup speed and size variables for nourishment modifiers
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
-      _speedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      _sizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      var sizeCubed = _sizeModifier * _sizeModifier * _sizeModifier;
-      var decreaseFactor = (float) (sizeCubed + Math.Pow(_speedModifier, 2));
+      SpeedModifier = Random.Range(rangeMin, rangeMax);
+      SizeModifier = Random.Range(rangeMin, rangeMax);
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      var decreaseFactor = (sizeCubed + SpeedModifier * SpeedModifier);
+
 
       _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
-      _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(_sizeModifier, 3) * 100);
+      _nourishmentDelegate.SetMaxNourishment(SizeModifier * SizeModifier * SizeModifier * 100);
 
       // Setup speed modifier
 
-      movement.SpeedFactor = _speedModifier;
+      movement.SpeedFactor = SpeedModifier;
 
       // Setup size modification
-      transform.localScale = new Vector3(_sizeModifier, _sizeModifier, _sizeModifier);
       _nutritionalValue = 100 * sizeCubed;
+      transform.localScale = new Vector3(SizeModifier, SizeModifier, SizeModifier);
 
       SetAnimalType();
     }
@@ -275,7 +279,7 @@ namespace Animal
     public void Eat(IEatable food)
     {
       //full bite or what is left for a full stomach
-      var biteSize = Math.Min(20 * _sizeModifier * _sizeModifier,
+      var biteSize = Math.Min(20 * SizeModifier * SizeModifier,
         _nourishmentDelegate.SaturationFromFull());
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
       mouthParticles.Emit(1);
@@ -297,12 +301,16 @@ namespace Animal
 
     public void Drink(Water water)
     {
-      var sip = 30 * _sizeModifier * _sizeModifier;
+      var sip = 30 * SizeModifier * SizeModifier;
       Drink(water.SaturationModifier * sip * Time.deltaTime);
       mouthParticles.Emit(1);
     }
 
-    public void SpawnChild()
+    /// <summary>
+    ///   This method will only be called in a female animal.
+    /// make this return the child if it needs to be overridden in the future
+    /// </summary>
+    public void SpawnChild(AbstractAnimal father)
     {
       Children++;
       var child = Instantiate(childPrefab, transform.position, Quaternion.identity).GetComponent<AbstractAnimal>();
@@ -311,6 +319,14 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
+
+      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
+      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
+
+      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
+      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
+
+      child.SetPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
     }
 
     /// <summary>
@@ -342,7 +358,11 @@ namespace Animal
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if (Gender == Gender.Female) ShouldBirth = true;
+      if (Gender == Gender.Female)
+      {
+        LastMaleMate = father;
+        ShouldBirth = true;
+      }
     }
 
     public void Forget(FoodManager.FoodMemory memory)
@@ -355,11 +375,6 @@ namespace Animal
       return _stateMachine.GetCurrentStateEnum();
     }
 
-    public float GetSize()
-    {
-      return transform.localScale.x;
-    }
-
     public HealthDelegate GetHealthDelegate()
     {
       return _healthDelegate;
@@ -370,10 +385,6 @@ namespace Animal
       return _nourishmentDelegate;
     }
 
-    public float GetSpeedModifier()
-    {
-      return _speedModifier;
-    }
 
     private void SendState(AnimalState state)
     {
@@ -465,6 +476,12 @@ namespace Animal
     {
       movement.SpeedFactor = movement.SpeedFactor - 5;
       ClearEnemyTarget();
+    }
+
+    private void SetPropertiesOnBirth(float speed, float size)
+    {
+      SpeedModifier = speed;
+      SizeModifier = size;
     }
   }
 }
