@@ -247,7 +247,10 @@ namespace Animal
       Fertile = false;
       Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
 
-      genderRenderer.material.color = Color.black;
+      if (Gender == Gender.Male)
+        genderRenderer.material.color = new Color(0.12f, 0.15f, 0.18f);
+      else
+        genderRenderer.material.color = new Color(0.5f, 0.56f, 0.61f);
     }
 
     private void OnMateFound(AbstractAnimal animal)
