@@ -5951,7 +5951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8ed6799756146048a91cdc666817a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vision: {fileID: 0}
+  vision: {fileID: 3254812618266142070}
 --- !u!114 &-7191508722750619209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5964,7 +5964,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vision: {fileID: 0}
+  vision: {fileID: 3254812618266142070}
 --- !u!195 &583815280997529235
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -5999,7 +5999,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a01267a139454c07a4663795998ac9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vision: {fileID: 0}
+  vision: {fileID: 3254812618266142070}
 --- !u!65 &3909594730175147418
 BoxCollider:
   m_ObjectHideFlags: 0

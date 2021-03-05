@@ -22,7 +22,7 @@ namespace Animal.Managers
 
       if (animal.Gender == Gender.Male) return;
 
-      if (MateListeners != null) MateListeners.Invoke(animal);
+      MateListeners?.Invoke(animal);
     }
   }
 }
