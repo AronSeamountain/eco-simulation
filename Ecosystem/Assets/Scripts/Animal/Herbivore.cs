@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Animal
 {
   public sealed class Herbivore : AbstractAnimal
   {
+    private bool _hearsCarnivore;
+    private readonly float _safeDistance = 15f;
+
     protected override void SetAnimalType()
     {
       Specie = AnimalSpecie.Rabbit;
@@ -34,7 +39,9 @@ namespace Animal
         pursueFoodState,
         new PursueMateState(this),
         new EatState(this),
-        new DrinkState(this)
+        new DrinkState(this),
+        new FleeState(this),
+        new IdleState(this)
       };
     }
 
@@ -46,6 +53,18 @@ namespace Animal
     public void TakeDamage(int damage)
     {
       _healthDelegate.DecreaseHealth(damage);
+    }
+
+    protected override void OnAnimalHeard(AbstractAnimal animal)
+    {
+      _hearsCarnivore = animal.IsCarnivore;
+      if (_hearsCarnivore) enemyToFleeFrom = animal;
+    }
+
+    public override bool SafeDistanceFromEnemy()
+    {
+      var distance = Vector3.Distance(gameObject.transform.position, enemyToFleeFrom.transform.position);
+      return _safeDistance < distance;
     }
   }
 }

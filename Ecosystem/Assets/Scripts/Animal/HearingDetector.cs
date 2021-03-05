@@ -30,7 +30,7 @@ namespace Animal
 
     private void OnTriggerEnter(Collider other)
     {
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal && NotSelf(animal))
+      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal && NotSelf(animal) && animal.Alive)
       {
         AnimalHeardListeners?.Invoke(animal);
         IndicateSomethingInside(true);

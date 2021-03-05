@@ -56,13 +56,19 @@ namespace UI
       state.CleanupListeners += () => animal.StateChangedListeners -= state.OnValueChanged;
 
       // Speed
-      var speed = RowFactory.CreateKeyValuePair();
-      speed.Configure("Speed", Prettifier.Round(animal.GetSpeedModifier(), 2));
-
+      var speed = PropertyFactory.CreateKeyValuePair();
+      speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));
+  
       // Size
-      var size = RowFactory.CreateKeyValuePair();
-      size.Configure("Size", Prettifier.Round(animal.GetSize(), 2));
+      var size = PropertyFactory.CreateKeyValuePair();
+      size.Configure("Size", Prettifier.Round(animal.SizeModifier, 2));
 
+   
+      animal.PropertiesChangedListeners += () =>
+      {
+        speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));
+        size.Configure("Size", Prettifier.Round(animal.SizeModifier, 2));
+      };
       // Children
       var children = RowFactory.CreateKeyValuePair();
       children.Configure("Children", animal.Children.ToString());

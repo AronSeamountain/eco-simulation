@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Animal.AnimalStates;
 using UnityEngine;
 
@@ -12,6 +12,7 @@ namespace Animal.Managers
     private const int Pursue = 3;
     private const int Idle = 4;
     private static readonly int State = Animator.StringToHash("State");
+    private static readonly int AnimationSpeed = Animator.StringToHash("AnimationSpeed");
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource audioSource;
 
@@ -20,27 +21,37 @@ namespace Animal.Managers
       switch (state)
       {
         case AnimalState.Birth:
-          animator.SetInteger(State, Birth);
+          SetAnimation(Birth, 1);
           break;
         case AnimalState.Dead:
-          animator.SetInteger(State, Dead);
+          SetAnimation(Dead, 1);
           break;
         case AnimalState.Wander:
-          animator.SetInteger(State, Wander);
+          SetAnimation(Wander, 1);
           break;
         case AnimalState.PursueFood:
         case AnimalState.PursueMate:
         case AnimalState.PursueWater:
+        case AnimalState.Flee:
         case AnimalState.Hunt:
-          animator.SetInteger(State, Pursue);
+          SetAnimation(Pursue, 1.5f);
           break;
         case AnimalState.Eat:
         case AnimalState.Drink:
-          animator.SetInteger(State, Idle);
+          SetAnimation(Idle, 2.5f);
+          break;
+        case AnimalState.Idle:
+          SetAnimation(Idle, 1);
           break;
         default:
           throw new ArgumentOutOfRangeException(nameof(state), state, null);
       }
+    }
+
+    private void SetAnimation(int state, float animationSpeed)
+    {
+      animator.SetInteger(State, state);
+      animator.SetFloat(AnimationSpeed, animationSpeed);
     }
 
     public void AnimalSound()

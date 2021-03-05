@@ -37,6 +37,7 @@ namespace Animal.AnimalStates
       if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsHungry) return AnimalState.Wander;
+      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
 
       // A new food source has been found. Change the food target to the closest food.
       if (_knownFoodTargetsChanged)

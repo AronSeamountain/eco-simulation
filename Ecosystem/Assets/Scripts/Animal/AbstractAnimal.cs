@@ -8,6 +8,7 @@ using Foods;
 using Pools;
 using UI;
 using UI.Properties;
+using UnityEditor.Timeline;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,6 +21,7 @@ namespace Animal
   {
     public delegate void AgeChanged(int age);
 
+    public delegate void PropertiesChanged();
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
     public delegate void Died(AbstractAnimal animal);
@@ -41,22 +43,29 @@ namespace Animal
     [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected Managers.HearingDetector hearingDetector;
     [SerializeField] private AnimationManager animationManager;
-    [SerializeField] protected SkinnedMeshRenderer genderRenderer;
+    [SerializeField] private SkinnedMeshRenderer genderRenderer;
+    public AbstractAnimal enemyToFleeFrom;
+    private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
+    public float SizeModifier { get; private set; }
+    public float SpeedModifier { get; private set; }
     private float _nutritionalValue;
-    private float _sizeModifier;
-    private float _speedModifier;
     private StateMachine<AnimalState> _stateMachine;
     private int _unitsUntilFertile = FertilityTimeInUnits;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
     public StateChanged StateChangedListeners;
+    public PropertiesChanged PropertiesChangedListeners;
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
+
+    public AbstractAnimal LastMaleMate { get; private set; }
+    private float _mutationPercentPerDay = 10f;
+    private float _biggestMutationChange = 0.3f;
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
@@ -107,6 +116,42 @@ namespace Animal
       InitStateMachine();
       InitSensoryEvents();
 
+      _stateMachine.StateChangedListeners += SendState;
+      // Setup gender
+      GenerateGender();
+      if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+
+      //Listen to hearing events
+      hearingManager.KnownAnimalChangedListeners += OnAnimalHeard;
+
+      // Listen to food events
+      foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
+
+      // Listen to water events
+      waterManager.WaterUpdateListeners += OnWaterLocationChanged;
+
+      // Setup speed and size variables for nourishment modifiers
+      const float rangeMin = 0.8f;
+      const float rangeMax = 1.2f;
+      SpeedModifier = Random.Range(rangeMin, rangeMax);
+      SizeModifier = Random.Range(rangeMin, rangeMax);
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      var decreaseFactor = (sizeCubed + SpeedModifier * SpeedModifier);
+
+
+      _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
+      _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
+      _nourishmentDelegate.SetMaxNourishment(SizeModifier * SizeModifier * SizeModifier * 100);
+
+      // Setup speed modifier
+
+      movement.SpeedFactor = SpeedModifier;
+
+      // Setup size modification
+      _nutritionalValue = 100 * sizeCubed;
+      transform.localScale = new Vector3(SizeModifier, SizeModifier, SizeModifier);
+
+      SetAnimalType();
       ResetGameObject();
     }
 
@@ -188,8 +233,28 @@ namespace Animal
     {
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+      Mutate();
     }
 
+    private void Mutate()
+    {
+      if (_mutationPercentPerDay > Random.Range(0,100))
+      {
+        SpeedModifier = Random.Range(SpeedModifier * (1 - _biggestMutationChange),
+          SpeedModifier * (1 + _biggestMutationChange));
+        
+        SizeModifier = Random.Range(SizeModifier * (1 - _biggestMutationChange),
+          SizeModifier * (1 + _biggestMutationChange));
+        PropertiesChangedListeners?.Invoke();
+        
+        UpdateScale();
+      }
+    }
+
+    private void UpdateScale()
+    {
+      transform.localScale = new Vector3(1, 1, 1) * SizeModifier; 
+    }
     public bool CanEatMore()
     {
       return _nourishmentDelegate.SaturationIsFull();
@@ -202,11 +267,16 @@ namespace Animal
 
     protected abstract void SetAnimalType();
 
-    private void OnAnimalHeard(AbstractAnimal animal)
+    protected virtual void OnAnimalHeard(AbstractAnimal animal)
     {
+      // do different things in herbivore and carnivore.
     }
 
     protected abstract void RenderAnimalSpecificColors();
+    private void ClearEnemyTarget()
+    {
+      enemyToFleeFrom = null;
+    }
 
     private void OnMateFound(AbstractAnimal animal)
     {
@@ -249,7 +319,7 @@ namespace Animal
     public void Eat(IEatable food)
     {
       //full bite or what is left for a full stomach
-      var biteSize = Math.Min(20 * _sizeModifier * _sizeModifier,
+      var biteSize = Math.Min(20 * SizeModifier * SizeModifier,
         _nourishmentDelegate.SaturationFromFull());
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
       mouthParticles.Emit(1);
@@ -271,12 +341,16 @@ namespace Animal
 
     public void Drink(Water water)
     {
-      var sip = 30 * _sizeModifier * _sizeModifier;
+      var sip = 30 * SizeModifier * SizeModifier;
       Drink(water.SaturationModifier * sip * Time.deltaTime);
       mouthParticles.Emit(1);
     }
 
-    public void SpawnChild()
+    /// <summary>
+    ///   This method will only be called in a female animal.
+    /// make this return the child if it needs to be overridden in the future
+    /// </summary>
+    public void SpawnChild(AbstractAnimal father)
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Specie);
@@ -287,6 +361,14 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
+
+      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
+      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
+
+      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
+      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
+
+      child.SetPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
     }
 
     /// <summary>
@@ -318,7 +400,11 @@ namespace Animal
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if (Gender == Gender.Female) ShouldBirth = true;
+      if (Gender == Gender.Female)
+      {
+        LastMaleMate = father;
+        ShouldBirth = true;
+      }
     }
 
     public void Forget(FoodManager.FoodMemory memory)
@@ -331,11 +417,6 @@ namespace Animal
       return _stateMachine.GetCurrentStateEnum();
     }
 
-    public float GetSize()
-    {
-      return transform.localScale.x;
-    }
-
     public HealthDelegate GetHealthDelegate()
     {
       return _healthDelegate;
@@ -346,10 +427,6 @@ namespace Animal
       return _nourishmentDelegate;
     }
 
-    public float GetSpeedModifier()
-    {
-      return _speedModifier;
-    }
 
     private void OnStateChanged(AnimalState state)
     {
@@ -432,5 +509,47 @@ namespace Animal
     }
 
     #endregion
+
+    public virtual bool SafeDistanceFromEnemy()
+    {
+      return true;
+    }
+
+    /// <summary>
+    ///   Turns the animal either away from an animal (Flee())or towards an animal (in carnivore class)
+    /// </summary>
+    /// <param name="animal">The animal to turn to/away from.</param>
+    public void Turn(AbstractAnimal animal)
+    {
+      var turnSpeed = 3;
+      var vectorToEnemy = transform.position - animal.transform.position;
+      var rotation = Quaternion.LookRotation(vectorToEnemy);
+      transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * Time.deltaTime);
+    }
+
+    public void Flee()
+    {
+      if (enemyToFleeFrom)
+      {
+        Turn(enemyToFleeFrom);
+        GoTo(transform.position + transform.forward);
+      }
+    }
+    public void IncreaseSpeed()
+    {
+      movement.SpeedFactor = movement.SpeedFactor + 5;
+    }
+
+    public void StopFleeing()
+    {
+      movement.SpeedFactor = movement.SpeedFactor - 5;
+      ClearEnemyTarget();
+    }
+
+    private void SetPropertiesOnBirth(float speed, float size)
+    {
+      SpeedModifier = speed;
+      SizeModifier = size;
+    }
   }
 }
