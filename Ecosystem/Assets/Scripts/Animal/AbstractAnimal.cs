@@ -40,6 +40,8 @@ namespace Animal
     [SerializeField] protected HearingManager hearingManager;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] private SkinnedMeshRenderer genderRenderer;
+    public AbstractAnimal enemyToFleeFrom;
+    private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -210,8 +212,14 @@ namespace Animal
 
     protected abstract void SetAnimalType();
 
-    private void OnAnimalHeard(AbstractAnimal animal)
+    protected virtual void OnAnimalHeard(AbstractAnimal animal)
     {
+      // do different things in herbivore and carnivore.
+    }
+
+    private void ClearEnemyTarget()
+    {
+      enemyToFleeFrom = null;
     }
 
     private void GenerateGender()
@@ -432,6 +440,42 @@ namespace Animal
       {
         FullyConsumed();
       }
+    }
+
+    public virtual bool SafeDistanceFromEnemy()
+    {
+      return true;
+    }
+
+    /// <summary>
+    ///   Turns the animal either away from an animal (Flee())or towards an animal (in carnivore class)
+    /// </summary>
+    /// <param name="animal">The animal to turn to/away from.</param>
+    public void Turn(AbstractAnimal animal)
+    {
+      var turnSpeed = 3;
+      var vectorToEnemy = transform.position - animal.transform.position;
+      var rotation = Quaternion.LookRotation(vectorToEnemy);
+      transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * Time.deltaTime);
+    }
+
+    public void Flee()
+    {
+      if (enemyToFleeFrom)
+      {
+        Turn(enemyToFleeFrom);
+        GoTo(transform.position + transform.forward);
+      }
+    }
+    public void IncreaseSpeed()
+    {
+      movement.SpeedFactor = movement.SpeedFactor + 5;
+    }
+
+    public void StopFleeing()
+    {
+      movement.SpeedFactor = movement.SpeedFactor - 5;
+      ClearEnemyTarget();
     }
 
     private void SetPropertiesOnBirth(float speed, float size)

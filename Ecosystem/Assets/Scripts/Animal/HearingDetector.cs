@@ -32,7 +32,7 @@ namespace Animal
     private void OnTriggerEnter(Collider other)
     {
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal &&
-          animal.transform.position != transform.parent.position)
+          animal.transform.position != transform.parent.position && animal.IsAlive)
       {
         AnimalHeardListeners?.Invoke(animal);
         listeningArea.material.SetColor("_Color", Color.blue);

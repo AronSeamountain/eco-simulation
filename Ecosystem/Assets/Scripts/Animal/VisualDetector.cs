@@ -72,8 +72,6 @@ namespace Animal
         WaterFoundListeners?.Invoke(water);
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
         AnimalFoundListeners?.Invoke(foundAnimal);
-      
-        
     }
 
     /// <summary>

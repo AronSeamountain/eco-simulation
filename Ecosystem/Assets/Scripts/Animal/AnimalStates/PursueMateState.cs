@@ -25,6 +25,7 @@ namespace Animal.AnimalStates
     {
       if (!_animal.IsAlive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
+      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
 
       var mateTarget = _animal.GetMateTarget();
       if (mateTarget == null) return AnimalState.Wander;

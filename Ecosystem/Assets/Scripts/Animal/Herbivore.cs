@@ -10,6 +10,9 @@ namespace Animal
 {
   public class Herbivore : AbstractAnimal
   {
+    private bool _hearsCarnivore;
+    private readonly float _safeDistance = 15f;
+
     protected override void SetAnimalType()
     {
       Type = AnimalType.Herbivore;
@@ -28,7 +31,8 @@ namespace Animal
         pursueFoodState,
         new PursueMateState(this),
         new EatState(this),
-        new DrinkState(this)
+        new DrinkState(this),
+        new FleeState(this)
       };
     }
 
@@ -40,6 +44,18 @@ namespace Animal
     public void TakeDamage(int damage)
     {
       _healthDelegate.DecreaseHealth(damage);
+    }
+
+    protected override void OnAnimalHeard(AbstractAnimal animal)
+    {
+      _hearsCarnivore = animal.IsCarnivore;
+      if (_hearsCarnivore) enemyToFleeFrom = animal;
+    }
+
+    public override bool SafeDistanceFromEnemy()
+    {
+      var distance = Vector3.Distance(gameObject.transform.position, enemyToFleeFrom.transform.position);
+      return _safeDistance < distance;
     }
   }
 }
