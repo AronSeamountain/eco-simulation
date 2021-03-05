@@ -46,7 +46,7 @@ namespace Animal
     [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected Hearing hearing;
     [SerializeField] private AnimationManager animationManager;
-    [SerializeField] protected SkinnedMeshRenderer genderRenderer;
+    [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     public AbstractAnimal enemyToFleeFrom;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;

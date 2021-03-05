@@ -249,7 +249,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 140937291029867720}
   audioSource: {fileID: 829850726712899695}
-  agent: {fileID: 1783928942632099552}
 --- !u!1001 &140937291037153704
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -512,6 +511,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.909
       objectReference: {fileID: 0}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: meshRenderer
+      value: 
+      objectReference: {fileID: 5464662283699513404}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: genderRenderer

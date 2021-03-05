@@ -19,9 +19,10 @@ MonoBehaviour:
   childPrefab: {fileID: 3994141988682731950}
   matingManager: {fileID: 6207474732365605746}
   mouthParticles: {fileID: 4908705577462801219}
-  hearingDetector: {fileID: 6311795476331734518}
+  hearing: {fileID: 4250396893436904635}
   animationManager: {fileID: 8410095186163081469}
   genderRenderer: {fileID: 0}
+  enemyToFleeFrom: {fileID: 0}
 --- !u!114 &8410095186163081469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,16 +274,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a01267a139454c07a4663795998ac9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6311795476331734518 stripped
+--- !u!114 &4250396893436904635 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2659566409890181366, guid: bf200501b32dda54c93cca32e5f22aba,
+  m_CorrespondingSourceObject: {fileID: 5299853235773772219, guid: bf200501b32dda54c93cca32e5f22aba,
     type: 3}
   m_PrefabInstance: {fileID: 8318338745849550080}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3994141988682731950}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30efd526357c3d842882e7092a7d45e7, type: 3}
+  m_Script: {fileID: 11500000, guid: 832a2cdb1b1e3534f808ff2f77949a9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!198 &4908705577462801219 stripped

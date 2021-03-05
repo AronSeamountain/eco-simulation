@@ -19,9 +19,9 @@ namespace Animal
     protected override void RenderAnimalSpecificColors()
     {
       if (Gender == Gender.Male)
-        genderRenderer.material.color = new Color(1f, 0.8f, 0.8f);
+        meshRenderer.material.color = new Color(1f, 0.8f, 0.8f);
       else
-        genderRenderer.material.color = new Color(0.99f, 0.65f, 0.87f);
+        meshRenderer.material.color = new Color(0.99f, 0.65f, 0.87f);
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)

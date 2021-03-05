@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4865815848461791069}
   - component: {fileID: 3254812618266142070}
   m_Layer: 11
-  m_Name: VisionArea
+  m_Name: Vision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5791,7 +5791,7 @@ GameObject:
   - component: {fileID: 8526265895815238811}
   - component: {fileID: 5299853235773772219}
   m_Layer: 12
-  m_Name: HearingArea
+  m_Name: Hearing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
