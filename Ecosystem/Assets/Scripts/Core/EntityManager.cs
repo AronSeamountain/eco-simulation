@@ -24,7 +24,8 @@ namespace Core
     private const float HoursInRealSeconds = 0.5f;
 
     private const float HoursPerDay = 24;
-    [SerializeField] private int initialAnimals = 1;
+    [SerializeField] private int initialWolves = 1;
+    [SerializeField] private int initialRabbits = 1;
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private int waterAmount;
     [SerializeField] private GameObject rabbitPrefab;
@@ -32,8 +33,6 @@ namespace Core
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject waterPrefab;
     [SerializeField] private bool log;
-    [SerializeField] private bool spawnWolves;
-    [SerializeField] private bool spawnRabbits;
     private DataLogger _logger;
     private float _hoursPassed;
     private float _hourTicker;
@@ -106,17 +105,15 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      if (spawnRabbits)
-      {
-        SpawnAndAddGeneric(initialAnimals, rabbitPrefab, Animals);
-        HerbivoreCount += initialAnimals;
-      }
+      
+        SpawnAndAddGeneric(initialRabbits, rabbitPrefab, Animals);
+        HerbivoreCount += initialRabbits;
+      
 
-      if (spawnWolves)
-      {
-        SpawnAndAddGeneric(initialAnimals, wolfPrefab, Animals);
-        CarnivoreCount += initialAnimals;
-      }
+      
+        SpawnAndAddGeneric(initialWolves, wolfPrefab, Animals);
+        CarnivoreCount += initialWolves;
+      
     }
 
     /// <summary>

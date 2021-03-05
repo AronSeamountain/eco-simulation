@@ -82,7 +82,7 @@ namespace UI
       if (animal.Gender == Gender.Female)
       {
         var isFertile = PropertyFactory.CreateKeyValuePair();
-        gender.Configure("Fertile", animal.Fertile.ToString());
+        isFertile.Configure("Fertile", animal.Fertile.ToString());
         properties.Add(isFertile);
       }
 
