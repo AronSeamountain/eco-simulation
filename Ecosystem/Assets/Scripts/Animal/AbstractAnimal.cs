@@ -54,9 +54,9 @@ namespace Animal
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
-    
-    public AbstractAnimal FatherToChildren { get; private set; }
-    
+
+    public AbstractAnimal LastMaleMate { get; private set; }
+
     public bool Fertile { get; private set; }
     public bool IsMoving => movement.IsMoving;
     public Gender Gender { get; private set; }
@@ -124,16 +124,15 @@ namespace Animal
       // Setup speed and size variables for nourishment modifiers
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
-      SpeedModifier = Random.Range(rangeMin, rangeMax); 
-      SizeModifier = Random.Range(rangeMin, rangeMax); 
+      SpeedModifier = Random.Range(rangeMin, rangeMax);
+      SizeModifier = Random.Range(rangeMin, rangeMax);
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = (float) (sizeCubed + Math.Pow(SpeedModifier, 2));
+      var decreaseFactor = (sizeCubed + SpeedModifier * SpeedModifier);
 
-      
 
       _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
-      _nourishmentDelegate.SetMaxNourishment((float) Math.Pow(SizeModifier, 3) * 100);
+      _nourishmentDelegate.SetMaxNourishment(SizeModifier * SizeModifier * SizeModifier * 100);
 
       // Setup speed modifier
 
@@ -312,15 +311,14 @@ namespace Animal
       _unitsUntilFertile = FertilityTimeInUnits;
       Fertile = false;
       ShouldBirth = false;
-      
+
       var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
       var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
-      
+
       var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
       var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
 
-      child.setPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin,sizeMax));
-
+      child.SetPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
     }
 
     /// <summary>
@@ -354,9 +352,8 @@ namespace Animal
     {
       if (Gender == Gender.Female)
       {
-        FatherToChildren = father;
+        LastMaleMate = father;
         ShouldBirth = true;
-        
       }
     }
 
@@ -437,7 +434,7 @@ namespace Animal
       }
     }
 
-    private void setPropertiesOnBirth(float speed, float size)
+    private void SetPropertiesOnBirth(float speed, float size)
     {
       SpeedModifier = speed;
       SizeModifier = size;
