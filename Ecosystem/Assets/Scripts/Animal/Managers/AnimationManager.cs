@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Animal.AnimalStates;
 using UnityEngine;
 
@@ -32,6 +32,7 @@ namespace Animal.Managers
         case AnimalState.PursueFood:
         case AnimalState.PursueMate:
         case AnimalState.PursueWater:
+        case AnimalState.Flee:
         case AnimalState.Hunt:
           SetAnimation(Pursue, 1.5f);
           break;

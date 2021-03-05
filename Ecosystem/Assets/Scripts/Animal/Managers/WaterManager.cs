@@ -22,17 +22,11 @@ namespace Animal.Managers
     {
       if (water == null) return;
       if (!ClosestKnownWater)
-      {
         ClosestKnownWater = water;
-      }
       else if (DistanceTo(water) < DistanceTo(ClosestKnownWater))
-      {
         ClosestKnownWater = water;
-      }
       else
-      {
         return;
-      }
 
       WaterUpdateListeners?.Invoke(ClosestKnownWater);
     }

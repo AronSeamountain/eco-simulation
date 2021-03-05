@@ -11,6 +11,7 @@
     PursueMate,
     Eat,
     Drink,
+    Flee,
     Idle
   }
 }

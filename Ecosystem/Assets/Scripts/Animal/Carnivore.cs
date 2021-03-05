@@ -10,6 +10,9 @@ namespace Animal
   {
     private const float HuntRange = 15;
     public readonly float EatingRange = 2f;
+    private bool _animalOfSameType;
+
+    private bool _hearsHerbivore;
     public Herbivore Target { get; private set; }
 
     private void OnPreyFound(Herbivore herbivore)
@@ -35,20 +38,26 @@ namespace Animal
         new PursueMateState(this),
         new EatState(this),
         new DrinkState(this),
+        new FleeState(this),
         new IdleState(this)
       };
     }
 
     public bool ShouldHunt(Herbivore carnivoreTarget)
     {
-      if (!carnivoreTarget || !carnivoreTarget.IsAlive) return false;
+      if (!carnivoreTarget || !_nourishmentDelegate.IsHungry || !carnivoreTarget.CanBeEaten()) return false;
       return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, HuntRange);
     }
 
-    public void TakeABiteFromHerbivore(Herbivore carnivoreTarget)
+    public void AttackTarget(Herbivore carnivoreTarget)
     {
-      carnivoreTarget.TakeDamage();
-      _nourishmentDelegate.Saturation++;
+      carnivoreTarget.TakeDamage(1);
+    }
+
+    protected override void OnAnimalHeard(AbstractAnimal animal)
+    {
+      _hearsHerbivore = animal.IsHerbivore;
+      if (_hearsHerbivore) Turn(animal);
     }
   }
 }
