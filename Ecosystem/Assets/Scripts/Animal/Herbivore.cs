@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Animal
 {
   public sealed class Herbivore : AbstractAnimal
   {
-    private bool _hearsCarnivore;
     private readonly float _safeDistance = 15f;
+    private bool _hearsCarnivore;
 
     protected override void SetAnimalType()
     {

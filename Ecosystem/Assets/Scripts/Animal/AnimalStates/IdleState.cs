@@ -38,15 +38,15 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      if (!_animal.IsAlive) return AnimalState.Dead;
+      if (_animal.Dead) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.enemyToFleeFrom) return AnimalState.Flee;
-      var haveIdledSufficiently = _timeIdled >= _idleTime;
 
-      if (haveIdledSufficiently) return AnimalState.Wander;
+      var haveIdledSufficiently = _timeIdled >= _idleTime;
+      if (haveIdledSufficiently)
+        return AnimalState.Wander;
 
       _timeIdled += Time.deltaTime;
-
       return AnimalState.Idle;
     }
 
