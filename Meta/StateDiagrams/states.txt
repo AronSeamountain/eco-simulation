@@ -12,6 +12,7 @@ rectangle "Herbivore" {
   (H.Wander) ---> (H.PursueMate) : Fed, hydrated and saw a mate
   (H.Wander) ---> (H.Dead) : No health
   (H.Wander) ---> (H.Flee) : Carnivore is heard
+  (H.Wander) ---> (H.Idle) : Reached wander destination
 
 
   (H.PursueFood) ---> (H.PursueFood)
@@ -52,6 +53,10 @@ rectangle "Herbivore" {
 
   (H.Birth) ---> (H.Wander)
   (H.Birth) ---> (H.Dead) : No health
+
+  (H.Idle) ---> (H.Dead) : No health
+  (H.Idle) ---> (H.Birth) : Should birth 
+  (H.Idle) ---> (H.Flee) : Carnivore is heard
 }
 
 rectangle "Carnivore" {

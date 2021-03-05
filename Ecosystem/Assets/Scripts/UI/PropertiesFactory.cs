@@ -65,13 +65,12 @@ namespace UI
 
       // Speed
       var speed = PropertyFactory.CreateKeyValuePair();
-      speed.Configure("Speed", Prettifier.Round(animal.GetSpeedModifier(), 2));
-
+      speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));
       properties.Add(speed);
 
       // Size
       var size = PropertyFactory.CreateKeyValuePair();
-      size.Configure("Size", Prettifier.Round(animal.GetSize(), 2));
+      size.Configure("Size", Prettifier.Round(animal.SizeModifier, 2));
 
       properties.Add(size);
       
@@ -86,6 +85,12 @@ namespace UI
         properties.Add(isFertile);
       }
 
+      animal.PropertiesChangedListeners += () =>
+      {
+        speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));
+        size.Configure("Size", Prettifier.Round(animal.SizeModifier, 2));
+      };
+   
       // Children
       var children = PropertyFactory.CreateKeyValuePair();
       children.Configure("Children", animal.Children.ToString());

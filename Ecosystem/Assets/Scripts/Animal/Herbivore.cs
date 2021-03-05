@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Animal
 {
@@ -32,7 +34,8 @@ namespace Animal
         new PursueMateState(this),
         new EatState(this),
         new DrinkState(this),
-        new FleeState(this)
+        new FleeState(this),
+        new IdleState(this)
       };
     }
 
