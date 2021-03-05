@@ -21,6 +21,7 @@ namespace Animal
   {
     public delegate void AgeChanged(int age);
 
+    public delegate void PropertiesChanged();
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
     public delegate void StateChanged(string state);
@@ -52,12 +53,13 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public StateChanged StateChangedListeners;
+    public PropertiesChanged PropertiesChangedListeners;
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
 
-    private float _mutationPercentPerDay = 50f;
-    private float _biggestMutationChange = 0.1f;
+    private float _mutationPercentPerDay = 10f;
+    private float _biggestMutationChange = 0.3f;
     
     public AbstractAnimal FatherToChildren { get; private set; }
     
@@ -213,6 +215,7 @@ namespace Animal
         
         SizeModifier = Random.Range(SizeModifier * (1 - _biggestMutationChange),
           SizeModifier * (1 + _biggestMutationChange));
+        PropertiesChangedListeners?.Invoke();
       }
     }
     public bool CanEatMore()
