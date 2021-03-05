@@ -5,11 +5,19 @@ using Core;
 
 namespace Animal
 {
-  public class Herbivore : AbstractAnimal
+  public sealed class Herbivore : AbstractAnimal
   {
     protected override void SetAnimalType()
     {
       Specie = AnimalSpecie.Rabbit;
+    }
+  
+    protected override void RenderAnimalSpecificColors()
+    {
+      if (Gender == Gender.Male)
+        genderRenderer.material.color = new UnityEngine.Color(1f, 0.8f, 0.8f);
+      else
+        genderRenderer.material.color = new UnityEngine.Color(1f, 0.72f, 0.72f);
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)

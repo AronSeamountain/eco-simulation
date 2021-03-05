@@ -41,7 +41,7 @@ namespace Animal
     [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected Managers.HearingDetector hearingDetector;
     [SerializeField] private AnimationManager animationManager;
-    [SerializeField] private SkinnedMeshRenderer genderRenderer;
+    [SerializeField] protected SkinnedMeshRenderer genderRenderer;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -247,11 +247,10 @@ namespace Animal
       Fertile = false;
       Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
 
-      if (Gender == Gender.Male)
-        genderRenderer.material.color = new Color(0.12f, 0.15f, 0.18f);
-      else
-        genderRenderer.material.color = new Color(0.5f, 0.56f, 0.61f);
+      RenderAnimalSpecificColors();
     }
+
+    protected abstract void RenderAnimalSpecificColors();
 
     private void OnMateFound(AbstractAnimal animal)
     {

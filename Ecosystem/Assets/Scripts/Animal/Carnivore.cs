@@ -22,6 +22,14 @@ namespace Animal
       Specie = AnimalSpecie.Wolf;
     }
 
+    protected override void RenderAnimalSpecificColors()
+    {
+      if (Gender == Gender.Male)
+        genderRenderer.material.color = new UnityEngine.Color(0.12f, 0.15f, 0.18f);
+      else
+        genderRenderer.material.color = new UnityEngine.Color(0.5f, 0.56f, 0.61f);
+    }
+
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
     {
       fManager.PreyFoundListeners += OnPreyFound;
