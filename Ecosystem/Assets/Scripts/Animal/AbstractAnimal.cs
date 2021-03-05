@@ -376,14 +376,14 @@ namespace Animal
 
     public void ResetGameObject()
     {
-      RestGender();
+      ResetGender();
       ResetSpeedSize();
       SetAnimalType();
     }
 
     #region ResetSetup
 
-    private void RestGender()
+    private void ResetGender()
     {
       Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
       RenderAnimalSpecificColors();

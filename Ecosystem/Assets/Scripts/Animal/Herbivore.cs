@@ -18,7 +18,7 @@ namespace Animal
       if (Gender == Gender.Male)
         genderRenderer.material.color = new Color(1f, 0.8f, 0.8f);
       else
-        genderRenderer.material.color = new Color(1f, 0.72f, 0.72f);
+        genderRenderer.material.color = new Color(0.99f, 0.65f, 0.87f);
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
