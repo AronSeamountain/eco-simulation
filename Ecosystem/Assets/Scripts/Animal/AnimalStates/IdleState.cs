@@ -5,16 +5,25 @@ namespace Animal.AnimalStates
 {
   public class IdleState : IState<AnimalState>
   {
+    /// <summary>
+    ///   The time to stand still in seconds.
+    /// </summary>
     private const float MaxIdle = 4f;
-    private float _timeIdled;
-    private float _idleTime;
+
     private readonly AbstractAnimal _animal;
-    
+
+    private float _idleTime;
+
+    /// <summary>
+    ///   The time the animal has stood still.
+    /// </summary>
+    private float _timeIdled;
+
     public IdleState(AbstractAnimal animal)
     {
       _animal = animal;
     }
-    
+
     public AnimalState GetStateEnum()
     {
       return AnimalState.Idle;
@@ -33,21 +42,18 @@ namespace Animal.AnimalStates
       if (_animal.ShouldBirth) return AnimalState.Birth;
       var haveIdledSufficiently = _timeIdled >= _idleTime;
 
-      if (haveIdledSufficiently)
-      {
-        return AnimalState.Wander;
-      }
-      
+      if (haveIdledSufficiently) return AnimalState.Wander;
+
       _timeIdled += Time.deltaTime;
 
       return AnimalState.Idle;
     }
-    
+
 
     public void Exit()
     {
     }
-    
+
     /// <summary>
     ///   Sets the idle time to a value between 0 and the max idle time.
     /// </summary>

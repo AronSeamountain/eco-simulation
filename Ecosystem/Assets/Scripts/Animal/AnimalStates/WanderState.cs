@@ -9,25 +9,10 @@ namespace Animal.AnimalStates
   /// </summary>
   public sealed class WanderState : IState<AnimalState>
   {
-    /// <summary>
-    ///   The time to stand still in seconds.
-    /// </summary>
-    private const float MaxIdle = 4f;
-
     private const float MarginToReachDestination = 2.5f;
     private readonly AbstractAnimal _animal;
 
     private Vector3 _destination;
-
-    /// <summary>
-    ///   The time the animal should stand still.
-    /// </summary>
-    private float _idleTime;
-
-    /// <summary>
-    ///   The time the animal has stood still.
-    /// </summary>
-    private float _timeIdled;
 
     public WanderState(AbstractAnimal animal)
     {
@@ -42,12 +27,10 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       GoToClosePoint();
-      
     }
 
     public void Exit()
     {
-      _animal.StopMoving();
     }
 
     public AnimalState Execute()
@@ -65,8 +48,8 @@ namespace Animal.AnimalStates
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
 
-      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination)) return AnimalState.Idle;
-      
+      if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
+        return AnimalState.Idle;
 
       return AnimalState.Wander;
     }
@@ -81,7 +64,5 @@ namespace Animal.AnimalStates
       _destination = point;
       _animal.GoTo(_destination);
     }
-
-    
   }
 }

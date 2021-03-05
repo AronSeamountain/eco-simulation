@@ -1,7 +1,6 @@
 ﻿using System;
 using Animal.AnimalStates;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Animal.Managers
 {
@@ -13,10 +12,9 @@ namespace Animal.Managers
     private const int Pursue = 3;
     private const int Idle = 4;
     private static readonly int State = Animator.StringToHash("State");
+    private static readonly int AnimationSpeed = Animator.StringToHash("AnimationSpeed");
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private NavMeshAgent agent;
-    private static readonly int AnimationSpeed = Animator.StringToHash("AnimationSpeed");
 
     public void ReceiveState(AnimalState state)
     {
