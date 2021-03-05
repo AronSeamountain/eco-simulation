@@ -14,7 +14,7 @@ namespace UI
 
     public static IEnumerable<AbstractProperty> Create(AbstractAnimal animal)
     {
-      // Health
+      // ---------- Health ----------
       var healthBar = RowFactory.CreateSlider();
       healthBar.Configure(
         animal.GetHealthDelegate().Health,
@@ -27,7 +27,7 @@ namespace UI
         animal.GetHealthDelegate().HealthChangedListeners -= healthBar.OnValueChanged;
       };
 
-      // Saturation
+      //---------- Saturation ----------
       var saturationSlider = RowFactory.CreateSlider();
       saturationSlider.Configure(
         animal.GetNourishmentDelegate().Saturation,
@@ -38,7 +38,7 @@ namespace UI
       saturationSlider.CleanupListeners += () =>
         animal.GetNourishmentDelegate().SaturationChangedListeners -= saturationSlider.OnValueChanged;
 
-      // Hydration
+      // ---------- Hydration ----------
       var hydrationSlider = RowFactory.CreateSlider();
       hydrationSlider.Configure(
         animal.GetNourishmentDelegate().Hydration,
@@ -49,27 +49,37 @@ namespace UI
       hydrationSlider.CleanupListeners += () =>
         animal.GetNourishmentDelegate().HydrationChangedListeners -= hydrationSlider.OnValueChanged;
 
-      // State name
+      // ---------- State name ----------
       var state = RowFactory.CreateKeyValuePair();
       state.Configure("State", animal.GetCurrentStateEnum().ToString());
       animal.StateChangedListeners += state.OnValueChanged;
       state.CleanupListeners += () => animal.StateChangedListeners -= state.OnValueChanged;
 
-      // Speed
+      // ---------- Speed ----------
       var speed = RowFactory.CreateKeyValuePair();
       speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));
 
-      // Size
+      void SpeedChangedImpl()
+      {
+        speed.OnValueChanged(Prettifier.Round(animal.SpeedModifier, 2));
+      }
+
+      animal.PropertiesChangedListeners += SpeedChangedImpl;
+      speed.CleanupListeners += () => animal.PropertiesChangedListeners -= SpeedChangedImpl;
+
+      // ---------- Size ----------
       var size = RowFactory.CreateKeyValuePair();
       size.Configure("Size", Prettifier.Round(animal.SizeModifier, 2));
 
-
-      animal.PropertiesChangedListeners += () =>
+      void SizeChangedImpl()
       {
-        speed.Configure("Speed", Prettifier.Round(animal.SpeedModifier, 2));
-        size.Configure("Size", Prettifier.Round(animal.SizeModifier, 2));
-      };
-      // Children
+        speed.OnValueChanged(Prettifier.Round(animal.SpeedModifier, 2));
+      }
+
+      animal.PropertiesChangedListeners += SizeChangedImpl;
+      speed.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
+
+      // ---------- Children ----------
       var children = RowFactory.CreateKeyValuePair();
       children.Configure("Children", animal.Children.ToString());
 
@@ -81,7 +91,7 @@ namespace UI
       animal.ChildSpawnedListeners += ChildSpawnedImpl;
       children.CleanupListeners += () => animal.ChildSpawnedListeners -= ChildSpawnedImpl;
 
-      // Age
+      // ---------- Age ----------
       var age = RowFactory.CreateKeyValuePair();
       age.Configure("Age", $"{animal.AgeInDays} days");
 
@@ -97,7 +107,7 @@ namespace UI
         {healthBar, saturationSlider, hydrationSlider, state, age, speed, size, children};
     }
 
-    public static IList<AbstractProperty> Create(Plant plant)
+    public static IEnumerable<AbstractProperty> Create(Plant plant)
     {
       var state = RowFactory.CreateKeyValuePair();
       state.Configure("State", plant.GetCurrentStateEnum().ToString());
@@ -123,7 +133,7 @@ namespace UI
       var ecoSystemText = RowFactory.CreateKeyValuePair();
       ecoSystemText.Configure("Ecosystem", "Forest");
 
-      // Age
+      // ---------- Age ----------
       var ageText = RowFactory.CreateKeyValuePair();
       ageText.Configure("Day", entityManager.Days.ToString());
 
@@ -135,7 +145,7 @@ namespace UI
       entityManager.DayTickListeners += DayChangeImpl;
       ageText.CleanupListeners += () => entityManager.DayTickListeners -= DayChangeImpl;
 
-      // Animals (herbivores/rabbits)
+      // ---------- Animals (herbivores/rabbits) ----------
       var herbivoreText = RowFactory.CreateKeyValuePair();
       herbivoreText.Configure("Rabbits", entityManager.HerbivoreCount.ToString());
 
@@ -147,7 +157,7 @@ namespace UI
       entityManager.TickListeners += HerbivoreUpdateImpl;
       herbivoreText.CleanupListeners += () => entityManager.TickListeners -= HerbivoreUpdateImpl;
 
-      // Animals (carnivores/wolfs)
+      // ---------- Animals (carnivores/wolfs) ----------
       var carnivoreText = RowFactory.CreateKeyValuePair();
       carnivoreText.Configure("Wolfs", entityManager.CarnivoreCount.ToString());
 
@@ -159,7 +169,7 @@ namespace UI
       entityManager.TickListeners += AnimalUpdateImpl;
       carnivoreText.CleanupListeners += () => entityManager.TickListeners -= AnimalUpdateImpl;
 
-      // Plants
+      // ---------- Plants ----------
       var plantText = RowFactory.CreateKeyValuePair();
       plantText.Configure("Plants", entityManager.Plants.Count.ToString());
 
