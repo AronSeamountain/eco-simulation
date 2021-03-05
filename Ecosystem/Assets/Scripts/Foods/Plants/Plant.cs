@@ -50,9 +50,13 @@ namespace Foods.Plants
       _stateMachine.Execute();
     }
 
-    public IList<AbstractProperty> GetStats(bool getStats)
+    public IEnumerable<AbstractProperty> GetProperties()
     {
       return PropertiesFactory.Create(this);
+    }
+
+    public void ShowGizmos(bool show)
+    {
     }
 
     public void Tick()

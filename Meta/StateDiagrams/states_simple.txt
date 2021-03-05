@@ -1,0 +1,47 @@
+@startuml
+
+skinparam monochrome true
+skinparam dpi 150
+skinparam defaultFontSize 16
+
+
+(Wander) ---> (Wander)
+(Wander) ---> (Escape)
+(Wander) ---> (PursueFood)
+(Wander) ---> (PursueWater)
+(Wander) ---> (PursueMate)
+(Wander) ---> (Dead)
+
+(PursueFood) ---> (PursueFood)
+(PursueFood) ---> (Wander)
+(PursueFood) ---> (Escape)
+(PursueFood) ---> (Dead)
+
+(Eat) ---> (Dead)
+(Eat) ---> (Wander)
+(Eat) ---> (Eat)
+
+(PursueWater) ---> (Escape)
+(PursueWater) ---> (PursueWater)
+(PursueWater) ---> (Drink)
+(PursueWater) ---> (Dead)
+
+(Drink) ---> (Dead)
+(Drink) ---> (Wander)
+(Drink) ---> (Drink)
+
+(PursueMate) ---> (PursueMate)
+(PursueMate) ---> (Birth)
+(PursueMate) ---> (Wander)
+(PursueMate) ---> (Dead)
+
+(Escape) ---> (Escape)
+(Escape) ---> (Wander)
+(Escape) ---> (Dead)
+
+(Dead) ---> (Dead)
+
+(Birth) ---> (Wander)
+(Birth) ---> (Dead)
+
+@enduml

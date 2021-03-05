@@ -1,5 +1,4 @@
 ﻿using Core;
-using Foods;
 using UnityEngine;
 using Utils;
 
@@ -33,9 +32,9 @@ namespace Animal.AnimalStates
 
       _carnivore.GoTo(_target.transform.position);
 
-      if (Vector3Util.InRange(_carnivore, _target, _carnivore.EatingRange))
+      if (Vector3Util.InRange(_carnivore, _target, Carnivore.EatingRange))
       {
-        if (!_target.IsAlive)
+        if (!_target.Alive)
         {
           _carnivore.FoodAboutTooEat = _target;
           return AnimalState.Eat;

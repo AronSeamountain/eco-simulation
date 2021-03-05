@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Animal;
-using Foods;
 using Foods.Plants;
 using Logger;
+using Pools;
 using UI;
 using UI.Properties;
 using UnityEditor;
@@ -24,20 +24,16 @@ namespace Core
     private const float UnitTimeSeconds = 0.5f;
 
     private const float UnitsPerDay = 10;
-    [SerializeField] private int initialAnimals = 1;
-    [SerializeField] private int initialPlants = 4;
-    [SerializeField] private int waterAmount;
-    [SerializeField] private GameObject rabbitPrefab;
+    [SerializeField] private int initialAnimals;
+    [SerializeField] private int initialPlants;
     [SerializeField] private GameObject plantPrefab;
-    [SerializeField] private GameObject wolfPrefab;
-    [SerializeField] private GameObject waterPrefab;
     [SerializeField] private bool log;
     [SerializeField] private bool spawnWolves;
     [SerializeField] private bool spawnRabbits;
+    private AnimalPool _animalPool;
     private DataLogger _logger;
     private float _unitsPassed;
     private float _unitTicker;
-    private int animalCount = 0;
     public DayTick DayTickListeners;
     private int plantCount;
     public Tick TickListeners;
@@ -49,13 +45,13 @@ namespace Core
 
     private void Awake()
     {
+      _animalPool = AnimalPool.SharedInstance;
+
       // Lists
       Animals = new List<AbstractAnimal>();
       SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
-
-      SpawnWater();
 
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
@@ -73,29 +69,40 @@ namespace Core
       UpdateTick();
     }
 
-    public IList<AbstractProperty> GetStats(bool getStats)
+    public IEnumerable<AbstractProperty> GetProperties()
     {
       return PropertiesFactory.Create(this);
     }
 
-    private void SpawnWater()
+    public void ShowGizmos(bool show)
     {
-      SpawnAndAddGeneric<Water>(waterAmount, waterPrefab);
     }
 
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
-      switch (child)
-      {
-        case Herbivore _:
-          HerbivoreCount++;
-          break;
-        case Carnivore _:
-          CarnivoreCount++;
-          break;
-      }
+      CountAnimal(child, true);
 
       ObserveAnimal(child, true);
+    }
+
+    /// <summary>
+    ///   Updates the count variable for the matching animal type. Increases it in case of an addition of animals, decreases on
+    ///   death (not added).
+    /// </summary>
+    /// <param name="animal">The animal to count.</param>
+    /// <param name="added">Whether the animal was added or died.</param>
+    private void CountAnimal(AbstractAnimal animal, bool added)
+    {
+      var toAdd = added ? 1 : -1;
+      switch (animal)
+      {
+        case Herbivore _:
+          HerbivoreCount += toAdd;
+          break;
+        case Carnivore _:
+          CarnivoreCount += toAdd;
+          break;
+      }
     }
 
     /// <summary>
@@ -105,14 +112,24 @@ namespace Core
     {
       if (spawnRabbits)
       {
-        SpawnAndAddGeneric(initialAnimals, rabbitPrefab, Animals);
+        SpawnAnimalSpecie(initialAnimals, AnimalSpecies.Rabbit);
         HerbivoreCount += initialAnimals;
       }
 
       if (spawnWolves)
       {
-        SpawnAndAddGeneric(initialAnimals, wolfPrefab, Animals);
+        SpawnAnimalSpecie(initialAnimals, AnimalSpecies.Wolf);
         CarnivoreCount += initialAnimals;
+      }
+    }
+
+    private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
+    {
+      for (var i = 0; i < initialPlants; i++)
+      {
+        var animal = _animalPool.Get(animalSpecies);
+        Place(animal);
+        Animals.Add(animal);
       }
     }
 
@@ -181,6 +198,16 @@ namespace Core
       TickListeners += animal.Tick;
       DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
+      animal.DiedListeners += OnAnimalDied;
+    }
+
+    private void OnAnimalDied(AbstractAnimal animal)
+    {
+      CountAnimal(animal, false);
+      Animals.Remove(animal);
+
+      TickListeners -= animal.Tick;
+      DayTickListeners -= animal.DayTick;
     }
 
     private void UpdateTick()
@@ -199,7 +226,7 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log) _logger.Snapshot(Days, Animals);
+          if (log) _logger.Snapshot(Days, Animals, this);
         }
       }
     }

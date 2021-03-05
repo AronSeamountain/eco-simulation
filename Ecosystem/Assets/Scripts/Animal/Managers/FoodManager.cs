@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Animal.Sensor;
 using Core;
 using Foods;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace Animal.Managers
 
     public delegate void PreyFound(Herbivore herbivore);
 
-    [SerializeField] private VisualDetector visualDetector;
+    [SerializeField] private Vision vision;
     private IList<FoodMemory> _knownFoodMemories;
     public KnownFoodMemoriesChanged KnownFoodMemoriesChangedListeners;
 
@@ -31,8 +32,8 @@ namespace Animal.Managers
     private void Start()
     {
       _knownFoodMemories = new List<FoodMemory>();
-      visualDetector.FoodFoundListeners += OnFoodFound;
-      visualDetector.PreyFoundListeners += OnPreyFound;
+      vision.FoodFoundListeners += OnFoodFound;
+      vision.PreyFoundListeners += OnPreyFound;
     }
 
     public void Tick()

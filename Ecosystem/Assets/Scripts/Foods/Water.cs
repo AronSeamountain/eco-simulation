@@ -7,5 +7,15 @@ namespace Foods
   {
     [DefaultValue(1)] [SerializeField] private int saturationModifier;
     public int SaturationModifier => saturationModifier;
+
+    private void Awake()
+    {
+      Hide();
+    }
+
+    private void Hide()
+    {
+      GetComponent<MeshRenderer>().enabled = false;
+    }
   }
 }

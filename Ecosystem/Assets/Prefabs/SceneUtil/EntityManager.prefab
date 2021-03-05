@@ -43,15 +43,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deedc081df08e474495d338fe8fe268d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAnimals: 10
-  initialPlants: 4
-  rabbitPrefab: {fileID: 3937273947629023478, guid: c11026262f7aa324383fa21575b8053a,
-    type: 3}
+  initialAnimals: 50
+  initialPlants: 50
+  waterAmount: 50
   plantPrefab: {fileID: 8397035145334695597, guid: fb4276b6e821a084caebb0c6d6579005,
     type: 3}
-  wolfPrefab: {fileID: 6108375271256206557, guid: 75c11842accd7d84db8de3fb8e75035a,
-    type: 3}
+  log: 1
   waterPrefab: {fileID: 414628416133184012, guid: 688235f196debee45a892744d3e1b24b,
     type: 3}
-  log: 1
-  waterAmount: 100
+  spawnWolves: 1
+  spawnRabbits: 1

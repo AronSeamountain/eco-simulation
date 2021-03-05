@@ -1,3 +1,4 @@
+using Animal.Sensor;
 using UnityEngine;
 
 namespace Animal.Managers
@@ -6,13 +7,13 @@ namespace Animal.Managers
   {
     public delegate void AnimalFound(AbstractAnimal animal);
 
-    [SerializeField] private VisualDetector visualDetector;
+    [SerializeField] private Vision vision;
 
     public AnimalFound MateListeners;
 
     private void Start()
     {
-      visualDetector.AnimalFoundListeners += OnAnimalFound;
+      vision.AnimalFoundListeners += OnAnimalFound;
     }
 
     private void OnAnimalFound(AbstractAnimal animal)
@@ -21,7 +22,7 @@ namespace Animal.Managers
 
       if (animal.Gender == Gender.Male) return;
 
-      if (MateListeners != null) MateListeners.Invoke(animal);
+      MateListeners?.Invoke(animal);
     }
   }
 }
