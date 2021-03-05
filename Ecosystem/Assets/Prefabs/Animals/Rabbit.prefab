@@ -101,6 +101,41 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5301024460183706383, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: m_Size
+      value: 0.49998254
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301024460183706383, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: m_LocalReferencePoint.x
+      value: 0.000000044703484
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301024460183706383, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: m_LocalReferencePoint.y
+      value: -0.8088057
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301024460183706383, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: m_LocalReferencePoint.z
+      value: 0.0064971745
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301024460183706383, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: m_LODs.Array.data[0].renderers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301024460183706383, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.018223317
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301024460183706383, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: m_LODs.Array.data[0].renderers.Array.data[0].renderer
+      value: 
+      objectReference: {fileID: 1911112304502666355}
     - target: {fileID: 5652372249946612004, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}
       propertyPath: m_Enabled

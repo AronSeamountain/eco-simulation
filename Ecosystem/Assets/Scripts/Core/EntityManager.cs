@@ -236,7 +236,7 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log) _logger.Snapshot(Days, Animals);
+          if (log) _logger.Snapshot(Days, Animals, this);
         }
       }
     }

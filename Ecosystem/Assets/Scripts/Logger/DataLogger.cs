@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Animal;
+using Core;
 
 namespace Logger
 {
@@ -31,31 +32,37 @@ namespace Logger
     {
       return new List<LoggableColumn>
       {
-        new LoggableColumn("day", (day, animals) =>
+        new LoggableColumn("day", (day, animals, em) =>
           day.ToString()
         ),
-        new LoggableColumn("amount", (day, animals) =>
+        new LoggableColumn("amount", (day, animals, em) =>
           animals.Count.ToString()
+        ),
+        new LoggableColumn("amount_rabbits", (day, animals, em) =>
+          em.HerbivoreCount.ToString()
+        ),
+        new LoggableColumn("amount_wolfs", (day, animals, em) =>
+          em.CarnivoreCount.ToString()
         ),
         new LoggableColumn(
           "saturation",
-          (day, animals) => CalcAverage(day, animals, animal => animal.GetSaturation())
+          (day, animals, em) => CalcAverage(day, animals, animal => animal.GetSaturation())
         ),
         new LoggableColumn(
           "hydration",
-          (day, animals) => CalcAverage(day, animals, animal => animal.GetHydration())
+          (day, animals, em) => CalcAverage(day, animals, animal => animal.GetHydration())
         ),
         new LoggableColumn(
           "speed",
-          (day, animals) => CalcAverage(day, animals, animal => animal.GetSpeedModifier())
+          (day, animals, em) => CalcAverage(day, animals, animal => animal.GetSpeedModifier())
         ),
         new LoggableColumn(
           "age",
-          (day, animals) => CalcAverage(day, animals, animal => animal.AgeInDays)
+          (day, animals, em) => CalcAverage(day, animals, animal => animal.AgeInDays)
         ),
         new LoggableColumn(
           "size",
-          (day, animals) => CalcAverage(day, animals, animal => animal.GetSize())
+          (day, animals, em) => CalcAverage(day, animals, animal => animal.GetSize())
         )
       };
     }
@@ -99,15 +106,15 @@ namespace Logger
       AppendRow(header);
     }
 
-    public void Snapshot(int day, IList<AbstractAnimal> animals)
+    public void Snapshot(int day, IList<AbstractAnimal> animals, EntityManager entityManager)
     {
-      AppendRow(CreateRow(day, animals));
+      AppendRow(CreateRow(day, animals, entityManager));
     }
 
-    private string CreateRow(int day, IList<AbstractAnimal> animals)
+    private string CreateRow(int day, IList<AbstractAnimal> animals, EntityManager entityManager)
     {
       // TODO: Could be converted to a string builder to enhance performance if we log often.
-      var values = _loggableColumns.Select(column => column.GetValue(day, animals)).ToList();
+      var values = _loggableColumns.Select(column => column.GetValue(day, animals, entityManager)).ToList();
       var row = string.Join(Delimiter, values);
       return row;
     }
