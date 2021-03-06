@@ -513,6 +513,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
+      propertyPath: vision
+      value: 
+      objectReference: {fileID: 4463212197520395525}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
       propertyPath: meshRenderer
       value: 
       objectReference: {fileID: 140937291025682952}
@@ -550,6 +555,18 @@ NavMeshAgent:
     type: 3}
   m_PrefabInstance: {fileID: 3215349556319510875}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4463212197520395525 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1256421533950585950, guid: 85ba19cd4fe588c41a63c69561385f30,
+    type: 3}
+  m_PrefabInstance: {fileID: 3215349556319510875}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87a0dd06dd8ac4f478f2456d4bfb2289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9206445760116248351 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6006934142661635652, guid: 85ba19cd4fe588c41a63c69561385f30,

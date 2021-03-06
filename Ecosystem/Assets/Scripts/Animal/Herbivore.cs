@@ -10,6 +10,7 @@ namespace Animal
   {
     private const float SafeDistance = 15f;
     private bool _hearsCarnivore;
+    private bool _seesCarnivore;
 
     protected override void InitAnimalSpecies()
     {
@@ -57,6 +58,11 @@ namespace Animal
     {
       _hearsCarnivore = animal.IsCarnivore;
       if (_hearsCarnivore) EnemyToFleeFrom = animal;
+    }
+    protected override void OnEnemyFound(AbstractAnimal animal)
+    {
+      _seesCarnivore = animal.IsCarnivore;
+      if (_seesCarnivore) EnemyToFleeFrom = animal;
     }
 
     public override bool SafeDistanceFromEnemy()

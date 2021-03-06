@@ -22,7 +22,13 @@ namespace Animal.Sensor
     ///   Gets invoked when a carnivore finds an animal to eat
     /// </summary>
     /// <param name="animal"></param>
-    public delegate void PreyFound(Herbivore animal);
+    public delegate void PreyFound(Herbivore animal); 
+    
+    /// <summary>
+    /// Gets invoked when a herbivore discovers a carnivore
+    /// </summary>
+    /// <param name="animal">The spotted carnivore</param>
+    public delegate void EnemyFound(Carnivore animal);
 
     /// <summary>
     ///   Gets invoked when water is found.
@@ -37,6 +43,7 @@ namespace Animal.Sensor
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
+    public EnemyFound EnemyFoundListeners;
 
     private int Distance
     {
@@ -77,6 +84,9 @@ namespace Animal.Sensor
 
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
         AnimalFoundListeners?.Invoke(foundAnimal);
+      
+      if (other.GetComponent<AbstractAnimal>() is Carnivore carnivore)
+        EnemyFoundListeners?.Invoke(carnivore);
     }
 
     /// <summary>

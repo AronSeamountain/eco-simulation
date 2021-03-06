@@ -68,5 +68,10 @@ namespace Animal
       _hearsHerbivore = animal.IsHerbivore;
       if (_hearsHerbivore) Turn(animal);
     }
+
+    protected override void OnEnemyFound(AbstractAnimal animal)
+    {
+      //To be implemented when carnivore has an enemy.
+    }
   }
 }
