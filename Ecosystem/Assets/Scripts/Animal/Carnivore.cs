@@ -69,7 +69,7 @@ namespace Animal
       if (_hearsHerbivore) Turn(animal);
     }
 
-    protected override void OnEnemyFound(AbstractAnimal animal)
+    protected override void OnEnemySeen(AbstractAnimal animal)
     {
       //To be implemented when carnivore has an enemy.
     }

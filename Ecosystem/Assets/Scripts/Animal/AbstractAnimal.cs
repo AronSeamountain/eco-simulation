@@ -232,7 +232,7 @@ namespace Animal
 
     protected abstract void OnAnimalHeard(AbstractAnimal animal);
 
-    protected abstract void OnEnemyFound(AbstractAnimal animal);
+    protected abstract void OnEnemySeen(AbstractAnimal animal);
 
     protected abstract void RenderAnimalSpecificColors();
 
@@ -503,7 +503,7 @@ namespace Animal
       hearing.AnimalHeardListeners += OnAnimalHeard;
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
-      vision.EnemyFoundListeners += OnEnemyFound;
+      vision.EnemySeenListeners += OnEnemySeen;
     }
 
     private void InitStateMachine()
