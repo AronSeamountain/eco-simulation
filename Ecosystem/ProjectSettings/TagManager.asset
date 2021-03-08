@@ -13,12 +13,12 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Animal
+  - Food
+  - Water
+  - AnimalVision
+  - AnimalHearing
+  - PostProcessing
   - 
   - 
   - 
