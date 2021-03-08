@@ -23,12 +23,12 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      if (!_animal.IsAlive) return AnimalState.Dead;
-      if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
-
+      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
       var mateTarget = _animal.GetMateTarget();
-      if (mateTarget == null) return AnimalState.Wander;
+
+      if (_animal.Dead) return AnimalState.Dead;
+      if (_animal.ShouldBirth) return AnimalState.Birth;
+      if (mateTarget.DoesNotExist()) return AnimalState.Wander;
       if (!mateTarget.Fertile)
       {
         _animal.ClearMateTarget();

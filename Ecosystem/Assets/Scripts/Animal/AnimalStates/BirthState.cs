@@ -5,7 +5,7 @@ namespace Animal.AnimalStates
   public sealed class BirthState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
-    private  AbstractAnimal _father;
+    private AbstractAnimal _father;
 
     public BirthState(AbstractAnimal animal)
     {
@@ -20,7 +20,6 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      
       _father = _animal.LastMaleMate;
     }
 

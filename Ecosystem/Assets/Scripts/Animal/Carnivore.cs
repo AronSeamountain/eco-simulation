@@ -11,7 +11,7 @@ namespace Animal
   {
     [SerializeField] private int fertilityTimeInDays = 5;
     private const float HuntRange = 15;
-    public readonly float EatingRange = 2f;
+    public const float EatingRange = 2f;
     private bool _animalOfSameType;
 
     private bool _hearsHerbivore;
@@ -22,11 +22,18 @@ namespace Animal
       Target = herbivore;
     }
 
-
     protected override void AnimalSetup()
     {
+      Species = AnimalSpecies.Wolf;
       FertilitySetup(fertilityTimeInDays);
-      Type = AnimalType.Carnivore;
+    }
+
+    protected override void RenderAnimalSpecificColors()
+    {
+      if (Gender == Gender.Male)
+        meshRenderer.material.color = new Color(0.12f, 0.15f, 0.18f);
+      else
+        meshRenderer.material.color = new Color(0.5f, 0.56f, 0.61f);
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)

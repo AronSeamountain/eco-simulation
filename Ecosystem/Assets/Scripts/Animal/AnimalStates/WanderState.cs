@@ -37,9 +37,9 @@ namespace Animal.AnimalStates
     {
       var isSatisfied = !_animal.IsHungry && !_animal.IsThirsty;
 
-      if (!_animal.IsAlive) return AnimalState.Dead;
+      if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.enemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
       if (isSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;

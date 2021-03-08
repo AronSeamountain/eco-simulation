@@ -1,23 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Animal
 {
-  public class Herbivore : AbstractAnimal
+  public sealed class Herbivore : AbstractAnimal
   {
     [SerializeField] private int fertilityTimeInDays = 5;
+    private const float SafeDistance = 15f;
     private bool _hearsCarnivore;
-    private readonly float _safeDistance = 15f;
 
     protected override void AnimalSetup()
     {
-      Type = AnimalType.Herbivore;
+      Species = AnimalSpecies.Rabbit;
       FertilitySetup(fertilityTimeInDays);
+    }
+
+    protected override void RenderAnimalSpecificColors()
+    {
+      if (Gender == Gender.Male)
+        meshRenderer.material.color = new Color(1f, 0.8f, 0.8f);
+      else
+        meshRenderer.material.color = new Color(0.99f, 0.65f, 0.87f);
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
@@ -52,13 +58,13 @@ namespace Animal
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
       _hearsCarnivore = animal.IsCarnivore;
-      if (_hearsCarnivore) enemyToFleeFrom = animal;
+      if (_hearsCarnivore) EnemyToFleeFrom = animal;
     }
 
     public override bool SafeDistanceFromEnemy()
     {
-      var distance = Vector3.Distance(gameObject.transform.position, enemyToFleeFrom.transform.position);
-      return _safeDistance < distance;
+      var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
+      return SafeDistance < distance;
     }
   }
 }

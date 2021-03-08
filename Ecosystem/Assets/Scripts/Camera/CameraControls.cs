@@ -19,6 +19,8 @@ namespace Camera
     private readonly InputAction m_CameraMovement_Rotate;
     private readonly InputAction m_CameraMovement_Selecting;
     private readonly InputAction m_CameraMovement_View;
+    private readonly InputAction m_CameraMovement_ZoomIn;
+    private readonly InputAction m_CameraMovement_ZoomOut;
     private ICameraMovementActions m_CameraMovementActionsCallbackInterface;
 
     public CameraControls()
@@ -77,6 +79,22 @@ namespace Camera
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Hold""
+                },
+                {
+                    ""name"": ""ZoomOut"",
+                    ""type"": ""Button"",
+                    ""id"": ""326e81bd-41d4-401b-8a1e-05dd40e1d012"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""ZoomIn"",
+                    ""type"": ""Button"",
+                    ""id"": ""85be9f51-5d25-4e4d-be75-a090100211ba"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -128,61 +146,6 @@ namespace Camera
                     ""name"": ""right"",
                     ""id"": ""b35cd731-b34d-4eaf-ad99-beb8ad01e51a"",
                     ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""ArrowKeys"",
-                    ""id"": ""14841e45-8542-4eed-9f2a-6111b2d2e37d"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""a65b5ea4-a20b-4da9-8706-e3fec352ff87"",
-                    ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""506d6dbe-6748-4c7c-a1cc-d261b792f220"",
-                    ""path"": ""<Keyboard>/downArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""b29f3f9e-13b0-447f-889f-491739e92e98"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""26d05df6-4416-4e91-9941-1d3af78e63d9"",
-                    ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -244,6 +207,28 @@ namespace Camera
                     ""action"": ""MoveFast"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e01f26d-e38f-44d8-9db9-138a4382c6fb"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomOut"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee4c2fb1-08ed-4a4e-87db-a9e756544c31"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomIn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -258,6 +243,8 @@ namespace Camera
       m_CameraMovement_Rotate = m_CameraMovement.FindAction("Rotate", true);
       m_CameraMovement_View = m_CameraMovement.FindAction("View", true);
       m_CameraMovement_MoveFast = m_CameraMovement.FindAction("MoveFast", true);
+      m_CameraMovement_ZoomOut = m_CameraMovement.FindAction("ZoomOut", true);
+      m_CameraMovement_ZoomIn = m_CameraMovement.FindAction("ZoomIn", true);
     }
 
     public InputActionAsset asset { get; }
@@ -322,6 +309,8 @@ namespace Camera
       public InputAction Rotate => m_Wrapper.m_CameraMovement_Rotate;
       public InputAction View => m_Wrapper.m_CameraMovement_View;
       public InputAction MoveFast => m_Wrapper.m_CameraMovement_MoveFast;
+      public InputAction ZoomOut => m_Wrapper.m_CameraMovement_ZoomOut;
+      public InputAction ZoomIn => m_Wrapper.m_CameraMovement_ZoomIn;
 
       public InputActionMap Get()
       {
@@ -367,6 +356,12 @@ namespace Camera
           MoveFast.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMoveFast;
           MoveFast.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMoveFast;
           MoveFast.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnMoveFast;
+          ZoomOut.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnZoomOut;
+          ZoomOut.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnZoomOut;
+          ZoomOut.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnZoomOut;
+          ZoomIn.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnZoomIn;
+          ZoomIn.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnZoomIn;
+          ZoomIn.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnZoomIn;
         }
 
         m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
@@ -390,6 +385,12 @@ namespace Camera
           MoveFast.started += instance.OnMoveFast;
           MoveFast.performed += instance.OnMoveFast;
           MoveFast.canceled += instance.OnMoveFast;
+          ZoomOut.started += instance.OnZoomOut;
+          ZoomOut.performed += instance.OnZoomOut;
+          ZoomOut.canceled += instance.OnZoomOut;
+          ZoomIn.started += instance.OnZoomIn;
+          ZoomIn.performed += instance.OnZoomIn;
+          ZoomIn.canceled += instance.OnZoomIn;
         }
       }
     }
@@ -402,6 +403,8 @@ namespace Camera
       void OnRotate(InputAction.CallbackContext context);
       void OnView(InputAction.CallbackContext context);
       void OnMoveFast(InputAction.CallbackContext context);
+      void OnZoomOut(InputAction.CallbackContext context);
+      void OnZoomIn(InputAction.CallbackContext context);
     }
   }
 }
