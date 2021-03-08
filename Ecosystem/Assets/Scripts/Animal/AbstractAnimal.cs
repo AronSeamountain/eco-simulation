@@ -29,7 +29,7 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
-    private const int FertilityTimeInUnits = 5;
+   
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
 
@@ -38,6 +38,7 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
+    private int FertilityTimeInDays = 5;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -53,7 +54,7 @@ namespace Animal
     protected NourishmentDelegate _nourishmentDelegate;
     private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
-    private int _unitsUntilFertile = FertilityTimeInUnits;
+    private int _daysUntilFertile;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
@@ -113,9 +114,15 @@ namespace Animal
     {
       InitStateMachine();
       InitSensoryEvents();
-      InitAnimalSpecies();
+      AnimalSetup();
 
       ResetGameObject();
+    }
+
+    public void FertilitySetup(int time)
+    {
+      _daysUntilFertile = time;
+      FertilityTimeInDays = time;
     }
 
     private void Update()
@@ -183,17 +190,17 @@ namespace Animal
       visualDetector.GetComponent<Renderer>().enabled = show;
     }
 
-    public void Tick()
+    public void HourTick()
     {
-      if (!Fertile) _unitsUntilFertile--;
-      if (_unitsUntilFertile <= 0) Fertile = true;
-      _nourishmentDelegate.Tick();
-      foodManager.Tick();
+      _nourishmentDelegate.HourTick();
+      foodManager.HourTick();
       DecreaseHealthIfStarving();
     }
 
     public void DayTick()
     {
+      if (!Fertile) _daysUntilFertile--;
+      if (_daysUntilFertile <= 0) Fertile = true;
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
       Mutate();
@@ -229,6 +236,7 @@ namespace Animal
       return _nourishmentDelegate.HydrationIsFull();
     }
 
+    protected abstract void AnimalSetup();
     protected abstract void OnAnimalHeard(AbstractAnimal animal);
 
     protected abstract void RenderAnimalSpecificColors();
@@ -317,7 +325,7 @@ namespace Animal
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _unitsUntilFertile = FertilityTimeInUnits;
+      _daysUntilFertile = FertilityTimeInDays;
       Fertile = false;
       ShouldBirth = false;
 
@@ -477,8 +485,8 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = sizeCubed + SizeModifier * SizeModifier;
 
-      _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
+      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
 
       movement.SpeedFactor = SpeedModifier;
@@ -492,8 +500,6 @@ namespace Animal
     #endregion
 
     #region CreationSetup
-
-    protected abstract void InitAnimalSpecies();
 
     private void InitSensoryEvents()
     {

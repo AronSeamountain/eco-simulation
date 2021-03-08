@@ -2,7 +2,7 @@
 {
   public interface ITickable
   {
-    void Tick();
+    void HourTick();
     void DayTick();
   }
 }

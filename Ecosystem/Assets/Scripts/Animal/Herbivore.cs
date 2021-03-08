@@ -8,12 +8,14 @@ namespace Animal
 {
   public sealed class Herbivore : AbstractAnimal
   {
+    [SerializeField] private int fertilityTimeInDays = 5;
     private const float SafeDistance = 15f;
     private bool _hearsCarnivore;
 
-    protected override void InitAnimalSpecies()
+    protected override void AnimalSetup()
     {
       Species = AnimalSpecies.Rabbit;
+      FertilitySetup(fertilityTimeInDays);
     }
 
     protected override void RenderAnimalSpecificColors()

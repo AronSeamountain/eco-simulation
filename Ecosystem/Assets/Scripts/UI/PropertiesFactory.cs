@@ -14,6 +14,8 @@ namespace UI
 
     public static IEnumerable<AbstractProperty> Create(AbstractAnimal animal)
     {
+      var properties = new List<AbstractProperty>();
+
       // ---------- Health ----------
       var healthBar = RowFactory.CreateSlider();
       healthBar.Configure(
@@ -27,6 +29,8 @@ namespace UI
         animal.GetHealthDelegate().HealthChangedListeners -= healthBar.OnValueChanged;
       };
 
+      properties.Add(healthBar);
+
       //---------- Saturation ----------
       var saturationSlider = RowFactory.CreateSlider();
       saturationSlider.Configure(
@@ -37,6 +41,8 @@ namespace UI
       animal.GetNourishmentDelegate().SaturationChangedListeners += saturationSlider.OnValueChanged;
       saturationSlider.CleanupListeners += () =>
         animal.GetNourishmentDelegate().SaturationChangedListeners -= saturationSlider.OnValueChanged;
+
+      properties.Add(saturationSlider);
 
       // ---------- Hydration ----------
       var hydrationSlider = RowFactory.CreateSlider();
@@ -49,11 +55,15 @@ namespace UI
       hydrationSlider.CleanupListeners += () =>
         animal.GetNourishmentDelegate().HydrationChangedListeners -= hydrationSlider.OnValueChanged;
 
+      properties.Add(hydrationSlider);
+
       // ---------- State name ----------
       var state = RowFactory.CreateKeyValuePair();
       state.Configure("State", animal.GetCurrentStateEnum().ToString());
       animal.StateChangedListeners += state.OnValueChanged;
       state.CleanupListeners += () => animal.StateChangedListeners -= state.OnValueChanged;
+
+      properties.Add(state);
 
       // ---------- Speed ----------
       var speed = RowFactory.CreateKeyValuePair();
@@ -67,6 +77,8 @@ namespace UI
       animal.PropertiesChangedListeners += SpeedChangedImpl;
       speed.CleanupListeners += () => animal.PropertiesChangedListeners -= SpeedChangedImpl;
 
+      properties.Add(speed);
+
       // ---------- Size ----------
       var size = RowFactory.CreateKeyValuePair();
       size.Configure("Size", Prettifier.Round(animal.SizeModifier, 2));
@@ -78,7 +90,7 @@ namespace UI
 
       animal.PropertiesChangedListeners += SizeChangedImpl;
       speed.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
-
+      properties.Add(size);
       // ---------- Children ----------
       var children = RowFactory.CreateKeyValuePair();
       children.Configure("Children", animal.Children.ToString());
@@ -87,6 +99,7 @@ namespace UI
       {
         children.OnValueChanged(parent.Children.ToString());
       }
+      properties.Add(children);
 
       animal.ChildSpawnedListeners += ChildSpawnedImpl;
       children.CleanupListeners += () => animal.ChildSpawnedListeners -= ChildSpawnedImpl;
@@ -99,12 +112,13 @@ namespace UI
       {
         age.OnValueChanged($"{newAge} days");
       }
+      
+      properties.Add(age);
 
       animal.AgeChangedListeners += AgeChangedImpl;
       age.CleanupListeners += () => animal.AgeChangedListeners -= AgeChangedImpl;
 
-      return new List<AbstractProperty>
-        {healthBar, saturationSlider, hydrationSlider, state, age, speed, size, children};
+      return properties;
     }
 
     public static IEnumerable<AbstractProperty> Create(Plant plant)
@@ -117,6 +131,9 @@ namespace UI
       var saturationBar = RowFactory.CreateKeyValuePair();
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
+      var age = RowFactory.CreateKeyValuePair();
+      age.Configure("Age", ((int) plant.AgeInHours / 24).ToString());
+
       void SaturationChangedImpl(float saturation)
       {
         saturationBar.OnValueChanged(Prettifier.Round(saturation, 2));
@@ -125,7 +142,7 @@ namespace UI
       plant.SaturationChangedListeners += SaturationChangedImpl;
       saturationBar.CleanupListeners += () => plant.SaturationChangedListeners -= SaturationChangedImpl;
 
-      return new List<AbstractProperty> {saturationBar, state};
+      return new List<AbstractProperty> {saturationBar, state, age};
     }
 
     public static IEnumerable<AbstractProperty> Create(EntityManager entityManager)
@@ -154,8 +171,8 @@ namespace UI
         herbivoreText.OnValueChanged(entityManager.HerbivoreCount.ToString());
       }
 
-      entityManager.TickListeners += HerbivoreUpdateImpl;
-      herbivoreText.CleanupListeners += () => entityManager.TickListeners -= HerbivoreUpdateImpl;
+      entityManager.HourTickListeners += HerbivoreUpdateImpl;
+      herbivoreText.CleanupListeners += () => entityManager.HourTickListeners -= HerbivoreUpdateImpl;
 
       // ---------- Animals (carnivores/wolfs) ----------
       var carnivoreText = RowFactory.CreateKeyValuePair();
@@ -166,8 +183,8 @@ namespace UI
         carnivoreText.OnValueChanged(entityManager.CarnivoreCount.ToString());
       }
 
-      entityManager.TickListeners += AnimalUpdateImpl;
-      carnivoreText.CleanupListeners += () => entityManager.TickListeners -= AnimalUpdateImpl;
+      entityManager.HourTickListeners += AnimalUpdateImpl;
+      carnivoreText.CleanupListeners += () => entityManager.HourTickListeners -= AnimalUpdateImpl;
 
       // ---------- Plants ----------
       var plantText = RowFactory.CreateKeyValuePair();

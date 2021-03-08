@@ -21,22 +21,25 @@ namespace Core
     /// <summary>
     ///   The amount of time that a "unit" is in.
     /// </summary>
-    private const float UnitTimeSeconds = 0.5f;
+    private const float HoursInRealSeconds = 0.5f;
 
-    private const float UnitsPerDay = 10;
-    [SerializeField] private int initialAnimals;
-    [SerializeField] private int initialPlants;
+    private const float HoursPerDay = 24;
+    [SerializeField] private int initialWolves = 1;
+    [SerializeField] private int initialRabbits = 1;
+    [SerializeField] private int initialPlants = 4;
+    [SerializeField] private int waterAmount;
+    [SerializeField] private GameObject rabbitPrefab;
+    [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
-    [SerializeField] private bool spawnWolves;
-    [SerializeField] private bool spawnRabbits;
     private AnimalPool _animalPool;
     private DataLogger _logger;
-    private float _unitsPassed;
-    private float _unitTicker;
+    private float _hoursPassed;
+    private float _hourTicker;
+    private int animalCount = 0;
     public DayTick DayTickListeners;
     private int plantCount;
-    public Tick TickListeners;
+    public Tick HourTickListeners;
     private IList<AbstractAnimal> Animals { get; set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
@@ -57,7 +60,10 @@ namespace Core
         ObserveAnimal(animal, false);
 
       foreach (var plant in Plants)
+      {
         DayTickListeners += plant.DayTick;
+        HourTickListeners += plant.HourTick;
+      }
 
       // Logger
       _logger = DataLogger.Instance;
@@ -110,17 +116,11 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      if (spawnRabbits)
-      {
-        SpawnAnimalSpecie(initialAnimals, AnimalSpecies.Rabbit);
-        HerbivoreCount += initialAnimals;
-      }
+        SpawnAndAddGeneric(initialRabbits, rabbitPrefab, Animals);
+        HerbivoreCount += initialRabbits;
 
-      if (spawnWolves)
-      {
-        SpawnAnimalSpecie(initialAnimals, AnimalSpecies.Wolf);
-        CarnivoreCount += initialAnimals;
-      }
+        SpawnAndAddGeneric(initialWolves, wolfPrefab, Animals);
+        CarnivoreCount += initialWolves;
     }
 
     private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
@@ -195,7 +195,7 @@ namespace Core
     {
       if (!animal) return;
       if (addToList) Animals.Add(animal);
-      TickListeners += animal.Tick;
+      HourTickListeners += animal.HourTick;
       DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
       animal.DiedListeners += OnAnimalDied;
@@ -206,23 +206,23 @@ namespace Core
       CountAnimal(animal, false);
       Animals.Remove(animal);
 
-      TickListeners -= animal.Tick;
+      HourTickListeners -= animal.HourTick;
       DayTickListeners -= animal.DayTick;
     }
 
     private void UpdateTick()
     {
-      _unitTicker += Time.deltaTime;
+      _hourTicker += Time.deltaTime;
 
-      if (_unitTicker >= UnitTimeSeconds)
+      if (_hourTicker >= HoursInRealSeconds)
       {
-        _unitTicker = 0;
-        _unitsPassed++;
-        TickListeners?.Invoke();
+        _hourTicker = 0;
+        _hoursPassed++;
+        HourTickListeners?.Invoke();
 
-        if (_unitsPassed >= UnitsPerDay)
+        if (_hoursPassed >= HoursPerDay)
         {
-          _unitsPassed = 0;
+          _hoursPassed = 0;
           Days++;
 
           DayTickListeners?.Invoke();
