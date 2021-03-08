@@ -37,21 +37,30 @@ namespace Animal.Sensor
     public delegate void WaterFound(Water water);
 
     [SerializeField] private Transform eyesTransform;
-    private int _distance;
+    private int _height;
+    private int _length;
     private int _width;
-    //private int _radius;
     public AnimalFound AnimalFoundListeners;
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
     public EnemySeen EnemySeenListeners;
 
-    private int Distance
+    private int Height
     {
-      get => _distance;
+      get => _height;
       set
       {
-        _distance = Mathf.Clamp(value, 0, int.MaxValue);
+        _height = Mathf.Clamp(value, 0, int.MaxValue);
+        AdjustScaleAndPosition();
+      }
+    }
+    private int Length
+    {
+      get => _length;
+      set
+      {
+        _length = Mathf.Clamp(value, 0, int.MaxValue);
         AdjustScaleAndPosition();
       }
     }
@@ -65,23 +74,12 @@ namespace Animal.Sensor
         AdjustScaleAndPosition();
       }
     }
-    
-    /*
-    private int Radius
-    {
-      get => _radius;
-      set
-      {
-        _radius = Mathf.Clamp(value, 0, int.MaxValue);
-        AdjustScaleAndPosition();
-      }
-    }
-    */
 
     private void Start()
     {
-      Width = 10;
-      Distance = 20;
+      Height = 3;
+      Width = 8;
+      Length = 6;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -114,7 +112,7 @@ namespace Animal.Sensor
 
       var dirToObject = objectToSee.transform.position - eyesTransform.position;
       var raycastHitSomething =
-        Physics.Raycast(eyesTransform.position, dirToObject, out var hitObject, Distance, RayCastUtil.CastableLayers);
+        Physics.Raycast(eyesTransform.position, dirToObject, out var hitObject, Length, RayCastUtil.CastableLayers);
 
       if (raycastHitSomething)
         if (hitObject.transform.GetComponent<T>() is T hitObjectOfTypeT)
@@ -133,8 +131,8 @@ namespace Animal.Sensor
     /// </summary>
     private void AdjustScaleAndPosition()
     {
-      transform.localScale = new Vector3(Width, Distance, Width);
-      var centerOffset = new Vector3(Width, 0, Distance);
+      transform.localScale = new Vector3(Width, Height, Length);
+      var centerOffset = new Vector3(0, -1, Length/2 );
       transform.localPosition = eyesTransform.localPosition + centerOffset;
     }
   }
