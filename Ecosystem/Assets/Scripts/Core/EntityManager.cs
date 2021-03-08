@@ -27,19 +27,17 @@ namespace Core
     [SerializeField] private int initialWolves = 1;
     [SerializeField] private int initialRabbits = 1;
     [SerializeField] private int initialPlants = 4;
-    [SerializeField] private int waterAmount;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
     private AnimalPool _animalPool;
-    private DataLogger _logger;
     private float _hoursPassed;
     private float _hourTicker;
-    private int animalCount = 0;
+    private DataLogger _logger;
     public DayTick DayTickListeners;
-    private int plantCount;
     public Tick HourTickListeners;
+    private int plantCount;
     private IList<AbstractAnimal> Animals { get; set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
@@ -116,16 +114,16 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-        SpawnAndAddGeneric(initialRabbits, rabbitPrefab, Animals);
-        HerbivoreCount += initialRabbits;
+      SpawnAndAddGeneric(initialRabbits, rabbitPrefab, Animals);
+      HerbivoreCount += initialRabbits;
 
-        SpawnAndAddGeneric(initialWolves, wolfPrefab, Animals);
-        CarnivoreCount += initialWolves;
+      SpawnAndAddGeneric(initialWolves, wolfPrefab, Animals);
+      CarnivoreCount += initialWolves;
     }
 
     private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
     {
-      for (var i = 0; i < initialPlants; i++)
+      for (var i = 0; i < amount; i++)
       {
         var animal = _animalPool.Get(animalSpecies);
         Place(animal);
@@ -201,13 +199,19 @@ namespace Core
       animal.DiedListeners += OnAnimalDied;
     }
 
+    private void UnobserveAnimal(AbstractAnimal animal)
+    {
+      Animals.Remove(animal);
+      HourTickListeners -= animal.HourTick;
+      DayTickListeners -= animal.DayTick;
+      animal.ChildSpawnedListeners -= OnChildSpawned;
+      animal.DiedListeners -= OnAnimalDied;
+    }
+
     private void OnAnimalDied(AbstractAnimal animal)
     {
       CountAnimal(animal, false);
-      Animals.Remove(animal);
-
-      HourTickListeners -= animal.HourTick;
-      DayTickListeners -= animal.DayTick;
+      UnobserveAnimal(animal);
     }
 
     private void UpdateTick()

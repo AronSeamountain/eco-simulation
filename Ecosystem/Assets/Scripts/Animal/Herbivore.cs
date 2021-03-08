@@ -8,8 +8,8 @@ namespace Animal
 {
   public sealed class Herbivore : AbstractAnimal
   {
-    [SerializeField] private int fertilityTimeInDays = 5;
     private const float SafeDistance = 15f;
+    [SerializeField] private int fertilityTimeInDays = 5;
     private bool _hearsCarnivore;
     private bool _seesCarnivore;
 
@@ -61,6 +61,7 @@ namespace Animal
       _hearsCarnivore = animal.IsCarnivore;
       if (_hearsCarnivore) EnemyToFleeFrom = animal;
     }
+
     protected override void OnEnemySeen(AbstractAnimal animal)
     {
       _seesCarnivore = animal.IsCarnivore;

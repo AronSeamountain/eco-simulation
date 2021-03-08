@@ -29,7 +29,7 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
-   
+
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
 
@@ -38,7 +38,6 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
-    private int FertilityTimeInDays = 5;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -49,18 +48,30 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
+    private int _daysUntilFertile;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
-    private int _daysUntilFertile;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
+    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
+
+    public float NutritionalValue
+    {
+      get => _nutritionalValue;
+      private set
+      {
+        _nutritionalValue = value;
+        PropertiesChangedListeners?.Invoke();
+      }
+    }
+
     public AbstractAnimal EnemyToFleeFrom { get; set; }
     public float SizeModifier { get; private set; }
     public float SpeedModifier { get; private set; }
@@ -75,7 +86,7 @@ namespace Animal
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
-    public bool Alive => Health > 0;
+    public bool Alive => Health > 0 && NutritionalValue >= 0.1;
     public bool Dead => !Alive;
     public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
     public bool IsHerbivore => Species == AnimalSpecies.Rabbit;
@@ -120,12 +131,6 @@ namespace Animal
       ResetGameObject();
     }
 
-    public void FertilitySetup(int time)
-    {
-      _daysUntilFertile = time;
-      FertilityTimeInDays = time;
-    }
-
     private void Update()
     {
       _stateMachine.Execute();
@@ -155,27 +160,25 @@ namespace Animal
     {
       float consumedFood;
 
-      if (_nutritionalValue >= amount)
+      if (NutritionalValue >= amount)
       {
         // Eat partially
-        _nutritionalValue -= amount;
+        NutritionalValue -= amount;
         consumedFood = amount;
       }
       else
       {
         // Eat whole food
-        consumedFood = _nutritionalValue;
-        _nutritionalValue = 0;
+        consumedFood = NutritionalValue;
+        NutritionalValue = 0;
       }
-
-      if (_nutritionalValue < 0.1) FullyConsumed();
 
       return consumedFood;
     }
 
     public bool CanBeEaten()
     {
-      return _nutritionalValue > 0.1;
+      return NutritionalValue > 0.1;
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -205,6 +208,12 @@ namespace Animal
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
       Mutate();
+    }
+
+    public void FertilitySetup(int time)
+    {
+      _daysUntilFertile = time;
+      FertilityTimeInDays = time;
     }
 
     private void Mutate()
@@ -404,27 +413,19 @@ namespace Animal
     }
 
     /// <summary>
-    ///   Removes the animal
-    /// </summary>
-    private void FullyConsumed()
-    {
-      transform.position = new Vector3(0, 10, 0); //TODO put back in ObjectPool
-    }
-
-    /// <summary>
     ///   slightly decreases the nutritional value by 1 each second
     ///   removed if nutritional value is nothing
     /// </summary>
     public void Decay()
     {
-      _nutritionalValue -= Time.deltaTime;
-      if (_nutritionalValue < 0.1) FullyConsumed();
+      NutritionalValue -= Time.deltaTime;
     }
 
     public void ResetGameObject()
     {
       ResetGender();
-      ResetSpeedSize();
+      ResetProperties();
+      ResetStateMachine();
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -479,7 +480,7 @@ namespace Animal
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
     }
 
-    private void ResetSpeedSize()
+    private void ResetProperties()
     {
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
@@ -497,7 +498,12 @@ namespace Animal
       // Setup size modification
       var scale = SizeModifier + VisualSizeModifier;
       transform.localScale = new Vector3(scale, scale, scale);
-      _nutritionalValue = 100 * sizeCubed;
+      NutritionalValue = 100 * sizeCubed;
+    }
+
+    private void ResetStateMachine()
+    {
+      InitStateMachine(); // It also works creating a whole new state machine
     }
 
     #endregion

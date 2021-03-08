@@ -9,9 +9,9 @@ namespace Animal
 {
   public sealed class Carnivore : AbstractAnimal
   {
-    [SerializeField] private int fertilityTimeInDays = 5;
     private const float HuntRange = 15;
     public const float EatingRange = 2f;
+    [SerializeField] private int fertilityTimeInDays = 5;
     private bool _animalOfSameType;
 
     private bool _hearsHerbivore;
