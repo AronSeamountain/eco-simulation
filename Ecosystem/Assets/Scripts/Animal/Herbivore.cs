@@ -11,6 +11,7 @@ namespace Animal
     [SerializeField] private int fertilityTimeInDays = 5;
     private const float SafeDistance = 15f;
     private bool _hearsCarnivore;
+    private bool _seesCarnivore;
 
     protected override void AnimalSetup()
     {
@@ -59,6 +60,11 @@ namespace Animal
     {
       _hearsCarnivore = animal.IsCarnivore;
       if (_hearsCarnivore) EnemyToFleeFrom = animal;
+    }
+    protected override void OnEnemySeen(AbstractAnimal animal)
+    {
+      _seesCarnivore = animal.IsCarnivore;
+      if (_seesCarnivore) EnemyToFleeFrom = animal;
     }
 
     public override bool SafeDistanceFromEnemy()

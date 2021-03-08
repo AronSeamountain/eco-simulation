@@ -46,6 +46,7 @@ namespace Animal
     [SerializeField] private MatingManager matingManager;
     [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected Hearing hearing;
+    [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     private float _fleeSpeed;
@@ -238,6 +239,8 @@ namespace Animal
 
     protected abstract void AnimalSetup();
     protected abstract void OnAnimalHeard(AbstractAnimal animal);
+
+    protected abstract void OnEnemySeen(AbstractAnimal animal);
 
     protected abstract void RenderAnimalSpecificColors();
 
@@ -506,6 +509,7 @@ namespace Animal
       hearing.AnimalHeardListeners += OnAnimalHeard;
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
+      vision.EnemySeenListeners += OnEnemySeen;
     }
 
     private void InitStateMachine()
