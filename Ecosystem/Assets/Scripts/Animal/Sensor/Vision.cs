@@ -38,7 +38,8 @@ namespace Animal.Sensor
 
     [SerializeField] private Transform eyesTransform;
     private int _distance;
-    private int _radius;
+    private int _width;
+    //private int _radius;
     public AnimalFound AnimalFoundListeners;
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
@@ -55,6 +56,17 @@ namespace Animal.Sensor
       }
     }
 
+    private int Width
+    {
+      get => _width;
+      set
+      {
+        _width = Mathf.Clamp(value, 0, int.MaxValue);
+        AdjustScaleAndPosition();
+      }
+    }
+    
+    /*
     private int Radius
     {
       get => _radius;
@@ -64,10 +76,11 @@ namespace Animal.Sensor
         AdjustScaleAndPosition();
       }
     }
+    */
 
     private void Start()
     {
-      Radius = 10;
+      Width = 10;
       Distance = 20;
     }
 
@@ -120,8 +133,8 @@ namespace Animal.Sensor
     /// </summary>
     private void AdjustScaleAndPosition()
     {
-      transform.localScale = new Vector3(Radius, Distance, Radius);
-      var centerOffset = new Vector3(Radius, 0, Distance);
+      transform.localScale = new Vector3(Width, Distance, Width);
+      var centerOffset = new Vector3(Width, 0, Distance);
       transform.localPosition = eyesTransform.localPosition + centerOffset;
     }
   }
