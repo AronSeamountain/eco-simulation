@@ -29,6 +29,7 @@ namespace Core
     [SerializeField] private int initialPlants = 4;
     [SerializeField] private int waterAmount;
     [SerializeField] private GameObject rabbitPrefab;
+    [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
     private AnimalPool _animalPool;
@@ -205,7 +206,7 @@ namespace Core
       CountAnimal(animal, false);
       Animals.Remove(animal);
 
-      TickListeners -= animal.Tick;
+      HourTickListeners -= animal.HourTick;
       DayTickListeners -= animal.DayTick;
     }
 

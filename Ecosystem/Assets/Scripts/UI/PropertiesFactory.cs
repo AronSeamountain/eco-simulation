@@ -131,7 +131,7 @@ namespace UI
       var saturationBar = RowFactory.CreateKeyValuePair();
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
-      var age = PropertyFactory.CreateKeyValuePair();
+      var age = RowFactory.CreateKeyValuePair();
       age.Configure("Age", ((int) plant.AgeInHours / 24).ToString());
 
       void SaturationChangedImpl(float saturation)

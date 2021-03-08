@@ -746,6 +746,28 @@ PrefabInstance:
       propertyPath: m_Name
       value: EntityManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
+        type: 3}
+      propertyPath: wolfPrefab
+      value: 
+      objectReference: {fileID: 6108375271256206557, guid: 75c11842accd7d84db8de3fb8e75035a,
+        type: 3}
+    - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
+        type: 3}
+      propertyPath: rabbitPrefab
+      value: 
+      objectReference: {fileID: 3937273947629023478, guid: c11026262f7aa324383fa21575b8053a,
+        type: 3}
+    - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
+        type: 3}
+      propertyPath: initialWolves
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
+        type: 3}
+      propertyPath: initialRabbits
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1159ec73a46948a438b1b74cc111085c, type: 3}
 --- !u!114 &1123797467 stripped
@@ -844,7 +866,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7256537024960903, guid: 3655dbceeb698894e8d480c33a998f25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000017683878
+      value: 116.00481
       objectReference: {fileID: 0}
     - target: {fileID: 1540518878665180749, guid: 3655dbceeb698894e8d480c33a998f25,
         type: 3}

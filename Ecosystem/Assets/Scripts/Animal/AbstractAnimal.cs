@@ -114,10 +114,9 @@ namespace Animal
     {
       InitStateMachine();
       InitSensoryEvents();
-      InitAnimalSpecies();
+      AnimalSetup();
 
       ResetGameObject();
-      AnimalSetup();
     }
 
     public void FertilitySetup(int time)
@@ -486,8 +485,8 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = sizeCubed + SizeModifier * SizeModifier;
 
-      _nourishmentDelegate.SaturationDecreasePerUnit = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerUnit = decreaseFactor;
+      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
 
       movement.SpeedFactor = SpeedModifier;
@@ -501,8 +500,6 @@ namespace Animal
     #endregion
 
     #region CreationSetup
-
-    protected abstract void InitAnimalSpecies();
 
     private void InitSensoryEvents()
     {
