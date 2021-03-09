@@ -40,7 +40,7 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
-    private int FertilityTimeInDays = 5;
+    private int FertilityTimeInDays = 0; //Default value it will be overridden in FertilityTimeSetup
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -335,6 +335,7 @@ namespace Animal
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
+      //reset fertility timer for female
       _daysUntilFertile = FertilityTimeInDays;
       Fertile = false;
       ShouldBirth = false;
