@@ -53,6 +53,12 @@ namespace Animal.AnimalStates
       var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
       if (reachesFood)
       {
+        if (!_foodTarget.Food.CanBeEaten())
+        {
+          _animal.Forget(_foodTarget);
+          return AnimalState.Wander;
+        }
+
         var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
         foreach (var collider in colliders)
           if (collider.GetComponent<AbstractFood>() is AbstractFood f)

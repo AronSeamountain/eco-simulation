@@ -29,7 +29,7 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
-   
+
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
 
@@ -38,7 +38,6 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
-    private int FertilityTimeInDays = 5;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -49,16 +48,18 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
+    private int _daysUntilFertile;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
-    private int _daysUntilFertile;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
+
+    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
     public AbstractAnimal EnemyToFleeFrom { get; set; }
@@ -118,12 +119,6 @@ namespace Animal
       AnimalSetup();
 
       ResetGameObject();
-    }
-
-    public void FertilitySetup(int time)
-    {
-      _daysUntilFertile = time;
-      FertilityTimeInDays = time;
     }
 
     private void Update()
@@ -205,6 +200,12 @@ namespace Animal
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
       Mutate();
+    }
+
+    public void FertilitySetup(int time)
+    {
+      _daysUntilFertile = time;
+      FertilityTimeInDays = time;
     }
 
     private void Mutate()

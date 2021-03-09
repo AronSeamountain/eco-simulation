@@ -13,6 +13,12 @@ namespace Animal.Sensor
     public delegate void AnimalFound(AbstractAnimal animal);
 
     /// <summary>
+    ///   Gets invoked when a herbivore discovers a carnivore
+    /// </summary>
+    /// <param name="animal">The spotted carnivore</param>
+    public delegate void EnemySeen(Carnivore animal);
+
+    /// <summary>
     ///   Gets invoked when a food is found.
     /// </summary>
     /// <param name="food">The found that was just found.</param>
@@ -22,13 +28,7 @@ namespace Animal.Sensor
     ///   Gets invoked when a carnivore finds an animal to eat
     /// </summary>
     /// <param name="animal"></param>
-    public delegate void PreyFound(Herbivore animal); 
-    
-    /// <summary>
-    /// Gets invoked when a herbivore discovers a carnivore
-    /// </summary>
-    /// <param name="animal">The spotted carnivore</param>
-    public delegate void EnemySeen(Carnivore animal);
+    public delegate void PreyFound(Herbivore animal);
 
     /// <summary>
     ///   Gets invoked when water is found.
@@ -41,10 +41,10 @@ namespace Animal.Sensor
     private int _length;
     private int _width;
     public AnimalFound AnimalFoundListeners;
+    public EnemySeen EnemySeenListeners;
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
-    public EnemySeen EnemySeenListeners;
 
     private int Height
     {
@@ -55,6 +55,7 @@ namespace Animal.Sensor
         AdjustScaleAndPosition();
       }
     }
+
     private int Length
     {
       get => _length;
@@ -87,6 +88,9 @@ namespace Animal.Sensor
       if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten())
         FoodFoundListeners?.Invoke(food);
 
+      if (other.GetComponent<AbstractFood>() is AbstractFood potentialFood && potentialFood.CanBeEatenSoon())
+        FoodFoundListeners?.Invoke(potentialFood);
+
       if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
         PreyFoundListeners?.Invoke(animal);
 
@@ -95,7 +99,7 @@ namespace Animal.Sensor
 
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
         AnimalFoundListeners?.Invoke(foundAnimal);
-      
+
       if (other.GetComponent<AbstractAnimal>() is Carnivore carnivore)
         EnemySeenListeners?.Invoke(carnivore);
     }
@@ -132,7 +136,7 @@ namespace Animal.Sensor
     private void AdjustScaleAndPosition()
     {
       transform.localScale = new Vector3(Width, Height, Length);
-      var centerOffset = new Vector3(0, -1, Length/2 );
+      var centerOffset = new Vector3(0, -1, Length / 2);
       transform.localPosition = eyesTransform.localPosition + centerOffset;
     }
   }

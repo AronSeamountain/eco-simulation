@@ -18,9 +18,9 @@ namespace Foods.Plants
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
-    public int AgeInHours { get; set; }
     private StateMachine<PlantState> _stateMachine;
     public StateChanged StateChangedListeners;
+    public int AgeInHours { get; set; }
     public bool LeaveSeedState { get; private set; }
 
     private void Awake()
@@ -101,6 +101,11 @@ namespace Foods.Plants
 
     protected override void FoodFullyConsumed()
     {
+    }
+
+    public override bool CanBeEatenSoon()
+    {
+      return _stateMachine.GetCurrentStateEnum() == PlantState.Grow;
     }
 
     public override bool CanBeEaten()
