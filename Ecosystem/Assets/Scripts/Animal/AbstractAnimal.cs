@@ -49,6 +49,10 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
+    [SerializeField] private float pregnancyTime;
+
+    private float _daysUntilPregnancy;
+    private bool _isPregnant;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -204,6 +208,17 @@ namespace Animal
       if (_daysUntilFertile <= 0) Fertile = true;
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+      if (_isPregnant)
+      {
+        _daysUntilPregnancy--;
+        if (_daysUntilPregnancy == 0)
+        {
+          ShouldBirth = true;
+          _isPregnant = false;
+        }
+          
+        
+      }
       Mutate();
     }
 
@@ -373,7 +388,9 @@ namespace Animal
       if (Gender == Gender.Female)
       {
         LastMaleMate = father;
-        ShouldBirth = true;
+        _isPregnant = true;
+        Fertile = false;
+        _daysUntilPregnancy = pregnancyTime;
       }
     }
 

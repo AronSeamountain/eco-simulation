@@ -34,9 +34,11 @@ MonoBehaviour:
   matingManager: {fileID: 1806244766759171930}
   mouthParticles: {fileID: 804819275111858027}
   hearing: {fileID: 8487035828763154579}
+  vision: {fileID: 0}
   animationManager: {fileID: 5220632170581853533}
-  genderRenderer: {fileID: 0}
-  enemyToFleeFrom: {fileID: 0}
+  meshRenderer: {fileID: 0}
+  pregnancyTime: 10
+  fertilityTimeInDays: 5
 --- !u!1001 &4342840507159857448
 PrefabInstance:
   m_ObjectHideFlags: 0
