@@ -17,7 +17,8 @@ namespace Animal
   /// <summary>
   ///   A very basic animal that searches for food.
   /// </summary>
-  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable
+  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable,
+    IResetable
   {
     public delegate void AgeChanged(int age);
 
@@ -48,6 +49,8 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
+    [SerializeField] private int fertilityTimeInDays = 5;
+    [SerializeField] private AnimalSpecies _species;
     private int _daysUntilFertile;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
@@ -58,7 +61,6 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
-    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
 
@@ -81,7 +83,13 @@ namespace Animal
     public AbstractAnimal LastMaleMate { get; private set; }
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
-    public AnimalSpecies Species { get; protected set; }
+
+    public AnimalSpecies Species
+    {
+      get => _species;
+      protected set => _species = value;
+    }
+
     public Water ClosestKnownWater => waterManager.ClosestKnownWater;
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
@@ -126,7 +134,6 @@ namespace Animal
     {
       InitStateMachine();
       InitSensoryEvents();
-      AnimalSetup();
 
       ResetGameObject();
     }
@@ -194,6 +201,14 @@ namespace Animal
       visualDetector.GetComponent<Renderer>().enabled = show;
     }
 
+    public void ResetGameObject()
+    {
+      ResetGender();
+      ResetProperties();
+      ResetStateMachine();
+      ResetFertility();
+    }
+
     public void HourTick()
     {
       _nourishmentDelegate.HourTick();
@@ -208,12 +223,6 @@ namespace Animal
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
       Mutate();
-    }
-
-    public void FertilitySetup(int time)
-    {
-      _daysUntilFertile = time;
-      FertilityTimeInDays = time;
     }
 
     private void Mutate()
@@ -246,7 +255,6 @@ namespace Animal
       return _nourishmentDelegate.HydrationIsFull();
     }
 
-    protected abstract void AnimalSetup();
     protected abstract void OnAnimalHeard(AbstractAnimal animal);
 
     protected abstract void OnEnemySeen(AbstractAnimal animal);
@@ -337,7 +345,7 @@ namespace Animal
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _daysUntilFertile = FertilityTimeInDays;
+      _daysUntilFertile = fertilityTimeInDays;
       Fertile = false;
       ShouldBirth = false;
 
@@ -421,13 +429,6 @@ namespace Animal
       NutritionalValue -= Time.deltaTime;
     }
 
-    public void ResetGameObject()
-    {
-      ResetGender();
-      ResetProperties();
-      ResetStateMachine();
-    }
-
     public virtual bool SafeDistanceFromEnemy()
     {
       return true;
@@ -470,17 +471,13 @@ namespace Animal
       SpeedModifier = speed;
       SizeModifier = size;
     }
-
-    #region ResetSetup
-
-    private void ResetGender()
-    {
-      Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
-      RenderAnimalSpecificColors();
-      if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
-    }
-
-    private void ResetProperties()
+    
+    /// <summary>
+    ///   Initializes the speed, size, nutrional value ... etc.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="value2"></param>
+    private void InitProperties(int value, int value2)
     {
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
@@ -501,9 +498,29 @@ namespace Animal
       NutritionalValue = 100 * sizeCubed;
     }
 
+    #region ResetSetup
+
+    private void ResetGender()
+    {
+      Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
+      RenderAnimalSpecificColors();
+      if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+    }
+
+    private void ResetProperties()
+    {
+      ResetProperties(123, 123);
+    }
+
     private void ResetStateMachine()
     {
       InitStateMachine(); // It also works creating a whole new state machine
+    }
+
+    public void ResetFertility()
+    {
+      _daysUntilFertile = fertilityTimeInDays;
+      fertilityTimeInDays = fertilityTimeInDays;
     }
 
     #endregion

@@ -11,7 +11,6 @@ namespace Animal
   {
     private const float HuntRange = 15;
     public const float EatingRange = 2f;
-    [SerializeField] private int fertilityTimeInDays = 5;
     private bool _animalOfSameType;
 
     private bool _hearsHerbivore;
@@ -20,12 +19,6 @@ namespace Animal
     private void OnPreyFound(Herbivore herbivore)
     {
       Target = herbivore;
-    }
-
-    protected override void AnimalSetup()
-    {
-      Species = AnimalSpecies.Wolf;
-      FertilitySetup(fertilityTimeInDays);
     }
 
     protected override void RenderAnimalSpecificColors()
