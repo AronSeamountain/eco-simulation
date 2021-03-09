@@ -117,11 +117,10 @@ namespace Animal
     {
       InitStateMachine();
       InitSensoryEvents();
-      AnimalSetup();
-      InitGameObject(-1,-1);
+      InitAnimal(-1,-1);
     }
 
-    public void FertilitySetup(int time)
+    public void FertilityTimeSetup(int time)
     {
       _daysUntilFertile = time;
       FertilityTimeInDays = time;
@@ -238,7 +237,6 @@ namespace Animal
       return _nourishmentDelegate.HydrationIsFull();
     }
 
-    protected abstract void AnimalSetup();
     protected abstract void OnAnimalHeard(AbstractAnimal animal);
 
     protected abstract void OnEnemySeen(AbstractAnimal animal);
@@ -332,7 +330,7 @@ namespace Animal
 
       var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
       var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
-      child.InitGameObject(Random.Range(speedMin, speedMax),Random.Range(sizeMin, sizeMax));
+      child.InitAnimal(Random.Range(speedMin, speedMax),Random.Range(sizeMin, sizeMax));
 
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
@@ -424,11 +422,11 @@ namespace Animal
       if (_nutritionalValue < 0.1) FullyConsumed();
     }
     /// <summary>
-    ///   Turns the animal either away from an animal (Flee())or towards an animal (in carnivore class)
+    ///   Sets the properties for the base animal. Override in subclass to implement species specific behaviour
     /// </summary>
     /// <param name="speed">The speed value for the animal, set to -1 if not yet specified</param>
     /// /// <param name="size">The size value for the animal, set to -1 if not yet specified</param>
-    public void InitGameObject(float speed,float size)
+    protected virtual void InitAnimal(float speed,float size)
     {
       ResetGender();
       InitSpeed(speed);

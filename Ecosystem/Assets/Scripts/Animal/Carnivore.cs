@@ -22,10 +22,11 @@ namespace Animal
       Target = herbivore;
     }
 
-    protected override void AnimalSetup()
+    protected override void InitAnimal(float speed, float size)
     {
+      base.InitAnimal(speed,size);
       Species = AnimalSpecies.Wolf;
-      FertilitySetup(fertilityTimeInDays);
+      FertilityTimeSetup(fertilityTimeInDays);
     }
 
     protected override void RenderAnimalSpecificColors()

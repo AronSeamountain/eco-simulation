@@ -13,10 +13,11 @@ namespace Animal
     private bool _hearsCarnivore;
     private bool _seesCarnivore;
 
-    protected override void AnimalSetup()
+    protected override void InitAnimal(float speed, float size)
     {
+      base.InitAnimal(speed,size);
       Species = AnimalSpecies.Rabbit;
-      FertilitySetup(fertilityTimeInDays);
+      FertilityTimeSetup(fertilityTimeInDays);
     }
 
     protected override void RenderAnimalSpecificColors()
