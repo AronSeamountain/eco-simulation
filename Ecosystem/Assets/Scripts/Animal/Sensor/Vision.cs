@@ -77,8 +77,8 @@ namespace Animal.Sensor
 
     private void Start()
     {
-      Height = 3;
-      Width = 8;
+      Height = 6;
+      Width = 10;
       Length = 6;
     }
 
