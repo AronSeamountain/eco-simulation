@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Animal.AnimalStates;
 using Animal.Managers;
@@ -9,7 +10,9 @@ using Foods;
 using Pools;
 using UI;
 using UI.Properties;
+using UnityEditor.UIElements;
 using UnityEngine;
+using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -242,7 +245,7 @@ namespace Animal
 
     private void UpdateScale()
     {
-      transform.localScale = Vector3.one * SizeModifier;
+      transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
     }
 
     public bool CanEatMore()
@@ -335,13 +338,20 @@ namespace Animal
 
     /// <summary>
     ///   This method will only be called in a female animal.
-    ///   make this return the child if it needs to be overridden in the future
     /// </summary>
     public void SpawnChild(AbstractAnimal father)
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
-      child.ResetGameObject();
+      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
+      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
+
+      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
+      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
+
+      child.ResetGameObject(); //resets to default/random values
+      child.InitProperties(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
+      
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
@@ -349,13 +359,7 @@ namespace Animal
       Fertile = false;
       ShouldBirth = false;
 
-      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
-      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
-
-      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
-      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
-
-      child.SetPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
+     
     }
 
     /// <summary>
@@ -477,25 +481,28 @@ namespace Animal
     /// </summary>
     /// <param name="value"></param>
     /// <param name="value2"></param>
-    private void InitProperties(int value, int value2)
+    private void InitProperties(float speed, float size)
     {
-      const float rangeMin = 0.8f;
-      const float rangeMax = 1.2f;
-      SpeedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      SizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
+      SpeedModifier = speed;
+      SizeModifier = size;
+      movement.SpeedFactor = SpeedModifier;
+      
+      InitNourishmentDelegate();
+
+      // Setup size modification
+      UpdateScale();
+      
+    }
+
+    private void InitNourishmentDelegate()
+    {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = sizeCubed + SizeModifier * SizeModifier;
 
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
-
-      movement.SpeedFactor = SpeedModifier;
-
-      // Setup size modification
-      var scale = SizeModifier + VisualSizeModifier;
-      transform.localScale = new Vector3(scale, scale, scale);
-      NutritionalValue = 100 * sizeCubed;
+       NutritionalValue = 100 * sizeCubed;
     }
 
     #region ResetSetup
@@ -509,7 +516,11 @@ namespace Animal
 
     private void ResetProperties()
     {
-      ResetProperties(123, 123);
+      const float rangeMin = 0.8f;
+      const float rangeMax = 1.2f;
+      var speed = Random.Range(rangeMin, rangeMax); 
+      var size  = Random.Range(rangeMin, rangeMax); 
+      InitProperties(speed, size);
     }
 
     private void ResetStateMachine()
