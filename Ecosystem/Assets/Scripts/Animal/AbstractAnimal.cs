@@ -426,8 +426,8 @@ namespace Animal
     ///   Sets the properties for the base animal. Override in subclass to implement species specific behaviour
     /// </summary>
     /// <param name="speed">The speed value for the animal, set to -1 if not yet specified</param>
-    /// /// <param name="size">The size value for the animal, set to -1 if not yet specified</param>
-    protected virtual void InitAnimal(float speed,float size)
+    /// <param name="size">The size value for the animal, set to -1 if not yet specified</param>
+    protected virtual void InitAnimal(float speed,float size)//TODO create properties object with all the properties inherited from parents (avoid that we have to change the method signature for every new property
     {
       ResetGender();
       InitSpeed(speed);
