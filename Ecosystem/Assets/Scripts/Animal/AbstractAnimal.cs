@@ -29,9 +29,11 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
-   
+
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
+    private const float propertyMinRange = 0.8f;
+    private const float propertyMaxRange = 1.2f;
 
     /// <summary>
     ///   Scales the animal, is not correlated to actual size for the model logic.
@@ -116,8 +118,7 @@ namespace Animal
       InitStateMachine();
       InitSensoryEvents();
       AnimalSetup();
-
-      ResetGameObject();
+      InitGameObject(-1,-1);
     }
 
     public void FertilitySetup(int time)
@@ -324,7 +325,15 @@ namespace Animal
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
-      child.ResetGameObject();
+      
+      
+      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
+      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
+
+      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
+      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
+      child.InitGameObject(Random.Range(speedMin, speedMax),Random.Range(sizeMin, sizeMax));
+
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
@@ -332,13 +341,7 @@ namespace Animal
       Fertile = false;
       ShouldBirth = false;
 
-      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
-      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
-
-      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
-      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
-
-      child.SetPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
+    
     }
 
     /// <summary>
@@ -420,11 +423,17 @@ namespace Animal
       _nutritionalValue -= Time.deltaTime;
       if (_nutritionalValue < 0.1) FullyConsumed();
     }
-
-    public void ResetGameObject()
+    /// <summary>
+    ///   Turns the animal either away from an animal (Flee())or towards an animal (in carnivore class)
+    /// </summary>
+    /// <param name="speed">The speed value for the animal, set to -1 if not yet specified</param>
+    /// /// <param name="size">The size value for the animal, set to -1 if not yet specified</param>
+    public void InitGameObject(float speed,float size)
     {
       ResetGender();
-      ResetSpeedSize();
+      InitSpeed(speed);
+      InitSize(size);
+      initNourishmentDelegateValues();
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -464,12 +473,6 @@ namespace Animal
       ClearEnemyTarget();
     }
 
-    private void SetPropertiesOnBirth(float speed, float size)
-    {
-      SpeedModifier = speed;
-      SizeModifier = size;
-    }
-
     #region ResetSetup
 
     private void ResetGender()
@@ -479,12 +482,12 @@ namespace Animal
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
     }
 
-    private void ResetSpeedSize()
+
+    /// <summary>
+    ///   Inits the values in the nourishmentDelegate
+    /// </summary>
+    private void initNourishmentDelegateValues()
     {
-      const float rangeMin = 0.8f;
-      const float rangeMax = 1.2f;
-      SpeedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      SizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = sizeCubed + SizeModifier * SizeModifier;
 
@@ -492,12 +495,37 @@ namespace Animal
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
 
-      movement.SpeedFactor = SpeedModifier;
+      _nutritionalValue = 100 * sizeCubed;
+    }
 
-      // Setup size modification
+    /// <summary>
+    ///   Sets the speed and size of a spawned animal
+    /// </summary>
+    /// <param name="speed">If set to -1 it will get a random value</param>
+    private void InitSpeed(float speed)
+    {
+      if (speed == -1)
+        SpeedModifier = Random.Range(propertyMinRange, propertyMaxRange);
+      else
+        SpeedModifier = speed;
+
+      movement.SpeedFactor = SpeedModifier;
+    }
+
+
+    /// <summary>
+    ///   Sets the size and size of a spawned animal
+    /// </summary>
+    /// <param name="size">If set to -1 it will get a random value</param>
+    private void InitSize(float size)
+    {
+      if (size == -1)
+        SizeModifier = Random.Range(propertyMinRange, propertyMaxRange);
+      else
+        SizeModifier = size;
+
       var scale = SizeModifier + VisualSizeModifier;
       transform.localScale = new Vector3(scale, scale, scale);
-      _nutritionalValue = 100 * sizeCubed;
     }
 
     #endregion
