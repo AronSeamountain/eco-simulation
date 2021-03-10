@@ -421,7 +421,7 @@ namespace Animal
 
     private void OnStateChanged(AnimalState state)
     {
-      animationManager.ReceiveState(state);
+      animationManager.ReceiveState(state, this);
     }
 
     /// <summary>
@@ -459,14 +459,13 @@ namespace Animal
       }
     }
 
-    public void IncreaseSpeed()
+    public void SetSpeed(float speedFactor)
     {
-      movement.SpeedFactor += 5;
+      movement.SpeedFactor = speedFactor*SpeedModifier;
     }
 
     public void StopFleeing()
     {
-      movement.SpeedFactor = movement.SpeedFactor - 5;
       ClearEnemyTarget();
     }
 
