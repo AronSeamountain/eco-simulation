@@ -497,7 +497,7 @@ namespace Animal
     private void InitNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = sizeCubed + SizeModifier * SizeModifier;
+      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
 
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
