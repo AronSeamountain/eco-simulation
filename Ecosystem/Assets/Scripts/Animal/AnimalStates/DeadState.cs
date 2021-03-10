@@ -20,14 +20,18 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _animal.StopMoving();
-
-      _animal.DiedListeners?.Invoke(_animal);
-      AnimalPool.SharedInstance.Pool(_animal);
     }
 
     public AnimalState Execute()
     {
       _animal.Decay();
+
+      if (_animal.NutritionalValue < 0.1)
+      {
+        _animal.DiedListeners.Invoke(_animal);
+        AnimalPool.SharedInstance.Pool(_animal);
+      }
+
       return AnimalState.Dead;
     }
 

@@ -106,6 +106,7 @@ namespace UI
       {
         children.OnValueChanged(parent.Children.ToString());
       }
+
       properties.Add(children);
 
       animal.ChildSpawnedListeners += ChildSpawnedImpl;
@@ -119,11 +120,25 @@ namespace UI
       {
         age.OnValueChanged($"{newAge} days");
       }
-      
+
       properties.Add(age);
 
       animal.AgeChangedListeners += AgeChangedImpl;
       age.CleanupListeners += () => animal.AgeChangedListeners -= AgeChangedImpl;
+
+      // ---------- Nutrition ----------
+      var nutrition = RowFactory.CreateKeyValuePair();
+      nutrition.Configure("Nutrition", Prettifier.Round(animal.NutritionalValue, 4));
+
+      void NutritionChangedImpl()
+      {
+        nutrition.OnValueChanged(Prettifier.Round(animal.NutritionalValue, 4));
+      }
+
+      properties.Add(nutrition);
+
+      animal.PropertiesChangedListeners += NutritionChangedImpl;
+      nutrition.CleanupListeners += () => animal.PropertiesChangedListeners -= NutritionChangedImpl;
 
       return properties;
     }
@@ -139,7 +154,7 @@ namespace UI
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
       var age = RowFactory.CreateKeyValuePair();
-      age.Configure("Age", ((int) plant.AgeInHours / 24).ToString());
+      age.Configure("Age", (plant.AgeInHours / 24).ToString());
 
       void SaturationChangedImpl(float saturation)
       {
@@ -181,9 +196,9 @@ namespace UI
       entityManager.HourTickListeners += HerbivoreUpdateImpl;
       herbivoreText.CleanupListeners += () => entityManager.HourTickListeners -= HerbivoreUpdateImpl;
 
-      // ---------- Animals (carnivores/wolfs) ----------
+      // ---------- Animals (carnivores/wolves) ----------
       var carnivoreText = RowFactory.CreateKeyValuePair();
-      carnivoreText.Configure("Wolfs", entityManager.CarnivoreCount.ToString());
+      carnivoreText.Configure("Wolves", entityManager.CarnivoreCount.ToString());
 
       void AnimalUpdateImpl()
       {

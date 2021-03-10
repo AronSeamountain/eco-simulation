@@ -27,6 +27,7 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
+      if (!_carnivore.Alive) return AnimalState.Dead;
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
 
