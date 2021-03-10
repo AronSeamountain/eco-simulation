@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Animal.AnimalStates;
 using Animal.Managers;
@@ -9,7 +10,9 @@ using Foods;
 using Pools;
 using UI;
 using UI.Properties;
+using UnityEditor.UIElements;
 using UnityEngine;
+using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -17,7 +20,8 @@ namespace Animal
   /// <summary>
   ///   A very basic animal that searches for food.
   /// </summary>
-  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable
+  public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable,
+    IResetable
   {
     public delegate void AgeChanged(int age);
 
@@ -29,7 +33,7 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
-   
+
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
 
@@ -38,7 +42,6 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
-    private int FertilityTimeInDays = 5;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -49,6 +52,9 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
+    [SerializeField] private int fertilityTimeInDays = 5;
+    [SerializeField] private AnimalSpecies _species;
+    private int _daysUntilFertile;
     [SerializeField] private float pregnancyTime;
 
     private float _daysUntilPregnancy;
@@ -59,12 +65,24 @@ namespace Animal
     protected NourishmentDelegate _nourishmentDelegate;
     private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
-    private int _daysUntilFertile;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
+
+    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
+
+    public float NutritionalValue
+    {
+      get => _nutritionalValue;
+      private set
+      {
+        _nutritionalValue = value;
+        PropertiesChangedListeners?.Invoke();
+      }
+    }
+
     public AbstractAnimal EnemyToFleeFrom { get; set; }
     public float SizeModifier { get; private set; }
     public float SpeedModifier { get; private set; }
@@ -74,12 +92,18 @@ namespace Animal
     public AbstractAnimal LastMaleMate { get; private set; }
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
-    public AnimalSpecies Species { get; protected set; }
+
+    public AnimalSpecies Species
+    {
+      get => _species;
+      protected set => _species = value;
+    }
+
     public Water ClosestKnownWater => waterManager.ClosestKnownWater;
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
-    public bool Alive => Health > 0;
+    public bool Alive => Health > 0 && NutritionalValue >= 0.1;
     public bool Dead => !Alive;
     public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
     public bool IsHerbivore => Species == AnimalSpecies.Rabbit;
@@ -119,15 +143,8 @@ namespace Animal
     {
       InitStateMachine();
       InitSensoryEvents();
-      AnimalSetup();
 
       ResetGameObject();
-    }
-
-    public void FertilitySetup(int time)
-    {
-      _daysUntilFertile = time;
-      FertilityTimeInDays = time;
     }
 
     private void Update()
@@ -159,27 +176,25 @@ namespace Animal
     {
       float consumedFood;
 
-      if (_nutritionalValue >= amount)
+      if (NutritionalValue >= amount)
       {
         // Eat partially
-        _nutritionalValue -= amount;
+        NutritionalValue -= amount;
         consumedFood = amount;
       }
       else
       {
         // Eat whole food
-        consumedFood = _nutritionalValue;
-        _nutritionalValue = 0;
+        consumedFood = NutritionalValue;
+        NutritionalValue = 0;
       }
-
-      if (_nutritionalValue < 0.1) FullyConsumed();
 
       return consumedFood;
     }
 
     public bool CanBeEaten()
     {
-      return _nutritionalValue > 0.1;
+      return NutritionalValue > 0.1;
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -193,6 +208,14 @@ namespace Animal
       var visualDetector = GetComponentInChildren<Vision>();
       hearingDetector.GetComponent<Renderer>().enabled = show;
       visualDetector.GetComponent<Renderer>().enabled = show;
+    }
+
+    public void ResetGameObject()
+    {
+      ResetGender();
+      ResetProperties();
+      ResetStateMachine();
+      ResetFertility();
     }
 
     public void HourTick()
@@ -222,6 +245,12 @@ namespace Animal
       Mutate();
     }
 
+    public void FertilitySetup(int time)
+    {
+      _daysUntilFertile = time;
+      FertilityTimeInDays = time;
+    }
+
     private void Mutate()
     {
       if (MutationPercentPerDay > Random.Range(0, 100))
@@ -239,7 +268,7 @@ namespace Animal
 
     private void UpdateScale()
     {
-      transform.localScale = Vector3.one * SizeModifier;
+      transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
     }
 
     public bool CanEatMore()
@@ -252,7 +281,6 @@ namespace Animal
       return _nourishmentDelegate.HydrationIsFull();
     }
 
-    protected abstract void AnimalSetup();
     protected abstract void OnAnimalHeard(AbstractAnimal animal);
 
     protected abstract void OnEnemySeen(AbstractAnimal animal);
@@ -333,27 +361,28 @@ namespace Animal
 
     /// <summary>
     ///   This method will only be called in a female animal.
-    ///   make this return the child if it needs to be overridden in the future
     /// </summary>
     public void SpawnChild(AbstractAnimal father)
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
-      child.ResetGameObject();
-      child.transform.position = transform.position;
-      ChildSpawnedListeners?.Invoke(child, this);
-
-      _daysUntilFertile = FertilityTimeInDays;
-      Fertile = false;
-      ShouldBirth = false;
-
       var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
       var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
 
       var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
       var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
 
-      child.SetPropertiesOnBirth(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
+      child.ResetGameObject(); //resets to default/random values
+      child.InitProperties(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
+      
+      child.transform.position = transform.position;
+      ChildSpawnedListeners?.Invoke(child, this);
+
+      _daysUntilFertile = fertilityTimeInDays;
+      Fertile = false;
+      ShouldBirth = false;
+
+     
     }
 
     /// <summary>
@@ -417,15 +446,7 @@ namespace Animal
 
     private void OnStateChanged(AnimalState state)
     {
-      animationManager.ReceiveState(state);
-    }
-
-    /// <summary>
-    ///   Removes the animal
-    /// </summary>
-    private void FullyConsumed()
-    {
-      transform.position = new Vector3(0, 10, 0); //TODO put back in ObjectPool
+      animationManager.ReceiveState(state, this);
     }
 
     /// <summary>
@@ -434,14 +455,7 @@ namespace Animal
     /// </summary>
     public void Decay()
     {
-      _nutritionalValue -= Time.deltaTime;
-      if (_nutritionalValue < 0.1) FullyConsumed();
-    }
-
-    public void ResetGameObject()
-    {
-      ResetGender();
-      ResetSpeedSize();
+      NutritionalValue -= Time.deltaTime;
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -470,14 +484,13 @@ namespace Animal
       }
     }
 
-    public void IncreaseSpeed()
+    public void SetSpeed(float speedFactor)
     {
-      movement.SpeedFactor += 5;
+      movement.SpeedFactor = speedFactor*SpeedModifier;
     }
 
     public void StopFleeing()
     {
-      movement.SpeedFactor = movement.SpeedFactor - 5;
       ClearEnemyTarget();
     }
 
@@ -485,6 +498,35 @@ namespace Animal
     {
       SpeedModifier = speed;
       SizeModifier = size;
+    }
+    
+    /// <summary>
+    ///   Initializes the speed, size, nutrional value ... etc.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="value2"></param>
+    private void InitProperties(float speed, float size)
+    {
+      SpeedModifier = speed;
+      SizeModifier = size;
+      movement.SpeedFactor = SpeedModifier;
+      
+      InitNourishmentDelegate();
+
+      // Setup size modification
+      UpdateScale();
+      
+    }
+
+    private void InitNourishmentDelegate()
+    {
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
+
+      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
+      _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
+       NutritionalValue = 100 * sizeCubed;
     }
 
     #region ResetSetup
@@ -496,25 +538,24 @@ namespace Animal
       if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
     }
 
-    private void ResetSpeedSize()
+    private void ResetProperties()
     {
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
-      SpeedModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      SizeModifier = Random.Range(rangeMin, rangeMax); //TODO make modified based on parent
-      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = sizeCubed + SizeModifier * SizeModifier;
+      var speed = Random.Range(rangeMin, rangeMax); 
+      var size  = Random.Range(rangeMin, rangeMax); 
+      InitProperties(speed, size);
+    }
 
-      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
-      _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
+    private void ResetStateMachine()
+    {
+      InitStateMachine(); // It also works creating a whole new state machine
+    }
 
-      movement.SpeedFactor = SpeedModifier;
-
-      // Setup size modification
-      var scale = SizeModifier + VisualSizeModifier;
-      transform.localScale = new Vector3(scale, scale, scale);
-      _nutritionalValue = 100 * sizeCubed;
+    public void ResetFertility()
+    {
+      _daysUntilFertile = fertilityTimeInDays;
+      fertilityTimeInDays = fertilityTimeInDays;
     }
 
     #endregion

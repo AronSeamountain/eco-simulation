@@ -11,14 +11,16 @@ namespace Foods.Plants
   {
     public delegate void StateChanged(string state);
 
+    // plant can be alive for 5 in-game days, then i has to start over as seed again
+    private const int MaxHoursAlive = 120;
     private const int HoursAsSeed = 24;
     private const int SaturationPerHour = 3;
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
-    public int AgeInHours { get; set; }
     private StateMachine<PlantState> _stateMachine;
     public StateChanged StateChangedListeners;
+    public int AgeInHours { get; set; }
     public bool LeaveSeedState { get; private set; }
 
     private void Awake()
@@ -68,6 +70,8 @@ namespace Foods.Plants
 
       if (LeaveSeedState)
         Saturation += SaturationPerHour;
+
+      if (AgeInHours >= MaxHoursAlive) Reset();
     }
 
     public void DayTick()
@@ -97,6 +101,11 @@ namespace Foods.Plants
 
     protected override void FoodFullyConsumed()
     {
+    }
+
+    public override bool CanBeEatenSoon()
+    {
+      return _stateMachine.GetCurrentStateEnum() == PlantState.Grow;
     }
 
     public override bool CanBeEaten()

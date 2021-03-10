@@ -21,11 +21,13 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
+      _carnivore.SetSpeed(5);
       _target = _carnivore.Target;
     }
 
     public AnimalState Execute()
     {
+      if (!_carnivore.Alive) return AnimalState.Dead;
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
 
