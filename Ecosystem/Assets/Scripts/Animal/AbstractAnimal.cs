@@ -33,6 +33,8 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
+    public delegate void PregnancyChanged(bool isPregnant);
+
 
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
@@ -58,7 +60,7 @@ namespace Animal
     [SerializeField] private float pregnancyTime;
 
     private float _daysUntilPregnancy;
-    private bool _isPregnant;
+    public bool IsPregnant { get; private set; }
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -68,7 +70,7 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
-
+    public PregnancyChanged PregnancyChangedListeners;
     private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
@@ -231,13 +233,14 @@ namespace Animal
       if (_daysUntilFertile <= 0) Fertile = true;
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
-      if (_isPregnant)
+      if (IsPregnant)
       {
         _daysUntilPregnancy--;
         if (_daysUntilPregnancy == 0)
         {
           ShouldBirth = true;
-          _isPregnant = false;
+          IsPregnant = false;
+          PregnancyChangedListeners?.Invoke(IsPregnant);
         }
           
         
@@ -417,9 +420,10 @@ namespace Animal
       if (Gender == Gender.Female)
       {
         LastMaleMate = father;
-        _isPregnant = true;
+        IsPregnant = true;
         Fertile = false;
         _daysUntilPregnancy = pregnancyTime;
+        PregnancyChangedListeners?.Invoke(IsPregnant);
       }
     }
 
