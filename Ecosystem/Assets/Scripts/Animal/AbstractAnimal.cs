@@ -49,6 +49,7 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
+    [SerializeField] private int maxNumberOfChildren = 1;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -71,6 +72,8 @@ namespace Animal
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
     public AnimalSpecies Species { get; protected set; }
+
+    public bool MultipleChildren => maxNumberOfChildren > 1;
     public Water ClosestKnownWater => waterManager.ClosestKnownWater;
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
@@ -314,6 +317,22 @@ namespace Animal
       var sip = 30 * SizeModifier * SizeModifier;
       Drink(water.SaturationModifier * sip * Time.deltaTime);
       mouthParticles.Emit(1);
+    }
+
+    /// <summary>
+    ///   This method will only be called in a female animal.
+    ///   make this return the child if it needs to be overridden in the future
+    ///   spawns a random ammount of children depending on the 'maxNumberOfChildren' 
+    /// </summary>
+    /// <param name="father"></param>
+    public void SpawnMultipleChildren(AbstractAnimal father)
+    {
+      var ammount = Random.Range(1, maxNumberOfChildren);
+      while (ammount >= 1)
+      {
+        SpawnChild(father);
+        ammount--;
+      }
     }
 
     /// <summary>

@@ -536,6 +536,11 @@ PrefabInstance:
       propertyPath: VisualSizeModifier
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: maxNumberOfChildren
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8672377695379901830, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_Name
