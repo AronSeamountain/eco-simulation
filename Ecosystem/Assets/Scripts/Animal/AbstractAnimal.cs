@@ -531,6 +531,7 @@ namespace Animal
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
        NutritionalValue = 100 * sizeCubed;
+       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
     #region ResetSetup
