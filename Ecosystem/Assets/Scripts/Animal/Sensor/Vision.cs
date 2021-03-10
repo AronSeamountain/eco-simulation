@@ -78,9 +78,9 @@ namespace Animal.Sensor
 
     private void Start()
     {
-      Height = 6;
+      Height = 5;
       Width = 10;
-      Length = 6;
+      Length = 10;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -136,7 +136,7 @@ namespace Animal.Sensor
     private void AdjustScaleAndPosition()
     {
       transform.localScale = new Vector3(Width, Height, Length);
-      var centerOffset = new Vector3(0, -1, Length / 2);
+      var centerOffset = new Vector3(0, -1, (Length / 2)-0.5f);
       transform.localPosition = eyesTransform.localPosition + centerOffset;
     }
   }
