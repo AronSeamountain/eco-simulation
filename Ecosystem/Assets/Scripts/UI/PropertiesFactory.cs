@@ -91,6 +91,13 @@ namespace UI
       animal.PropertiesChangedListeners += SizeChangedImpl;
       speed.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
       properties.Add(size);
+      
+      // ---------- Gender ----------
+      var gender = RowFactory.CreateKeyValuePair();
+      gender.Configure("Gender", animal.Gender.ToString());
+      
+      properties.Add(gender);
+      
       // ---------- Children ----------
       var children = RowFactory.CreateKeyValuePair();
       children.Configure("Children", animal.Children.ToString());
