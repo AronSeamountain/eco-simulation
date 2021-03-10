@@ -18,7 +18,7 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _animal.IncreaseSpeed();
+      _animal.SetSpeed(5);
     }
 
     public AnimalState Execute()
