@@ -37,44 +37,59 @@ namespace Animal.Sensor
     public delegate void WaterFound(Water water);
 
     [SerializeField] private Transform eyesTransform;
-    private int _distance;
-    private int _radius;
+    private int _height;
+    private int _length;
+    private int _width;
     public AnimalFound AnimalFoundListeners;
     public EnemySeen EnemySeenListeners;
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
 
-    private int Distance
+    private int Height
     {
-      get => _distance;
+      get => _height;
       set
       {
-        _distance = Mathf.Clamp(value, 0, int.MaxValue);
+        _height = Mathf.Clamp(value, 0, int.MaxValue);
         AdjustScaleAndPosition();
       }
     }
 
-    private int Radius
+    private int Length
     {
-      get => _radius;
+      get => _length;
       set
       {
-        _radius = Mathf.Clamp(value, 0, int.MaxValue);
+        _length = Mathf.Clamp(value, 0, int.MaxValue);
+        AdjustScaleAndPosition();
+      }
+    }
+
+    private int Width
+    {
+      get => _width;
+      set
+      {
+        _width = Mathf.Clamp(value, 0, int.MaxValue);
         AdjustScaleAndPosition();
       }
     }
 
     private void Start()
     {
-      Radius = 10;
-      Distance = 20;
+      Height = 5;
+      Width = 10;
+      Length = 10;
     }
 
     private void OnTriggerEnter(Collider other)
     {
       if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten())
         FoodFoundListeners?.Invoke(food);
+
+      if (other.GetComponent<AbstractFood>() is AbstractFood potentialFood && potentialFood.CanBeEatenSoon())
+        FoodFoundListeners?.Invoke(potentialFood);
 
       if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
         PreyFoundListeners?.Invoke(animal);
@@ -101,7 +116,7 @@ namespace Animal.Sensor
 
       var dirToObject = objectToSee.transform.position - eyesTransform.position;
       var raycastHitSomething =
-        Physics.Raycast(eyesTransform.position, dirToObject, out var hitObject, Distance, RayCastUtil.CastableLayers);
+        Physics.Raycast(eyesTransform.position, dirToObject, out var hitObject, Length, RayCastUtil.CastableLayers);
 
       if (raycastHitSomething)
         if (hitObject.transform.GetComponent<T>() is T hitObjectOfTypeT)
@@ -120,8 +135,8 @@ namespace Animal.Sensor
     /// </summary>
     private void AdjustScaleAndPosition()
     {
-      transform.localScale = new Vector3(Radius, Distance, Radius);
-      var centerOffset = new Vector3(Radius, 0, Distance);
+      transform.localScale = new Vector3(Width, Height, Length);
+      var centerOffset = new Vector3(0, -1, (Length / 2)-0.5f);
       transform.localPosition = eyesTransform.localPosition + centerOffset;
     }
   }

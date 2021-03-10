@@ -54,6 +54,8 @@ namespace Foods
 
     public abstract bool CanBeEaten();
 
+    public abstract bool CanBeEatenSoon();
+
     protected abstract void FoodFullyConsumed();
 
     public FoodType FoodType()

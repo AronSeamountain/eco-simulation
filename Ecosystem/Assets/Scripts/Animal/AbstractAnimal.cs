@@ -64,6 +64,8 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
+
+    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
 
@@ -226,6 +228,12 @@ namespace Animal
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
       Mutate();
+    }
+
+    public void FertilitySetup(int time)
+    {
+      _daysUntilFertile = time;
+      FertilityTimeInDays = time;
     }
 
     private void Mutate()
