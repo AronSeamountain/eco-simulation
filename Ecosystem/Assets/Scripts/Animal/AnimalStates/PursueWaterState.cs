@@ -1,5 +1,6 @@
 ﻿using Core;
 using Foods;
+using UnityEngine;
 using Utils;
 
 namespace Animal.AnimalStates
@@ -33,15 +34,32 @@ namespace Animal.AnimalStates
       if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
 
       _waterTarget = _animal.ClosestKnownWater;
-      if (_waterTarget == null) return AnimalState.Wander;
+      if (!_waterTarget) return AnimalState.Wander;
 
-      var reachesWater = Vector3Util.InRange(_animal.gameObject, _waterTarget.gameObject, _animal.Reach);
-      if (reachesWater) return AnimalState.Drink;
+      if (ReachedWater()) return AnimalState.Drink;
 
       var position = _waterTarget.transform.position;
       _animal.GoTo(position);
 
       return AnimalState.PursueWater;
+    }
+    
+    /// <summary>
+    /// Shoots a ray at the water source and checks that the length of the ray is less than 2 (no real reason for 2, it works)
+    /// </summary>
+    /// <returns>true if the water is in range, false otherwise</returns>
+    private bool ReachedWater()
+    {
+      var position = _animal.transform.position;
+      Ray ray = new Ray(position, _waterTarget.transform.position - position);
+      Physics.Raycast(ray, out var hit);
+      if (!hit.collider) return false; 
+      if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
+      {
+        return hit.distance < 2;
+      }
+
+      return false;
     }
 
     public void Exit()
