@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fc25ac054d542c8be26bc6ed03a5e8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VisualSizeModifier: 0
+  VisualSizeModifier: 1
   movement: {fileID: 2283762596506970916}
   foodManager: {fileID: 1069567349259084597}
   waterManager: {fileID: 8016985608681985207}
@@ -20,9 +20,11 @@ MonoBehaviour:
   matingManager: {fileID: 6207474732365605746}
   mouthParticles: {fileID: 4908705577462801219}
   hearing: {fileID: 4250396893436904635}
+  vision: {fileID: 0}
   animationManager: {fileID: 8410095186163081469}
-  genderRenderer: {fileID: 0}
-  enemyToFleeFrom: {fileID: 0}
+  meshRenderer: {fileID: 0}
+  fertilityTimeInDays: 5
+  _species: 0
 --- !u!114 &8410095186163081469
 MonoBehaviour:
   m_ObjectHideFlags: 0

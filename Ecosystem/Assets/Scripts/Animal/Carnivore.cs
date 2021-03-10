@@ -9,7 +9,6 @@ namespace Animal
 {
   public sealed class Carnivore : AbstractAnimal
   {
-    [SerializeField] private int fertilityTimeInDays = 5;
     private const float HuntRange = 15;
     public const float EatingRange = 2f;
     private bool _animalOfSameType;
@@ -20,12 +19,6 @@ namespace Animal
     private void OnPreyFound(Herbivore herbivore)
     {
       Target = herbivore;
-    }
-
-    protected override void AnimalSetup()
-    {
-      Species = AnimalSpecies.Wolf;
-      FertilitySetup(fertilityTimeInDays);
     }
 
     protected override void RenderAnimalSpecificColors()
