@@ -25,7 +25,11 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      _animal.SpawnChild(_father);
+      if (_animal.MultipleChildren)
+        _animal.SpawnMultipleChildren(_father);
+      else
+        _animal.SpawnChild(_father);
+
       return AnimalState.Wander;
     }
 

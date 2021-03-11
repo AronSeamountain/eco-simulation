@@ -54,6 +54,7 @@ namespace Animal
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     [SerializeField] private int fertilityTimeInDays = 5;
     [SerializeField] private AnimalSpecies _species;
+    [SerializeField] private int maxNumberOfChildren = 1;
     private int _daysUntilFertile;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
@@ -95,6 +96,7 @@ namespace Animal
       protected set => _species = value;
     }
 
+    public bool MultipleChildren => maxNumberOfChildren > 1;
     public Water ClosestKnownWater => waterManager.ClosestKnownWater;
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
@@ -346,6 +348,22 @@ namespace Animal
 
     /// <summary>
     ///   This method will only be called in a female animal.
+    ///   spawns a random ammount of children depending on the 'maxNumberOfChildren' 
+    /// </summary>
+    /// <param name="father"></param>
+    public void SpawnMultipleChildren(AbstractAnimal father)
+    {
+      var amount = Random.Range(1, maxNumberOfChildren);
+      while (amount >= 1)
+      {
+        SpawnChild(father);
+        amount--;
+      }
+    }
+
+    /// <summary>
+    ///   This method will only be called in a female animal.
+    ///   make this return the child if it needs to be overridden in the future
     /// </summary>
     public void SpawnChild(AbstractAnimal father)
     {
@@ -395,7 +413,7 @@ namespace Animal
     }
 
     /// <summary>
-    ///   Method ill only be called for females. Father parameter is for future genetic transfer implementations
+    ///   Method will only be called for females. Father parameter is for future genetic transfer implementations
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
