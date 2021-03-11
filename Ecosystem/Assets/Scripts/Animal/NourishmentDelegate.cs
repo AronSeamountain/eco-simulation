@@ -117,12 +117,12 @@ namespace Animal
 
       if (isPregnant)
       {
-        HydrationDecreasePerHour = SaturationDecreasePerHour * _pregnancyEnergyMutliplier;
+        HydrationDecreasePerHour = HydrationDecreasePerHour * _pregnancyEnergyMutliplier;
         SaturationDecreasePerHour = SaturationDecreasePerHour * _pregnancyEnergyMutliplier;
       }
       else
       {
-         HydrationDecreasePerHour = SaturationDecreasePerHour / _pregnancyEnergyMutliplier;
+         HydrationDecreasePerHour = HydrationDecreasePerHour / _pregnancyEnergyMutliplier;
          SaturationDecreasePerHour = SaturationDecreasePerHour / _pregnancyEnergyMutliplier;
          
       }
