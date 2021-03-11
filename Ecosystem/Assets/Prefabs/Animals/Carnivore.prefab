@@ -39,6 +39,7 @@ MonoBehaviour:
   meshRenderer: {fileID: 0}
   fertilityTimeInDays: 5
   _species: 0
+  pregnancyTime: 10
 --- !u!1001 &4342840507159857448
 PrefabInstance:
   m_ObjectHideFlags: 0

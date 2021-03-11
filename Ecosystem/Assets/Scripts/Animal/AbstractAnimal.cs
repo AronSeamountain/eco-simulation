@@ -33,6 +33,8 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
+    public delegate void PregnancyChanged(bool isPregnant);
+
 
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
@@ -56,6 +58,10 @@ namespace Animal
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
     private int _daysUntilFertile;
+    [SerializeField] private float pregnancyTimeInDays;
+
+    private float _daysUntilPregnancy;
+    public bool IsPregnant { get; private set; }
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -65,7 +71,7 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
-
+    public PregnancyChanged PregnancyChangedListeners;
     private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
@@ -229,6 +235,18 @@ namespace Animal
       if (_daysUntilFertile <= 0) Fertile = true;
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+      if (IsPregnant)
+      {
+        _daysUntilPregnancy--;
+        if (_daysUntilPregnancy == 0)
+        {
+          ShouldBirth = true;
+          IsPregnant = false;
+          PregnancyChangedListeners?.Invoke(IsPregnant);
+        }
+          
+        
+      }
       Mutate();
     }
 
@@ -420,7 +438,10 @@ namespace Animal
       if (Gender == Gender.Female)
       {
         LastMaleMate = father;
-        ShouldBirth = true;
+        IsPregnant = true;
+        Fertile = false;
+        _daysUntilPregnancy = pregnancyTimeInDays;
+        PregnancyChangedListeners?.Invoke(IsPregnant);
       }
     }
 
@@ -528,6 +549,7 @@ namespace Animal
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
        NutritionalValue = 100 * sizeCubed;
+       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
     #region ResetSetup

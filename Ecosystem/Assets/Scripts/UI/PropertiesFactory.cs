@@ -140,6 +140,22 @@ namespace UI
       animal.PropertiesChangedListeners += NutritionChangedImpl;
       nutrition.CleanupListeners += () => animal.PropertiesChangedListeners -= NutritionChangedImpl;
 
+      
+      //------------Pregnant -------------
+      if(animal.Gender == Gender.Female){
+        var pregnancy = RowFactory.CreateKeyValuePair();
+        pregnancy.Configure("Pregnant", $"{animal.IsPregnant}");
+
+        void PregnancyChangedImpl(bool pregnant)
+        {
+          pregnancy.OnValueChanged($"{pregnant}");
+        }
+
+        properties.Add(pregnancy);
+
+        animal.PregnancyChangedListeners += PregnancyChangedImpl;
+        pregnancy.CleanupListeners += () => animal.PregnancyChangedListeners -= PregnancyChangedImpl;
+      }
       return properties;
     }
 
