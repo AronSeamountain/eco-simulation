@@ -353,11 +353,11 @@ namespace Animal
     /// <param name="father"></param>
     public void SpawnMultipleChildren(AbstractAnimal father)
     {
-      var ammount = Random.Range(1, maxNumberOfChildren);
-      while (ammount >= 1)
+      var amount = Random.Range(1, maxNumberOfChildren);
+      while (amount >= 1)
       {
         SpawnChild(father);
-        ammount--;
+        amount--;
       }
     }
 
@@ -413,7 +413,7 @@ namespace Animal
     }
 
     /// <summary>
-    ///   Method ill only be called for females. Father parameter is for future genetic transfer implementations
+    ///   Method will only be called for females. Father parameter is for future genetic transfer implementations
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
