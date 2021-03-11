@@ -57,7 +57,7 @@ namespace Animal
     [SerializeField] private int fertilityTimeInDays = 5;
     [SerializeField] private AnimalSpecies _species;
     private int _daysUntilFertile;
-    [SerializeField] private float pregnancyTime;
+    [SerializeField] private float pregnancyTimeInDays;
 
     private float _daysUntilPregnancy;
     public bool IsPregnant { get; private set; }
@@ -422,7 +422,7 @@ namespace Animal
         LastMaleMate = father;
         IsPregnant = true;
         Fertile = false;
-        _daysUntilPregnancy = pregnancyTime;
+        _daysUntilPregnancy = pregnancyTimeInDays;
         PregnancyChangedListeners?.Invoke(IsPregnant);
       }
     }
