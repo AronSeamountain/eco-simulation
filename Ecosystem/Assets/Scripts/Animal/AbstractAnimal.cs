@@ -33,6 +33,8 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
+    public delegate void PregnancyChanged(bool isPregnant);
+
 
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
@@ -54,6 +56,12 @@ namespace Animal
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     [SerializeField] private int fertilityTimeInDays = 5;
     [SerializeField] private AnimalSpecies _species;
+    [SerializeField] private int maxNumberOfChildren = 1;
+    private int _daysUntilFertile;
+    [SerializeField] private float pregnancyTimeInDays;
+
+    private float _daysUntilPregnancy;
+    public bool IsPregnant { get; private set; }
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -67,7 +75,8 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
-    
+    public PregnancyChanged PregnancyChangedListeners;
+    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
 
@@ -97,6 +106,7 @@ namespace Animal
       protected set => _species = value;
     }
 
+    public bool MultipleChildren => maxNumberOfChildren > 1;
     public Water ClosestKnownWater => waterManager.ClosestKnownWater;
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
@@ -245,6 +255,18 @@ namespace Animal
       }
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+      if (IsPregnant)
+      {
+        _daysUntilPregnancy--;
+        if (_daysUntilPregnancy == 0)
+        {
+          ShouldBirth = true;
+          IsPregnant = false;
+          PregnancyChangedListeners?.Invoke(IsPregnant);
+        }
+          
+        
+      }
       Mutate();
     }
     
@@ -360,6 +382,22 @@ namespace Animal
 
     /// <summary>
     ///   This method will only be called in a female animal.
+    ///   spawns a random ammount of children depending on the 'maxNumberOfChildren' 
+    /// </summary>
+    /// <param name="father"></param>
+    public void SpawnMultipleChildren(AbstractAnimal father)
+    {
+      var amount = Random.Range(1, maxNumberOfChildren);
+      while (amount >= 1)
+      {
+        SpawnChild(father);
+        amount--;
+      }
+    }
+
+    /// <summary>
+    ///   This method will only be called in a female animal.
+    ///   make this return the child if it needs to be overridden in the future
     /// </summary>
     public void SpawnChild(AbstractAnimal father)
     {
@@ -411,14 +449,17 @@ namespace Animal
     }
 
     /// <summary>
-    ///   Method ill only be called for females. Father parameter is for future genetic transfer implementations
+    ///   Method will only be called for females. Father parameter is for future genetic transfer implementations
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
       if (Gender == Gender.Female)
       {
         LastMaleMate = father;
-        ShouldBirth = true;
+        IsPregnant = true;
+        Fertile = false;
+        _daysUntilPregnancy = pregnancyTimeInDays;
+        PregnancyChangedListeners?.Invoke(IsPregnant);
       }
     }
 
@@ -522,6 +563,7 @@ namespace Animal
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
        NutritionalValue = 100 * sizeCubed;
+       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
     #region ResetSetup
