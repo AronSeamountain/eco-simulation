@@ -54,7 +54,6 @@ namespace Animal
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     [SerializeField] private int fertilityTimeInDays = 5;
     [SerializeField] private AnimalSpecies _species;
-    private int _daysUntilFertile;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -68,8 +67,7 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
-
-    private int FertilityTimeInDays = 5;
+    
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
 
@@ -144,7 +142,16 @@ namespace Animal
       InitStateMachine();
       InitSensoryEvents();
 
-      ResetGameObject();
+      if (isChild)
+      {
+        ResetGender();
+        ResetStateMachine();
+        ResetFertility();
+      }
+      else
+      {
+        ResetGameObject();
+      }
     }
 
     private void Update()
@@ -229,23 +236,18 @@ namespace Animal
     {
       if (!Fertile) _daysUntilFertile--;
       if (_daysUntilFertile <= 0) Fertile = true;
-      if (AgeInDays >= 5) isChild = false;
+      if (AgeInDays >= 6) isChild = false;
       if (isChild)
       {
        SpeedModifier += maxSpeed * 0.1f;
        SizeModifier += maxSize * 0.1f;
+       UpdateScale();
       }
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
       Mutate();
     }
-
-    public void FertilitySetup(int time)
-    {
-      _daysUntilFertile = time;
-      FertilityTimeInDays = time;
-    }
-
+    
     private void Mutate()
     {
       if (MutationPercentPerDay > Random.Range(0, 100))
@@ -264,6 +266,8 @@ namespace Animal
     private void UpdateScale()
     {
       transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
+      Debug.Log(SizeModifier+"updatescale");
+      UpdateNourishmentDelegate();
     }
 
     public bool CanEatMore()
@@ -369,9 +373,10 @@ namespace Animal
 
       child.ResetGameObject(); //resets to default/random values
       child.maxSpeed = Random.Range(speedMin, speedMax);
+      Debug.Log(child.maxSpeed +"maxspeed");
       child.maxSize = Random.Range(sizeMin, sizeMax);
       child.InitProperties(child.maxSpeed * 0.5f, child.maxSize * 0.5f);
-      
+      Debug.Log(child.SpeedModifier);
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
@@ -487,12 +492,7 @@ namespace Animal
     {
       ClearEnemyTarget();
     }
-
-    private void SetPropertiesOnBirth(float speed, float size)
-    {
-      SpeedModifier = speed;
-      SizeModifier = size;
-    }
+    
     
     /// <summary>
     ///   Initializes the speed, size, nutrional value ... etc.
@@ -504,15 +504,16 @@ namespace Animal
       SpeedModifier = speed;
       SizeModifier = size;
       movement.SpeedFactor = SpeedModifier;
+      Debug.Log(size+"initsize");
       
-      InitNourishmentDelegate();
+      UpdateNourishmentDelegate();
 
       // Setup size modification
       UpdateScale();
       
     }
 
-    private void InitNourishmentDelegate()
+    private void UpdateNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
