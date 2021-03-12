@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Utils
 {
@@ -24,7 +24,8 @@ namespace Utils
         "Ignore Raycast",
         "UI",
         "TransparentFX",
-        "PostProcessing"
+        "PostProcessing", 
+        "Water"
       );
       return _nonRayCastableLayers;
     }
