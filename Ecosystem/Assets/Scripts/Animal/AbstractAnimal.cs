@@ -234,6 +234,7 @@ namespace Animal
       _nourishmentDelegate.HourTick();
       foodManager.HourTick();
       DecreaseHealthIfStarving();
+      IncreaseHealthIfSatiated();
     }
 
     public void DayTick()
@@ -416,6 +417,13 @@ namespace Animal
 
       if (GetHydration() <= 1)
         _healthDelegate.DecreaseHealth(1);
+    }
+
+    private void IncreaseHealthIfSatiated()
+    {
+      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation*0.75 && 
+          GetSaturation() >= _nourishmentDelegate.MaxHydration*0.75)
+        _healthDelegate.IncreaseHealth(1);
     }
 
     public void SetMouthColor(Color color)
