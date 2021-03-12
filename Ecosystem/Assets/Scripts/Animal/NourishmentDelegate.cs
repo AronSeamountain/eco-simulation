@@ -62,8 +62,6 @@ namespace Animal
     public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
     public float MaxHydration { get; private set; }
     public float MaxSaturation { get; private set; }
-    private float _maxHyd;
-    private float _maxSat;
 
 
     public void HourTick()
