@@ -245,7 +245,6 @@ namespace Animal
 
     public void DayTick()
     {
-      Debug.Log("Stamina: " + _staminaDelegate.Stamina);
       if (!Fertile) _daysUntilFertile--;
       if (_daysUntilFertile <= 0) Fertile = true;
       AgeInDays++;
