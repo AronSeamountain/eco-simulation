@@ -62,6 +62,8 @@ namespace Animal
     public bool IsThirsty => Hydration <= ThirstyHydrationLevel;
     public float MaxHydration { get; private set; }
     public float MaxSaturation { get; private set; }
+    private float _maxHyd;
+    private float _maxSat;
 
 
     public void HourTick()
@@ -96,8 +98,15 @@ namespace Animal
     {
       MaxHydration = maxValue;
       MaxSaturation = maxValue;
-      _hydration = maxValue;
-      _saturation = maxValue;
+      _hydration = MaxHydration;
+      _saturation = MaxSaturation;
+      ThirstyHydrationLevel = maxValue / 2;
+      HungrySaturationLevel = maxValue / 2;
+    }
+    public void UpdateMaxNourishment(float maxValue)
+    {
+      MaxHydration = maxValue;
+      MaxSaturation = maxValue;
       ThirstyHydrationLevel = maxValue / 2;
       HungrySaturationLevel = maxValue / 2;
     }

@@ -57,7 +57,6 @@ namespace Animal
     [SerializeField] private int fertilityTimeInDays = 5;
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
-    private int _daysUntilFertile;
     [SerializeField] private float pregnancyTimeInDays;
 
     private float _daysUntilPregnancy;
@@ -152,16 +151,8 @@ namespace Animal
       InitStateMachine();
       InitSensoryEvents();
 
-      if (isChild)
-      {
-        ResetGender();
-        ResetStateMachine();
-        ResetFertility();
-      }
-      else
-      {
-        ResetGameObject();
-      }
+      ResetGameObject();
+
     }
 
     private void Update()
@@ -258,14 +249,12 @@ namespace Animal
       if (IsPregnant)
       {
         _daysUntilPregnancy--;
-        if (_daysUntilPregnancy == 0)
+        if (_daysUntilPregnancy <= 0)
         {
           ShouldBirth = true;
           IsPregnant = false;
           PregnancyChangedListeners?.Invoke(IsPregnant);
         }
-          
-        
       }
       Mutate();
     }
@@ -288,7 +277,6 @@ namespace Animal
     private void UpdateScale()
     {
       transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
-      Debug.Log(SizeModifier+"updatescale");
       UpdateNourishmentDelegate();
     }
 
@@ -411,10 +399,8 @@ namespace Animal
 
       child.ResetGameObject(); //resets to default/random values
       child.maxSpeed = Random.Range(speedMin, speedMax);
-      Debug.Log(child.maxSpeed +"maxspeed");
       child.maxSize = Random.Range(sizeMin, sizeMax);
       child.InitProperties(child.maxSpeed * 0.5f, child.maxSize * 0.5f);
-      Debug.Log(child.SpeedModifier);
       child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
@@ -545,16 +531,15 @@ namespace Animal
       SpeedModifier = speed;
       SizeModifier = size;
       movement.SpeedFactor = SpeedModifier;
-      Debug.Log(size+"initsize");
-      
-      UpdateNourishmentDelegate();
+
+      InitNourishmentDelegate();
 
       // Setup size modification
       UpdateScale();
       
     }
 
-    private void UpdateNourishmentDelegate()
+    private void InitNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
@@ -564,6 +549,17 @@ namespace Animal
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
        NutritionalValue = 100 * sizeCubed;
        PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
+    }
+    private void UpdateNourishmentDelegate()
+    {
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
+
+      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
+      _nourishmentDelegate.UpdateMaxNourishment(sizeCubed * 100);
+      NutritionalValue = 100 * sizeCubed;
+      PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
     #region ResetSetup
@@ -577,6 +573,7 @@ namespace Animal
 
     private void ResetProperties()
     {
+      if (isChild) return; //child no need
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
       var speed = Random.Range(rangeMin, rangeMax); 
