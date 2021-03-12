@@ -12,6 +12,7 @@ using UI;
 using UI.Properties;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.AI;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
@@ -72,7 +73,6 @@ namespace Animal
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
-    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
 
@@ -218,8 +218,15 @@ namespace Animal
     {
       ResetGender();
       ResetProperties();
+      ResetHealthAndActivate();
       ResetStateMachine();
       ResetFertility();
+    }
+
+    private void ResetHealthAndActivate()
+    {
+      gameObject.SetActive(true);
+      _healthDelegate.ResetHealth();
     }
 
     public void HourTick()
@@ -239,7 +246,7 @@ namespace Animal
       if (IsPregnant)
       {
         _daysUntilPregnancy--;
-        if (_daysUntilPregnancy == 0)
+        if (_daysUntilPregnancy <= 0)
         {
           ShouldBirth = true;
           IsPregnant = false;
@@ -249,12 +256,6 @@ namespace Animal
         
       }
       Mutate();
-    }
-
-    public void FertilitySetup(int time)
-    {
-      _daysUntilFertile = time;
-      FertilityTimeInDays = time;
     }
 
     private void Mutate()
@@ -388,23 +389,22 @@ namespace Animal
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
+      
       var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
       var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
 
       var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
       var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
 
+      child.movement.GetAgent().Warp(transform.position);
       child.ResetGameObject(); //resets to default/random values
       child.InitProperties(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
       
-      child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
       _daysUntilFertile = fertilityTimeInDays;
       Fertile = false;
       ShouldBirth = false;
-
-     
     }
 
     /// <summary>
@@ -586,7 +586,6 @@ namespace Animal
     public void ResetFertility()
     {
       _daysUntilFertile = fertilityTimeInDays;
-      fertilityTimeInDays = fertilityTimeInDays;
     }
 
     #endregion
