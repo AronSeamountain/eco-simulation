@@ -12,6 +12,7 @@ using UI;
 using UI.Properties;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.AI;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
@@ -75,7 +76,6 @@ namespace Animal
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
-    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
 
@@ -222,8 +222,15 @@ namespace Animal
     {
       ResetGender();
       ResetProperties();
+      ResetHealthAndActivate();
       ResetStateMachine();
       ResetFertility();
+    }
+
+    private void ResetHealthAndActivate()
+    {
+      gameObject.SetActive(true);
+      _healthDelegate.ResetHealth();
     }
 
     public void HourTick()
@@ -231,6 +238,7 @@ namespace Animal
       _nourishmentDelegate.HourTick();
       foodManager.HourTick();
       DecreaseHealthIfStarving();
+      IncreaseHealthIfSatiated();
     }
 
     public void DayTick()
@@ -258,7 +266,7 @@ namespace Animal
       }
       Mutate();
     }
-    
+
     private void Mutate()
     {
       if (MutationPercentPerDay > Random.Range(0, 100))
@@ -391,17 +399,18 @@ namespace Animal
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
+      
       var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
       var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
 
       var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
       var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
 
+      child.movement.GetAgent().Warp(transform.position);
       child.ResetGameObject(); //resets to default/random values
       child.maxSpeed = Random.Range(speedMin, speedMax);
       child.maxSize = Random.Range(sizeMin, sizeMax);
       child.InitProperties(child.maxSpeed * 0.5f, child.maxSize * 0.5f);
-      child.transform.position = transform.position;
       ChildSpawnedListeners?.Invoke(child, this);
 
       _daysUntilFertile = fertilityTimeInDays;
@@ -420,6 +429,13 @@ namespace Animal
 
       if (GetHydration() <= 1)
         _healthDelegate.DecreaseHealth(1);
+    }
+
+    private void IncreaseHealthIfSatiated()
+    {
+      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation*0.75 && 
+          GetSaturation() >= _nourishmentDelegate.MaxHydration*0.75)
+        _healthDelegate.IncreaseHealth(1);
     }
 
     public void SetMouthColor(Color color)
@@ -589,7 +605,6 @@ namespace Animal
     public void ResetFertility()
     {
       _daysUntilFertile = fertilityTimeInDays;
-      fertilityTimeInDays = fertilityTimeInDays;
     }
 
     #endregion

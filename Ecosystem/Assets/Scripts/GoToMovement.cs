@@ -41,4 +41,9 @@ public sealed class GoToMovement : MonoBehaviour
   {
     agent.isStopped = true;
   }
+
+  public NavMeshAgent GetAgent()
+  {
+    return agent;
+  }
 }
