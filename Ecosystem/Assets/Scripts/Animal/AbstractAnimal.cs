@@ -73,7 +73,6 @@ namespace Animal
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
-    private int FertilityTimeInDays = 5;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
 
@@ -256,12 +255,6 @@ namespace Animal
         
       }
       Mutate();
-    }
-
-    public void FertilitySetup(int time)
-    {
-      _daysUntilFertile = time;
-      FertilityTimeInDays = time;
     }
 
     private void Mutate()
@@ -585,7 +578,6 @@ namespace Animal
     public void ResetFertility()
     {
       _daysUntilFertile = fertilityTimeInDays;
-      fertilityTimeInDays = fertilityTimeInDays;
     }
 
     #endregion
