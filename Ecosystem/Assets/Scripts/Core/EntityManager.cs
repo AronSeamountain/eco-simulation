@@ -35,6 +35,7 @@ namespace Core
     private float _hoursPassed;
     private float _hourTicker;
     private DataLogger _logger;
+    private AnimalSnapshotLogger _animalSnapshotLogger;
     public DayTick DayTickListeners;
     public Tick HourTickListeners;
     private int plantCount;
@@ -66,6 +67,7 @@ namespace Core
       // Logger
       _logger = DataLogger.Instance;
       _logger.InitializeLogging();
+      _animalSnapshotLogger = AnimalSnapshotLogger.Instance;
     }
 
     private void Update()
@@ -230,7 +232,12 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log) _logger.Snapshot(Days, Animals, this);
+          if (log)
+          {
+            _logger.Snapshot(Days, Animals, this);
+            _animalSnapshotLogger.Snapshot(Animals);
+            _animalSnapshotLogger.Persist();
+          }
         }
       }
     }
