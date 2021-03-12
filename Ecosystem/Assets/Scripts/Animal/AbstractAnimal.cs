@@ -63,10 +63,12 @@ namespace Animal
 
     private float _daysUntilPregnancy;
     public bool IsPregnant { get; private set; }
+    public bool IsRunning { get; set; }
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
+    protected StaminaDelegate _staminaDelegate;
     private float _nutritionalValue;
     private StateMachine<AnimalState> _stateMachine;
     public AgeChanged AgeChangedListeners;
@@ -107,6 +109,7 @@ namespace Animal
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
+    private float Stamina => _staminaDelegate.Stamina;
     public bool Alive => Health > 0 && NutritionalValue >= 0.1;
     public bool Dead => !Alive;
     public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
@@ -141,6 +144,7 @@ namespace Animal
     {
       _nourishmentDelegate = new NourishmentDelegate();
       _healthDelegate = new HealthDelegate();
+      _staminaDelegate = new StaminaDelegate();
     }
 
     private void Start()
@@ -235,10 +239,13 @@ namespace Animal
       foodManager.HourTick();
       DecreaseHealthIfStarving();
       IncreaseHealthIfSatiated();
+      DecreaseStaminaIfRunning();
+      IncreaseStaminaIfNotRunning();
     }
 
     public void DayTick()
     {
+      Debug.Log("Stamina: " + _staminaDelegate.Stamina);
       if (!Fertile) _daysUntilFertile--;
       if (_daysUntilFertile <= 0) Fertile = true;
       AgeInDays++;
@@ -425,6 +432,10 @@ namespace Animal
           GetSaturation() >= _nourishmentDelegate.MaxHydration*0.75)
         _healthDelegate.IncreaseHealth(1);
     }
+
+    protected abstract void IncreaseStaminaIfNotRunning();
+
+    protected abstract void DecreaseStaminaIfRunning();
 
     public void SetMouthColor(Color color)
     {

@@ -68,5 +68,15 @@ namespace Animal
     {
       //To be implemented when carnivore has an enemy.
     }
+
+    protected override void IncreaseStaminaIfNotRunning()
+    {
+      _staminaDelegate.IncreaseStamina(3);
+    }
+
+    protected override void DecreaseStaminaIfRunning()
+    {
+      _staminaDelegate.DecreaseStamina(5);
+    }
   }
 }

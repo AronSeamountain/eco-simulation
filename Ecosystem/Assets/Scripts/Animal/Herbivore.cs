@@ -66,5 +66,15 @@ namespace Animal
       var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
       return SafeDistance < distance;
     }
+    
+    protected override void IncreaseStaminaIfNotRunning()
+    {
+      _staminaDelegate.IncreaseStamina(3);
+    }
+
+    protected override void DecreaseStaminaIfRunning()
+    {
+      _staminaDelegate.DecreaseStamina(3);
+    }
   }
 }
