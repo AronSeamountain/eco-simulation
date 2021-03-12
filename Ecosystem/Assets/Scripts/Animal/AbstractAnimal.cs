@@ -72,8 +72,8 @@ namespace Animal
     private int _daysUntilFertile;
     private bool _isChild;
     private int _daysAsChild = 5;
-    private float _maxSize;
-    private float _maxSpeed;
+    private float _fullyGrownSpeed;
+    private float _fullyGrownSize;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
@@ -252,8 +252,8 @@ namespace Animal
       if (AgeInDays >= _daysAsChild) _isChild = false;
       if (_isChild)
       {
-       SpeedModifier += _maxSpeed * 0.1f;
-       SizeModifier += _maxSize * 0.1f;
+       SpeedModifier += _fullyGrownSpeed * 0.1f;
+       SizeModifier += _fullyGrownSize * 0.1f;
        UpdateScale();
       }
       if (IsPregnant)
@@ -410,9 +410,9 @@ namespace Animal
 
       child.movement.GetAgent().Warp(transform.position);
       child.ResetGameObject(); //resets to default/random values
-      child._maxSpeed = Random.Range(speedMin, speedMax);
-      child._maxSize = Random.Range(sizeMin, sizeMax);
-      child.InitProperties(child._maxSpeed * 0.5f, child._maxSize * 0.5f);
+      child._fullyGrownSpeed = Random.Range(speedMin, speedMax);
+      child._fullyGrownSize = Random.Range(sizeMin, sizeMax);
+      child.InitProperties(child._fullyGrownSpeed * 0.5f, child._fullyGrownSize * 0.5f);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _daysUntilFertile = fertilityTimeInDays;
