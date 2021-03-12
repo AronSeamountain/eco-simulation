@@ -31,7 +31,7 @@ namespace Animal.AnimalStates
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
 
-      if (!_target.gameObject.activeSelf)
+      if (_target.DoesNotExist())
       {
         _carnivore.Target = null;
         return AnimalState.Wander;
