@@ -14,7 +14,7 @@ namespace Animal
     private bool _animalOfSameType;
 
     private bool _hearsHerbivore;
-    public Herbivore Target { get; private set; }
+    public Herbivore Target { get; set; }
 
     private void OnPreyFound(Herbivore herbivore)
     {
