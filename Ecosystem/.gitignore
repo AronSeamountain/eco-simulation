@@ -73,6 +73,9 @@ InitTestScene*.unity
 # End of https://www.toptal.com/developers/gitignore/api/unity
 
 ### Logs (Custom) ###
+Assets/Logs/*.json
+Assets/Logs/*.json.meta
+
 Assets/Logs/*.txt
 Assets/Logs/*.txt.meta
 
