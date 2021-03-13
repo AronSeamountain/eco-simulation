@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -51,7 +50,7 @@ namespace Utils
     }
 
     /// <summary>
-    /// Get point further away from origin vector.
+    ///   Get point further away from origin vector.
     /// </summary>
     /// <param name="origin">The origin of the animal</param>
     /// <param name="radius">The radius to check within</param>
@@ -62,7 +61,7 @@ namespace Utils
       var offset = new Vector3(Random.Range(-radius, radius), 0, Random.Range(50, radius));
       var direction = origin + offset;
       const int lookAtLayers = AllLayers;
-      
+
       if (NavMesh.SamplePosition(direction, out var hit, radius * 2, lookAtLayers))
         return hit.position;
 

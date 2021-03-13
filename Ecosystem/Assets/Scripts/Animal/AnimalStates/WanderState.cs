@@ -49,11 +49,12 @@ namespace Animal.AnimalStates
         var target = carnivore.Target;
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
+
       if (_animal.IsThirsty && !_animal.KnowsWaterLocation && !_animal.IsHungry) return AnimalState.SearchWorld;
-      if (_animal.IsHungry && !_animal.KnowsFoodLocation &&!_animal.IsThirsty) return AnimalState.SearchWorld;
-      if (_animal is Carnivore c && !c.HasTargetSet && 
+      if (_animal.IsHungry && !_animal.KnowsFoodLocation && !_animal.IsThirsty) return AnimalState.SearchWorld;
+      if (_animal is Carnivore c && !c.HasTargetSet &&
           c.IsHungry && c.IsThirsty && !c.KnowsWaterLocation) return AnimalState.SearchWorld;
-      
+
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
         return AnimalState.Idle;

@@ -59,7 +59,7 @@ namespace Animal.AnimalStates
         {
           _animal.Forget(_foodTarget);
           //wait for food to mature
-          return AnimalState.Idle; 
+          return AnimalState.Idle;
         }
 
         var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);

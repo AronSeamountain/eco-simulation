@@ -42,8 +42,8 @@ namespace Animal.AnimalStates
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
       if (_animal.IsThirsty && !_animal.KnowsWaterLocation && !_animal.IsHungry) return AnimalState.SearchWorld;
-      if (_animal.IsHungry && !_animal.KnowsFoodLocation &&!_animal.IsThirsty) return AnimalState.SearchWorld;
-      if (_animal is Carnivore carnivore && !carnivore.HasTargetSet && 
+      if (_animal.IsHungry && !_animal.KnowsFoodLocation && !_animal.IsThirsty) return AnimalState.SearchWorld;
+      if (_animal is Carnivore carnivore && !carnivore.HasTargetSet &&
           carnivore.IsHungry && carnivore.IsThirsty && !carnivore.KnowsWaterLocation) return AnimalState.SearchWorld;
 
       var haveIdledSufficiently = _timeIdled >= _idleTime;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Animal.AnimalStates;
 using Animal.Managers;
@@ -10,10 +9,7 @@ using Foods;
 using Pools;
 using UI;
 using UI.Properties;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.AI;
-using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -30,11 +26,11 @@ namespace Animal
 
     public delegate void Died(AbstractAnimal animal);
 
+    public delegate void PregnancyChanged(bool isPregnant);
+
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-
-    public delegate void PregnancyChanged(bool isPregnant);
 
 
     private const float BiggestMutationChange = 0.3f;
@@ -58,11 +54,10 @@ namespace Animal
     [SerializeField] private int fertilityTimeInDays = 5;
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
-    private int _daysUntilFertile;
     [SerializeField] private float pregnancyTimeInDays;
+    private int _daysUntilFertile;
 
     private float _daysUntilPregnancy;
-    public bool IsPregnant { get; private set; }
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -75,6 +70,7 @@ namespace Animal
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
+    public bool IsPregnant { get; private set; }
 
     public float NutritionalValue
     {
@@ -223,12 +219,6 @@ namespace Animal
       ResetFertility();
     }
 
-    private void ResetHealthAndActivate()
-    {
-      gameObject.SetActive(true);
-      _healthDelegate.ResetHealth();
-    }
-
     public void HourTick()
     {
       _nourishmentDelegate.HourTick();
@@ -252,10 +242,15 @@ namespace Animal
           IsPregnant = false;
           PregnancyChangedListeners?.Invoke(IsPregnant);
         }
-          
-        
       }
+
       Mutate();
+    }
+
+    private void ResetHealthAndActivate()
+    {
+      gameObject.SetActive(true);
+      _healthDelegate.ResetHealth();
     }
 
     private void Mutate()
@@ -368,7 +363,7 @@ namespace Animal
 
     /// <summary>
     ///   This method will only be called in a female animal.
-    ///   spawns a random ammount of children depending on the 'maxNumberOfChildren' 
+    ///   spawns a random ammount of children depending on the 'maxNumberOfChildren'
     /// </summary>
     /// <param name="father"></param>
     public void SpawnMultipleChildren(AbstractAnimal father)
@@ -389,7 +384,7 @@ namespace Animal
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
-      
+
       var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
       var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
 
@@ -399,7 +394,7 @@ namespace Animal
       child.movement.GetAgent().Warp(transform.position);
       child.ResetGameObject(); //resets to default/random values
       child.InitProperties(Random.Range(speedMin, speedMax), Random.Range(sizeMin, sizeMax));
-      
+
       ChildSpawnedListeners?.Invoke(child, this);
 
       _daysUntilFertile = fertilityTimeInDays;
@@ -421,8 +416,8 @@ namespace Animal
 
     private void IncreaseHealthIfSatiated()
     {
-      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation*0.75 && 
-          GetSaturation() >= _nourishmentDelegate.MaxHydration*0.75)
+      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation * 0.75 &&
+          GetSaturation() >= _nourishmentDelegate.MaxHydration * 0.75)
         _healthDelegate.IncreaseHealth(1);
     }
 
@@ -516,7 +511,7 @@ namespace Animal
 
     public void SetSpeed(float speedFactor)
     {
-      movement.SpeedFactor = speedFactor*SpeedModifier;
+      movement.SpeedFactor = speedFactor * SpeedModifier;
     }
 
     public void StopFleeing()
@@ -529,7 +524,7 @@ namespace Animal
       SpeedModifier = speed;
       SizeModifier = size;
     }
-    
+
     /// <summary>
     ///   Initializes the speed, size, nutrional value ... etc.
     /// </summary>
@@ -540,12 +535,11 @@ namespace Animal
       SpeedModifier = speed;
       SizeModifier = size;
       movement.SpeedFactor = SpeedModifier;
-      
+
       InitNourishmentDelegate();
 
       // Setup size modification
       UpdateScale();
-      
     }
 
     private void InitNourishmentDelegate()
@@ -556,8 +550,8 @@ namespace Animal
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * 100);
-       NutritionalValue = 100 * sizeCubed;
-       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
+      NutritionalValue = 100 * sizeCubed;
+      PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
     #region ResetSetup
@@ -573,8 +567,8 @@ namespace Animal
     {
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
-      var speed = Random.Range(rangeMin, rangeMax); 
-      var size  = Random.Range(rangeMin, rangeMax); 
+      var speed = Random.Range(rangeMin, rangeMax);
+      var size = Random.Range(rangeMin, rangeMax);
       InitProperties(speed, size);
     }
 

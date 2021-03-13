@@ -5,14 +5,14 @@ using Utils;
 namespace Animal.AnimalStates
 {
   /// <summary>
-  /// Gets invoked when the animal cannot find food or water
-  /// and needs to traverse a larger area to be able to find it.
+  ///   Gets invoked when the animal cannot find food or water
+  ///   and needs to traverse a larger area to be able to find it.
   /// </summary>
   public sealed class SearchWorldState : IState<AnimalState>
   {
-    private float closeToDest = 2.0f;
     private readonly AbstractAnimal _animal;
     private Vector3 _destination;
+    private readonly float closeToDest = 2.0f;
 
     public SearchWorldState(AbstractAnimal animal)
     {
@@ -25,7 +25,8 @@ namespace Animal.AnimalStates
     }
 
     public void Enter()
-    { //spped is a bit faster than wander, since it nneds to find food or water fast
+    {
+      //spped is a bit faster than wander, since it nneds to find food or water fast
       _animal.SetSpeed(3);
       GoToFarAwayPoint();
     }
@@ -44,16 +45,13 @@ namespace Animal.AnimalStates
         var target = carnivore.Target;
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
-      
+
       if (Vector3Util.InRange(_animal.transform.position, _destination, closeToDest) &&
           !_animal.IsHungry && !_animal.IsThirsty)
         return AnimalState.Wander;
       //Get new point if animal is stuck on some edge
-      if (AnimalIsStuck())
-      {
-        GoToFarAwayPoint();
-      }
-      
+      if (AnimalIsStuck()) GoToFarAwayPoint();
+
       return AnimalState.SearchWorld;
     }
 
@@ -67,8 +65,9 @@ namespace Animal.AnimalStates
       _destination = point;
       _animal.GoTo(_destination);
     }
+
     /// <summary>
-    /// Check if animal is moving forward or not
+    ///   Check if animal is moving forward or not
     /// </summary>
     /// <returns></returns>
     private bool AnimalIsStuck()
