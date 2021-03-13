@@ -11,8 +11,8 @@ namespace Animal.AnimalStates
   public sealed class SearchWorldState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
-    private Vector3 _destination;
     private readonly float closeToDest = 2.0f;
+    private Vector3 _destination;
 
     public SearchWorldState(AbstractAnimal animal)
     {
@@ -49,8 +49,6 @@ namespace Animal.AnimalStates
       if (Vector3Util.InRange(_animal.transform.position, _destination, closeToDest) &&
           !_animal.IsHungry && !_animal.IsThirsty)
         return AnimalState.Wander;
-      //Get new point if animal is stuck on some edge
-      if (AnimalIsStuck()) GoToFarAwayPoint();
 
       return AnimalState.SearchWorld;
     }
@@ -64,16 +62,6 @@ namespace Animal.AnimalStates
       var point = NavMeshUtil.GetRandomPointFarAway(_animal.transform.position);
       _destination = point;
       _animal.GoTo(_destination);
-    }
-
-    /// <summary>
-    ///   Check if animal is moving forward or not
-    /// </summary>
-    /// <returns></returns>
-    private bool AnimalIsStuck()
-    {
-      var oldPoint = _animal.transform.position - new Vector3(0, 0, 0.2f);
-      return !(Vector3.Distance(_animal.transform.position, oldPoint) >= 0.2f);
     }
   }
 }

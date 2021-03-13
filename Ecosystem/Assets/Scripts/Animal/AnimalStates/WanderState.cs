@@ -11,6 +11,7 @@ namespace Animal.AnimalStates
   {
     private const float MarginToReachDestination = 2.5f;
     private readonly AbstractAnimal _animal;
+    private Carnivore _carnivore;
 
     private Vector3 _destination;
 
@@ -50,10 +51,19 @@ namespace Animal.AnimalStates
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
 
-      if (_animal.IsThirsty && !_animal.KnowsWaterLocation && !_animal.IsHungry) return AnimalState.SearchWorld;
-      if (_animal.IsHungry && !_animal.KnowsFoodLocation && !_animal.IsThirsty) return AnimalState.SearchWorld;
-      if (_animal is Carnivore c && !c.HasTargetSet &&
-          c.IsHungry && c.IsThirsty && !c.KnowsWaterLocation) return AnimalState.SearchWorld;
+      if (_animal.IsThirsty && !_animal.KnowsWaterLocation && !_animal.IsHungry ||
+          _animal.IsHungry && !_animal.KnowsFoodLocation && !_animal.IsThirsty ||
+          _animal.IsHungry && !_animal.KnowsFoodLocation && _animal.IsThirsty && !_animal.KnowsWaterLocation)
+        return AnimalState.SearchWorld;
+      if (_animal is Carnivore c)
+      {
+        _carnivore = c;
+        if (!_carnivore.HasTargetSet && _carnivore.IsHungry && _carnivore.IsThirsty && !_carnivore.KnowsWaterLocation ||
+            !_carnivore.HasTargetSet && !_carnivore.IsHungry && _carnivore.IsThirsty &&
+            !_carnivore.KnowsWaterLocation ||
+            !_carnivore.HasTargetSet && _carnivore.IsHungry && !_carnivore.IsThirsty && _carnivore.KnowsWaterLocation)
+          return AnimalState.SearchWorld;
+      }
 
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
