@@ -56,6 +56,19 @@ namespace UI
         animal.GetNourishmentDelegate().HydrationChangedListeners -= hydrationSlider.OnValueChanged;
 
       properties.Add(hydrationSlider);
+      
+      // ----------- Stamina ------------
+      var staminaSlider = RowFactory.CreateSlider();
+      staminaSlider.Configure(
+        animal.GetStaminaDelegate().Stamina,
+        animal.GetStaminaDelegate().GetMaxStamina(),
+        Color.yellow
+      );
+      animal.GetStaminaDelegate().StaminaChangedListeners += staminaSlider.OnValueChanged;
+      staminaSlider.CleanupListeners += () =>
+        animal.GetStaminaDelegate().StaminaChangedListeners -= staminaSlider.OnValueChanged;
+
+      properties.Add(staminaSlider);
 
       // ---------- State name ----------
       var state = RowFactory.CreateKeyValuePair();

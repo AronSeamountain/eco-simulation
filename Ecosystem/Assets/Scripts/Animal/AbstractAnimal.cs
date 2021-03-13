@@ -482,6 +482,11 @@ namespace Animal
     {
       return _nourishmentDelegate;
     }
+    
+    public StaminaDelegate GetStaminaDelegate()
+    {
+      return _staminaDelegate;
+    }
 
 
     private void OnStateChanged(AnimalState state)
