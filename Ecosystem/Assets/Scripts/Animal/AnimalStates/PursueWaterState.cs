@@ -32,6 +32,7 @@ namespace Animal.AnimalStates
       if (!_animal.IsThirsty) return AnimalState.Wander;
       if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
       if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
+      if (!_animal.IsThirsty && !_animal.KnowsFoodLocation) return AnimalState.SearchWorld;
 
       _waterTarget = _animal.ClosestKnownWater;
       if (!_waterTarget) return AnimalState.Wander;
