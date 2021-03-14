@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Animal;
 using Core;
 using UnityEngine;
@@ -42,7 +43,11 @@ namespace Logger.ConcreteLogger
 
     public void Persist()
     {
-      if (_firstLog) Clear();
+      if (_firstLog)
+        Clear();
+      else
+        RemoveClosingBracket();
+
       var writer = File.AppendText(Path);
       if (_firstLog) writer.WriteLine("[");
 
@@ -58,6 +63,14 @@ namespace Logger.ConcreteLogger
     public void Clear()
     {
       File.WriteAllText(Path, string.Empty);
+    }
+
+    /**
+     * Removes the ending "]" from the json object file.
+     */
+    private void RemoveClosingBracket()
+    {
+      File.WriteAllLines(Path, File.ReadLines(Path).Where(l => l != "]").ToList());
     }
 
     /// <summary>
