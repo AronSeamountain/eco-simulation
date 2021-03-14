@@ -2,6 +2,7 @@
 using Animal;
 using Foods.Plants;
 using Logger;
+using Logger.ConcreteLogger;
 using Pools;
 using UI;
 using UI.Properties;
@@ -9,6 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using Utils;
+using ILogger = Logger.ILogger;
 
 namespace Core
 {
@@ -34,12 +36,11 @@ namespace Core
     private AnimalPool _animalPool;
     private float _hoursPassed;
     private float _hourTicker;
-    private DataLogger _logger;
-    private AnimalSnapshotLogger _animalSnapshotLogger;
+    private ILogger _logger;
     public DayTick DayTickListeners;
     public Tick HourTickListeners;
     private int plantCount;
-    private IList<AbstractAnimal> Animals { get; set; }
+    public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
@@ -65,9 +66,10 @@ namespace Core
       }
 
       // Logger
-      _logger = DataLogger.Instance;
-      _logger.InitializeLogging();
-      _animalSnapshotLogger = AnimalSnapshotLogger.Instance;
+      _logger = new MultiLogger(
+        DetailedIndividualLogger.Instance,
+        OverviewLogger.Instance
+      );
     }
 
     private void Update()
@@ -234,9 +236,8 @@ namespace Core
           DayTickListeners?.Invoke();
           if (log)
           {
-            _logger.Snapshot(Days, Animals, this);
-            _animalSnapshotLogger.Snapshot(Animals);
-            _animalSnapshotLogger.Persist();
+            _logger.Snapshot(this);
+            _logger.Persist();
           }
         }
       }

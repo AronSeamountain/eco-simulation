@@ -4,7 +4,7 @@ using Animal;
 using Core;
 using Utils;
 
-namespace Logger
+namespace Logger.ConcreteLogger
 {
   public sealed class LoggableColumn
   {
@@ -24,9 +24,9 @@ namespace Logger
 
     public string ColumnName { get; }
 
-    public string GetValue(int day, IList<AbstractAnimal> animal, EntityManager entityManager)
+    public string GetValue(EntityManager entityManager)
     {
-      return _valueImplementation.Invoke(day, animal, entityManager);
+      return _valueImplementation.Invoke(entityManager.Days, entityManager.Animals, entityManager);
     }
   }
 }
