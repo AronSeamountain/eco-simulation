@@ -56,13 +56,13 @@ namespace Utils
     /// <param name="radius">The radius to check within</param>
     /// <returns></returns>
     /// <exception cref="Exception">If there is no point on the navmesh</exception>
-    public static Vector3 GetRandomPointFarAway(Vector3 origin, float radius = 100)
+    public static Vector3 GetRandomPointFarAway(Vector3 origin, float radius = 40)
     {
-      var offset = new Vector3(Random.Range(-radius, radius), 0, Random.Range(50, radius));
+      var offset = new Vector3(Random.Range((float)(-radius*(2*Math.PI)/3), (float)(radius*(Math.PI)/3)), 0, Random.Range(20, radius));
       var direction = origin + offset;
       const int lookAtLayers = AllLayers;
 
-      if (NavMesh.SamplePosition(direction, out var hit, radius * 2, lookAtLayers))
+      if (NavMesh.SamplePosition(direction, out var hit, radius*4 , lookAtLayers))
         return hit.position;
 
       throw new Exception("Failed to find point far away " + direction);

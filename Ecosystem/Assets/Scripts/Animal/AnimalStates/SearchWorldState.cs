@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System.Security.Cryptography;
+using Core;
 using UnityEngine;
 using Utils;
 
@@ -13,6 +14,7 @@ namespace Animal.AnimalStates
     private readonly AbstractAnimal _animal;
     private readonly float closeToDest = 2.0f;
     private Vector3 _destination;
+    private float _distance;
 
     public SearchWorldState(AbstractAnimal animal)
     {
@@ -26,7 +28,7 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      //spped is a bit faster than wander, since it nneds to find food or water fast
+      //speed is a bit faster than wander, since it needs to find food or water fast
       _animal.SetSpeed(3);
       GoToFarAwayPoint();
     }
@@ -50,6 +52,13 @@ namespace Animal.AnimalStates
           !_animal.IsHungry && !_animal.IsThirsty)
         return AnimalState.Wander;
 
+      //If animal is stuck at end of navmesh, find a new point to go to.
+      if (!IsMovingForward())
+      {
+        GoToFarAwayPoint();
+      }
+      
+
       return AnimalState.SearchWorld;
     }
 
@@ -62,6 +71,22 @@ namespace Animal.AnimalStates
       var point = NavMeshUtil.GetRandomPointFarAway(_animal.transform.position);
       _destination = point;
       _animal.GoTo(_destination);
+    }
+
+    //checks if distance to destination shrinks. If not, the animal should find new position.
+    private bool IsMovingForward()
+    {
+      float distTemp = Vector3.Distance(_destination, _animal.transform.position);
+      if (distTemp < _distance)
+      {
+        _distance = distTemp;
+        return true;
+      } else if (distTemp > _distance)
+      {
+        _distance = distTemp;
+        return false;
+      }
+      return false;
     }
   }
 }
