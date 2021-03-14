@@ -35,7 +35,7 @@ namespace Logger.ConcreteLogger
 
       foreach (var animal in animals)
       {
-        var snapshot = new AnimalSnapshot(animal);
+        var snapshot = new AnimalSnapshot(animal, entityManager.Days);
         var snapshotJson = JsonUtility.ToJson(snapshot);
         _snapshots.Add(snapshotJson);
       }
@@ -83,13 +83,15 @@ namespace Logger.ConcreteLogger
       public float speed;
       public float size;
       public int age;
+      public int day;
 
-      public AnimalSnapshot(AbstractAnimal animal)
+      public AnimalSnapshot(AbstractAnimal animal, int day)
       {
         species = animal.Species.ToString();
         speed = animal.SpeedModifier;
         size = animal.SizeModifier;
         age = animal.AgeInDays;
+        this.day = day;
       }
     }
   }
