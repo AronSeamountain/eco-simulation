@@ -31,6 +31,7 @@ namespace Animal.AnimalStates
       //speed is a bit faster than wander, since it needs to find food or water fast
       _animal.SetSpeed(3);
       GoToFarAwayPoint();
+      _distance = Vector3.Distance(_animal.transform.position,_destination);
     }
 
     public AnimalState Execute()
@@ -81,7 +82,7 @@ namespace Animal.AnimalStates
       {
         _distance = distTemp;
         return true;
-      } else if (distTemp > _distance)
+      } else if (distTemp >= _distance)
       {
         _distance = distTemp;
         return false;

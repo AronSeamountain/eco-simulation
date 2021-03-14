@@ -58,11 +58,11 @@ namespace Utils
     /// <exception cref="Exception">If there is no point on the navmesh</exception>
     public static Vector3 GetRandomPointFarAway(Vector3 origin, float radius = 40)
     {
-      var offset = new Vector3(Random.Range((float)(-radius*(2*Math.PI)/3), (float)(radius*(Math.PI)/3)), 0, Random.Range(20, radius));
+      var offset = new Vector3(Random.Range((float)(-radius*(4*Math.PI)/3), (float)(radius*(5*Math.PI)/3)), 0, Random.Range(-radius, radius));
       var direction = origin + offset;
       const int lookAtLayers = AllLayers;
 
-      if (NavMesh.SamplePosition(direction, out var hit, radius*4 , lookAtLayers))
+      if (NavMesh.SamplePosition(direction, out var hit, radius * 6, lookAtLayers))
         return hit.position;
 
       throw new Exception("Failed to find point far away " + direction);
