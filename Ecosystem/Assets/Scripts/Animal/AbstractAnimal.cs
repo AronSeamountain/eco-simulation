@@ -65,7 +65,6 @@ namespace Animal
     private float _nutritionalValue;
     private int _nourishmentMultiplier = 100;
     private StateMachine<AnimalState> _stateMachine;
-    private int _daysUntilFertile;
     private bool _isChild;
     private int _daysAsChild = 5;
     private float _fullyGrownSpeed;
