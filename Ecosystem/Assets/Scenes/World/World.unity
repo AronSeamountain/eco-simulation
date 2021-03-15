@@ -968,12 +968,12 @@ PrefabInstance:
     - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
         type: 3}
       propertyPath: initialWolves
-      value: 0
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
         type: 3}
       propertyPath: initialRabbits
-      value: 200
+      value: 120
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1159ec73a46948a438b1b74cc111085c, type: 3}
@@ -1093,7 +1093,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7256537024960903, guid: 3655dbceeb698894e8d480c33a998f25, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0000062489794
+      value: 0.000089121364
       objectReference: {fileID: 0}
     - target: {fileID: 1540518878665180749, guid: 3655dbceeb698894e8d480c33a998f25,
         type: 3}
