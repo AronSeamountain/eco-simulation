@@ -76,7 +76,7 @@ namespace Animal
 
     protected override void DecreaseStaminaIfRunning()
     {
-      if (IsRunning) _staminaDelegate.DecreaseStamina(5);
+      if (IsRunning) _staminaDelegate.DecreaseStamina(10);
     }
   }
 }

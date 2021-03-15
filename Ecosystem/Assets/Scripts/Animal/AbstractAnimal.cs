@@ -39,6 +39,7 @@ namespace Animal
 
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
+    private const float RunningSpeedFactor = 5f;
 
     /// <summary>
     ///   Scales the animal, is not correlated to actual size for the model logic.
@@ -531,7 +532,10 @@ namespace Animal
 
     public void SetSpeed(float speedFactor)
     {
-      movement.SpeedFactor = speedFactor*SpeedModifier;
+      if (IsRunning && _staminaDelegate.Stamina <= 0) 
+        movement.SpeedFactor = SpeedModifier;
+      else
+        movement.SpeedFactor = RunningSpeedFactor*SpeedModifier;
     }
 
     public void StopFleeing()
@@ -613,6 +617,12 @@ namespace Animal
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
       vision.EnemySeenListeners += OnEnemySeen;
+      _staminaDelegate.StaminaChangedListeners += StaminaDrained;
+    }
+
+    private void StaminaDrained(float stamina, float maxstamina)
+    {
+      if (stamina <= 0) SetSpeed(5);
     }
 
     private void InitStateMachine()
