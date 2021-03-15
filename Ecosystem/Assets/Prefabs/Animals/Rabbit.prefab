@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1911112304498543283}
   audioSource: {fileID: 0}
-  agent: {fileID: 8836210707881886411}
 --- !u!1001 &128927846129983832
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95,7 +94,12 @@ PrefabInstance:
     - target: {fileID: 3791994684587924501, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}
       propertyPath: maxNumberOfChildren
-      value: 15
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3791994684587924501, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: pregnancyTimeInHours
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3994141988682731950, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}
@@ -265,13 +269,6 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 8410095186163081469, guid: 51020aa19a9877a49924a41101ce6231, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 51020aa19a9877a49924a41101ce6231, type: 3}
---- !u!195 &8836210707881886411 stripped
-NavMeshAgent:
-  m_CorrespondingSourceObject: {fileID: 8893076424420123539, guid: 51020aa19a9877a49924a41101ce6231,
-    type: 3}
-  m_PrefabInstance: {fileID: 128927846129983832}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6886510575584973102 stripped
 --- !u!4 &2135430378321810228 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2047054994926531180, guid: 51020aa19a9877a49924a41101ce6231,
@@ -373,3 +370,15 @@ SkinnedMeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 1911112304491200467}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6886510575584973102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 

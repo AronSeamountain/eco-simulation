@@ -58,9 +58,9 @@ namespace Animal
     [SerializeField] private int fertilityTimeInDays = 5;
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
-    [SerializeField] private float pregnancyTimeInDays;
+    [SerializeField] private float pregnancyTimeInHours;
 
-    private float _daysUntilPregnancy;
+    private float _hoursUntilPregnancy;
     public bool IsPregnant { get; private set; }
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
@@ -241,6 +241,17 @@ namespace Animal
       foodManager.HourTick();
       DecreaseHealthIfStarving();
       IncreaseHealthIfSatiated();
+      
+      if (IsPregnant)
+      {
+        _hoursUntilPregnancy--;
+        if (_hoursUntilPregnancy <= 0)
+        {
+          ShouldBirth = true;
+          IsPregnant = false;
+          PregnancyChangedListeners?.Invoke(IsPregnant);
+        }
+      }
     }
 
     public void DayTick()
@@ -256,16 +267,7 @@ namespace Animal
        SizeModifier += _fullyGrownSize * 0.1f;
        UpdateScale();
       }
-      if (IsPregnant)
-      {
-        _daysUntilPregnancy--;
-        if (_daysUntilPregnancy <= 0)
-        {
-          ShouldBirth = true;
-          IsPregnant = false;
-          PregnancyChangedListeners?.Invoke(IsPregnant);
-        }
-      }
+     
       Mutate();
     }
 
@@ -462,7 +464,7 @@ namespace Animal
         LastMaleMate = father;
         IsPregnant = true;
         Fertile = false;
-        _daysUntilPregnancy = pregnancyTimeInDays;
+        _hoursUntilPregnancy = pregnancyTimeInHours;
         PregnancyChangedListeners?.Invoke(IsPregnant);
       }
     }
