@@ -548,6 +548,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
+      propertyPath: fertilityTimeInHours
+      value: 288
+      objectReference: {fileID: 0}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
       propertyPath: pregnancyTimeInHours
       value: 27
       objectReference: {fileID: 0}

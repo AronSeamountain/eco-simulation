@@ -55,7 +55,7 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
-    [SerializeField] private int fertilityTimeInDays = 5;
+    [SerializeField] private int fertilityTimeInHours = 5;
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
@@ -69,7 +69,7 @@ namespace Animal
     private float _nutritionalValue;
     private int _nourishmentMultiplier = 100;
     private StateMachine<AnimalState> _stateMachine;
-    private int _daysUntilFertile;
+    private int _hoursUntilFertile;
     private bool _isChild;
     private int _daysAsChild = 5;
     private float _fullyGrownSpeed;
@@ -252,14 +252,16 @@ namespace Animal
           PregnancyChangedListeners?.Invoke(IsPregnant);
         }
       }
+      
+      if (!Fertile) _hoursUntilFertile--;
+      if (_hoursUntilFertile <= 0) Fertile = true;
     }
 
     public void DayTick()
     {
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
-      if (!Fertile) _daysUntilFertile--;
-      if (_daysUntilFertile <= 0) Fertile = true;
+     
       if (AgeInDays >= _daysAsChild) _isChild = false;
       if (_isChild)
       {
@@ -417,7 +419,7 @@ namespace Animal
       child.InitProperties(child._fullyGrownSpeed * 0.5f, child._fullyGrownSize * 0.5f);
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _daysUntilFertile = fertilityTimeInDays;
+      _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
       ShouldBirth = false;
       child._isChild = true; 
@@ -608,7 +610,7 @@ namespace Animal
 
     public void ResetFertility()
     {
-      _daysUntilFertile = fertilityTimeInDays;
+      _hoursUntilFertile = fertilityTimeInHours;
     }
 
     #endregion
