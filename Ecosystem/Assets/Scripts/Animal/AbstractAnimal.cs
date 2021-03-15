@@ -503,7 +503,7 @@ namespace Animal
     /// </summary>
     public void Decay()
     {
-      NutritionalValue -= Time.deltaTime;
+      NutritionalValue -= Time.deltaTime*5;
     }
 
     public virtual bool SafeDistanceFromEnemy()
