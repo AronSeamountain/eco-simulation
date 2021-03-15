@@ -67,7 +67,7 @@ namespace Core
 
       // Logger
       _logger = new MultiLogger(
-        DetailedIndividualLogger.Instance,
+        DetailedJsonLogger.Instance,
         OverviewLogger.Instance
       );
     }

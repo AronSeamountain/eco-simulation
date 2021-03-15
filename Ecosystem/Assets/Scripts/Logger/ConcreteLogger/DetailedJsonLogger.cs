@@ -11,23 +11,23 @@ namespace Logger.ConcreteLogger
   /// <summary>
   ///   Logs all individual animals.
   /// </summary>
-  public sealed class DetailedIndividualLogger : ILogger
+  public sealed class DetailedJsonLogger : ILogger
   {
     private const string Path = "Assets/Logs/animal_log.json";
     private IList<string> _snapshots;
     private bool _firstLog;
 
-    static DetailedIndividualLogger()
+    static DetailedJsonLogger()
     {
     }
 
-    private DetailedIndividualLogger()
+    private DetailedJsonLogger()
     {
       _snapshots = new List<string>();
       _firstLog = true;
     }
 
-    public static DetailedIndividualLogger Instance { get; } = new DetailedIndividualLogger();
+    public static DetailedJsonLogger Instance { get; } = new DetailedJsonLogger();
 
     public void Snapshot(EntityManager entityManager)
     {
