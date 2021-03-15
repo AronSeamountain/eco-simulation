@@ -36,6 +36,8 @@ namespace Animal
 
     public delegate void PregnancyChanged(bool isPregnant);
 
+    public delegate void AnimalDecayed(AbstractAnimal animal);
+
 
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
@@ -77,6 +79,7 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
+    public AnimalDecayed DecayedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
