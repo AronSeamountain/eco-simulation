@@ -34,11 +34,12 @@ namespace Utils
     /// </summary>
     /// <param name="origin">The point to get a point close to.</param>
     /// <param name="radius">The radius to check within.</param>
+    /// <param name="distance">The distance to run.</param>
     /// <exception cref="Exception">If there is no close point on navmesh.</exception>
     /// <returns>A new point close to the given origin vector.</returns>
-    public static Vector3 GetRandomClosePoint(Vector3 origin, float radius = 10)
+    public static Vector3 GetRandomClosePoint(Vector3 origin, float radius = 10, float distance = 5)
     {
-      var offset = new Vector3(Random.Range(-radius, radius), 0, Random.Range(-radius, radius));
+      var offset = new Vector3(Random.Range(-radius, radius), 0, Random.Range(-distance, distance));
       var randomDirection = origin + offset;
 
       const int lookAtLayers = AllLayers;
@@ -60,7 +61,6 @@ namespace Utils
     {
       var offset = new Vector3(Random.Range((float)(-radius*(4*Math.PI)/3), (float)(radius*(5*Math.PI)/3)), 0, Random.Range(-10, 10));
       var direction = origin + offset;
-      //const int lookAtLayers = AllLayers;
       LayerMask mask = LayerMask.GetMask("Default"); 
 
       if (NavMesh.SamplePosition(direction, out var hit, radius * 6, mask))

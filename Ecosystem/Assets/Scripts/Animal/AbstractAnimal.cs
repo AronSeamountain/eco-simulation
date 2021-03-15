@@ -576,6 +576,11 @@ namespace Animal
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
+    public bool NeedsNourishment()
+    {
+      return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
+    }
+
     #region ResetSetup
 
     private void ResetGender()

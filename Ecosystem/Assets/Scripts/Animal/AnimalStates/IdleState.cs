@@ -42,18 +42,11 @@ namespace Animal.AnimalStates
       if (_animal.Dead) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
-      if (_animal.IsThirsty && !_animal.KnowsWaterLocation && !_animal.IsHungry ||
-          _animal.IsHungry && !_animal.KnowsFoodLocation && !_animal.IsThirsty ||
-          _animal.IsHungry && !_animal.KnowsFoodLocation && _animal.IsThirsty && !_animal.KnowsWaterLocation)
-        return AnimalState.SearchWorld;
+      if (_animal.NeedsNourishment()) return AnimalState.SearchWorld;
       if (_animal is Carnivore c)
       {
         _carnivore = c;
-        if (!_carnivore.HasTargetSet && _carnivore.IsHungry && _carnivore.IsThirsty && !_carnivore.KnowsWaterLocation ||
-            !_carnivore.HasTargetSet && !_carnivore.IsHungry && _carnivore.IsThirsty &&
-            !_carnivore.KnowsWaterLocation ||
-            !_carnivore.HasTargetSet && _carnivore.IsHungry && !_carnivore.IsThirsty && _carnivore.KnowsWaterLocation)
-          return AnimalState.SearchWorld;
+        if (_carnivore.NeedsNourishment()) return AnimalState.SearchWorld;
       }
 
       var haveIdledSufficiently = _timeIdled >= _idleTime;

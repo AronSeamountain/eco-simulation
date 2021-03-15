@@ -53,13 +53,12 @@ namespace Animal.AnimalStates
           !_animal.IsHungry && !_animal.IsThirsty)
         return AnimalState.Wander;
 
-      //If animal is stuck at end of navmesh, find a new point to go to.
+      //If animal is trying to run outside the navmesh, find a new point to go to.
       if (!IsMovingForward())
       {
         GoToFarAwayPoint();
       }
       
-
       return AnimalState.SearchWorld;
     }
 
