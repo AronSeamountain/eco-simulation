@@ -52,13 +52,13 @@ namespace Animal.AnimalStates
     {
       var position = _animal.transform.position;
       Ray ray = new Ray(position, _waterTarget.transform.position - position);
-      Physics.Raycast(ray, out var hit);
+      int layerMask = 1 << 4; //only looks for water in layer 4
+      Physics.Raycast(ray, out var hit,Mathf.Infinity,layerMask);
       if (!hit.collider) return false; 
       if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
       {
         return hit.distance < 2;
       }
-
       return false;
     }
 
