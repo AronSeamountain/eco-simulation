@@ -57,7 +57,7 @@ namespace Animal.AnimalStates
       if (!hit.collider) return false; 
       if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
       {
-        return hit.distance < 2;
+        return hit.distance < 3;
       }
       return false;
     }
