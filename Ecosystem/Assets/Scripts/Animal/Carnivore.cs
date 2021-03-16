@@ -15,6 +15,7 @@ namespace Animal
 
     private bool _hearsHerbivore;
     public Herbivore Target { get; set; }
+    public bool HasTargetSet => Target != null;
 
     private void OnPreyFound(Herbivore herbivore)
     {
@@ -43,7 +44,8 @@ namespace Animal
         new EatState(this),
         new DrinkState(this),
         new FleeState(this),
-        new IdleState(this)
+        new IdleState(this),
+        new SearchWorldState(this)
       };
     }
 

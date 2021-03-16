@@ -1,7 +1,6 @@
 ﻿using Core;
 using Foods;
 using UnityEngine;
-using Utils;
 
 namespace Animal.AnimalStates
 {
@@ -31,7 +30,9 @@ namespace Animal.AnimalStates
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsThirsty) return AnimalState.Wander;
       if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (!_animal.IsThirsty && _animal.IsHungry && !_animal.KnowsFoodLocation) return AnimalState.SearchWorld;
       if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
+      
 
       _waterTarget = _animal.ClosestKnownWater;
       if (!_waterTarget) return AnimalState.Wander;
@@ -43,27 +44,25 @@ namespace Animal.AnimalStates
 
       return AnimalState.PursueWater;
     }
-    
+
+    public void Exit()
+    {
+    }
+
     /// <summary>
-    /// Shoots a ray at the water source and checks that the length of the ray is less than 2 (no real reason for 2, it works)
+    ///   Shoots a ray at the water source and checks that the length of the ray is less than 2 (no real reason for 2, it
+    ///   works)
     /// </summary>
     /// <returns>true if the water is in range, false otherwise</returns>
     private bool ReachedWater()
     {
       var position = _animal.transform.position;
-      Ray ray = new Ray(position, _waterTarget.transform.position - position);
+      var ray = new Ray(position, _waterTarget.transform.position - position);
       Physics.Raycast(ray, out var hit);
-      if (!hit.collider) return false; 
-      if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
-      {
-        return hit.distance < 2;
-      }
+      if (!hit.collider) return false;
+      if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget) return hit.distance < 2;
 
       return false;
-    }
-
-    public void Exit()
-    {
     }
   }
 }

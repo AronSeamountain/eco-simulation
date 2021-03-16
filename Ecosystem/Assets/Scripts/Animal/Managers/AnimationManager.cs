@@ -34,6 +34,7 @@ namespace Animal.Managers
         case AnimalState.PursueFood:
         case AnimalState.PursueMate:
         case AnimalState.PursueWater:
+        case AnimalState.SearchWorld:
         case AnimalState.Flee:
         case AnimalState.Hunt:
           animationSpeed = animal.SizeModifier * animal.SpeedModifier * 1.4f * 2/(animal.SizeModifier + animal.SpeedModifier);

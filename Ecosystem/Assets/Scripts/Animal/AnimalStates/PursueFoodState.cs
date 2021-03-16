@@ -39,6 +39,7 @@ namespace Animal.AnimalStates
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsHungry) return AnimalState.Wander;
       if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.IsThirsty && !_animal.KnowsWaterLocation && !_animal.IsHungry) return AnimalState.SearchWorld;
 
       // A new food source has been found. Change the food target to the closest food.
       if (_knownFoodTargetsChanged)
@@ -57,7 +58,8 @@ namespace Animal.AnimalStates
         if (!_foodTarget.Food.CanBeEaten())
         {
           _animal.Forget(_foodTarget);
-          return AnimalState.Wander;
+          //wait for food to mature
+          return AnimalState.Idle;
         }
 
         var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
