@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodType: 0
-  seedMaterial: {fileID: 2100000, guid: 6030bdf8ba45fa84893fd6a0b0181acd, type: 2}
+  seedMaterial: {fileID: 2100000, guid: f4a66d5c7bbc9cc4a90c0e5069b8bc97, type: 2}
   growingMaterial: {fileID: 2100000, guid: 4f8f4fab2e4925d40a684a64912ea22b, type: 2}
   matureMaterial: {fileID: 2100000, guid: 383a99a45bafdb448aac2e185235953b, type: 2}
 --- !u!65 &988195884085875311
