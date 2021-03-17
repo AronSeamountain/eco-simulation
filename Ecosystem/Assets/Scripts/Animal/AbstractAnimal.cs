@@ -534,7 +534,7 @@ namespace Animal
     {
       switch (IsRunning)
       {
-        case true when _staminaDelegate.Stamina <= 0:
+        case true when _staminaDelegate.StaminaZero:
           movement.SpeedFactor = SpeedModifier;
           break;
         case true:
@@ -549,6 +549,7 @@ namespace Animal
     private void StaminaZero(float stamina, float maxStamina)
     {
       SetSpeed();
+      animationManager.SetAnimationStaminaZero(this);
     }
 
     public void StopFleeing()

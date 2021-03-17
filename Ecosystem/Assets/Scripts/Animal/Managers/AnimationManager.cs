@@ -57,6 +57,14 @@ namespace Animal.Managers
       animator.SetFloat(AnimationSpeed, animationSpeed);
     }
 
+    public void SetAnimationStaminaZero(AbstractAnimal animal)
+    {
+      var animationSpeed =
+        animal.SizeModifier * animal.SpeedModifier * 2 / (animal.SizeModifier + animal.SpeedModifier);
+      animator.SetInteger(State, Wander);
+      animator.SetFloat(AnimationSpeed, animationSpeed);
+    }
+
     public void AnimalSound()
     {
       //audioSource.Play();

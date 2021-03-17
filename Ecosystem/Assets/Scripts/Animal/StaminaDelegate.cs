@@ -8,6 +8,7 @@ namespace Animal
 
     private const float MaxStamina = 100;
     private float _stamina;
+    public bool StaminaZero => Stamina <= 0;
 
     public StaminaChanged StaminaChangedListeners;
     public StaminaChanged StaminaZeroListeners;
@@ -32,7 +33,7 @@ namespace Animal
     {
       Stamina -= decrease;
       StaminaChangedListeners?.Invoke(Stamina, MaxStamina);
-      if(Stamina <= 0) StaminaZeroListeners?.Invoke(Stamina, MaxStamina);
+      if(StaminaZero) StaminaZeroListeners?.Invoke(Stamina, MaxStamina);
     }
 
     public void IncreaseStamina(int increase)
