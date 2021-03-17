@@ -23,7 +23,7 @@ namespace Animal.AnimalStates
     {
       //retrieve target
       _water = _animal.ClosestKnownWater;
-      
+
       _animal.IsRunning = false;
 
       //set Color

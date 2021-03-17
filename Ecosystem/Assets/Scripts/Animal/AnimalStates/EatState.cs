@@ -23,7 +23,7 @@ namespace Animal.AnimalStates
     {
       //retrieve target
       _food = _animal.FoodAboutTooEat;
-      
+
       _animal.IsRunning = false;
 
       //Set Color

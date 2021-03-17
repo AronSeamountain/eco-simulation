@@ -13,11 +13,11 @@ namespace Animal
     public delegate void SaturationChanged(float saturation, float maxSaturation);
 
     private float _hydration;
+    private readonly float _pregnancyEnergyMutliplier = 1.2f;
     private float _saturation;
     public HydrationChanged HydrationChangedListeners;
     public SaturationChanged SaturationChangedListeners;
-    private float _pregnancyEnergyMutliplier = 1.2f;
-    
+
     public NourishmentDelegate()
     {
       Saturation = 25;
@@ -114,7 +114,6 @@ namespace Animal
 
     public void OnPregnancyChanged(bool isPregnant)
     {
-
       if (isPregnant)
       {
         HydrationDecreasePerHour = HydrationDecreasePerHour * _pregnancyEnergyMutliplier;
@@ -122,9 +121,8 @@ namespace Animal
       }
       else
       {
-         HydrationDecreasePerHour = HydrationDecreasePerHour / _pregnancyEnergyMutliplier;
-         SaturationDecreasePerHour = SaturationDecreasePerHour / _pregnancyEnergyMutliplier;
-         
+        HydrationDecreasePerHour = HydrationDecreasePerHour / _pregnancyEnergyMutliplier;
+        SaturationDecreasePerHour = SaturationDecreasePerHour / _pregnancyEnergyMutliplier;
       }
     }
   }

@@ -56,7 +56,7 @@ namespace UI
         animal.GetNourishmentDelegate().HydrationChangedListeners -= hydrationSlider.OnValueChanged;
 
       properties.Add(hydrationSlider);
-      
+
       // ----------- Stamina ------------
       var staminaSlider = RowFactory.CreateSlider();
       staminaSlider.Configure(
@@ -104,13 +104,13 @@ namespace UI
       animal.PropertiesChangedListeners += SizeChangedImpl;
       speed.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
       properties.Add(size);
-      
+
       // ---------- Gender ----------
       var gender = RowFactory.CreateKeyValuePair();
       gender.Configure("Gender", animal.Gender.ToString());
-      
+
       properties.Add(gender);
-      
+
       // ---------- Children ----------
       var children = RowFactory.CreateKeyValuePair();
       children.Configure("Children", animal.Children.ToString());
@@ -153,9 +153,10 @@ namespace UI
       animal.PropertiesChangedListeners += NutritionChangedImpl;
       nutrition.CleanupListeners += () => animal.PropertiesChangedListeners -= NutritionChangedImpl;
 
-      
+
       //------------Pregnant -------------
-      if(animal.Gender == Gender.Female){
+      if (animal.Gender == Gender.Female)
+      {
         var pregnancy = RowFactory.CreateKeyValuePair();
         pregnancy.Configure("Pregnant", $"{animal.IsPregnant}");
 
@@ -169,6 +170,7 @@ namespace UI
         animal.PregnancyChangedListeners += PregnancyChangedImpl;
         pregnancy.CleanupListeners += () => animal.PregnancyChangedListeners -= PregnancyChangedImpl;
       }
+
       return properties;
     }
 
