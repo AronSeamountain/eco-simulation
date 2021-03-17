@@ -43,7 +43,7 @@ namespace Animal.AnimalStates
 
       return AnimalState.PursueWater;
     }
-    
+
     /// <summary>
     /// Shoots a ray at the water source and checks that the length of the ray is less than 2 (no real reason for 2, it works)
     /// </summary>
@@ -53,7 +53,7 @@ namespace Animal.AnimalStates
       var position = _animal.transform.position;
       Ray ray = new Ray(position, _waterTarget.transform.position - position);
       Physics.Raycast(ray, out var hit);
-      if (!hit.collider) return false; 
+      if (!hit.collider) return false;
       if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
       {
         return hit.distance < 2;
