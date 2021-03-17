@@ -22,7 +22,7 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _carnivore.IsRunning = true;
-      _carnivore.SetSpeed(5);
+      _carnivore.SetSpeed();
       _target = _carnivore.Target;
     }
 

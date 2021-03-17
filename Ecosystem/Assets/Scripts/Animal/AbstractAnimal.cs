@@ -530,19 +530,25 @@ namespace Animal
       }
     }
 
-    public void SetSpeed(float speedFactor)
+    public void SetSpeed()
     {
-      if (IsRunning && _staminaDelegate.Stamina <= 0) 
-        movement.SpeedFactor = SpeedModifier;
-      else if (IsRunning)
-        movement.SpeedFactor = RunningSpeedFactor * SpeedModifier;
-      else
-        movement.SpeedFactor = SpeedModifier;
+      switch (IsRunning)
+      {
+        case true when _staminaDelegate.Stamina <= 0:
+          movement.SpeedFactor = SpeedModifier;
+          break;
+        case true:
+          movement.SpeedFactor = RunningSpeedFactor * SpeedModifier;
+          break;
+        default:
+          movement.SpeedFactor = SpeedModifier;
+          break;
+      }
     }
     
     private void StaminaZero(float stamina, float maxStamina)
     {
-      SetSpeed(5);
+      SetSpeed();
     }
 
     public void StopFleeing()

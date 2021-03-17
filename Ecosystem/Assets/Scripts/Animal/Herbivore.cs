@@ -69,7 +69,7 @@ namespace Animal
     
     protected override void IncreaseStaminaIfNotRunning()
     {
-      if (!IsRunning) _staminaDelegate.IncreaseStamina(3);
+      if (!IsRunning && Alive) _staminaDelegate.IncreaseStamina(3);
     }
 
     protected override void DecreaseStaminaIfRunning()
