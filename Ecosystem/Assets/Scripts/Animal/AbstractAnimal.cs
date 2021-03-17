@@ -534,8 +534,15 @@ namespace Animal
     {
       if (IsRunning && _staminaDelegate.Stamina <= 0) 
         movement.SpeedFactor = SpeedModifier;
+      else if (IsRunning)
+        movement.SpeedFactor = RunningSpeedFactor * SpeedModifier;
       else
-        movement.SpeedFactor = RunningSpeedFactor*SpeedModifier;
+        movement.SpeedFactor = SpeedModifier;
+    }
+    
+    private void StaminaZero(float stamina, float maxStamina)
+    {
+      SetSpeed(5);
     }
 
     public void StopFleeing()
@@ -617,12 +624,7 @@ namespace Animal
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
       vision.EnemySeenListeners += OnEnemySeen;
-      _staminaDelegate.StaminaChangedListeners += StaminaDrained;
-    }
-
-    private void StaminaDrained(float stamina, float maxstamina)
-    {
-      if (stamina <= 0) SetSpeed(5);
+      _staminaDelegate.StaminaZeroListeners += StaminaZero;
     }
 
     private void InitStateMachine()
