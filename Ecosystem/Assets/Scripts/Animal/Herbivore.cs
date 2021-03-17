@@ -70,12 +70,12 @@ namespace Animal
 
     protected override void IncreaseStaminaIfNotRunning()
     {
-      if (!IsRunning && Alive) _staminaDelegate.IncreaseStamina(3);
+      if (!EnemyToFleeFrom && Alive) _staminaDelegate.IncreaseStamina(3);
     }
 
     protected override void DecreaseStaminaIfRunning()
     {
-      if (IsRunning) _staminaDelegate.DecreaseStamina(5);
+      if (IsRunning && EnemyToFleeFrom) _staminaDelegate.DecreaseStamina(5);
     }
   }
 }
