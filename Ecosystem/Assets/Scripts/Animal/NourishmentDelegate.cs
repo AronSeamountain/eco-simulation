@@ -96,8 +96,15 @@ namespace Animal
     {
       MaxHydration = maxValue;
       MaxSaturation = maxValue;
-      _hydration = maxValue;
-      _saturation = maxValue;
+      _hydration = MaxHydration;
+      _saturation = MaxSaturation;
+      ThirstyHydrationLevel = maxValue / 2;
+      HungrySaturationLevel = maxValue / 2;
+    }
+    public void UpdateMaxNourishment(float maxValue)
+    {
+      MaxHydration = maxValue;
+      MaxSaturation = maxValue;
       ThirstyHydrationLevel = maxValue / 2;
       HungrySaturationLevel = maxValue / 2;
     }

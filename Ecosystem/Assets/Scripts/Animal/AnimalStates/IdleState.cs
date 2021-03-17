@@ -11,6 +11,7 @@ namespace Animal.AnimalStates
     private const float MaxIdle = 4f;
 
     private readonly AbstractAnimal _animal;
+    private Carnivore _carnivore;
 
     private float _idleTime;
 
@@ -42,6 +43,12 @@ namespace Animal.AnimalStates
       if (_animal.Dead) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.NeedsNourishment()) return AnimalState.SearchWorld;
+      if (_animal is Carnivore c)
+      {
+        _carnivore = c;
+        if (_carnivore.NeedsNourishment()) return AnimalState.SearchWorld;
+      }
 
       var haveIdledSufficiently = _timeIdled >= _idleTime;
       if (haveIdledSufficiently)
