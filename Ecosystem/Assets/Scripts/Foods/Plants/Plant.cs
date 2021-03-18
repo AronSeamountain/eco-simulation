@@ -18,7 +18,6 @@ namespace Foods.Plants
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
-    private Material[] _mat;
     private Renderer _meshRend;
     private StateMachine<PlantState> _stateMachine;
     public StateChanged StateChangedListeners;
@@ -98,9 +97,9 @@ namespace Foods.Plants
 
     private void SetMaterial(Material material)
     {
-      _mat = _meshRend.materials;
-      _mat[1] = material;
-      _meshRend.materials = _mat;
+      var mat = _meshRend.materials;
+      mat[1] = material;
+      _meshRend.materials = mat;
     }
 
     protected override void FoodFullyConsumed()
