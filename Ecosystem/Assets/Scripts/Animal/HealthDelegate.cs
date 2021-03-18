@@ -38,7 +38,7 @@ namespace Animal
       Health += increase;
       HealthChangedListeners?.Invoke(Health, MaxHealth);
     }
-    
+
     public void ResetHealth()
     {
       Health = MaxHealth;

@@ -29,7 +29,8 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       //speed is a bit faster than wander, since it needs to find food or water fast
-      _animal.SetSpeed(3);
+      _animal.IsRunning = true;
+      _animal.SetSpeed();
       GoToFarAwayPoint();
       _distance = Vector3.Distance(_animal.transform.position,_destination);
     }

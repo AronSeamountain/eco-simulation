@@ -35,6 +35,7 @@ namespace Animal
 
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
+    private const float RunningSpeedFactor = 5f;
 
     /// <summary>
     ///   Scales the animal, is not correlated to actual size for the model logic.
@@ -63,6 +64,7 @@ namespace Animal
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _nutritionalValue;
+    protected StaminaDelegate _staminaDelegate;
     private int _nourishmentMultiplier = 100;
     private StateMachine<AnimalState> _stateMachine;
     private bool _isChild;
@@ -76,6 +78,7 @@ namespace Animal
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
     public bool IsPregnant { get; private set; }
+    public bool IsRunning { get; set; }
 
     public float NutritionalValue
     {
@@ -108,6 +111,7 @@ namespace Animal
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
+    private float Stamina => _staminaDelegate.Stamina;
     public bool Alive => Health > 0 && NutritionalValue >= 0.1;
     public bool Dead => !Alive;
     public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
@@ -142,6 +146,7 @@ namespace Animal
     {
       _nourishmentDelegate = new NourishmentDelegate();
       _healthDelegate = new HealthDelegate();
+      _staminaDelegate = new StaminaDelegate();
     }
 
     private void Start()
@@ -231,6 +236,8 @@ namespace Animal
       foodManager.HourTick();
       DecreaseHealthIfStarving();
       IncreaseHealthIfSatiated();
+      DecreaseStaminaIfRunning();
+      IncreaseStaminaIfNotRunning();
     }
 
     public void DayTick()
@@ -437,6 +444,10 @@ namespace Animal
         _healthDelegate.IncreaseHealth(1);
     }
 
+    protected abstract void IncreaseStaminaIfNotRunning();
+
+    protected abstract void DecreaseStaminaIfRunning();
+
     public void SetMouthColor(Color color)
     {
       var main = mouthParticles.main;
@@ -484,6 +495,11 @@ namespace Animal
       return _nourishmentDelegate;
     }
 
+    public StaminaDelegate GetStaminaDelegate()
+    {
+      return _staminaDelegate;
+    }
+
 
     private void OnStateChanged(AnimalState state)
     {
@@ -525,9 +541,26 @@ namespace Animal
       }
     }
 
-    public void SetSpeed(float speedFactor)
+    public void SetSpeed()
     {
-      movement.SpeedFactor = speedFactor * SpeedModifier;
+      switch (IsRunning)
+      {
+        case true when _staminaDelegate.StaminaZero:
+          movement.SpeedFactor = SpeedModifier;
+          break;
+        case true:
+          movement.SpeedFactor = RunningSpeedFactor * SpeedModifier;
+          break;
+        default:
+          movement.SpeedFactor = SpeedModifier;
+          break;
+      }
+    }
+
+    private void StaminaZero(float stamina, float maxStamina)
+    {
+      SetSpeed();
+      animationManager.SetAnimationStaminaZero(this);
     }
 
     public void StopFleeing()
@@ -620,6 +653,7 @@ namespace Animal
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
       vision.EnemySeenListeners += OnEnemySeen;
+      _staminaDelegate.StaminaZeroListeners += StaminaZero;
     }
 
     private void InitStateMachine()

@@ -22,6 +22,7 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _father = _animal.LastMaleMate;
+      _animal.IsRunning = false;
     }
 
     public AnimalState Execute()
