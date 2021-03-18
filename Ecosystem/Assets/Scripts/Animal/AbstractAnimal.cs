@@ -150,7 +150,6 @@ namespace Animal
       InitSensoryEvents();
 
       ResetGameObject();
-
     }
 
     private void Update()
