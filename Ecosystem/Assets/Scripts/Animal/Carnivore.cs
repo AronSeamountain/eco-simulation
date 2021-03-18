@@ -10,7 +10,6 @@ namespace Animal
   public sealed class Carnivore : AbstractAnimal
   {
     private const float HuntRange = 15;
-    public const float EatingRange = 2f;
     private bool _animalOfSameType;
 
     private bool _hearsHerbivore;

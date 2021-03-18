@@ -8,6 +8,7 @@ namespace Animal.AnimalStates
   {
     private readonly Carnivore _carnivore;
     private Herbivore _target;
+    private float _eatingRange;
 
     public HuntState(Carnivore carnivore)
     {
@@ -23,6 +24,7 @@ namespace Animal.AnimalStates
     {
       _carnivore.SetSpeed(5);
       _target = _carnivore.Target;
+      _eatingRange = _target.transform.localScale.x;
     }
 
     public AnimalState Execute()
@@ -40,8 +42,10 @@ namespace Animal.AnimalStates
       }
 
       _carnivore.GoTo(_target.transform.position);
+      
+      
 
-      if (Vector3Util.InRange(_carnivore, _target, Carnivore.EatingRange))
+      if (Vector3Util.InRange(_carnivore, _target, _eatingRange))
       {
         if (!_target.Alive)
         {
