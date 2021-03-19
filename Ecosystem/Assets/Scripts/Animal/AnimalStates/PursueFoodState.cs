@@ -52,21 +52,15 @@ namespace Animal.AnimalStates
         _animal.GoTo(_foodTarget.Position);
       }
 
-      // Eat the current food if it can be reached.
-      if (_foodTarget != null)
+      var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
+      if (reachesFood)
       {
-        var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
-        
-        if (reachesFood)
+        if (!_foodTarget.Food.CanBeEaten())
         {
-          if (!_foodTarget.Food.CanBeEaten())
-          {
-            _animal.Forget(_foodTarget);
-            //wait for food to mature
-            return AnimalState.Idle;
-          } 
+          _animal.Forget(_foodTarget);
+          //wait for food to mature
+          return AnimalState.Idle;
         }
-      
 
         var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
         foreach (var collider in colliders)
@@ -83,8 +77,10 @@ namespace Animal.AnimalStates
         _foodTarget = null;
       }
 
+
       return AnimalState.PursueFood;
     }
+
 
     public void Exit()
     {
