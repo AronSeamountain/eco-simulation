@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -22,7 +23,7 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _animal.SetSpeed(5);
+      _animal.SetSpeed(5);//Todo fix animal specific speeds? this is a bit wierd?
     }
 
     public AnimalState Execute()
@@ -45,15 +46,16 @@ namespace Animal.AnimalStates
     }
     
     /// <summary>
-    /// Shoots a ray at the water source and checks that the length of the ray is less than 2 (no real reason for 2, it works)
+    /// Shoots a ray at the water source and checks that the length of the ray is less than 3 (no real reason for 3, it works)
     /// </summary>
     /// <returns>true if the water is in range, false otherwise</returns>
     private bool ReachedWater()
     {
       var position = _animal.transform.position;
-      Ray ray = new Ray(position, _waterTarget.transform.position - position);
-      int layerMask = 1 << 4; //only looks for water in layer 4
-      Physics.Raycast(ray, out var hit,Mathf.Infinity,layerMask);
+      var layerNames = new string[1];
+      layerNames[0] = "Water";
+      
+      RaycastHit hit = RayCastUtil.RayCastLayer(position, _waterTarget.transform.position - position, layerNames);
       if (!hit.collider) return false; 
       if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
       {
