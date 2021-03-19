@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Animal.AnimalStates;
 using Animal.Managers;
@@ -10,10 +9,7 @@ using Foods;
 using Pools;
 using UI;
 using UI.Properties;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.AI;
-using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -30,15 +26,16 @@ namespace Animal
 
     public delegate void Died(AbstractAnimal animal);
 
+    public delegate void PregnancyChanged(bool isPregnant);
+
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
 
-    public delegate void PregnancyChanged(bool isPregnant);
-
 
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
+    private const float RunningSpeedFactor = 5f;
 
     /// <summary>
     ///   Scales the animal, is not correlated to actual size for the model logic.
@@ -61,12 +58,13 @@ namespace Animal
     [SerializeField] private float pregnancyTimeInHours;
 
     private float _hoursUntilPregnancy;
-    public bool IsPregnant { get; private set; }
+    
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _nutritionalValue;
+    protected StaminaDelegate _staminaDelegate;
     private int _nourishmentMultiplier = 100;
     private StateMachine<AnimalState> _stateMachine;
     private int _hoursUntilFertile;
@@ -80,6 +78,8 @@ namespace Animal
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
+    public bool IsPregnant { get; private set; }
+    public bool IsRunning { get; set; }
 
     public float NutritionalValue
     {
@@ -112,6 +112,7 @@ namespace Animal
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
+    private float Stamina => _staminaDelegate.Stamina;
     public bool Alive => Health > 0 && NutritionalValue >= 0.1;
     public bool Dead => !Alive;
     public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
@@ -146,6 +147,7 @@ namespace Animal
     {
       _nourishmentDelegate = new NourishmentDelegate();
       _healthDelegate = new HealthDelegate();
+      _staminaDelegate = new StaminaDelegate();
     }
 
     private void Start()
@@ -229,18 +231,14 @@ namespace Animal
       ResetFertility();
     }
 
-    private void ResetHealthAndActivate()
-    {
-      gameObject.SetActive(true);
-      _healthDelegate.ResetHealth();
-    }
-
     public void HourTick()
     {
       _nourishmentDelegate.HourTick();
       foodManager.HourTick();
       DecreaseHealthIfStarving();
       IncreaseHealthIfSatiated();
+      DecreaseStaminaIfRunning();
+      IncreaseStaminaIfNotRunning();
       
       if (IsPregnant)
       {
@@ -271,6 +269,12 @@ namespace Animal
       }
      
       Mutate();
+    }
+
+    private void ResetHealthAndActivate()
+    {
+      gameObject.SetActive(true);
+      _healthDelegate.ResetHealth();
     }
 
     private void Mutate()
@@ -384,7 +388,7 @@ namespace Animal
 
     /// <summary>
     ///   This method will only be called in a female animal.
-    ///   spawns a random ammount of children depending on the 'maxNumberOfChildren' 
+    ///   spawns a random ammount of children depending on the 'maxNumberOfChildren'
     /// </summary>
     /// <param name="father"></param>
     public void SpawnMultipleChildren(AbstractAnimal father)
@@ -405,7 +409,7 @@ namespace Animal
     {
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
-      
+
       var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
       var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
 
@@ -439,10 +443,14 @@ namespace Animal
 
     private void IncreaseHealthIfSatiated()
     {
-      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation*0.75 && 
-          GetSaturation() >= _nourishmentDelegate.MaxHydration*0.75)
+      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation * 0.75 &&
+          GetSaturation() >= _nourishmentDelegate.MaxHydration * 0.75)
         _healthDelegate.IncreaseHealth(1);
     }
+
+    protected abstract void IncreaseStaminaIfNotRunning();
+
+    protected abstract void DecreaseStaminaIfRunning();
 
     public void SetMouthColor(Color color)
     {
@@ -491,6 +499,11 @@ namespace Animal
       return _nourishmentDelegate;
     }
 
+    public StaminaDelegate GetStaminaDelegate()
+    {
+      return _staminaDelegate;
+    }
+
 
     private void OnStateChanged(AnimalState state)
     {
@@ -532,9 +545,26 @@ namespace Animal
       }
     }
 
-    public void SetSpeed(float speedFactor)
+    public void SetSpeed()
     {
-      movement.SpeedFactor = speedFactor*SpeedModifier;
+      switch (IsRunning)
+      {
+        case true when _staminaDelegate.StaminaZero:
+          movement.SpeedFactor = SpeedModifier;
+          break;
+        case true:
+          movement.SpeedFactor = RunningSpeedFactor * SpeedModifier;
+          break;
+        default:
+          movement.SpeedFactor = SpeedModifier;
+          break;
+      }
+    }
+
+    private void StaminaZero(float stamina, float maxStamina)
+    {
+      SetSpeed();
+      animationManager.SetAnimationStaminaZero(this);
     }
 
     public void StopFleeing()
@@ -558,7 +588,6 @@ namespace Animal
 
       // Setup size modification
       UpdateScale();
-      
     }
 
     private void InitNourishmentDelegate()
@@ -584,6 +613,11 @@ namespace Animal
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
+    public bool NeedsNourishment()
+    {
+      return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
+    }
+
     #region ResetSetup
 
     private void ResetGender()
@@ -598,8 +632,8 @@ namespace Animal
       if (_isChild) return; //child no need
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
-      var speed = Random.Range(rangeMin, rangeMax); 
-      var size  = Random.Range(rangeMin, rangeMax); 
+      var speed = Random.Range(rangeMin, rangeMax);
+      var size = Random.Range(rangeMin, rangeMax);
       InitProperties(speed, size);
     }
 
@@ -623,6 +657,7 @@ namespace Animal
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
       vision.EnemySeenListeners += OnEnemySeen;
+      _staminaDelegate.StaminaZeroListeners += StaminaZero;
     }
 
     private void InitStateMachine()

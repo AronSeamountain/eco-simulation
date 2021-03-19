@@ -21,13 +21,17 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _carnivore.SetSpeed(5);
+      _carnivore.IsRunning = true;
+      _carnivore.SetSpeed();
+      _carnivore.IsHunting = true;
       _target = _carnivore.Target;
     }
 
     public AnimalState Execute()
     {
       if (!_carnivore.Alive) return AnimalState.Dead;
+      if (_carnivore.IsThirsty && !_carnivore.KnowsWaterLocation && !_carnivore.IsHungry)
+        return AnimalState.SearchWorld;
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
 
@@ -57,6 +61,7 @@ namespace Animal.AnimalStates
     public void Exit()
     {
       _target = null;
+      _carnivore.IsHunting = false;
     }
   }
 }

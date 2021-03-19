@@ -18,6 +18,7 @@ namespace Foods.Plants
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
+    private Renderer _meshRend;
     private StateMachine<PlantState> _stateMachine;
     public StateChanged StateChangedListeners;
     public int AgeInHours { get; set; }
@@ -25,6 +26,7 @@ namespace Foods.Plants
 
     private void Awake()
     {
+      _meshRend = GetComponent<MeshRenderer>();
       MaxSaturation = 100;
 
       var states = new List<IState<PlantState>>
@@ -95,8 +97,9 @@ namespace Foods.Plants
 
     private void SetMaterial(Material material)
     {
-      var mesh = GetComponent<MeshRenderer>();
-      mesh.material = material;
+      var mat = _meshRend.materials;
+      mat[1] = material;
+      _meshRend.materials = mat;
     }
 
     protected override void FoodFullyConsumed()
