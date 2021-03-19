@@ -12,6 +12,7 @@
     Eat,
     Drink,
     Flee,
-    Idle
+    Idle,
+    SearchWorld
   }
 }

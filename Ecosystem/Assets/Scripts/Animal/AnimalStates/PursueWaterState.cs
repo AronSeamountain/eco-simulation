@@ -23,7 +23,8 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _animal.SetSpeed(5);//Todo fix animal specific speeds? this is a bit wierd?
+      _animal.IsRunning = true;
+      _animal.SetSpeed();
     }
 
     public AnimalState Execute()
@@ -32,7 +33,9 @@ namespace Animal.AnimalStates
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsThirsty) return AnimalState.Wander;
       if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (!_animal.IsThirsty && _animal.IsHungry && !_animal.KnowsFoodLocation) return AnimalState.SearchWorld;
       if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
+      
 
       _waterTarget = _animal.ClosestKnownWater;
       if (!_waterTarget) return AnimalState.Wander;
@@ -44,7 +47,11 @@ namespace Animal.AnimalStates
 
       return AnimalState.PursueWater;
     }
-    
+
+    public void Exit()
+    {
+    }
+
     /// <summary>
     /// Shoots a ray at the water source and checks that the length of the ray is less than 3 (no real reason for 3, it works)
     /// </summary>
@@ -62,10 +69,6 @@ namespace Animal.AnimalStates
         return hit.distance < 3;
       }
       return false;
-    }
-
-    public void Exit()
-    {
     }
   }
 }
