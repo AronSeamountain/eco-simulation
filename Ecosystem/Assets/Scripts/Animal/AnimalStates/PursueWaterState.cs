@@ -40,35 +40,17 @@ namespace Animal.AnimalStates
       _waterTarget = _animal.ClosestKnownWater;
       if (!_waterTarget) return AnimalState.Wander;
 
-      if (ReachedWater()) return AnimalState.Drink;
+      var position = _animal.transform.position;
+      var closestPoint = _waterTarget.GetComponent<Collider>().ClosestPoint(position);
+      if (Vector3.Distance(position, closestPoint) < 2) return AnimalState.Drink;
 
-      var position = _waterTarget.transform.position;
-      _animal.GoTo(position);
+      _animal.GoTo(closestPoint);
 
       return AnimalState.PursueWater;
     }
 
     public void Exit()
     {
-    }
-
-    /// <summary>
-    /// Shoots a ray at the water source and checks that the length of the ray is less than 3 (no real reason for 3, it works)
-    /// </summary>
-    /// <returns>true if the water is in range, false otherwise</returns>
-    private bool ReachedWater()
-    {
-      var position = _animal.transform.position;
-      var layerNames = new string[1];
-      layerNames[0] = "Water";
-      
-      RaycastHit hit = RayCastUtil.RayCastLayer(position, _waterTarget.transform.position - position, layerNames);
-      if (!hit.collider) return false; 
-      if (hit.collider.gameObject.GetComponent<Water>() == _waterTarget)
-      {
-        return hit.distance < 3;
-      }
-      return false;
     }
   }
 }
