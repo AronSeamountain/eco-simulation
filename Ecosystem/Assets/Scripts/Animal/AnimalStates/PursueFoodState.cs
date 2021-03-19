@@ -52,7 +52,6 @@ namespace Animal.AnimalStates
         _animal.GoTo(_foodTarget.Position);
       }
       
-      //Debug.Log(_foodTarget) - returns null sometimes;
       if (_foodTarget != null)
       {
         var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
