@@ -1,6 +1,8 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Foods;
 using UnityEngine;
+using Utils;
 
 namespace Animal.AnimalStates
 {
