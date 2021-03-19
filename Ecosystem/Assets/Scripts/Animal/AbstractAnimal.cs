@@ -33,6 +33,9 @@ namespace Animal
     public delegate void StateChanged(string state);
 
 
+    public delegate void AnimalDecayed(AbstractAnimal animal);
+
+
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
     private const float RunningSpeedFactor = 5f;
@@ -74,6 +77,7 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
+    public AnimalDecayed DecayedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
