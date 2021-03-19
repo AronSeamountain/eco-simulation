@@ -10,7 +10,7 @@ namespace Animal
     private const float BaseMax = 1.2f;
     private const float BaseMin = 0.8f;
 
-    private int Bits { get; set; }
+    public int Bits { get; private set; }
     public float Value { get; private set; }
     public byte Chromosome { get; private set; }
 
@@ -23,16 +23,17 @@ namespace Animal
 
     public Gene(Gene father, Gene mother)
     {
-      Chromosome = MakeChromosome(father.Chromosome, mother.Chromosome);
+      Chromosome = MakeChromosomeUniform(father.Chromosome, mother.Chromosome);
       Bits = CountSetBits(Chromosome);
-      Value = father.Value < mother.Value ? EvaluateValue(mother.Value, father.Value) 
-                                          : EvaluateValue(father.Value, mother.Value);
+      Value = father.Value < mother.Value ? EvaluateValue(mother, father) 
+                                          : EvaluateValue(father, mother);
     }
 
     private float EvaluateValue(float max, float min)
     {
       float value;
       var chunk = (max - min) / 7;
+      
       switch (Bits)
       {
         case 8:
@@ -51,6 +52,31 @@ namespace Animal
       return value;
     }
 
+    private float EvaluateValue(Gene max, Gene min)
+    {
+      float value;
+      var chunk = (max.Value - min.Value) / 7;
+      
+      if (Bits == max.Bits && Bits == min.Bits) return Random.Range(min.Value, max.Value);
+      
+      switch (Bits)
+      {
+        case 8:
+          value = Random.Range(max.Value, max.Value + chunk);
+          break;
+        case 0:
+          value = Random.Range(min.Value - chunk, min.Value);
+          break;
+        default:
+          //for example setBits = 1 and min = 0.8 we get random(0.8, 0.857)
+          //setBits = 2 -> random(0.857, 0.914)
+          value = Random.Range(min.Value + (Bits - 1) * chunk, min.Value + Bits * chunk);
+          break;
+      }
+
+      return value;
+    }
+
     private static int CountSetBits(byte chromosome) 
     { 
       var count = 0; 
@@ -61,7 +87,7 @@ namespace Animal
       return count; 
     }
 
-    private static byte MakeChromosome(byte father, byte mother)
+    private static byte MakeChromosomeUniform(byte father, byte mother)
     {
       byte chromosome = 0;
       byte currentBitValue = 1;
@@ -79,6 +105,31 @@ namespace Animal
         }
         father >>= 1;
         mother >>= 1;
+        currentBitValue *= 2;
+      }
+
+      return chromosome;
+    }
+
+    private static byte MakeChromosomeFitness(Gene father, Gene mother)
+    {
+      var fitnessRatio = father.Bits / (father.Bits + mother.Bits);
+      byte chromosome = 0;
+      byte currentBitValue = 1;
+      while (father.Chromosome > 0 || mother.Chromosome > 0)
+      {
+        if (Random.Range(0, 1f) < fitnessRatio)
+        {
+          var fatherBit = father.Chromosome & 1;
+          chromosome += (byte) (currentBitValue * fatherBit);
+        }
+        else
+        {
+          var motherBit = mother.Chromosome & 1;
+          chromosome += (byte) (currentBitValue * motherBit);
+        }
+        father.Chromosome >>= 1;
+        mother.Chromosome >>= 1;
         currentBitValue *= 2;
       }
 
