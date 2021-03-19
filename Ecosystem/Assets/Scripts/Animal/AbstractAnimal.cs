@@ -318,7 +318,7 @@ namespace Animal
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
 
-      if (sameTypeOfAnimal && oppositeGender && fertile && ( _mateTarget == null || IsCloserThanPreviousMateTarget(animal))) 
+      if (sameTypeOfAnimal && oppositeGender && fertile && ( _mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal))) 
         _mateTarget = animal;
         
     }
