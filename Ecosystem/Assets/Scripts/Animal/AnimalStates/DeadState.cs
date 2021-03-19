@@ -20,6 +20,7 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _animal.StopMoving();
+      _animal.IsRunning = false;
     }
 
     public AnimalState Execute()
