@@ -33,6 +33,9 @@ namespace Animal
     public delegate void StateChanged(string state);
 
 
+    public delegate void AnimalDecayed(AbstractAnimal animal);
+
+
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
     private const float RunningSpeedFactor = 5f;
@@ -52,13 +55,13 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
-    [SerializeField] private int fertilityTimeInDays = 5;
+    [SerializeField] private int fertilityTimeInHours = 5;
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
-    [SerializeField] private float pregnancyTimeInDays;
-    private int _daysUntilFertile;
+    [SerializeField] private float pregnancyTimeInHours;
 
-    private float _daysUntilPregnancy;
+    private float _hoursUntilPregnancy;
+    
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -67,6 +70,7 @@ namespace Animal
     protected StaminaDelegate _staminaDelegate;
     private int _nourishmentMultiplier = 100;
     private StateMachine<AnimalState> _stateMachine;
+    private int _hoursUntilFertile;
     private bool _isChild;
     private int _daysAsChild = 5;
     private float _fullyGrownSpeed;
@@ -74,6 +78,7 @@ namespace Animal
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
+    public AnimalDecayed DecayedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
@@ -238,14 +243,27 @@ namespace Animal
       IncreaseHealthIfSatiated();
       DecreaseStaminaIfRunning();
       IncreaseStaminaIfNotRunning();
+      
+      if (IsPregnant)
+      {
+        _hoursUntilPregnancy--;
+        if (_hoursUntilPregnancy <= 0)
+        {
+          ShouldBirth = true;
+          IsPregnant = false;
+          PregnancyChangedListeners?.Invoke(IsPregnant);
+        }
+      }
+      
+      if (!Fertile) _hoursUntilFertile--;
+      if (_hoursUntilFertile <= 0) Fertile = true;
     }
 
     public void DayTick()
     {
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
-      if (!Fertile) _daysUntilFertile--;
-      if (_daysUntilFertile <= 0) Fertile = true;
+     
       if (AgeInDays >= _daysAsChild) _isChild = false;
       if (_isChild)
       {
@@ -253,17 +271,7 @@ namespace Animal
        SizeModifier += _fullyGrownSize * 0.1f;
        UpdateScale();
       }
-      if (IsPregnant)
-      {
-        _daysUntilPregnancy--;
-        if (_daysUntilPregnancy <= 0)
-        {
-          ShouldBirth = true;
-          IsPregnant = false;
-          PregnancyChangedListeners?.Invoke(IsPregnant);
-        }
-      }
-
+     
       Mutate();
     }
 
@@ -419,7 +427,7 @@ namespace Animal
       child.InitProperties(child._fullyGrownSpeed * 0.5f, child._fullyGrownSize * 0.5f);
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _daysUntilFertile = fertilityTimeInDays;
+      _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
       ShouldBirth = false;
       child._isChild = true; 
@@ -470,7 +478,7 @@ namespace Animal
         LastMaleMate = father;
         IsPregnant = true;
         Fertile = false;
-        _daysUntilPregnancy = pregnancyTimeInDays;
+        _hoursUntilPregnancy = pregnancyTimeInHours;
         PregnancyChangedListeners?.Invoke(IsPregnant);
       }
     }
@@ -512,7 +520,7 @@ namespace Animal
     /// </summary>
     public void Decay()
     {
-      NutritionalValue -= Time.deltaTime;
+      NutritionalValue -= Time.deltaTime*5;
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -640,7 +648,7 @@ namespace Animal
 
     public void ResetFertility()
     {
-      _daysUntilFertile = fertilityTimeInDays;
+      _hoursUntilFertile = fertilityTimeInHours;
     }
 
     #endregion

@@ -20,6 +20,7 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _animal.StopMoving();
+      _animal.DiedListeners?.Invoke(_animal);
       _animal.IsRunning = false;
     }
 
@@ -29,7 +30,7 @@ namespace Animal.AnimalStates
 
       if (_animal.NutritionalValue < 0.1)
       {
-        _animal.DiedListeners.Invoke(_animal);
+        _animal.DecayedListeners?.Invoke(_animal);
         AnimalPool.SharedInstance.Pool(_animal);
       }
 

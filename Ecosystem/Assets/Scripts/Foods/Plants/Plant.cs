@@ -73,7 +73,7 @@ namespace Foods.Plants
       if (LeaveSeedState)
         Saturation += SaturationPerHour;
 
-      if (AgeInHours >= MaxHoursAlive) Reset();
+      //if (AgeInHours >= MaxHoursAlive) Reset();
     }
 
     public void DayTick()
