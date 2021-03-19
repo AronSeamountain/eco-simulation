@@ -51,35 +51,41 @@ namespace Animal.AnimalStates
         _foodTarget = GetClosestFood();
         _animal.GoTo(_foodTarget.Position);
       }
-
-      var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
-      if (reachesFood)
+      
+      //Debug.Log(_foodTarget) - returns null sometimes;
+      if (_foodTarget != null)
       {
-        if (!_foodTarget.Food.CanBeEaten())
+        var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
+        if (reachesFood)
         {
+          if (!_foodTarget.Food.CanBeEaten())
+          {
+            _animal.Forget(_foodTarget);
+            //wait for food to mature
+            return AnimalState.Idle;
+          }
+
+          var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
+          foreach (var collider in colliders)
+            if (collider.GetComponent<AbstractFood>() is AbstractFood f)
+              if (f == _foodTarget.Food)
+              {
+                _animal.FoodAboutTooEat = _foodTarget.Food;
+                _animal.Forget(_foodTarget);
+                _foodTarget = null;
+                return AnimalState.Eat;
+              }
+
           _animal.Forget(_foodTarget);
-          //wait for food to mature
-          return AnimalState.Idle;
+          _foodTarget = null;
         }
 
-        var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
-        foreach (var collider in colliders)
-          if (collider.GetComponent<AbstractFood>() is AbstractFood f)
-            if (f == _foodTarget.Food)
-            {
-              _animal.FoodAboutTooEat = _foodTarget.Food;
-              _animal.Forget(_foodTarget);
-              _foodTarget = null;
-              return AnimalState.Eat;
-            }
-
-        _animal.Forget(_foodTarget);
-        _foodTarget = null;
+        return AnimalState.PursueFood;
       }
-
-
-      return AnimalState.PursueFood;
+      else return AnimalState.Wander;
     }
+
+      
 
 
     public void Exit()
