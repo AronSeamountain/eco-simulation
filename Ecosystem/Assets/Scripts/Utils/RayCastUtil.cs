@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Utils
 {
@@ -28,6 +30,25 @@ namespace Utils
         "Water"
       );
       return _nonRayCastableLayers;
+    }
+
+    public static RaycastHit RayCastLayer(Vector3 startPoint,Vector3 endPoint,int layer)
+    {
+      int layerMask = 1 << layer; //only looks for one layer
+      return rayCastWithMask(startPoint, endPoint, layerMask);
+    }
+
+    public static RaycastHit RayCastLayer(Vector3 startPoint, Vector3 endPoint, String[] layers)
+    {
+      int layerMasks = LayerMask.GetMask(layers);
+      return rayCastWithMask(startPoint, endPoint, layerMasks); ;
+    }
+
+    private static RaycastHit rayCastWithMask(Vector3 startPoint, Vector3 endPoint, int layerMasks)
+    {
+      Ray ray = new Ray(startPoint, endPoint);
+      Physics.Raycast(ray, out var hit,Mathf.Infinity,layerMasks);
+      return hit;
     }
   }
 }
