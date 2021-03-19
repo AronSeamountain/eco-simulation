@@ -3,6 +3,7 @@ using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
 using UnityEngine;
+using Utils;
 
 namespace Animal
 {
@@ -61,11 +62,16 @@ namespace Animal
       _seesCarnivore = animal.IsCarnivore;
       if (_seesCarnivore) EnemyToFleeFrom = animal;
     }
+    
 
     public override bool SafeDistanceFromEnemy()
     {
-      var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
-      return SafeDistance < distance;
+      if (EnemyToFleeFrom.Exists())
+      {
+        var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
+        return SafeDistance < distance;
+      }
+      return false;
     }
 
     protected override void IncreaseStaminaIfNotRunning()
