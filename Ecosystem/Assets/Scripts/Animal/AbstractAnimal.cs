@@ -10,6 +10,9 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
+using UnityEngine.AI;
+using Utils;
+using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -329,10 +332,17 @@ namespace Animal
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
 
-      if (sameTypeOfAnimal && oppositeGender && fertile)
+      if (sameTypeOfAnimal && oppositeGender && fertile && ( _mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal))) 
         _mateTarget = animal;
+        
     }
 
+    private bool IsCloserThanPreviousMateTarget(AbstractAnimal newTarget)
+    {
+     var newDistance = Vector3Util.Distance(gameObject, newTarget.gameObject);
+     var oldDistance = Vector3Util.Distance(gameObject, _mateTarget.gameObject);
+     return oldDistance > newDistance;
+    }
     public void ClearMateTarget()
     {
       _mateTarget = null;
