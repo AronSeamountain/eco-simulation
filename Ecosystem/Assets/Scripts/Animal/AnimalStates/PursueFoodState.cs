@@ -30,7 +30,8 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _animal.SetSpeed(5);
+      _animal.IsRunning = true;
+      _animal.SetSpeed();
     }
 
     public AnimalState Execute()

@@ -33,6 +33,7 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _animal.StopMoving();
+      _animal.IsRunning = false;
       _timeIdled = 0;
       UpdateIdleTime();
     }

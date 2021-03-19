@@ -27,7 +27,8 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _animal.SetSpeed(1);
+      _animal.IsRunning = false;
+      _animal.SetSpeed();
       GoToClosePoint();
     }
 

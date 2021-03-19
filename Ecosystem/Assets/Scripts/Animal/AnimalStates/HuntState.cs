@@ -22,7 +22,9 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _carnivore.SetSpeed(5);
+      _carnivore.IsRunning = true;
+      _carnivore.SetSpeed();
+      _carnivore.IsHunting = true;
       _target = _carnivore.Target;
       _eatingRange = _target.transform.localScale.x;
     }
@@ -63,6 +65,7 @@ namespace Animal.AnimalStates
     public void Exit()
     {
       _target = null;
+      _carnivore.IsHunting = false;
     }
   }
 }
