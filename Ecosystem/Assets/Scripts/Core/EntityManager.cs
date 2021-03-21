@@ -23,12 +23,12 @@ namespace Core
     /// <summary>
     ///   The amount of time that a "unit" is in.
     /// </summary>
-    private const float HoursInRealSeconds = 0.5f;
+    public static float HoursInRealSeconds = 0.5f;
 
     private const float HoursPerDay = 24;
-    [SerializeField] private int initialWolves = 1;
-    [SerializeField] private int initialRabbits = 1;
-    [SerializeField] private int initialPlants = 4;
+    public static int InitialWolves = 50;
+    public static int InitialRabbits = 50;
+    public static int InitialPlants = 50;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -118,11 +118,11 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(initialRabbits, rabbitPrefab, Animals);
-      HerbivoreCount += initialRabbits;
+      SpawnAndAddGeneric(InitialRabbits, rabbitPrefab, Animals);
+      HerbivoreCount += InitialRabbits;
 
-      SpawnAndAddGeneric(initialWolves, wolfPrefab, Animals);
-      CarnivoreCount += initialWolves;
+      SpawnAndAddGeneric(InitialWolves, wolfPrefab, Animals);
+      CarnivoreCount += InitialWolves;
     }
 
     private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
@@ -140,7 +140,7 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialPlants()
     {
-      SpawnAndAddGeneric(initialPlants, plantPrefab, Plants);
+      SpawnAndAddGeneric(InitialPlants, plantPrefab, Plants);
     }
 
     private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list = null)
