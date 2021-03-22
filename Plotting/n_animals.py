@@ -5,7 +5,7 @@ from util.file_finder import get_full_path
 
 
 def plot():
-    full_path = get_full_path('detailed.json')
+    full_path = get_full_path('overview.csv')
     df = pd.read_csv(full_path)
     fig = go.Figure()
 
