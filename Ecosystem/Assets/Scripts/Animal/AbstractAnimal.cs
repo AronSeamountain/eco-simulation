@@ -69,6 +69,8 @@ namespace Animal
     private int _daysAsChild = 5;
     private float _fullyGrownSpeed;
     private float _fullyGrownSize;
+    public Gene Size;
+    public Gene Speed;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
@@ -244,6 +246,7 @@ namespace Animal
        SpeedModifier += _fullyGrownSpeed * 0.1f;
        SizeModifier += _fullyGrownSize * 0.1f;
        UpdateScale();
+       //PropertiesChangedListeners?.Invoke();
       }
       if (IsPregnant)
       {
@@ -267,16 +270,18 @@ namespace Animal
 
     private void Mutate()
     {
-      if (MutationPercentPerDay > Random.Range(0, 100))
+      if (Size.Mutate())
       {
-        SpeedModifier = Random.Range(SpeedModifier * (1 - BiggestMutationChange),
-          SpeedModifier * (1 + BiggestMutationChange));
-
-        SizeModifier = Random.Range(SizeModifier * (1 - BiggestMutationChange),
-          SizeModifier * (1 + BiggestMutationChange));
         PropertiesChangedListeners?.Invoke();
 
         UpdateScale();
+      }
+      
+      if (Speed.Mutate())
+      {
+        PropertiesChangedListeners?.Invoke();
+
+        UpdateNourishmentDelegate();
       }
     }
 
@@ -398,16 +403,15 @@ namespace Animal
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
 
-      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
-      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
-
-      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
-      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
-
       child.movement.GetAgent().Warp(transform.position);
+      
       child.ResetGameObject(); //resets to default/random values
-      child._fullyGrownSpeed = Random.Range(speedMin, speedMax);
-      child._fullyGrownSize = Random.Range(sizeMin, sizeMax);
+      
+      child.Size = new Gene(father.Size, Size);
+      child.Speed = new Gene(father.Speed, Speed);
+      child._fullyGrownSpeed = Speed.Value;
+      child._fullyGrownSize = Size.Value;
+
       child.InitProperties(child._fullyGrownSpeed * 0.5f, child._fullyGrownSize * 0.5f);
       ChildSpawnedListeners?.Invoke(child, this);
 
@@ -592,11 +596,9 @@ namespace Animal
     private void ResetProperties()
     {
       if (_isChild) return; //child no need
-      const float rangeMin = 0.8f;
-      const float rangeMax = 1.2f;
-      var speed = Random.Range(rangeMin, rangeMax);
-      var size = Random.Range(rangeMin, rangeMax);
-      InitProperties(speed, size);
+      Size = new Gene();
+      Speed = new Gene();
+      InitProperties(Size.Value, Speed.Value);
     }
 
     private void ResetStateMachine()

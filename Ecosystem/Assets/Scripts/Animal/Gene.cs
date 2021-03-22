@@ -54,10 +54,10 @@ namespace Animal
 
     private float EvaluateValue(Gene max, Gene min)
     {
+      if (Bits == max.Bits && Bits == min.Bits) return Random.Range(min.Value, max.Value);
+      
       float value;
       var chunk = (max.Value - min.Value) / 7;
-      
-      if (Bits == max.Bits && Bits == min.Bits) return Random.Range(min.Value, max.Value);
       
       switch (Bits)
       {
@@ -136,12 +136,12 @@ namespace Animal
       return chromosome;
     }
 
-    public void Mutate()
+    public bool Mutate()
     {
-      if (!(Random.Range(0, 1f) < 0.02f)) return;
+      if (!(Random.Range(0, 1f) < 0.02f)) return false;
       var oldChromosome = Chromosome;
       Chromosome = (byte) Random.Range(byte.MinValue, byte.MaxValue);
-      Debug.Log("MUTATED!!!!!!!!!!!!!");
+      
       if (Chromosome > oldChromosome)
       {
         Value *= Random.Range(1, 1.05f);
@@ -150,6 +150,8 @@ namespace Animal
       {
         Value *= Random.Range(0.95f, 1);
       }
+
+      return true;
     }
   }
 }
