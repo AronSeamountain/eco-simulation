@@ -1,5 +1,6 @@
 ﻿using Core;
 using UnityEngine;
+using Utils;
 
 namespace Animal.AnimalStates
 {
@@ -42,7 +43,7 @@ namespace Animal.AnimalStates
     {
       if (_animal.Dead) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (_animal.NeedsNourishment()) return AnimalState.SearchWorld;
       if (_animal is Carnivore c)
       {
