@@ -45,9 +45,11 @@ namespace Core
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
+    public FpsDelegate FpsDelegate { get; private set; }
 
     private void Awake()
     {
+      FpsDelegate = new FpsDelegate();
       _animalPool = AnimalPool.SharedInstance;
 
       // Lists
@@ -68,13 +70,15 @@ namespace Core
       // Logger
       _logger = new MultiLogger(
         DetailedIndividualLogger.Instance,
-        OverviewLogger.Instance
+        new OverviewLogger(),
+        new FpsLogger()
       );
     }
 
     private void Update()
     {
       UpdateTick();
+      if (log) FpsDelegate.FramePassed();
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -212,7 +216,6 @@ namespace Core
       animal.ChildSpawnedListeners -= OnChildSpawned;
       animal.DiedListeners -= OnAnimalDied;
       animal.DecayedListeners -= UnobserveAnimal;
-      
     }
 
     private void OnAnimalDied(AbstractAnimal animal)
@@ -240,6 +243,7 @@ namespace Core
           {
             _logger.Snapshot(this);
             _logger.Persist();
+            FpsDelegate.Reset();
           }
         }
       }

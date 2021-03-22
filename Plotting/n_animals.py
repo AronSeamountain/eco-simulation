@@ -23,7 +23,8 @@ def plot():
 
     fig.update_layout(
         title='Amount of Animals',
-        xaxis_title='Day'
+        xaxis_title='day',
+        yaxis_title='amount'
     )
 
     fig.show()
