@@ -136,7 +136,7 @@ namespace Animal.Sensor
     private void AdjustScaleAndPosition()
     {
       transform.localScale = new Vector3(Width, Height, Length);
-      var centerOffset = new Vector3(0, -1, (Length / 2)-0.5f);
+      var centerOffset = new Vector3(0, -1, Length / 2 - 0.5f);
       transform.localPosition = eyesTransform.localPosition + centerOffset;
     }
   }

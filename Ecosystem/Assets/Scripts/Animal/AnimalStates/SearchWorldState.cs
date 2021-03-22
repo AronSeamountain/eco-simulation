@@ -29,7 +29,8 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       //speed is a bit faster than wander, since it needs to find food or water fast
-      _animal.SetSpeed(3);
+      _animal.IsRunning = true;
+      _animal.SetSpeed();
       GoToFarAwayPoint();
       _distance = Vector3.Distance(_animal.transform.position,_destination);
     }
@@ -40,7 +41,7 @@ namespace Animal.AnimalStates
       // similarly, if it has drunk enough water but cannot find food, it should go into this state.
       if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
       if (_animal is Carnivore carnivore && carnivore.IsHungry)

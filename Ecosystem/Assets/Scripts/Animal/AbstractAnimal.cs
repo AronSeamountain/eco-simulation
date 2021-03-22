@@ -10,6 +10,9 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
+using UnityEngine.AI;
+using Utils;
+using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -33,8 +36,12 @@ namespace Animal
     public delegate void StateChanged(string state);
 
 
+    public delegate void AnimalDecayed(AbstractAnimal animal);
+
+
     private const float BiggestMutationChange = 0.3f;
     private const float MutationPercentPerDay = 10f;
+    private const float RunningSpeedFactor = 5f;
 
     /// <summary>
     ///   Scales the animal, is not correlated to actual size for the model logic.
@@ -51,31 +58,35 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
-    [SerializeField] private int fertilityTimeInDays = 5;
+    [SerializeField] private int fertilityTimeInHours = 5;
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
-    [SerializeField] private float pregnancyTimeInDays;
-    private int _daysUntilFertile;
+    [SerializeField] private float pregnancyTimeInHours;
 
-    private float _daysUntilPregnancy;
+    private float _hoursUntilPregnancy;
+
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
     private float _nutritionalValue;
+    protected StaminaDelegate _staminaDelegate;
     private int _nourishmentMultiplier = 100;
     private StateMachine<AnimalState> _stateMachine;
-    private bool _isChild;
-    private int _daysAsChild = 5;
+    private int _hoursUntilFertile;
+    public bool IsChild { get; private set; }
+
     private float _fullyGrownSpeed;
     private float _fullyGrownSize;
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
+    public AnimalDecayed DecayedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
     public StateChanged StateChangedListeners;
     public bool IsPregnant { get; private set; }
+    public bool IsRunning { get; set; }
 
     public float NutritionalValue
     {
@@ -97,6 +108,8 @@ namespace Animal
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
 
+    private float childrenSizeWhenBorn = 0.5f;
+
     public AnimalSpecies Species
     {
       get => _species;
@@ -108,6 +121,7 @@ namespace Animal
     public bool IsHungry => _nourishmentDelegate.IsHungry;
     public bool IsThirsty => _nourishmentDelegate.IsThirsty;
     private float Health => _healthDelegate.Health;
+    private float Stamina => _staminaDelegate.Stamina;
     public bool Alive => Health > 0 && NutritionalValue >= 0.1;
     public bool Dead => !Alive;
     public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
@@ -142,6 +156,7 @@ namespace Animal
     {
       _nourishmentDelegate = new NourishmentDelegate();
       _healthDelegate = new HealthDelegate();
+      _staminaDelegate = new StaminaDelegate();
     }
 
     private void Start()
@@ -150,7 +165,6 @@ namespace Animal
       InitSensoryEvents();
 
       ResetGameObject();
-
     }
 
     private void Update()
@@ -231,30 +245,41 @@ namespace Animal
       foodManager.HourTick();
       DecreaseHealthIfStarving();
       IncreaseHealthIfSatiated();
-    }
+      DecreaseStaminaIfRunning();
+      IncreaseStaminaIfNotRunning();
 
-    public void DayTick()
-    {
-      AgeInDays++;
-      AgeChangedListeners?.Invoke(AgeInDays);
-      if (!Fertile) _daysUntilFertile--;
-      if (_daysUntilFertile <= 0) Fertile = true;
-      if (AgeInDays >= _daysAsChild) _isChild = false;
-      if (_isChild)
-      {
-       SpeedModifier += _fullyGrownSpeed * 0.1f;
-       SizeModifier += _fullyGrownSize * 0.1f;
-       UpdateScale();
-      }
       if (IsPregnant)
       {
-        _daysUntilPregnancy--;
-        if (_daysUntilPregnancy <= 0)
+        _hoursUntilPregnancy--;
+        if (_hoursUntilPregnancy <= 0)
         {
           ShouldBirth = true;
           IsPregnant = false;
           PregnancyChangedListeners?.Invoke(IsPregnant);
         }
+      }
+      else
+      {
+        if (!Fertile) _hoursUntilFertile--;
+        if (_hoursUntilFertile <= 0) Fertile = true;
+      }
+    }
+
+    public void DayTick()
+    {
+      if (IsChild && AgeInDays >= fertilityTimeInHours / 24)
+      {
+        IsChild = false;
+      }
+
+      AgeInDays++;
+      AgeChangedListeners?.Invoke(AgeInDays);
+      if (IsChild)
+      {
+        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
+        SpeedModifier += _fullyGrownSpeed * updateAmount;
+        SizeModifier += _fullyGrownSize * updateAmount;
+        UpdateScale();
       }
 
       Mutate();
@@ -314,8 +339,16 @@ namespace Animal
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
 
-      if (sameTypeOfAnimal && oppositeGender && fertile)
+      if (sameTypeOfAnimal && oppositeGender && fertile &&
+          (_mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal)))
         _mateTarget = animal;
+    }
+
+    private bool IsCloserThanPreviousMateTarget(AbstractAnimal newTarget)
+    {
+      var newDistance = Vector3Util.Distance(gameObject, newTarget.gameObject);
+      var oldDistance = Vector3Util.Distance(gameObject, _mateTarget.gameObject);
+      return oldDistance > newDistance;
     }
 
     public void ClearMateTarget()
@@ -409,13 +442,12 @@ namespace Animal
       child.ResetGameObject(); //resets to default/random values
       child._fullyGrownSpeed = Random.Range(speedMin, speedMax);
       child._fullyGrownSize = Random.Range(sizeMin, sizeMax);
-      child.InitProperties(child._fullyGrownSpeed * 0.5f, child._fullyGrownSize * 0.5f);
+      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _daysUntilFertile = fertilityTimeInDays;
+      _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
       ShouldBirth = false;
-      child._isChild = true; 
     }
 
     /// <summary>
@@ -437,6 +469,10 @@ namespace Animal
         _healthDelegate.IncreaseHealth(1);
     }
 
+    protected abstract void IncreaseStaminaIfNotRunning();
+
+    protected abstract void DecreaseStaminaIfRunning();
+
     public void SetMouthColor(Color color)
     {
       var main = mouthParticles.main;
@@ -454,12 +490,12 @@ namespace Animal
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if (Gender == Gender.Female)
+      if (Gender == Gender.Female && Fertile && !IsPregnant)
       {
         LastMaleMate = father;
         IsPregnant = true;
         Fertile = false;
-        _daysUntilPregnancy = pregnancyTimeInDays;
+        _hoursUntilPregnancy = pregnancyTimeInHours;
         PregnancyChangedListeners?.Invoke(IsPregnant);
       }
     }
@@ -484,6 +520,11 @@ namespace Animal
       return _nourishmentDelegate;
     }
 
+    public StaminaDelegate GetStaminaDelegate()
+    {
+      return _staminaDelegate;
+    }
+
 
     private void OnStateChanged(AnimalState state)
     {
@@ -496,7 +537,7 @@ namespace Animal
     /// </summary>
     public void Decay()
     {
-      NutritionalValue -= Time.deltaTime;
+      NutritionalValue -= Time.deltaTime * 5;
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -525,17 +566,34 @@ namespace Animal
       }
     }
 
-    public void SetSpeed(float speedFactor)
+    public void SetSpeed()
     {
-      movement.SpeedFactor = speedFactor * SpeedModifier;
+      switch (IsRunning)
+      {
+        case true when _staminaDelegate.StaminaZero:
+          movement.SpeedFactor = SpeedModifier;
+          break;
+        case true:
+          movement.SpeedFactor = RunningSpeedFactor * SpeedModifier;
+          break;
+        default:
+          movement.SpeedFactor = SpeedModifier;
+          break;
+      }
+    }
+
+    private void StaminaZero(float stamina, float maxStamina)
+    {
+      SetSpeed();
+      animationManager.SetAnimationStaminaZero(this);
     }
 
     public void StopFleeing()
     {
       ClearEnemyTarget();
     }
-    
-    
+
+
     /// <summary>
     ///   Initializes the speed, size, nutrional value ... etc.
     /// </summary>
@@ -561,9 +619,10 @@ namespace Animal
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
-       NutritionalValue = _nourishmentMultiplier * sizeCubed;
-       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
+      NutritionalValue = _nourishmentMultiplier * sizeCubed;
+      PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
+
     private void UpdateNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
@@ -592,7 +651,8 @@ namespace Animal
 
     private void ResetProperties()
     {
-      if (_isChild) return; //child no need
+      if (IsChild) return; //child no need
+      IsChild = true;
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
       var speed = Random.Range(rangeMin, rangeMax);
@@ -607,7 +667,11 @@ namespace Animal
 
     public void ResetFertility()
     {
-      _daysUntilFertile = fertilityTimeInDays;
+      AgeInDays = 0;
+      Fertile = false;
+      IsPregnant = false;
+      ShouldBirth = false;
+      _hoursUntilFertile = fertilityTimeInHours;
     }
 
     #endregion
@@ -620,6 +684,7 @@ namespace Animal
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
       vision.EnemySeenListeners += OnEnemySeen;
+      _staminaDelegate.StaminaZeroListeners += StaminaZero;
     }
 
     private void InitStateMachine()

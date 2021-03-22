@@ -1,4 +1,5 @@
 ﻿using Core;
+using Utils;
 
 namespace Animal.AnimalStates
 {
@@ -18,14 +19,16 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _animal.SetSpeed(5);
+      _animal.IsRunning = true;
+      _animal.SetSpeed();
     }
 
     public AnimalState Execute()
     {
       if (_animal.Dead) return AnimalState.Dead;
       if (_animal.SafeDistanceFromEnemy()) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom) _animal.Flee();
+      if (_animal.EnemyToFleeFrom.Dead || _animal.EnemyToFleeFrom.DoesNotExist()) return AnimalState.Wander;
+      if (_animal.EnemyToFleeFrom.Exists()) _animal.Flee();
       return AnimalState.Flee;
     }
 
