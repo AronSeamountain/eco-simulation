@@ -74,7 +74,7 @@ namespace Animal
     private int _nourishmentMultiplier = 100;
     private StateMachine<AnimalState> _stateMachine;
     private int _hoursUntilFertile;
-    private bool _isChild;
+    public bool IsChild { get; private set; }
     private int _daysAsChild = 5;
     private float _fullyGrownSpeed;
     private float _fullyGrownSize;
@@ -266,15 +266,15 @@ namespace Animal
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
      
-      if (AgeInDays >= _daysAsChild) _isChild = false;
-      if (_isChild)
+      if (AgeInDays >= _daysAsChild) IsChild = false;
+      if (IsChild)
       {
         SpeedModifier += _fullyGrownSpeed * 0.1f;
         SizeModifier += _fullyGrownSize * 0.1f;
         UpdateScale();
       }
      
-      Mutate();
+     // Mutate();
     }
 
     private void ResetHealthAndActivate()
@@ -439,7 +439,7 @@ namespace Animal
       _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
       ShouldBirth = false;
-      child._isChild = true;
+      child.IsChild = true;
     }
 
     /// <summary>
@@ -643,7 +643,7 @@ namespace Animal
 
     private void ResetProperties()
     {
-      if (_isChild) return; //child no need
+      if (IsChild) return; //child no need
       const float rangeMin = 0.8f;
       const float rangeMax = 1.2f;
       var speed = Random.Range(rangeMin, rangeMax);
