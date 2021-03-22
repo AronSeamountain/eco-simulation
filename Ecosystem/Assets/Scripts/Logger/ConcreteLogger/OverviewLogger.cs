@@ -5,6 +5,7 @@ using System.Linq;
 using Animal;
 using Core;
 using TMPro;
+using UnityEngine;
 
 namespace Logger.ConcreteLogger
 {
@@ -27,7 +28,7 @@ namespace Logger.ConcreteLogger
     {
       _loggableColumns = GetLoggableColumns();
       _snapshots = new List<string>();
-      _firstLog = false;
+      _firstLog = true;
     }
 
     public static OverviewLogger Instance { get; } = new OverviewLogger();
@@ -113,8 +114,9 @@ namespace Logger.ConcreteLogger
     {
       if (_firstLog)
       {
+        Clear();
         AppendHeader();
-        _firstLog = true;
+        _firstLog = false;
       }
 
       var writer = File.AppendText(Path);
