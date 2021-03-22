@@ -282,7 +282,7 @@ namespace Animal
         UpdateScale();
       }
 
-      // Mutate();
+      Mutate();
     }
 
     private void ResetHealthAndActivate()
