@@ -13,7 +13,7 @@ namespace Logger.ConcreteLogger
   /// </summary>
   public sealed class DetailedIndividualLogger : ILogger
   {
-    private const string Path = "Assets/Logs/animal_log.json";
+    private const string Path = "Assets/Logs/detailed.json";
     private IList<string> _snapshots;
     private bool _firstLog;
 
@@ -51,9 +51,18 @@ namespace Logger.ConcreteLogger
       var writer = File.AppendText(Path);
       if (_firstLog) writer.WriteLine("[");
 
-      foreach (var snapshot in _snapshots) writer.WriteLine(snapshot + ",");
-      writer.WriteLine("]");
+      foreach (var snapshot in _snapshots)
+        if (_firstLog)
+        {
+          _firstLog = false;
+          writer.WriteLine(snapshot);
+        }
+        else
+        {
+          writer.WriteLine("," + snapshot);
+        }
 
+      writer.WriteLine("]");
       writer.Close();
 
       _snapshots = new List<string>();
