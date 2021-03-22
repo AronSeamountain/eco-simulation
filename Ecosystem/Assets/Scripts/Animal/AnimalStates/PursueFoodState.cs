@@ -39,7 +39,7 @@ namespace Animal.AnimalStates
       if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsHungry) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (_animal.IsThirsty && !_animal.KnowsWaterLocation && !_animal.IsHungry) return AnimalState.SearchWorld;
 
       // A new food source has been found. Change the food target to the closest food.
@@ -51,35 +51,41 @@ namespace Animal.AnimalStates
         _foodTarget = GetClosestFood();
         _animal.GoTo(_foodTarget.Position);
       }
-
-      // Eat the current food if it can be reached.
-      var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
-      if (reachesFood)
+      
+      if (_foodTarget != null)
       {
-        if (!_foodTarget.Food.CanBeEaten())
+        var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
+        if (reachesFood)
         {
+          if (!_foodTarget.Food.CanBeEaten())
+          {
+            _animal.Forget(_foodTarget);
+            //wait for food to mature
+            return AnimalState.Idle;
+          }
+
+          var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
+          foreach (var collider in colliders)
+            if (collider.GetComponent<AbstractFood>() is AbstractFood f)
+              if (f == _foodTarget.Food)
+              {
+                _animal.FoodAboutTooEat = _foodTarget.Food;
+                _animal.Forget(_foodTarget);
+                _foodTarget = null;
+                return AnimalState.Eat;
+              }
+
           _animal.Forget(_foodTarget);
-          //wait for food to mature
-          return AnimalState.Idle;
+          _foodTarget = null;
         }
 
-        var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
-        foreach (var collider in colliders)
-          if (collider.GetComponent<AbstractFood>() is AbstractFood f)
-            if (f == _foodTarget.Food)
-            {
-              _animal.FoodAboutTooEat = _foodTarget.Food;
-              _animal.Forget(_foodTarget);
-              _foodTarget = null;
-              return AnimalState.Eat;
-            }
-
-        _animal.Forget(_foodTarget);
-        _foodTarget = null;
+        return AnimalState.PursueFood;
       }
-
-      return AnimalState.PursueFood;
+      else return AnimalState.Wander;
     }
+
+      
+
 
     public void Exit()
     {

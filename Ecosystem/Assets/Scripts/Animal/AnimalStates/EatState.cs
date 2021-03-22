@@ -1,6 +1,7 @@
 using Core;
 using Foods;
 using UnityEngine;
+using Utils;
 
 namespace Animal.AnimalStates
 {
@@ -36,7 +37,7 @@ namespace Animal.AnimalStates
       if (_food == null) return AnimalState.Wander;
       if (!_food.CanBeEaten()) return AnimalState.Wander;
       if (!_animal.CanEatMore()) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
 
       _animal.StopMoving();
       _animal.Eat(_food);
