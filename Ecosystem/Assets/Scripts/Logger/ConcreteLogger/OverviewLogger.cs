@@ -15,7 +15,7 @@ namespace Logger.ConcreteLogger
   public sealed class OverviewLogger : ILogger
   {
     private const string Delimiter = ",";
-    private const string Path = "Assets/Logs/log.csv";
+    private const string Path = "Assets/Logs/overview.csv";
     private readonly IList<LoggableColumn> _loggableColumns;
     private bool _firstLog;
     private IList<string> _snapshots;

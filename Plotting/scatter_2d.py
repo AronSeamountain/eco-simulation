@@ -1,22 +1,11 @@
-import glob
 import json
-
 import plotly.express as px
 import plotly.graph_objects as go
+from util.json_extracter import extract
+from util.file_finder import get_full_path
 
 
-def extract(key, data):
-    return [i[key] for i in data]
-
-
-file_name = 'animal_log.json'
-text_files = glob.glob("./**/" + file_name, recursive=True)
-
-if not text_files:
-    raise Exception('Found no ' + file_name + ' file.')
-
-full_path = text_files[0]
-
+full_path = get_full_path('detailed.json')
 f = open(full_path)
 data = json.load(f)
 
@@ -33,7 +22,8 @@ fig = px.scatter(
     y=speed,
     size=size,
     color=species,
-    labels={'x':'day', 'y':'speed'}
+    labels={'x': 'day', 'y': 'speed'},
+    title='Individual Statistics'
 )
 
 fig.show()

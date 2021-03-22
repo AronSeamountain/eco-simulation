@@ -1,6 +1,7 @@
 
 ### Custom ###
 
+.vscode/
 venv/
 .ignore
 

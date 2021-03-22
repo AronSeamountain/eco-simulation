@@ -1,24 +1,18 @@
-import glob
-
 import pandas as pd
 import plotly.express as px
+from util.file_finder import get_full_path
 
-file_name = 'log.csv'
-text_files = glob.glob("./**/" + file_name, recursive=True)
 
-if not text_files:
-    raise Exception('Found no ' + file_name + ' file.')
+full_path = get_full_path('overview.csv')
 
-full_path = text_files[0]
-
-# Plot
 df = pd.read_csv(full_path)
 fig = px.scatter_3d(
     df,
     x='day',
     y='speed',
     z='size',
-    color='amount'
+    color='amount',
+    title='Average Values'
 )
 
 fig.show()

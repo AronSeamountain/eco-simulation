@@ -13,7 +13,7 @@ namespace Logger.ConcreteLogger
   /// </summary>
   public sealed class DetailedIndividualLogger : ILogger
   {
-    private const string Path = "Assets/Logs/animal_log.json";
+    private const string Path = "Assets/Logs/detailed.json";
     private IList<string> _snapshots;
     private bool _firstLog;
 
