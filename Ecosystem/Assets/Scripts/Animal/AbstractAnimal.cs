@@ -64,7 +64,7 @@ namespace Animal
     [SerializeField] private float pregnancyTimeInHours;
 
     private float _hoursUntilPregnancy;
-    
+
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -75,7 +75,7 @@ namespace Animal
     private StateMachine<AnimalState> _stateMachine;
     private int _hoursUntilFertile;
     public bool IsChild { get; private set; }
-    
+
     private float _fullyGrownSpeed;
     private float _fullyGrownSize;
     public AgeChanged AgeChangedListeners;
@@ -247,7 +247,7 @@ namespace Animal
       IncreaseHealthIfSatiated();
       DecreaseStaminaIfRunning();
       IncreaseStaminaIfNotRunning();
-      
+
       if (IsPregnant)
       {
         _hoursUntilPregnancy--;
@@ -263,18 +263,15 @@ namespace Animal
         if (!Fertile) _hoursUntilFertile--;
         if (_hoursUntilFertile <= 0) Fertile = true;
       }
-      
-      
     }
 
     public void DayTick()
     {
- 
-
       if (IsChild && AgeInDays >= fertilityTimeInHours / 24)
       {
         IsChild = false;
       }
+
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
       if (IsChild)
@@ -284,8 +281,8 @@ namespace Animal
         SizeModifier += _fullyGrownSize * updateAmount;
         UpdateScale();
       }
-     
-     // Mutate();
+
+      // Mutate();
     }
 
     private void ResetHealthAndActivate()
@@ -342,17 +339,18 @@ namespace Animal
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
 
-      if (sameTypeOfAnimal && oppositeGender && fertile && ( _mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal))) 
+      if (sameTypeOfAnimal && oppositeGender && fertile &&
+          (_mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal)))
         _mateTarget = animal;
-        
     }
 
     private bool IsCloserThanPreviousMateTarget(AbstractAnimal newTarget)
     {
-     var newDistance = Vector3Util.Distance(gameObject, newTarget.gameObject);
-     var oldDistance = Vector3Util.Distance(gameObject, _mateTarget.gameObject);
-     return oldDistance > newDistance;
+      var newDistance = Vector3Util.Distance(gameObject, newTarget.gameObject);
+      var oldDistance = Vector3Util.Distance(gameObject, _mateTarget.gameObject);
+      return oldDistance > newDistance;
     }
+
     public void ClearMateTarget()
     {
       _mateTarget = null;
@@ -449,7 +447,7 @@ namespace Animal
 
       _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
-      ShouldBirth = false; 
+      ShouldBirth = false;
     }
 
     /// <summary>
@@ -492,7 +490,7 @@ namespace Animal
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if (Gender == Gender.Female && Fertile && !IsPregnant )
+      if (Gender == Gender.Female && Fertile && !IsPregnant)
       {
         LastMaleMate = father;
         IsPregnant = true;
@@ -539,7 +537,7 @@ namespace Animal
     /// </summary>
     public void Decay()
     {
-      NutritionalValue -= Time.deltaTime*5;
+      NutritionalValue -= Time.deltaTime * 5;
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -653,7 +651,6 @@ namespace Animal
 
     private void ResetProperties()
     {
-
       if (IsChild) return; //child no need
       IsChild = true;
       const float rangeMin = 0.8f;
