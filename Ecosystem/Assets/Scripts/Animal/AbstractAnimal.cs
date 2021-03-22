@@ -163,7 +163,6 @@ namespace Animal
       InitSensoryEvents();
 
       ResetGameObject();
-
     }
 
     private void Update()
@@ -270,9 +269,9 @@ namespace Animal
       if (AgeInDays >= _daysAsChild) _isChild = false;
       if (_isChild)
       {
-       SpeedModifier += _fullyGrownSpeed * 0.1f;
-       SizeModifier += _fullyGrownSize * 0.1f;
-       UpdateScale();
+        SpeedModifier += _fullyGrownSpeed * 0.1f;
+        SizeModifier += _fullyGrownSize * 0.1f;
+        UpdateScale();
       }
      
       Mutate();
@@ -440,7 +439,7 @@ namespace Animal
       _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
       ShouldBirth = false;
-      child._isChild = true; 
+      child._isChild = true;
     }
 
     /// <summary>
@@ -585,8 +584,8 @@ namespace Animal
     {
       ClearEnemyTarget();
     }
-    
-    
+
+
     /// <summary>
     ///   Initializes the speed, size, nutrional value ... etc.
     /// </summary>
@@ -612,9 +611,10 @@ namespace Animal
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
-       NutritionalValue = _nourishmentMultiplier * sizeCubed;
-       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
+      NutritionalValue = _nourishmentMultiplier * sizeCubed;
+      PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
+
     private void UpdateNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
