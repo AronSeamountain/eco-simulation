@@ -28,7 +28,8 @@ namespace Animal.Managers
           SetAnimation(Dead, 1);
           break;
         case AnimalState.Wander:
-          animationSpeed = animal.SizeModifier * animal.SpeedModifier * 2/(animal.SizeModifier + animal.SpeedModifier);
+          animationSpeed = animal.SizeModifier * animal.SpeedModifier * 2 /
+                           (animal.SizeModifier + animal.SpeedModifier);
           SetAnimation(Wander, animationSpeed);
           break;
         case AnimalState.PursueFood:
@@ -37,7 +38,8 @@ namespace Animal.Managers
         case AnimalState.SearchWorld:
         case AnimalState.Flee:
         case AnimalState.Hunt:
-          animationSpeed = animal.SizeModifier * animal.SpeedModifier * 1.4f * 2/(animal.SizeModifier + animal.SpeedModifier);
+          animationSpeed = animal.SizeModifier * animal.SpeedModifier * 1.4f * 2 /
+                           (animal.SizeModifier + animal.SpeedModifier);
           SetAnimation(Pursue, animationSpeed);
           break;
         case AnimalState.Eat:
@@ -55,6 +57,14 @@ namespace Animal.Managers
     private void SetAnimation(int state, float animationSpeed)
     {
       animator.SetInteger(State, state);
+      animator.SetFloat(AnimationSpeed, animationSpeed);
+    }
+
+    public void SetAnimationStaminaZero(AbstractAnimal animal)
+    {
+      var animationSpeed =
+        animal.SizeModifier * animal.SpeedModifier * 2 / (animal.SizeModifier + animal.SpeedModifier);
+      animator.SetInteger(State, Wander);
       animator.SetFloat(AnimationSpeed, animationSpeed);
     }
 

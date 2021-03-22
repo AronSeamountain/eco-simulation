@@ -16,6 +16,8 @@ namespace Animal
     private bool _hearsHerbivore;
     public Herbivore Target { get; set; }
     public bool HasTargetSet => Target != null;
+    
+    public bool IsHunting { get; set; }
 
     private void OnPreyFound(Herbivore herbivore)
     {
@@ -69,6 +71,16 @@ namespace Animal
     protected override void OnEnemySeen(AbstractAnimal animal)
     {
       //To be implemented when carnivore has an enemy.
+    }
+
+    protected override void IncreaseStaminaIfNotRunning()
+    {
+      if (!IsHunting && Alive) _staminaDelegate.IncreaseStamina(3);
+    }
+
+    protected override void DecreaseStaminaIfRunning()
+    {
+      if (IsRunning && IsHunting) _staminaDelegate.DecreaseStamina(7);
     }
   }
 }

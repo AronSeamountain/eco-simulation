@@ -27,7 +27,8 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _animal.SetSpeed(1);
+      _animal.IsRunning = false;
+      _animal.SetSpeed();
       GoToClosePoint();
     }
 
@@ -41,7 +42,7 @@ namespace Animal.AnimalStates
 
       if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
       if (isSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;

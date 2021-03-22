@@ -201,6 +201,7 @@ namespace Core
       DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
       animal.DiedListeners += OnAnimalDied;
+      animal.DecayedListeners += UnobserveAnimal;
     }
 
     private void UnobserveAnimal(AbstractAnimal animal)
@@ -210,12 +211,13 @@ namespace Core
       DayTickListeners -= animal.DayTick;
       animal.ChildSpawnedListeners -= OnChildSpawned;
       animal.DiedListeners -= OnAnimalDied;
+      animal.DecayedListeners -= UnobserveAnimal;
+      
     }
 
     private void OnAnimalDied(AbstractAnimal animal)
     {
       CountAnimal(animal, false);
-      UnobserveAnimal(animal);
     }
 
     private void UpdateTick()

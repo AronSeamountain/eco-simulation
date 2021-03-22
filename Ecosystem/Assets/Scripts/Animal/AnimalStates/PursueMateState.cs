@@ -19,12 +19,13 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _animal.SetSpeed(5);
+      _animal.IsRunning = true;
+      _animal.SetSpeed();
     }
 
     public AnimalState Execute()
     {
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       var mateTarget = _animal.GetMateTarget();
 
       if (_animal.Dead) return AnimalState.Dead;
