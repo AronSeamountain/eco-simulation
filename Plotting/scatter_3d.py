@@ -1,9 +1,9 @@
 import json
-import plotly.express as px
-import plotly.graph_objects as go
-from util.json_extracter import extract
-from util.file_finder import get_full_path
 
+import plotly.express as px
+
+from util.file_finder import get_full_path
+from util.json_extracter import extract
 
 full_path = get_full_path('detailed.json')
 f = open(full_path)

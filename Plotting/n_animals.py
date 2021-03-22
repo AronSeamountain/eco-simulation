@@ -1,20 +1,10 @@
-import glob
-
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 
-file_name = 'log.csv'
-text_files = glob.glob("./**/" + file_name, recursive=True)
+from util.file_finder import get_full_path
 
-if not text_files:
-    raise Exception('Found no ' + file_name + ' file.')
-
-full_path = text_files[0]
-
+full_path = get_full_path('detailed.json')
 df = pd.read_csv(full_path)
-
-# Plot
 fig = go.Figure()
 
 fig.add_trace(
@@ -30,7 +20,7 @@ fig.add_trace(
 )
 
 fig.update_layout(
-    title='Ecosimulation',
+    title='Amount of Animals',
     xaxis_title='Day'
 )
 
