@@ -108,6 +108,8 @@ namespace Animal
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
 
+    private float childrenSizeWhenBorn = 0.5f;
+
     public AnimalSpecies Species
     {
       get => _species;
@@ -271,18 +273,13 @@ namespace Animal
 
       if (IsChild && AgeInDays >= fertilityTimeInHours / 24)
       {
-        if (SpeedModifier.Equals(_fullyGrownSpeed))
-        {
-         Debug.Log("Animals dont grow properly");
-          Debug.Log("GROWN UP speedmodifier " +SpeedModifier + " fullygrownspeed " + _fullyGrownSpeed );
-        }
         IsChild = false;
       }
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
       if (IsChild)
       {
-        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24)*0.5f;
+        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
         SpeedModifier += _fullyGrownSpeed * updateAmount;
         SizeModifier += _fullyGrownSize * updateAmount;
         UpdateScale();
@@ -447,34 +444,12 @@ namespace Animal
       child.ResetGameObject(); //resets to default/random values
       child._fullyGrownSpeed = Random.Range(speedMin, speedMax);
       child._fullyGrownSize = Random.Range(sizeMin, sizeMax);
-      
-      //Debug.Log("FATHER: " + "Speed " + +father.SpeedModifier + " SIZE " + father.SizeModifier +  "Age " + father.AgeInDays);
-      //Debug.Log("MOTHER: " + "Speed " + +SpeedModifier + " SIZE " + SizeModifier + "Age " + AgeInDays + "isChild " + IsChild);
-      child.InitProperties(child._fullyGrownSpeed * 0.5f, child._fullyGrownSize * 0.5f);
-      if (child._fullyGrownSize < 0.8)
-      {
-        Debug.Log("CHILD TO SMALL");
-        Debug.Log("Child: " + "Speed " + +child._fullyGrownSpeed + " SIZE " + child._fullyGrownSize + "fertilityTime " + child.fertilityTimeInHours + "AGE " + child.AgeInDays + "isChild " + child.IsChild);
-      }
-      if (SizeModifier < 0.8)
-      {
-        Debug.Log("Mother TO SMALL");
-        Debug.Log("MOTHER: " + "Speed " + +SpeedModifier + " SIZE " + SizeModifier + "Age " + AgeInDays + "isChild " + IsChild);
-      }
-
-      if (father.SizeModifier < 0.8)
-      {
-        Debug.Log("FATHER: " + "Speed " + +father.SpeedModifier + " SIZE " + father.SizeModifier +  "Age " + father.AgeInDays);
-        Debug.Log("Father TO SMALL");
-      }
-     // Debug.Log("Child: " + "Speed " + +child._fullyGrownSpeed + " SIZE " + child._fullyGrownSize + "fertilityTime " + child.fertilityTimeInHours + "AGE " + child.AgeInDays + "isChild " + child.IsChild);
-      
+      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
       ShouldBirth = false; 
-      //child.IsChild = true;
     }
 
     /// <summary>
