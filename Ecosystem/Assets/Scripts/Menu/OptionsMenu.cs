@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Core;
 using UnityEngine;
 
@@ -26,7 +28,8 @@ namespace Menu
 
     public void SetHoursInRealSeconds(string number)
     {
-      EntityManager.HoursInRealSeconds = float.Parse(number);
+      float.TryParse(number, NumberStyles.Any, CultureInfo.InvariantCulture, out float result);
+      EntityManager.HoursInRealSeconds = result;
     }
 
     public void SetWorld(int number)
