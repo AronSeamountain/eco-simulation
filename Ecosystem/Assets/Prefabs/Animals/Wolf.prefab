@@ -414,16 +414,36 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: -0.45
       objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: ColorModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0.32941177
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.32941177
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.32941177
+      objectReference: {fileID: 0}
     - target: {fileID: 1350833864400568698, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: d1f20907ed892224981aabc7e564296e, type: 2}
+      objectReference: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 1350833864400568698, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: d1f20907ed892224981aabc7e564296e, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 1485489812116895926, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_RootOrder
