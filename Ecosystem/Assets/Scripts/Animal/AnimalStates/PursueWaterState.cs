@@ -1,5 +1,4 @@
-﻿using System;
-using Core;
+﻿using Core;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -35,7 +34,7 @@ namespace Animal.AnimalStates
       if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (!_animal.IsThirsty && _animal.IsHungry && !_animal.KnowsFoodLocation) return AnimalState.SearchWorld;
       if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
-      
+
 
       _waterTarget = _animal.ClosestKnownWater;
       if (!_waterTarget) return AnimalState.Wander;

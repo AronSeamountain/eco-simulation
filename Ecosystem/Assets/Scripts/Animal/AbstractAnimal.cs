@@ -10,9 +10,7 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
-using UnityEngine.AI;
 using Utils;
-using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -25,6 +23,9 @@ namespace Animal
   {
     public delegate void AgeChanged(int age);
 
+
+    public delegate void AnimalDecayed(AbstractAnimal animal);
+
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
     public delegate void Died(AbstractAnimal animal);
@@ -34,9 +35,6 @@ namespace Animal
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-
-
-    public delegate void AnimalDecayed(AbstractAnimal animal);
 
 
     private const float BiggestMutationChange = 0.3f;
@@ -63,30 +61,32 @@ namespace Animal
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
 
-    private float _hoursUntilPregnancy;
-
     private float _fleeSpeed;
-    protected HealthDelegate _healthDelegate;
-    private AbstractAnimal _mateTarget;
-    protected NourishmentDelegate _nourishmentDelegate;
-    private float _nutritionalValue;
-    protected StaminaDelegate _staminaDelegate;
-    private int _nourishmentMultiplier = 100;
-    private StateMachine<AnimalState> _stateMachine;
-    private int _hoursUntilFertile;
-    public bool IsChild { get; private set; }
+    private float _fullyGrownSize;
 
     private float _fullyGrownSpeed;
-    private float _fullyGrownSize;
-    public Gene Size;
-    public Gene Speed;
+    protected HealthDelegate _healthDelegate;
+    private int _hoursUntilFertile;
+
+    private float _hoursUntilPregnancy;
+    private AbstractAnimal _mateTarget;
+    protected NourishmentDelegate _nourishmentDelegate;
+    private readonly int _nourishmentMultiplier = 100;
+    private float _nutritionalValue;
+    protected StaminaDelegate _staminaDelegate;
+    private StateMachine<AnimalState> _stateMachine;
     public AgeChanged AgeChangedListeners;
+
+    private readonly float childrenSizeWhenBorn = 0.5f;
     public ChildSpawned ChildSpawnedListeners;
-    public Died DiedListeners;
     public AnimalDecayed DecayedListeners;
+    public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
+    public Gene Size;
+    public Gene Speed;
     public StateChanged StateChangedListeners;
+    public bool IsChild { get; private set; }
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
 
@@ -109,8 +109,6 @@ namespace Animal
     public AbstractAnimal LastMaleMate { get; private set; }
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
-
-    private float childrenSizeWhenBorn = 0.5f;
 
     public AnimalSpecies Species
     {
@@ -269,10 +267,7 @@ namespace Animal
 
     public void DayTick()
     {
-      if (IsChild && AgeInDays >= fertilityTimeInHours / 24)
-      {
-        IsChild = false;
-      }
+      if (IsChild && AgeInDays >= fertilityTimeInHours / 24) IsChild = false;
 
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
@@ -298,13 +293,15 @@ namespace Animal
     {
       if (Size.Mutate())
       {
+        SizeModifier = Size.Value;
         PropertiesChangedListeners?.Invoke();
 
         UpdateScale();
       }
-      
+
       if (Speed.Mutate())
       {
+        SpeedModifier = Speed.Value;
         PropertiesChangedListeners?.Invoke();
 
         UpdateNourishmentDelegate();
@@ -438,9 +435,9 @@ namespace Animal
       var child = AnimalPool.SharedInstance.Get(Species);
 
       child.movement.GetAgent().Warp(transform.position);
-      
+
       child.ResetGameObject(); //resets to default/random values
-      
+
       child.Size = new Gene(father.Size, Size);
       child.Speed = new Gene(father.Speed, Speed);
       child._fullyGrownSpeed = Speed.Value;

@@ -26,6 +26,14 @@ namespace Animal.AnimalStates
     public AnimalState Execute()
     {
       if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
+      if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
+      if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
+      if (_animal is Carnivore carnivore) // TODO: no no :-)
+      {
+        var target = carnivore.Target;
+        if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
+      }
+
       var mateTarget = _animal.GetMateTarget();
 
       if (_animal.Dead) return AnimalState.Dead;

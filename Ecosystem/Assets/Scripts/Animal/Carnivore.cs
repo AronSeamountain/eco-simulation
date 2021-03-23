@@ -16,7 +16,7 @@ namespace Animal
     private bool _hearsHerbivore;
     public Herbivore Target { get; set; }
     public bool HasTargetSet => Target != null;
-    
+
     public bool IsHunting { get; set; }
 
     private void OnPreyFound(Herbivore herbivore)
