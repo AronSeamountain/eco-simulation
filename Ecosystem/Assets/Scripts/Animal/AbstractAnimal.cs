@@ -60,6 +60,7 @@ namespace Animal
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
+    [SerializeField] public Collider collider;
 
     private float _fleeSpeed;
     private float _fullyGrownSize;

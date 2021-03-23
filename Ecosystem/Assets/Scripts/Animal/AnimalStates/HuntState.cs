@@ -46,9 +46,11 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
       }
 
-      _carnivore.GoTo(_target.transform.position);
-
-      if (Vector3Util.InRange(_carnivore, _target, _carnivore.Reach))
+      var position = _carnivore.transform.position;
+      var closestPoint = _target.collider.ClosestPointOnBounds(position);
+      _carnivore.GoTo(closestPoint);
+      
+      if (Vector3.Distance(position, closestPoint) < _carnivore.Reach)
       {
         if (!_target.Alive)
         {

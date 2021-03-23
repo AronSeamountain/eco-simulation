@@ -1,4 +1,5 @@
 ﻿using Core;
+using UnityEngine;
 using Utils;
 
 namespace Animal.AnimalStates
@@ -44,8 +45,11 @@ namespace Animal.AnimalStates
         _animal.ClearMateTarget();
         return AnimalState.Wander;
       }
+      
+      var position = _animal.transform.position;
+      var closestPoint = mateTarget.collider.ClosestPointOnBounds(position);
 
-      var reachesMate = Vector3Util.InRange(_animal.gameObject, mateTarget.gameObject, _animal.Reach);
+      var reachesMate = Vector3.Distance(position, closestPoint) < _animal.Reach;
       if (reachesMate)
       {
         _animal.StopMoving();

@@ -7,6 +7,7 @@ namespace Foods
     public delegate void SaturationChanged(float saturation);
 
     [SerializeField] private FoodType foodType;
+    [SerializeField] public Collider collider;
     private float _saturation;
 
     public SaturationChanged SaturationChangedListeners;
