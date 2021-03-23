@@ -64,17 +64,14 @@ namespace Animal.AnimalStates
             return AnimalState.Idle;
           }
 
-          var colliders =
-            Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
-          foreach (var collider in colliders)
-            if (collider.GetComponent<AbstractFood>() is AbstractFood f)
-              if (f == _foodTarget.Food)
-              {
-                _animal.FoodAboutTooEat = _foodTarget.Food;
-                _animal.Forget(_foodTarget);
-                _foodTarget = null;
-                return AnimalState.Eat;
-              }
+          
+          if (_foodTarget.Food.Exists())
+          {
+            _animal.FoodAboutTooEat = _foodTarget.Food;
+            _animal.Forget(_foodTarget);
+            _foodTarget = null;
+            return AnimalState.Eat;
+          }
 
           _animal.Forget(_foodTarget);
           _foodTarget = null;

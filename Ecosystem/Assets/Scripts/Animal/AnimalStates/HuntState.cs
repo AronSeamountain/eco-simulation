@@ -34,6 +34,11 @@ namespace Animal.AnimalStates
         return AnimalState.SearchWorld;
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
+      if (_carnivore.GetStaminaDelegate().StaminaZero)
+      {
+        _carnivore.Target = null;
+        return AnimalState.Wander;
+      }
 
       if (_target.DoesNotExist())
       {
@@ -43,7 +48,7 @@ namespace Animal.AnimalStates
 
       _carnivore.GoTo(_target.transform.position);
 
-      if (Vector3Util.InRange(_carnivore, _target, Carnivore.EatingRange))
+      if (Vector3Util.InRange(_carnivore, _target, _carnivore.Reach))
       {
         if (!_target.Alive)
         {

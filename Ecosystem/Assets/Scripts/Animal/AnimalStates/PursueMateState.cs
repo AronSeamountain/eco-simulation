@@ -45,7 +45,7 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
       }
 
-      var reachesMate = Vector3Util.InRange(_animal.gameObject, mateTarget.gameObject, 2);
+      var reachesMate = Vector3Util.InRange(_animal.gameObject, mateTarget.gameObject, _animal.Reach);
       if (reachesMate)
       {
         _animal.StopMoving();

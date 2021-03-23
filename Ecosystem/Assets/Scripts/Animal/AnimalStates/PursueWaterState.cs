@@ -41,7 +41,7 @@ namespace Animal.AnimalStates
 
       var position = _animal.transform.position;
       var closestPoint = _waterTarget.GetComponent<Collider>().ClosestPoint(position);
-      if (Vector3.Distance(position, closestPoint) < 2) return AnimalState.Drink;
+      if (Vector3.Distance(position, closestPoint) < _animal.Reach) return AnimalState.Drink;
 
       _animal.GoTo(closestPoint);
 
