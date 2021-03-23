@@ -64,7 +64,7 @@ namespace Animal
     [SerializeField] private float pregnancyTimeInHours;
 
     private float _hoursUntilPregnancy;
-    
+
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private AbstractAnimal _mateTarget;
@@ -74,8 +74,8 @@ namespace Animal
     private int _nourishmentMultiplier = 100;
     private StateMachine<AnimalState> _stateMachine;
     private int _hoursUntilFertile;
-    private bool _isChild;
-    private int _daysAsChild = 5;
+    public bool IsChild { get; private set; }
+
     private float _fullyGrownSpeed;
     private float _fullyGrownSize;
     public Gene Size;
@@ -109,6 +109,8 @@ namespace Animal
     public AbstractAnimal LastMaleMate { get; private set; }
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
+
+    private float childrenSizeWhenBorn = 0.5f;
 
     public AnimalSpecies Species
     {
@@ -247,7 +249,7 @@ namespace Animal
       IncreaseHealthIfSatiated();
       DecreaseStaminaIfRunning();
       IncreaseStaminaIfNotRunning();
-      
+
       if (IsPregnant)
       {
         _hoursUntilPregnancy--;
@@ -258,24 +260,31 @@ namespace Animal
           PregnancyChangedListeners?.Invoke(IsPregnant);
         }
       }
-      
-      if (!Fertile) _hoursUntilFertile--;
-      if (_hoursUntilFertile <= 0) Fertile = true;
+      else
+      {
+        if (!Fertile) _hoursUntilFertile--;
+        if (_hoursUntilFertile <= 0) Fertile = true;
+      }
     }
 
     public void DayTick()
     {
+      if (IsChild && AgeInDays >= fertilityTimeInHours / 24)
+      {
+        IsChild = false;
+      }
+
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
-     
-      if (AgeInDays >= _daysAsChild) _isChild = false;
-      if (_isChild)
+      if (IsChild)
       {
-        SpeedModifier += _fullyGrownSpeed * 0.1f;
-        SizeModifier += _fullyGrownSize * 0.1f;
+        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
+        SpeedModifier += _fullyGrownSpeed * updateAmount;
+        SizeModifier += _fullyGrownSize * updateAmount;
+        //PropertiesChangedListeners?.Invoke();
         UpdateScale();
       }
-     
+
       Mutate();
     }
 
@@ -335,17 +344,18 @@ namespace Animal
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
 
-      if (sameTypeOfAnimal && oppositeGender && fertile && ( _mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal))) 
+      if (sameTypeOfAnimal && oppositeGender && fertile &&
+          (_mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal)))
         _mateTarget = animal;
-        
     }
 
     private bool IsCloserThanPreviousMateTarget(AbstractAnimal newTarget)
     {
-     var newDistance = Vector3Util.Distance(gameObject, newTarget.gameObject);
-     var oldDistance = Vector3Util.Distance(gameObject, _mateTarget.gameObject);
-     return oldDistance > newDistance;
+      var newDistance = Vector3Util.Distance(gameObject, newTarget.gameObject);
+      var oldDistance = Vector3Util.Distance(gameObject, _mateTarget.gameObject);
+      return oldDistance > newDistance;
     }
+
     public void ClearMateTarget()
     {
       _mateTarget = null;
@@ -436,13 +446,12 @@ namespace Animal
       child._fullyGrownSpeed = Speed.Value;
       child._fullyGrownSize = Size.Value;
 
-      child.InitProperties(child._fullyGrownSpeed * 0.5f, child._fullyGrownSize * 0.5f);
+      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
       ShouldBirth = false;
-      child._isChild = true;
     }
 
     /// <summary>
@@ -485,7 +494,7 @@ namespace Animal
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if (Gender == Gender.Female)
+      if (Gender == Gender.Female && Fertile && !IsPregnant)
       {
         LastMaleMate = father;
         IsPregnant = true;
@@ -532,7 +541,7 @@ namespace Animal
     /// </summary>
     public void Decay()
     {
-      NutritionalValue -= Time.deltaTime*5;
+      NutritionalValue -= Time.deltaTime * 5;
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -646,7 +655,8 @@ namespace Animal
 
     private void ResetProperties()
     {
-      if (_isChild) return; //child no need
+      if (IsChild) return; //child no need
+      IsChild = true;
       Size = new Gene();
       Speed = new Gene();
       InitProperties(Size.Value, Speed.Value);
@@ -659,6 +669,10 @@ namespace Animal
 
     public void ResetFertility()
     {
+      AgeInDays = 0;
+      Fertile = false;
+      IsPregnant = false;
+      ShouldBirth = false;
       _hoursUntilFertile = fertilityTimeInHours;
     }
 

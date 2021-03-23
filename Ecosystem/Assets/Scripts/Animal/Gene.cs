@@ -7,7 +7,7 @@ namespace Animal
 {
   public class Gene
   {
-    private const float BaseMax = 1.2f;
+    private const float BaseMax = 1.6f;
     private const float BaseMin = 0.8f;
 
     public int Bits { get; private set; }
@@ -23,7 +23,8 @@ namespace Animal
 
     public Gene(Gene father, Gene mother)
     {
-      Chromosome = MakeChromosomeUniform(father.Chromosome, mother.Chromosome);
+      //Chromosome = MakeChromosomeUniform(father.Chromosome, mother.Chromosome);
+      Chromosome = MakeChromosomeFitness(father, mother);
       Bits = CountSetBits(Chromosome);
       Value = father.Value < mother.Value ? EvaluateValue(mother, father) 
                                           : EvaluateValue(father, mother);
@@ -62,15 +63,15 @@ namespace Animal
       switch (Bits)
       {
         case 8:
-          value = Random.Range(max.Value, max.Value + chunk);
+          value = Random.Range(BaseMax, BaseMax + chunk);
           break;
         case 0:
-          value = Random.Range(min.Value - chunk, min.Value);
+          value = Random.Range(BaseMin - chunk, BaseMin);
           break;
         default:
           //for example setBits = 1 and min = 0.8 we get random(0.8, 0.857)
           //setBits = 2 -> random(0.857, 0.914)
-          value = Random.Range(min.Value + (Bits - 1) * chunk, min.Value + Bits * chunk);
+          value = Random.Range(BaseMin + (Bits - 1) * chunk, BaseMin + Bits * chunk);
           break;
       }
 
@@ -116,20 +117,22 @@ namespace Animal
       var fitnessRatio = father.Bits / (father.Bits + mother.Bits);
       byte chromosome = 0;
       byte currentBitValue = 1;
-      while (father.Chromosome > 0 || mother.Chromosome > 0)
+      var dad = father.Chromosome;
+      var mom = mother.Chromosome;
+      while (dad > 0 || mom > 0)
       {
         if (Random.Range(0, 1f) < fitnessRatio)
         {
-          var fatherBit = father.Chromosome & 1;
+          var fatherBit = dad & 1;
           chromosome += (byte) (currentBitValue * fatherBit);
         }
         else
         {
-          var motherBit = mother.Chromosome & 1;
+          var motherBit = mom & 1;
           chromosome += (byte) (currentBitValue * motherBit);
         }
-        father.Chromosome >>= 1;
-        mother.Chromosome >>= 1;
+        dad >>= 1;
+        mom >>= 1;
         currentBitValue *= 2;
       }
 
