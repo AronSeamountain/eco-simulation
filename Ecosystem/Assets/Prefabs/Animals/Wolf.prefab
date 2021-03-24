@@ -544,12 +544,12 @@ PrefabInstance:
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: maxNumberOfChildren
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: fertilityTimeInHours
-      value: 288
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}

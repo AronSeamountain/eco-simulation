@@ -614,8 +614,8 @@ namespace Animal
     private void InitNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
-
+      var decreaseFactor = (sizeCubed + SpeedModifier * SpeedModifier) / 4;
+      
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
@@ -629,7 +629,7 @@ namespace Animal
       var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
 
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 4;
       _nourishmentDelegate.UpdateMaxNourishment(sizeCubed * _nourishmentMultiplier);
       NutritionalValue = _nourishmentMultiplier * sizeCubed;
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
