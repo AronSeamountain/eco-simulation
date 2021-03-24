@@ -76,7 +76,7 @@ namespace Animal
     public bool IsChild { get; private set; }
 
     private float _fullyGrownSpeed;
-    private float _fullyGrownSize;
+    public float FullyGrownSize { get; private set; }
     public AgeChanged AgeChangedListeners;
     public ChildSpawned ChildSpawnedListeners;
     public Died DiedListeners;
@@ -282,7 +282,7 @@ namespace Animal
       {
         var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
         SpeedModifier += _fullyGrownSpeed * updateAmount;
-        SizeModifier += _fullyGrownSize * updateAmount;
+        SizeModifier += FullyGrownSize * updateAmount;
         UpdateScale();
       }
 
@@ -451,8 +451,8 @@ namespace Animal
       child.movement.GetAgent().Warp(transform.position);
       child.ResetGameObject(); //resets to default/random values
       child._fullyGrownSpeed = Random.Range(speedMin, speedMax);
-      child._fullyGrownSize = Random.Range(sizeMin, sizeMax);
-      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
+      child.FullyGrownSize = Random.Range(sizeMin, sizeMax);
+      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child.FullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = fertilityTimeInHours;

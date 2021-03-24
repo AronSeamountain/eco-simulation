@@ -93,6 +93,7 @@ namespace Logger.ConcreteLogger
       public float size;
       public int age;
       public int day;
+      public float fullyGrownSize;
 
       public AnimalSnapshot(AbstractAnimal animal, int day)
       {
@@ -100,6 +101,7 @@ namespace Logger.ConcreteLogger
         speed = animal.SpeedModifier;
         size = animal.SizeModifier;
         age = animal.AgeInDays;
+        fullyGrownSize = animal.FullyGrownSize;
         this.day = day;
       }
     }
