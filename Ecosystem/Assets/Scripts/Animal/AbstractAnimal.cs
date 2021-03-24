@@ -62,6 +62,7 @@ namespace Animal
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
+    [SerializeField] private int hoursBetweenPregnancyAndFertility;
 
     private float _hoursUntilPregnancy;
 
@@ -445,7 +446,7 @@ namespace Animal
       child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _hoursUntilFertile = fertilityTimeInHours;
+      _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
       Fertile = false;
       ShouldBirth = false;
     }
