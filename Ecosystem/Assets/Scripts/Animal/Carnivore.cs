@@ -22,7 +22,14 @@ namespace Animal
 
     private void OnPreyFound(Herbivore herbivore)
     {
-      Target = herbivore;
+        if(Target.DoesNotExist())
+          Target = herbivore;
+
+        var newTarget = Vector3Util.Distance(gameObject, herbivore.gameObject);
+        var oldTarget = Vector3Util.Distance(gameObject, Target.gameObject);
+
+        if (newTarget < oldTarget)
+          Target = herbivore;
     }
 
     protected override void RenderAnimalSpecificColors()

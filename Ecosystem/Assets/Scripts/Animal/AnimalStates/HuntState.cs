@@ -29,12 +29,13 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
+       _target = _carnivore.Target;
       if (!_carnivore.Alive) return AnimalState.Dead;
       if (_carnivore.IsThirsty && !_carnivore.KnowsWaterLocation && !_carnivore.IsHungry)
         return AnimalState.SearchWorld;
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
-
+  
       if (_target.DoesNotExist())
       {
         _carnivore.Target = null;
