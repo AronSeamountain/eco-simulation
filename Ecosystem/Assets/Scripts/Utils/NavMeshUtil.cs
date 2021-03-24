@@ -57,7 +57,7 @@ namespace Utils
     /// <param name="radius">The radius to check within</param>
     /// <returns></returns>
     /// <exception cref="Exception">If there is no point on the navmesh</exception>
-    public static Vector3 GetRandomPointFarAway(Vector3 origin, float radius = 10)
+    public static Vector3 GetRandomPointFarAway(Vector3 origin, float radius = 40)
     {
       var offset = new Vector3(Random.Range((float)(-radius*(4*Math.PI)/3), (float)(radius*(5*Math.PI)/3)), 0, Random.Range(-10, 10));
       var direction = origin + offset;
