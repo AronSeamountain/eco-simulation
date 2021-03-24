@@ -22,7 +22,7 @@ Material:
     m_TexEnvs: []
     m_Floats:
     - Vector1_Water_scale: 10
-    - Vector1_Water_speed: 0.5
+    - Vector1_Water_speed: 1
     - Vector1_deep_water: 0
     - Vector1_foam_amount: 1
     - Vector1_foam_cutoff: 4
@@ -30,6 +30,7 @@ Material:
     - Vector1_ripple_density: 20
     - Vector1_ripple_slimness: 3
     - Vector1_ripple_speed: 2
+    - Vector1_water_scale: 0.5
     m_Colors:
     - Deep_water_color: {r: 0.019312914, g: 0.037522223, b: 0.2924528, a: 0}
     - Foam_color: {r: 1, g: 1, b: 1, a: 0}
