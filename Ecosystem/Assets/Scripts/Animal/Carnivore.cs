@@ -12,7 +12,8 @@ namespace Animal
     private const float HuntRange = 15;
     public const float EatingRange = 2f;
     private bool _animalOfSameType;
-    private float attackDamage = 3;
+    private const float baseAttackDamage = 2;
+    private float attackDamage = baseAttackDamage;
 
     private bool _hearsHerbivore;
     public Herbivore Target { get; set; }
@@ -90,7 +91,13 @@ namespace Animal
     {
       if (IsRunning && IsHunting) _staminaDelegate.DecreaseStamina(7);
     }
-    
+
+    public override void UpdateScale()
+    {
+      base.UpdateScale();
+      attackDamage = baseAttackDamage * SizeModifier;
+    }
+
     /**
      * Wolfs should get thirsty/hungry slower than rabbits because they are bigger.
      */

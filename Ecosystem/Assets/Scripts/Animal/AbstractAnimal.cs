@@ -306,7 +306,7 @@ namespace Animal
       }
     }
 
-    private void UpdateScale()
+    public virtual void UpdateScale()
     {
       transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
       UpdateNourishmentDelegate();
