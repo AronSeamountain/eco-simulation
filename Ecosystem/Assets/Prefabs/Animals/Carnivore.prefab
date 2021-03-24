@@ -41,7 +41,7 @@ MonoBehaviour:
   _species: 0
   maxNumberOfChildren: 1
   pregnancyTimeInHours: 0
-  collider: {fileID: 722112919703446706}
+  animalCollider: {fileID: 722112919703446706}
 --- !u!1001 &4342840507159857448
 PrefabInstance:
   m_ObjectHideFlags: 0
