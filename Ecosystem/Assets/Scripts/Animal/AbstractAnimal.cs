@@ -613,7 +613,10 @@ namespace Animal
 
     private void InitNourishmentDelegate()
     {
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
       UpdateNourishmentDelegate();
+      
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
