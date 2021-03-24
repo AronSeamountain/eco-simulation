@@ -62,6 +62,7 @@ namespace Animal
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
+    [SerializeField] private int maximumAgeInDays = 20; //this is serialized to test for equilibrium easier TODO make private
 
     private float _hoursUntilPregnancy;
 
@@ -281,6 +282,8 @@ namespace Animal
         SizeModifier += _fullyGrownSize * updateAmount;
         UpdateScale();
       }
+
+      if (AgeInDays > maximumAgeInDays) _healthDelegate.DecreaseHealth(Int32.MaxValue);
 
       Mutate();
     }
