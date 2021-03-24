@@ -12,6 +12,7 @@ namespace Animal
     private const float HuntRange = 15;
     public const float EatingRange = 2f;
     private bool _animalOfSameType;
+    private float attackDamage = 3;
 
     private bool _hearsHerbivore;
     public Herbivore Target { get; set; }
@@ -59,7 +60,7 @@ namespace Animal
 
     public void AttackTarget(Herbivore carnivoreTarget)
     {
-      carnivoreTarget.TakeDamage(1);
+      carnivoreTarget.TakeDamage(attackDamage);
     }
 
     protected override void OnAnimalHeard(AbstractAnimal animal)
