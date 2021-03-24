@@ -83,5 +83,14 @@ namespace Animal
     {
       if (IsRunning && IsHunting) _staminaDelegate.DecreaseStamina(7);
     }
+    
+    /**
+     * Wolfs should get thirsty/hungry slower than rabbits because they are bigger.
+     */
+    public override float GetNourishmentDecreaseFactor()
+    {
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      return  sizeCubed + SpeedModifier * SpeedModifier / 1.5f;
+    }
   }
 }

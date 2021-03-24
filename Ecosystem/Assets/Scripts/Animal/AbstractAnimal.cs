@@ -623,7 +623,7 @@ namespace Animal
     private void UpdateNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
+      var decreaseFactor = GetNourishmentDecreaseFactor();
 
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 4;
@@ -631,6 +631,11 @@ namespace Animal
       NutritionalValue = _nourishmentMultiplier * sizeCubed;
     }
 
+    public virtual float GetNourishmentDecreaseFactor()
+    {
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      return  sizeCubed + SpeedModifier * SpeedModifier;
+    }
     public bool NeedsNourishment()
     {
       return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
