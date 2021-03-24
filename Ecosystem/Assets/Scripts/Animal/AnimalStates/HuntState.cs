@@ -47,7 +47,7 @@ namespace Animal.AnimalStates
       }
 
       var position = _carnivore.transform.position;
-      var closestPoint = _target.collider.ClosestPointOnBounds(position);
+      var closestPoint = _target.animalCollider.ClosestPointOnBounds(position);
       _carnivore.GoTo(closestPoint);
       
       if (Vector3.Distance(position, closestPoint) < _carnivore.Reach)

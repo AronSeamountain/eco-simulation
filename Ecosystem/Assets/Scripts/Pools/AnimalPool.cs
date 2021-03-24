@@ -7,7 +7,7 @@ namespace Pools
 {
   public sealed class AnimalPool : MonoBehaviour
   {
-    private const int AmountToPool = 50;
+    private const int AmountToPool = 0;
     public static AnimalPool SharedInstance;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject rabbitPrefab;
