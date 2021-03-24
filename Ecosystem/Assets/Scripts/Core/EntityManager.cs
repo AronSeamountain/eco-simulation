@@ -73,6 +73,8 @@ namespace Core
         new OverviewLogger(),
         new FpsLogger()
       );
+
+      _logger.Clear();
     }
 
     private void Update()

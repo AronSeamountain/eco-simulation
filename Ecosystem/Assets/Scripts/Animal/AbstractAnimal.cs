@@ -10,7 +10,6 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
-using UnityEngine.AI;
 using Utils;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
@@ -21,7 +20,7 @@ namespace Animal
   ///   A very basic animal that searches for food.
   /// </summary>
   public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable,
-    IResetable
+    IResetable, IBoostable
   {
     public delegate void AgeChanged(int age);
 
@@ -237,6 +236,11 @@ namespace Animal
       ResetHealthAndActivate();
       ResetStateMachine();
       ResetFertility();
+
+      if (Simulation.PerformanceMode)
+      {
+        Boost();
+      }
     }
 
     public void HourTick()
@@ -384,6 +388,12 @@ namespace Animal
       var biteSize = Math.Min(20 * SizeModifier * SizeModifier,
         _nourishmentDelegate.SaturationFromFull());
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
+      EmitMouthParticle();
+    }
+
+    private void EmitMouthParticle()
+    {
+      if (Simulation.PerformanceMode) return;
       mouthParticles.Emit(1);
     }
 
@@ -405,7 +415,7 @@ namespace Animal
     {
       var sip = 30 * SizeModifier * SizeModifier;
       Drink(water.SaturationModifier * sip * Time.deltaTime);
-      mouthParticles.Emit(1);
+      EmitMouthParticle();
     }
 
     /// <summary>
@@ -475,9 +485,10 @@ namespace Animal
 
     public void SetMouthColor(Color color)
     {
+      if (Simulation.PerformanceMode) return;
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
-      mouthParticles.Emit(1);
+      EmitMouthParticle();
     }
 
     public AbstractAnimal GetMateTarget()
@@ -697,5 +708,10 @@ namespace Animal
     }
 
     #endregion
+
+    public void Boost()
+    {
+      // meshRenderer.enabled = false;
+    }
   }
 }

@@ -1,5 +1,6 @@
 using System;
 using Animal.AnimalStates;
+using Core;
 using UnityEngine;
 
 namespace Animal.Managers
@@ -16,8 +17,16 @@ namespace Animal.Managers
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource audioSource;
 
+    private void Start()
+    {
+      if (Simulation.PerformanceMode)
+        animator.enabled = false;
+    }
+
     public void ReceiveState(AnimalState state, AbstractAnimal animal)
     {
+      if (Simulation.PerformanceMode) return;
+
       float animationSpeed;
       switch (state)
       {
@@ -56,12 +65,16 @@ namespace Animal.Managers
 
     private void SetAnimation(int state, float animationSpeed)
     {
+      if (Simulation.PerformanceMode) return;
+
       animator.SetInteger(State, state);
       animator.SetFloat(AnimationSpeed, animationSpeed);
     }
 
     public void SetAnimationStaminaZero(AbstractAnimal animal)
     {
+      if (Simulation.PerformanceMode) return;
+
       var animationSpeed =
         animal.SizeModifier * animal.SpeedModifier * 2 / (animal.SizeModifier + animal.SpeedModifier);
       animator.SetInteger(State, Wander);
@@ -70,6 +83,8 @@ namespace Animal.Managers
 
     public void AnimalSound()
     {
+      if (Simulation.PerformanceMode) return;
+
       //audioSource.Play();
     }
   }
