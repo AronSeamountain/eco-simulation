@@ -440,12 +440,12 @@ namespace Animal
 
       child.Size = new Gene(father.Size, Size);
       child.Speed = new Gene(father.Speed, Speed);
-      child._fullyGrownSpeed = Speed.Value;
-      child._fullyGrownSize = Size.Value;
+      child._fullyGrownSpeed = child.Speed.Value;
+      child._fullyGrownSize = child.Size.Value;
 
       child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
-
+      
       _hoursUntilFertile = fertilityTimeInHours;
       Fertile = false;
       ShouldBirth = false;

@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Animal
 {
@@ -17,11 +19,11 @@ namespace Animal
     public Gene(Gene father, Gene mother)
     {
       //Chromosome = MakeChromosomeUniform(father.Chromosome, mother.Chromosome);
-      Chromosome = MakeChromosomeCrossover(father, mother);
+      Chromosome = MakeChromosomeUniform(father.Chromosome, mother.Chromosome);
       Bits = CountSetBits(Chromosome);
       Value = father.Value < mother.Value
-        ? EvaluateValue4(mother, father)
-        : EvaluateValue4(father, mother);
+        ? EvaluateValue2(mother, father)
+        : EvaluateValue2(father, mother);
     }
 
     public int Bits { get; }
@@ -62,15 +64,21 @@ namespace Animal
     private float EvaluateValue(Gene max, Gene min)
     {
       float value;
-      var chunk = (max.Value - min.Value) / 7;
+      var chunk = (max.Value - min.Value) / 5;
 
       switch (Bits)
       {
         case 8:
+          value = Random.Range(BaseMax + chunk, BaseMax + 2 * chunk);
+          break;
+        case 7:
           value = Random.Range(BaseMax, BaseMax + chunk);
           break;
-        case 0:
+        case 1:
           value = Random.Range(BaseMin - chunk, BaseMin);
+          break;
+        case 0:
+          value = Random.Range(BaseMin - 2 * chunk, BaseMin - chunk);
           break;
         default:
           //for example setBits = 1 and min = 0.8 we get random(0.8, 0.857)
@@ -93,19 +101,25 @@ namespace Animal
       if (Bits == max.Bits && Bits == min.Bits) return max.Value;
 
       float value;
-      var chunk = (max.Value - min.Value) / 7;
+      var chunk = (max.Value - min.Value) / 5;
 
       switch (Bits)
       {
         case 8:
+          value = Random.Range(max.Value + chunk, max.Value + 2 * chunk);
+          break;
+        case 7:
           value = Random.Range(max.Value, max.Value + chunk);
           break;
-        case 0:
+        case 1:
           value = Random.Range(min.Value - chunk, min.Value);
           break;
+        case 0:
+          value = Random.Range(min.Value - 2 * chunk, min.Value - chunk);
+          break;
         default:
-          //for example setBits = 1 and min = 0.8 we get random(0.8, 0.857)
-          //setBits = 2 -> random(0.857, 0.914)
+          //for example setBits = 2 and min = 0.8 we get random(0.8, 0.88)
+          //setBits = 3 -> random(0.88, 0.96)
           value = Random.Range(min.Value + (Bits - 1) * chunk, min.Value + Bits * chunk);
           break;
       }
@@ -133,7 +147,8 @@ namespace Animal
 
       var value = ChosenParent + number;
 
-      if (value < 0.2f) value = 0.2f;
+      if (value < 0.6f) value = 0.6f;
+      if (value > 2.2f) value = 2.2f;
       return value;
     }
 
@@ -150,6 +165,13 @@ namespace Animal
     }
 
 
+    /// <summary>
+    /// Creates a chromosome string from the child's parents' strings.
+    /// For each bit in the string there's a 50 percent chance for it to choose either parent.
+    /// </summary>
+    /// <param name="father"></param>
+    /// <param name="mother"></param>
+    /// <returns>the bit string of the child</returns>
     private static byte MakeChromosomeUniform(byte father, byte mother)
     {
       byte chromosome = 0;
@@ -176,8 +198,10 @@ namespace Animal
     }
 
     /// <summary>
-    ///   takes the bit-ratio between the parents. the parent with more bits have a higher chance to pass on their bits
-    ///   to the child's bit string
+    /// Works similarly to MakeChromosomeUniform.
+    /// However, it takes the bit-ratio between the parents.
+    /// The parent with more bits have a higher chance to pass on their bits
+    /// to the child's bit string.
     /// </summary>
     /// <param name="father"></param>
     /// <param name="mother"></param>
@@ -210,6 +234,16 @@ namespace Animal
       return chromosome;
     }
 
+    /// <summary>
+    /// Crossover principle is used. Meaning that it randomly chooses 1-7 bits of both the
+    /// mother's and father's string. This is done by shifting down and then back up again crossoverBits times.
+    /// Then it also calculates the remainder of both strings and adds the remainder to the other parent's crossover.
+    /// Say we have the father's string XY and mother's AB, where X and A are crossover and Y and B are remainders.
+    /// Then we get XB and AY as potential chromosomes for the child, then either XB or AY is chosen by random.
+    /// </summary>
+    /// <param name="father"></param>
+    /// <param name="mother"></param>
+    /// <returns>the bit string of the child</returns>
     public byte MakeChromosomeCrossover(Gene father, Gene mother)
     {
       var crossoverBits = Random.Range(1, 8);
@@ -234,6 +268,12 @@ namespace Animal
       return chromosome2;
     }
 
+    /// <summary>
+    /// Mutates with a 2% chance. Renews the chromosome completely, so it can take on a value
+    /// between 0-255, or 0 1's - 8 1's. If the new chromosome is greater/lesser than the old it
+    /// increases/decreases the value with 5% 
+    /// </summary>
+    /// <returns></returns>
     public bool Mutate()
     {
       if (!(Random.Range(0, 1f) < 0.02f)) return false;
