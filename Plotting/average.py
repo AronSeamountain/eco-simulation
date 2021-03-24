@@ -33,7 +33,8 @@ def create_scatter(data, species, color):
         z=speeds,
         marker=dict(
             color=color,
-        )
+        ),
+        name=species
     )
 
 
