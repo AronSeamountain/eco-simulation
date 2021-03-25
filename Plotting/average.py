@@ -8,21 +8,34 @@ from util.json_extracter import extract_unique
 
 
 def create_scatter(data, species, color):
-    days = extract_unique('day', data)
+    days_to_average = 10
+    day_counter = 0
+
+    all_days = extract_unique('day', data)
+    days = []
     sizes = []
     speeds = []
 
-    for day in days:
+    day_sequence_size = []
+    day_sequence_speed = []
+
+    for day in all_days:
+        day_counter = day_counter + 1
+
         day_species_data = [i for i in data if i['species'] == species and i['day'] == day]
+        day_sequence_size = day_sequence_size + [i['fullyGrownSize'] for i in day_species_data]
+        day_sequence_speed = day_sequence_speed + [i['speed'] for i in day_species_data]
 
-        if len(day_species_data) == 0:
-            continue
+        if day_counter == days_to_average:
+            day_counter = 0
 
-        size = np.mean([i['fullyGrownSize'] for i in day_species_data])
-        sizes.append(size)
+            if len(day_sequence_size) != 0:
+                days.append(day)
+                sizes.append(np.mean(day_sequence_size))
+                speeds.append(np.mean(day_sequence_speed))
 
-        speed = np.mean([i['speed'] for i in day_species_data])
-        speeds.append(speed)
+            day_sequence_size = []
+            day_sequence_speed = []
 
     return go.Scatter3d(
         x=days,
