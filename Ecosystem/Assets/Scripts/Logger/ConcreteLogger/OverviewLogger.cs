@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using Animal;
 using Core;
-using TMPro;
-using UnityEngine;
 
 namespace Logger.ConcreteLogger
 {
@@ -32,6 +30,32 @@ namespace Logger.ConcreteLogger
     }
 
     public static OverviewLogger Instance { get; } = new OverviewLogger();
+
+    public void Snapshot(EntityManager entityManager)
+    {
+      var values = _loggableColumns.Select(column => column.GetValue(entityManager)).ToList();
+      var snapshot = string.Join(Delimiter, values);
+      _snapshots.Add(snapshot);
+    }
+
+    public void Persist()
+    {
+      if (_firstLog)
+      {
+        Clear();
+        AppendHeader();
+        _firstLog = false;
+      }
+
+      var writer = File.AppendText(Path);
+
+      foreach (var snapshot in _snapshots)
+        writer.WriteLine(snapshot);
+
+      writer.Close();
+
+      _snapshots = new List<string>();
+    }
 
     private IList<LoggableColumn> GetLoggableColumns()
     {
@@ -102,31 +126,5 @@ namespace Logger.ConcreteLogger
     }
 
     #endregion
-
-    public void Snapshot(EntityManager entityManager)
-    {
-      var values = _loggableColumns.Select(column => column.GetValue(entityManager)).ToList();
-      var snapshot = string.Join(Delimiter, values);
-      _snapshots.Add(snapshot);
-    }
-
-    public void Persist()
-    {
-      if (_firstLog)
-      {
-        Clear();
-        AppendHeader();
-        _firstLog = false;
-      }
-
-      var writer = File.AppendText(Path);
-
-      foreach (var snapshot in _snapshots)
-        writer.WriteLine(snapshot);
-
-      writer.Close();
-
-      _snapshots = new List<string>();
-    }
   }
 }

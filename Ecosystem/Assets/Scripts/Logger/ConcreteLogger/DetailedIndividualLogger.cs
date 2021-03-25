@@ -14,8 +14,8 @@ namespace Logger.ConcreteLogger
   public sealed class DetailedIndividualLogger : ILogger
   {
     private const string Path = "Assets/Logs/detailed.json";
-    private IList<string> _snapshots;
     private bool _firstLog;
+    private IList<string> _snapshots;
 
     static DetailedIndividualLogger()
     {
