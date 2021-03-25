@@ -24,7 +24,7 @@ namespace Animal
       else
       {
         _tex = Resources.Load<Texture2D>("Rabbit_COL_1k");
-        meshRenderer.material.SetTexture("Texture2d_animal_texture",_tex);
+        meshRenderer.material.SetTexture("Texture2D_animal_texture",_tex);
       }
     }
 
