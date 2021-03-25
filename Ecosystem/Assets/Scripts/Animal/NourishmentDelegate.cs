@@ -12,8 +12,9 @@ namespace Animal
 
     public delegate void SaturationChanged(float saturation, float maxSaturation);
 
-    private float _hydration;
     private readonly float _pregnancyEnergyMutliplier = 1.2f;
+
+    private float _hydration;
     private float _saturation;
     public HydrationChanged HydrationChangedListeners;
     public SaturationChanged SaturationChangedListeners;
@@ -101,6 +102,7 @@ namespace Animal
       ThirstyHydrationLevel = maxValue / 2;
       HungrySaturationLevel = maxValue / 2;
     }
+
     public void UpdateMaxNourishment(float maxValue)
     {
       MaxHydration = maxValue;

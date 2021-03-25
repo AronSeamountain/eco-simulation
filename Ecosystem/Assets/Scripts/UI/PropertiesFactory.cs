@@ -98,11 +98,11 @@ namespace UI
 
       void SizeChangedImpl()
       {
-        speed.OnValueChanged(Prettifier.Round(animal.SpeedModifier, 2));
+        size.OnValueChanged(Prettifier.Round(animal.SizeModifier, 2));
       }
 
       animal.PropertiesChangedListeners += SizeChangedImpl;
-      speed.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
+      size.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
       properties.Add(size);
 
       // ---------- Gender ----------
