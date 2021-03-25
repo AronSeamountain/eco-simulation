@@ -1,9 +1,10 @@
 import json
 
+import numpy as np
 import plotly.graph_objects as go
 
 from util.file_finder import get_full_path
-from util.json_extracter import filter_where, extract_unique
+from util.json_extracter import extract_unique
 
 
 def create_scatter(data, species, color):
@@ -12,19 +13,15 @@ def create_scatter(data, species, color):
     speeds = []
 
     for day in days:
-        relevant_data = filter_where(
-            filter_where(data, 'species', species),
-            'day',
-            day
-        )
+        day_species_data = [i for i in data if i['species'] == species and i['day'] == day]
 
-        if len(relevant_data) == 0:
+        if len(day_species_data) == 0:
             continue
 
-        size = sum(i['size'] for i in relevant_data) / len(relevant_data)
+        size = np.mean([i['fullyGrownSize'] for i in day_species_data])
         sizes.append(size)
 
-        speed = sum(i['speed'] for i in relevant_data) / len(relevant_data)
+        speed = np.mean([i['speed'] for i in day_species_data])
         speeds.append(speed)
 
     return go.Scatter3d(
