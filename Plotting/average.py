@@ -64,6 +64,7 @@ def create_scatter(data, species, days_to_average, color):
         z=speeds,
         marker=dict(
             color=color,
+            size=7
         ),
         name=species
     )
@@ -99,4 +100,4 @@ def update_graph_live(days_to_average):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True, use_reloader=False)
+    app.run_server(debug=True, use_reloader=True)
