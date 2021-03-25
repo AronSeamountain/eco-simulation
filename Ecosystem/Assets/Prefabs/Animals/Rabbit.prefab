@@ -263,6 +263,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8893076424420123539, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}
+      propertyPath: m_Radius
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8893076424420123539, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8893076424420123539, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
       propertyPath: m_BaseOffset
       value: 1
       objectReference: {fileID: 0}

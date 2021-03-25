@@ -34,6 +34,11 @@ namespace Animal.AnimalStates
         return AnimalState.SearchWorld;
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
+      if (_carnivore.GetStaminaDelegate().StaminaZero)
+      {
+        _carnivore.Target = null;
+        return AnimalState.Wander;
+      }
 
       if (_target.DoesNotExist())
       {
@@ -41,9 +46,11 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
       }
 
-      _carnivore.GoTo(_target.transform.position);
-
-      if (Vector3Util.InRange(_carnivore, _target, Carnivore.EatingRange))
+      var position = _carnivore.transform.position;
+      var closestPoint = _target.animalCollider.ClosestPointOnBounds(position);
+      _carnivore.GoTo(closestPoint);
+      
+      if (Vector3.Distance(position, closestPoint) < _carnivore.Reach)
       {
         if (!_target.Alive)
         {
