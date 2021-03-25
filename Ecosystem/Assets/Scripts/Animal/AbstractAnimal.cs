@@ -283,7 +283,12 @@ namespace Animal
         UpdateScale();
       }
 
-      if (AgeInDays > maximumAgeInDays) _healthDelegate.DecreaseHealth(Int32.MaxValue);
+      if (AgeInDays > maximumAgeInDays)
+      {
+        var updateAmount = 1/5;
+        SpeedModifier -= SpeedModifier * updateAmount; 
+        UpdateNourishmentDelegate();
+      }
 
       Mutate();
     }
