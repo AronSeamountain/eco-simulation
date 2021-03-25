@@ -1,14 +1,35 @@
 import json
 
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
 import numpy as np
 import plotly.graph_objects as go
+from dash.dependencies import Input, Output
 
 from util.file_finder import get_full_path
 from util.json_extracter import extract_unique
 
+app = dash.Dash()
 
-def create_scatter(data, species, color):
-    days_to_average = 10
+app.layout = html.Div(
+    html.Div([
+        dcc.Graph(id='live-update-graph', style={"height": "80vh"}),
+        html.P('Days to Average'),
+        dcc.Slider(
+            id='slider',
+            min=1,
+            max=20,
+            step=1,
+            value=10,
+            dots=True,
+            tooltip={'always_visible': True}
+        ),
+    ])
+)
+
+
+def create_scatter(data, species, days_to_average, color):
     day_counter = 0
 
     all_days = extract_unique('day', data)
@@ -48,7 +69,9 @@ def create_scatter(data, species, color):
     )
 
 
-def plot():
+@app.callback(Output('live-update-graph', 'figure'),
+              Input('slider', 'value'))
+def update_graph_live(days_to_average):
     full_path = get_full_path('detailed.json')
     f = open(full_path)
     data = json.load(f)
@@ -56,11 +79,11 @@ def plot():
     fig = go.Figure()
 
     fig.add_trace(
-        create_scatter(data, 'Rabbit', 'royalblue')
+        create_scatter(data, 'Rabbit', days_to_average, 'royalblue')
     )
 
     fig.add_trace(
-        create_scatter(data, 'Wolf', 'red')
+        create_scatter(data, 'Wolf', days_to_average, 'red')
     )
 
     fig.update_layout(
@@ -72,8 +95,8 @@ def plot():
         )
     )
 
-    fig.show()
+    return fig
 
 
 if __name__ == "__main__":
-    plot()
+    app.run_server(debug=True, use_reloader=False)
