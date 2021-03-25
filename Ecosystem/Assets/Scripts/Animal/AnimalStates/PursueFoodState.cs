@@ -51,10 +51,12 @@ namespace Animal.AnimalStates
         _foodTarget = GetClosestFood();
         _animal.GoTo(_foodTarget.Position);
       }
-
+      
       if (_foodTarget != null)
       {
-        var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
+        var position = _animal.transform.position;
+        var closestPoint = _foodTarget.Food.foodCollider.ClosestPoint(position);
+        var reachesFood = Vector3.Distance(position, closestPoint) < _animal.Reach;
         if (reachesFood)
         {
           if (!_foodTarget.Food.CanBeEaten())
@@ -64,17 +66,14 @@ namespace Animal.AnimalStates
             return AnimalState.Idle;
           }
 
-          var colliders =
-            Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
-          foreach (var collider in colliders)
-            if (collider.GetComponent<AbstractFood>() is AbstractFood f)
-              if (f == _foodTarget.Food)
-              {
-                _animal.FoodAboutTooEat = _foodTarget.Food;
-                _animal.Forget(_foodTarget);
-                _foodTarget = null;
-                return AnimalState.Eat;
-              }
+          
+          if (_foodTarget.Food.Exists())
+          {
+            _animal.FoodAboutTooEat = _foodTarget.Food;
+            _animal.Forget(_foodTarget);
+            _foodTarget = null;
+            return AnimalState.Eat;
+          }
 
           _animal.Forget(_foodTarget);
           _foodTarget = null;

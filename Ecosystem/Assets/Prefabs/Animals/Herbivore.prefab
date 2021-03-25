@@ -23,8 +23,11 @@ MonoBehaviour:
   vision: {fileID: 0}
   animationManager: {fileID: 8410095186163081469}
   meshRenderer: {fileID: 0}
-  fertilityTimeInDays: 5
+  fertilityTimeInHours: 5
   _species: 0
+  maxNumberOfChildren: 1
+  pregnancyTimeInHours: 0
+  animalCollider: {fileID: 4985773637478856858}
 --- !u!114 &8410095186163081469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,6 +279,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a01267a139454c07a4663795998ac9eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &4985773637478856858 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 3909594730175147418, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 8318338745849550080}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4250396893436904635 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5299853235773772219, guid: bf200501b32dda54c93cca32e5f22aba,

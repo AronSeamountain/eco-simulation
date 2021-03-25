@@ -60,6 +60,7 @@ namespace Animal
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
+    [SerializeField] public Collider animalCollider;
 
     private float _fleeSpeed;
     private float _fullyGrownSize;
@@ -135,7 +136,7 @@ namespace Animal
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
     /// </summary>
-    public float Reach => 2f;
+    public float Reach => SizeModifier * VisualSizeModifier;
 
     /// <summary>
     ///   Whether the animal knows about a food location.
