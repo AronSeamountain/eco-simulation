@@ -33,8 +33,12 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2DArray_9892B576:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_animal_texture:
-        m_Texture: {fileID: 2800000, guid: dca53c930cac3491fb06a6c178affe55, type: 3}
+        m_Texture: {fileID: 2800000, guid: 853c3a9a7cf784f6391d6e3892fa052b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:

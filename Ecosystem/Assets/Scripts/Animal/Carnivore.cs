@@ -2,6 +2,7 @@
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using UnityEditor.Experimental;
 using UnityEngine;
 using Utils;
 
@@ -12,6 +13,7 @@ namespace Animal
     private const float HuntRange = 15;
     public const float EatingRange = 2f;
     private bool _animalOfSameType;
+    private Texture _tex;
 
     private bool _hearsHerbivore;
     public Herbivore Target { get; set; }
@@ -27,9 +29,15 @@ namespace Animal
     protected override void RenderAnimalSpecificColors()
     {
       if (Gender == Gender.Male)
-        meshRenderer.material.color = new Color(0.12f, 0.15f, 0.18f);
+      {
+        _tex = Resources.Load("Wolf_White_COL_1k") as Texture;
+        meshRenderer.material.SetTexture("Texture2D_animal_texture",_tex);
+      }
       else
-        meshRenderer.material.color = new Color(0.5f, 0.56f, 0.61f);
+      {
+        _tex = Resources.Load<Texture2D>("Wolf_COL_1k");
+        meshRenderer.material.SetTexture("Texture2d_animal_texture",_tex);
+      }
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
