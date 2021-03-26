@@ -467,8 +467,8 @@ namespace Animal
 
     private void IncreaseHealthIfSatiated()
     {
-      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation * 0.75 &&
-          GetSaturation() >= _nourishmentDelegate.MaxHydration * 0.75)
+      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation * 0.5 &&
+          GetSaturation() >= _nourishmentDelegate.MaxHydration * 0.5)
         _healthDelegate.IncreaseHealth(1);
     }
 
@@ -628,8 +628,8 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = GetNourishmentDecreaseFactor();
 
-      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 4;
+      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 4;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.UpdateMaxNourishment(sizeCubed * _nourishmentMultiplier);
       NutritionalValue = _nourishmentMultiplier * sizeCubed;
     }
