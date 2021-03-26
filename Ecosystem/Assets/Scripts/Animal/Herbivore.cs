@@ -62,7 +62,7 @@ namespace Animal
       _seesCarnivore = animal.IsCarnivore;
       if (_seesCarnivore) EnemyToFleeFrom = animal;
     }
-    
+
 
     public override bool SafeDistanceFromEnemy()
     {
@@ -71,6 +71,7 @@ namespace Animal
         var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
         return SafeDistance < distance;
       }
+
       return false;
     }
 

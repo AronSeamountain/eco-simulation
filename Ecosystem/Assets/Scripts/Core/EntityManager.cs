@@ -212,7 +212,6 @@ namespace Core
       animal.ChildSpawnedListeners -= OnChildSpawned;
       animal.DiedListeners -= OnAnimalDied;
       animal.DecayedListeners -= UnobserveAnimal;
-      
     }
 
     private void OnAnimalDied(AbstractAnimal animal)
