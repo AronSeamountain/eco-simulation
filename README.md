@@ -19,16 +19,20 @@ Therefore we have said that 12 hour in the game represents 1 month in real life.
 <h3 align="center">
   Wolves
 </h3>
+https://en.wikipedia.org/wiki/Wolf
 Pregnancy time wolf 62-75 days
 Offspring amount 5-6
 Fertility time after 2 years
+Generally can have 1 litter per year.
 
 <h3 align="center">
   Rabbits
 </h3>
+https://en.wikipedia.org/wiki/Rabbit
 Pregnancy time rabbit 28-35 days
 Offspring average amount 5-6 but ranges from 2 to 10.
 Fertility time 5-8 months
+Can get pregnant the day after being pregnant...
 
 
 ### Graph Data with Plotly
