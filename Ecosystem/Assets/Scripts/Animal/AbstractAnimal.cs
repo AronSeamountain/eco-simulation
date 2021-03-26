@@ -63,7 +63,6 @@ namespace Animal
     [SerializeField] public Collider animalCollider;
 
     private float _fleeSpeed;
-    private float _fullyGrownSize;
     private float _fullyGrownSpeed;
     protected HealthDelegate _healthDelegate;
     private float _hoursUntilPregnancy;
@@ -279,7 +278,7 @@ namespace Animal
       {
         var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
         SpeedModifier += _fullyGrownSpeed * updateAmount;
-        SizeModifier += _fullyGrownSize * updateAmount;
+        SizeModifier += FullyGrownSize * updateAmount;
         //PropertiesChangedListeners?.Invoke();
         UpdateScale();
       }
@@ -451,9 +450,9 @@ namespace Animal
       child.Size = new Gene(father.Size, Size);
       child.Speed = new Gene(father.Speed, Speed);
       child._fullyGrownSpeed = child.Speed.Value;
-      child._fullyGrownSize = child.Size.Value;
+      child.FullyGrownSize = child.Size.Value;
 
-      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
+      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child.FullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = fertilityTimeInHours;
