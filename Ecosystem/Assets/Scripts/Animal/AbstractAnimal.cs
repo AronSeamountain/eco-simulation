@@ -60,6 +60,7 @@ namespace Animal
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
+    [SerializeField] private int hoursBetweenPregnancyAndFertility;
     [SerializeField] public Collider animalCollider;
 
     private float _fleeSpeed;
@@ -309,7 +310,7 @@ namespace Animal
       }
     }
 
-    private void UpdateScale()
+    public virtual void UpdateScale()
     {
       transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
       UpdateNourishmentDelegate();
@@ -446,8 +447,8 @@ namespace Animal
 
       child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
-      
-      _hoursUntilFertile = fertilityTimeInHours;
+
+      _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
       Fertile = false;
       ShouldBirth = false;
     }
@@ -616,27 +617,28 @@ namespace Animal
     private void InitNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
-
-      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
-      NutritionalValue = _nourishmentMultiplier * sizeCubed;
+      UpdateNourishmentDelegate();
+      
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
     private void UpdateNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
+      var decreaseFactor = GetNourishmentDecreaseFactor();
 
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 4;
       _nourishmentDelegate.UpdateMaxNourishment(sizeCubed * _nourishmentMultiplier);
       NutritionalValue = _nourishmentMultiplier * sizeCubed;
-      PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
+    public virtual float GetNourishmentDecreaseFactor()
+    {
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      return  sizeCubed + SpeedModifier * SpeedModifier;
+    }
     public bool NeedsNourishment()
     {
       return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
