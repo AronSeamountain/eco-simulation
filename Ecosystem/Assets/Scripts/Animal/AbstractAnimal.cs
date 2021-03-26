@@ -659,7 +659,7 @@ namespace Animal
       IsChild = true;
       Size = new Gene();
       Speed = new Gene();
-      InitProperties(Size.Value, Speed.Value);
+      InitProperties(Speed.Value, Size.Value);
     }
 
     private void ResetStateMachine()
