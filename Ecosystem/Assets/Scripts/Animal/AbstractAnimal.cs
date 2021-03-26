@@ -486,7 +486,7 @@ namespace Animal
     protected abstract void DecreaseStaminaIfRunning();
 
     public void SetMouthColor(Color color)
-    {
+    { 
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
       mouthParticles.Emit(1);

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: mat_Water
+  m_Shader: {fileID: -6465566751694194690, guid: 9b1278690f258c444b3e1f01a6a30e74,
+    type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Floats:
+    - Vector1_Water_scale: 10
+    - Vector1_Water_speed: 1
+    - Vector1_deep_water: 0
+    - Vector1_foam_amount: 1
+    - Vector1_foam_cutoff: 4
+    - Vector1_foam_scale: 100
+    - Vector1_ripple_density: 20
+    - Vector1_ripple_slimness: 3
+    - Vector1_ripple_speed: 2
+    - Vector1_water_scale: 0.5
+    m_Colors:
+    - Deep_water_color: {r: 0.019312914, g: 0.037522223, b: 0.2924528, a: 0}
+    - Foam_color: {r: 1, g: 1, b: 1, a: 0}
+    - Ripple_color: {r: 0.18485224, g: 0.28730765, b: 0.6320754, a: 0}
+    - Shallow_water_color: {r: 0.028301895, g: 1, b: 0.34880975, a: 0}
+    - Water_color: {r: 0, g: 0.023529412, b: 0.2509804, a: 1}
