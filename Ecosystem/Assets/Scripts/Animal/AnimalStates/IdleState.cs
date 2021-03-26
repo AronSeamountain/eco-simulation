@@ -44,6 +44,7 @@ namespace Animal.AnimalStates
       if (_animal.Dead) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
+      if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
       if (_animal.NeedsNourishment()) return AnimalState.SearchWorld;
       if (_animal is Carnivore c)
       {

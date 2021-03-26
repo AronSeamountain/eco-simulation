@@ -1,4 +1,5 @@
 ﻿using Core;
+using UnityEngine;
 using Utils;
 
 namespace Animal.AnimalStates
@@ -26,6 +27,14 @@ namespace Animal.AnimalStates
     public AnimalState Execute()
     {
       if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
+      if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
+      if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
+      if (_animal is Carnivore carnivore) // TODO: no no :-)
+      {
+        var target = carnivore.Target;
+        if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
+      }
+
       var mateTarget = _animal.GetMateTarget();
 
       if (_animal.Dead) return AnimalState.Dead;
@@ -36,8 +45,11 @@ namespace Animal.AnimalStates
         _animal.ClearMateTarget();
         return AnimalState.Wander;
       }
+      
+      var position = _animal.transform.position;
+      var closestPoint = mateTarget.animalCollider.ClosestPointOnBounds(position);
 
-      var reachesMate = Vector3Util.InRange(_animal.gameObject, mateTarget.gameObject, 2);
+      var reachesMate = Vector3.Distance(position, closestPoint) < _animal.Reach;
       if (reachesMate)
       {
         _animal.StopMoving();

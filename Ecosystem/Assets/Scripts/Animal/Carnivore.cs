@@ -14,16 +14,25 @@ namespace Animal
     public const float EatingRange = 2f;
     private bool _animalOfSameType;
     private Texture _tex;
+    private const float baseAttackDamage = 2;
+    private float attackDamage = baseAttackDamage;
 
     private bool _hearsHerbivore;
     public Herbivore Target { get; set; }
     public bool HasTargetSet => Target != null;
-    
+
     public bool IsHunting { get; set; }
 
     private void OnPreyFound(Herbivore herbivore)
     {
-      Target = herbivore;
+        if(Target.DoesNotExist())
+          Target = herbivore;
+
+        var newTarget = Vector3Util.Distance(gameObject, herbivore.gameObject);
+        var oldTarget = Vector3Util.Distance(gameObject, Target.gameObject);
+
+        if (newTarget < oldTarget)
+          Target = herbivore;
     }
 
     protected override void RenderAnimalSpecificColors()
@@ -67,7 +76,7 @@ namespace Animal
 
     public void AttackTarget(Herbivore carnivoreTarget)
     {
-      carnivoreTarget.TakeDamage(1);
+      carnivoreTarget.TakeDamage(attackDamage);
     }
 
     protected override void OnAnimalHeard(AbstractAnimal animal)
@@ -89,6 +98,21 @@ namespace Animal
     protected override void DecreaseStaminaIfRunning()
     {
       if (IsRunning && IsHunting) _staminaDelegate.DecreaseStamina(7);
+    }
+
+    public override void UpdateScale()
+    {
+      base.UpdateScale();
+      attackDamage = baseAttackDamage * SizeModifier;
+    }
+
+    /**
+     * Wolfs should get thirsty/hungry slower than rabbits because they are bigger.
+     */
+    public override float GetNourishmentDecreaseFactor()
+    {
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      return  sizeCubed + SpeedModifier * SpeedModifier / 1.5f;
     }
   }
 }

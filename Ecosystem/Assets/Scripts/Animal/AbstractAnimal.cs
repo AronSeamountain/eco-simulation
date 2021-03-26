@@ -10,9 +10,7 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
-using UnityEngine.AI;
 using Utils;
-using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
 namespace Animal
@@ -25,6 +23,9 @@ namespace Animal
   {
     public delegate void AgeChanged(int age);
 
+
+    public delegate void AnimalDecayed(AbstractAnimal animal);
+
     public delegate void ChildSpawned(AbstractAnimal child, AbstractAnimal parent);
 
     public delegate void Died(AbstractAnimal animal);
@@ -34,9 +35,6 @@ namespace Animal
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-
-
-    public delegate void AnimalDecayed(AbstractAnimal animal);
 
 
     private const float BiggestMutationChange = 0.3f;
@@ -62,29 +60,35 @@ namespace Animal
     [SerializeField] private AnimalSpecies _species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
-
-    private float _hoursUntilPregnancy;
+    [SerializeField] private int hoursBetweenPregnancyAndFertility;
+    [SerializeField] public Collider animalCollider;
 
     private float _fleeSpeed;
-    protected HealthDelegate _healthDelegate;
-    private AbstractAnimal _mateTarget;
-    protected NourishmentDelegate _nourishmentDelegate;
-    private float _nutritionalValue;
-    protected StaminaDelegate _staminaDelegate;
-    private int _nourishmentMultiplier = 100;
-    private StateMachine<AnimalState> _stateMachine;
-    private int _hoursUntilFertile;
-    public bool IsChild { get; private set; }
+    private float _fullyGrownSize;
 
     private float _fullyGrownSpeed;
-    private float _fullyGrownSize;
+    protected HealthDelegate _healthDelegate;
+    private int _hoursUntilFertile;
+
+    private float _hoursUntilPregnancy;
+    private AbstractAnimal _mateTarget;
+    protected NourishmentDelegate _nourishmentDelegate;
+    private readonly int _nourishmentMultiplier = 100;
+    private float _nutritionalValue;
+    protected StaminaDelegate _staminaDelegate;
+    private StateMachine<AnimalState> _stateMachine;
     public AgeChanged AgeChangedListeners;
+
+    private readonly float childrenSizeWhenBorn = 0.5f;
     public ChildSpawned ChildSpawnedListeners;
-    public Died DiedListeners;
     public AnimalDecayed DecayedListeners;
+    public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
+    public Gene Size;
+    public Gene Speed;
     public StateChanged StateChangedListeners;
+    public bool IsChild { get; private set; }
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
 
@@ -107,8 +111,6 @@ namespace Animal
     public AbstractAnimal LastMaleMate { get; private set; }
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
-
-    private float childrenSizeWhenBorn = 0.5f;
 
     public AnimalSpecies Species
     {
@@ -135,7 +137,7 @@ namespace Animal
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
     /// </summary>
-    public float Reach => 2f;
+    public float Reach => SizeModifier * VisualSizeModifier;
 
     /// <summary>
     ///   Whether the animal knows about a food location.
@@ -267,10 +269,7 @@ namespace Animal
 
     public void DayTick()
     {
-      if (IsChild && AgeInDays >= fertilityTimeInHours / 24)
-      {
-        IsChild = false;
-      }
+      if (IsChild && AgeInDays >= fertilityTimeInHours / 24) IsChild = false;
 
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
@@ -279,6 +278,7 @@ namespace Animal
         var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
         SpeedModifier += _fullyGrownSpeed * updateAmount;
         SizeModifier += _fullyGrownSize * updateAmount;
+        //PropertiesChangedListeners?.Invoke();
         UpdateScale();
       }
 
@@ -293,20 +293,24 @@ namespace Animal
 
     private void Mutate()
     {
-      if (MutationPercentPerDay > Random.Range(0, 100))
+      if (Size.Mutate())
       {
-        SpeedModifier = Random.Range(SpeedModifier * (1 - BiggestMutationChange),
-          SpeedModifier * (1 + BiggestMutationChange));
-
-        SizeModifier = Random.Range(SizeModifier * (1 - BiggestMutationChange),
-          SizeModifier * (1 + BiggestMutationChange));
+        SizeModifier = Size.Value;
         PropertiesChangedListeners?.Invoke();
 
         UpdateScale();
       }
+
+      if (Speed.Mutate())
+      {
+        SpeedModifier = Speed.Value;
+        PropertiesChangedListeners?.Invoke();
+
+        UpdateNourishmentDelegate();
+      }
     }
 
-    private void UpdateScale()
+    public virtual void UpdateScale()
     {
       transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
       UpdateNourishmentDelegate();
@@ -432,20 +436,19 @@ namespace Animal
       Children++;
       var child = AnimalPool.SharedInstance.Get(Species);
 
-      var speedMin = Math.Min(father.SpeedModifier, SpeedModifier);
-      var speedMax = Math.Max(father.SpeedModifier, SpeedModifier);
-
-      var sizeMin = Math.Min(father.SizeModifier, SizeModifier);
-      var sizeMax = Math.Max(father.SizeModifier, SizeModifier);
-
       child.movement.GetAgent().Warp(transform.position);
+
       child.ResetGameObject(); //resets to default/random values
-      child._fullyGrownSpeed = Random.Range(speedMin, speedMax);
-      child._fullyGrownSize = Random.Range(sizeMin, sizeMax);
+
+      child.Size = new Gene(father.Size, Size);
+      child.Speed = new Gene(father.Speed, Speed);
+      child._fullyGrownSpeed = child.Speed.Value;
+      child._fullyGrownSize = child.Size.Value;
+
       child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
 
-      _hoursUntilFertile = fertilityTimeInHours;
+      _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
       Fertile = false;
       ShouldBirth = false;
     }
@@ -614,27 +617,28 @@ namespace Animal
     private void InitNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
-
-      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
-      NutritionalValue = _nourishmentMultiplier * sizeCubed;
+      UpdateNourishmentDelegate();
+      
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
     private void UpdateNourishmentDelegate()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      var decreaseFactor = sizeCubed + SpeedModifier * SpeedModifier;
+      var decreaseFactor = GetNourishmentDecreaseFactor();
 
       _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 4;
       _nourishmentDelegate.UpdateMaxNourishment(sizeCubed * _nourishmentMultiplier);
       NutritionalValue = _nourishmentMultiplier * sizeCubed;
-      PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
+    public virtual float GetNourishmentDecreaseFactor()
+    {
+      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
+      return  sizeCubed + SpeedModifier * SpeedModifier;
+    }
     public bool NeedsNourishment()
     {
       return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
@@ -653,11 +657,9 @@ namespace Animal
     {
       if (IsChild) return; //child no need
       IsChild = true;
-      const float rangeMin = 0.8f;
-      const float rangeMax = 1.2f;
-      var speed = Random.Range(rangeMin, rangeMax);
-      var size = Random.Range(rangeMin, rangeMax);
-      InitProperties(speed, size);
+      Size = new Gene();
+      Speed = new Gene();
+      InitProperties(Size.Value, Speed.Value);
     }
 
     private void ResetStateMachine()

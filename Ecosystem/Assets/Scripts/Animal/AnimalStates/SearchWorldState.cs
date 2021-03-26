@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using Core;
+﻿using Core;
 using UnityEngine;
 using Utils;
 
@@ -32,7 +31,7 @@ namespace Animal.AnimalStates
       _animal.IsRunning = true;
       _animal.SetSpeed();
       GoToFarAwayPoint();
-      _distance = Vector3.Distance(_animal.transform.position,_destination);
+      _distance = Vector3.Distance(_animal.transform.position, _destination);
     }
 
     public AnimalState Execute()
@@ -55,11 +54,8 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
 
       //If animal is trying to run outside the navmesh, find a new point to go to.
-      if (!IsMovingForward())
-      {
-        GoToFarAwayPoint();
-      }
-      
+      if (!IsMovingForward()) GoToFarAwayPoint();
+
       return AnimalState.SearchWorld;
     }
 
@@ -77,16 +73,19 @@ namespace Animal.AnimalStates
     //checks if distance to destination shrinks. If not, the animal should find new position.
     private bool IsMovingForward()
     {
-      float distTemp = Vector3.Distance(_destination, _animal.transform.position);
+      var distTemp = Vector3.Distance(_destination, _animal.transform.position);
       if (distTemp < _distance)
       {
         _distance = distTemp;
         return true;
-      } else if (distTemp >= _distance)
+      }
+
+      if (distTemp >= _distance)
       {
         _distance = distTemp;
         return false;
       }
+
       return false;
     }
   }

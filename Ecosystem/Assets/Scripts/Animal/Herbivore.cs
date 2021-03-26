@@ -53,7 +53,7 @@ namespace Animal
       return true;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
       _healthDelegate.DecreaseHealth(damage);
     }
@@ -69,7 +69,7 @@ namespace Animal
       _seesCarnivore = animal.IsCarnivore;
       if (_seesCarnivore) EnemyToFleeFrom = animal;
     }
-    
+
 
     public override bool SafeDistanceFromEnemy()
     {
@@ -78,6 +78,7 @@ namespace Animal
         var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
         return SafeDistance < distance;
       }
+
       return false;
     }
 
