@@ -61,7 +61,7 @@ namespace Animal
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
     [SerializeField] public Collider animalCollider;
-    [SerializeField] private int maximumAgeInDays = 20; //this is serialized to test for equilibrium easier TODO make private
+    [SerializeField] private int oldAgeThreshold = 10; //this is serialized to test for equilibrium easier TODO make private
 
     private float _fleeSpeed;
     private float _fullyGrownSize;
@@ -282,11 +282,12 @@ namespace Animal
         UpdateScale();
       }
 
-      if (AgeInDays > maximumAgeInDays)
+      if (AgeInDays > oldAgeThreshold)
       {
-        var updateAmount = 1/5;
-        SpeedModifier -= SpeedModifier * updateAmount; 
-        UpdateNourishmentDelegate();
+        SpeedModifier = SpeedModifier * 4/5; 
+        SetSpeed();
+        //kills the animal if it is too slow, to not wait for them to actually die from being crippled
+        if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue); 
       }
 
       Mutate();
