@@ -81,7 +81,6 @@ namespace Utils
     public static MonoBehaviour getRandomWalkablePoint()
     {
       int index = Random.Range(0,WalkablePoints.Count);
-      Debug.Log(index);
       return WalkablePoints[index];
     }
   }

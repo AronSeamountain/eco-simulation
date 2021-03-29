@@ -45,10 +45,10 @@ namespace Animal.AnimalStates
       if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
-      if (_animal is Carnivore carnivore && carnivore.IsHungry)
+      if (_animal is Carnivore carnivore)
       {
         var target = carnivore.Target;
-        if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
+        if (carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
 
       var position = _animal.gameObject.transform.position;
