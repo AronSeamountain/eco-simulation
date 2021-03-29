@@ -112,6 +112,7 @@ namespace Animal
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
 
+    public IWorldPointFinder WorldPointFinder { get; private set; }
     public AnimalSpecies Species
     {
       get => _species;
@@ -234,6 +235,7 @@ namespace Animal
 
     public void ResetGameObject()
     {
+      ResetWorldPointFinder();
       ResetGender();
       ResetProperties();
       ResetHealthAndActivate();
@@ -285,6 +287,10 @@ namespace Animal
       Mutate();
     }
 
+    private void ResetWorldPointFinder()
+    {
+      WorldPointFinder = new AnimalWorldPointFinderImpl();
+    }
     private void ResetHealthAndActivate()
     {
       gameObject.SetActive(true);

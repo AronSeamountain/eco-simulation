@@ -29,7 +29,7 @@ namespace Core
     public static int InitialWolves = 110;
     public static int InitialRabbits = 0;
     public static int InitialPlants = 100;
-    public static int WalkablePointsAmount = 1000;
+    public static int WalkablePointsAmount = 100;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -60,14 +60,9 @@ namespace Core
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
 
-      
       WalkablePoints = new List<MonoBehaviour>();
       SpawnAndAddWalkablePoints();
    
-      
-      
-      
-
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 

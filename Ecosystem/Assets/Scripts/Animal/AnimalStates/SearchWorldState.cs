@@ -30,7 +30,7 @@ namespace Animal.AnimalStates
       //speed is a bit faster than wander, since it needs to find food or water fast
       _animal.IsRunning = true;
       _animal.SetSpeed();
-      var walkablePoint =  NavMeshUtil.getRandomWalkablePoint();
+      var walkablePoint = _animal.WorldPointFinder.getRandomWalkablePoint();
       _destination = walkablePoint.gameObject;
       _animal.GoTo(_destination.transform.position);
       
