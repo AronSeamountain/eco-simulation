@@ -46,7 +46,7 @@ namespace Animal.AnimalStates
       if (_animal is Carnivore carnivore && carnivore.IsHungry)
       {
         var target = carnivore.Target;
-        if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
+        if (target && carnivore.ShouldHunt(target) && carnivore.GetStaminaDelegate().Stamina > 50) return AnimalState.Hunt;
       }
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, closeToDest) &&

@@ -38,6 +38,7 @@ namespace Animal.AnimalStates
       if (_carnivore.GetStaminaDelegate().StaminaZero)
       {
         _carnivore.Target = null;
+        _carnivore.GetStaminaDelegate().IncreaseStamina(3);
         return AnimalState.Wander;
       }
 
