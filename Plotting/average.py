@@ -99,5 +99,9 @@ def update_graph_live(days_to_average):
     return fig
 
 
-if __name__ == "__main__":
+def run():
     app.run_server(debug=True, use_reloader=True)
+
+
+if __name__ == "__main__":
+    run()
