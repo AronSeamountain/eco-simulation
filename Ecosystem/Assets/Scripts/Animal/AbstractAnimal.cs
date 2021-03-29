@@ -288,6 +288,7 @@ namespace Animal
       {
         SpeedModifier = SpeedModifier * 4 / 5;
         SetSpeed();
+        PropertiesChangedListeners.Invoke();
         //kills the animal if it is too slow, to not wait for them to actually die from being starved
         if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue);
       }
