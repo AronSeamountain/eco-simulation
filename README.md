@@ -11,6 +11,9 @@ This is a simulation contains rabbits and wolves in a natural environment. This 
 
 - [Dev Tools](#dev-tools)
   - [Plot Data](#plot-data)
+    - [Average Values](#average-values)
+    - [Amount of Animals](#amount-of-animals)
+    - [FPS](#fps)
   - [Render State Diagrams](#render-state-diagrams)
 - [Simulation Details](#simulation-details)
   - [Time relations](#time-relations)
@@ -30,7 +33,7 @@ Install python packages with `pip install -r requirements.txt` inside the Plotti
 Run `average.py`. opens an interactive graph. Searches for `detailed.json`.
 
 <div align="center">
-  <img alt="average plot" src="Meta/Plots/average.png" width="400px">
+  <img alt="average plot" src="Meta/Plots/average.png" width="600px">
 </div>
 
 ### Amount of Animals
@@ -38,7 +41,7 @@ Run `average.py`. opens an interactive graph. Searches for `detailed.json`.
 Run `n_animals.py`. Searches for `detailed.json`.
 
 <div align="center">
-  <img alt="average plot" src="Meta/Plots/n_animals.png" width="400px">
+  <img alt="average plot" src="Meta/Plots/n_animals.png" width="600px">
 </div>
 
 ### FPS
@@ -46,7 +49,7 @@ Run `n_animals.py`. Searches for `detailed.json`.
 Run `avg_fps.py`. plots fps. Searches for `fps.csv`, `overview.csv`, `fps_baseline.csv` (the baseline fps to compare to).
 
 <div align="center">
-  <img alt="average plot" src="Meta/Plots/avg_fps.png" width="400px">
+  <img alt="average plot" src="Meta/Plots/avg_fps.png" width="600px">
 </div>
 
 ## Render State Diagrams
