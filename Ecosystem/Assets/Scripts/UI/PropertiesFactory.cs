@@ -241,9 +241,7 @@ namespace UI
 
       // ---------- Fps ----------
       var fpsText = RowFactory.CreateKeyValuePair();
-      fpsText.Configure("Fps",
-        Prettifier.Round(entityManager.FpsDelegate.AvgSinceLastSnapshot, 2)
-      );
+      fpsText.Configure("Fps", "averaging...");
 
       void FpsUpdateImpl()
       {
