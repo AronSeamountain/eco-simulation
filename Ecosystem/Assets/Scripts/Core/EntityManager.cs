@@ -26,14 +26,13 @@ namespace Core
     public static float HoursInRealSeconds = 0.5f;
 
     private const float HoursPerDay = 24;
-    public static int InitialWolves = 25;
-    public static int InitialRabbits = 100;
-    public static int InitialPlants = 100;
+    public static int InitialWolves = 50;
+    public static int InitialRabbits = 300;
+    public static int InitialPlants = 600;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
-    private AnimalPool _animalPool;
     private float _hoursPassed;
     private float _hourTicker;
     private ILogger _logger;
@@ -50,7 +49,6 @@ namespace Core
     private void Awake()
     {
       FpsDelegate = new FpsDelegate();
-      _animalPool = AnimalPool.SharedInstance;
 
       // Lists
       Animals = new List<AbstractAnimal>();
@@ -129,16 +127,6 @@ namespace Core
 
       SpawnAndAddGeneric(InitialWolves, wolfPrefab, Animals);
       CarnivoreCount += InitialWolves;
-    }
-
-    private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
-    {
-      for (var i = 0; i < amount; i++)
-      {
-        var animal = _animalPool.Get(animalSpecies);
-        Place(animal);
-        Animals.Add(animal);
-      }
     }
 
     /// <summary>

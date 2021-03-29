@@ -6,6 +6,7 @@ namespace Core
   {
     public int FramesSinceLastSnapshot { get; private set; }
     public float TimeSinceLastSnapshot { get; private set; }
+    public float AvgSinceLastSnapshot => FramesSinceLastSnapshot / TimeSinceLastSnapshot;
 
     public void FramePassed()
     {

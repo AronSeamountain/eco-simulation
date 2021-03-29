@@ -239,11 +239,28 @@ namespace UI
       entityManager.HourTickListeners += AnimalUpdateImpl;
       carnivoreText.CleanupListeners += () => entityManager.HourTickListeners -= AnimalUpdateImpl;
 
+      // ---------- Fps ----------
+      var fpsText = RowFactory.CreateKeyValuePair();
+      fpsText.Configure("Fps",
+        Prettifier.Round(entityManager.FpsDelegate.AvgSinceLastSnapshot, 2)
+      );
+
+      void FpsUpdateImpl()
+      {
+        fpsText.OnValueChanged(
+          Prettifier.Round(entityManager.FpsDelegate.AvgSinceLastSnapshot, 2)
+        );
+      }
+
+      entityManager.DayTickListeners += FpsUpdateImpl;
+      fpsText.CleanupListeners += () => entityManager.DayTickListeners -= FpsUpdateImpl;
+
+
       // ---------- Plants ----------
       var plantText = RowFactory.CreateKeyValuePair();
       plantText.Configure("Plants", entityManager.Plants.Count.ToString());
 
-      return new List<AbstractProperty> {ecoSystemText, ageText, herbivoreText, carnivoreText, plantText};
+      return new List<AbstractProperty> {ecoSystemText, ageText, herbivoreText, carnivoreText, plantText, fpsText};
     }
   }
 }

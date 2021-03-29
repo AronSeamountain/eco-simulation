@@ -11,7 +11,6 @@ namespace Animal.AnimalStates
   {
     private const float MarginToReachDestination = 2.5f;
     private readonly AbstractAnimal _animal;
-    private Carnivore _carnivore;
 
     private Vector3 _destination;
 
@@ -54,13 +53,6 @@ namespace Animal.AnimalStates
       }
 
       if (_animal.NeedsNourishment()) return AnimalState.SearchWorld;
-
-      if (_animal is Carnivore c)
-      {
-        _carnivore = c;
-        if (_carnivore.NeedsNourishment()) return AnimalState.SearchWorld;
-      }
-
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
         return AnimalState.Idle;
