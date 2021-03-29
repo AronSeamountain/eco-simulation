@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 926f1cc83d1c8b942b27c91bd27caa46, type: 3}
-  m_Name: Sobel
+  m_Name: SobelBlit
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
