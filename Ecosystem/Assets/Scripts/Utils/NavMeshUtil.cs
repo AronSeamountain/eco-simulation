@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -9,9 +10,10 @@ namespace Utils
   {
     private const string WalkableLayerName = "Walkable";
     private const int AllLayers = -1;
+    public static IList<MonoBehaviour> WalkablePoints;
 
     public static int WalkableLayer => NavMesh.GetAreaFromName(WalkableLayerName);
-
+    
     /// <summary>
     ///   Gets a random point of the nav mesh.
     /// </summary>
@@ -69,6 +71,18 @@ namespace Utils
         return hit.position;
 
       throw new Exception("Failed to find point far away " + direction);
+    }
+
+    public static void initWalkablePoints(List<MonoBehaviour> walkablePoints)
+    {
+      WalkablePoints = walkablePoints;
+    }
+
+    public static MonoBehaviour getRandomWalkablePoint()
+    {
+      int index = Random.Range(0,WalkablePoints.Count);
+      Debug.Log(index);
+      return WalkablePoints[index];
     }
   }
 }

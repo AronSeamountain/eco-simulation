@@ -30,8 +30,8 @@ namespace Animal.AnimalStates
       //speed is a bit faster than wander, since it needs to find food or water fast
       _animal.IsRunning = true;
       _animal.SetSpeed();
-      GoToFarAwayPoint();
-      _distance = Vector3.Distance(_animal.transform.position, _destination);
+      MonoBehaviour walkablePoint =  NavMeshUtil.getRandomWalkablePoint();
+      _animal.GoTo(walkablePoint.gameObject.transform.position);
     }
 
     public AnimalState Execute()
@@ -49,12 +49,13 @@ namespace Animal.AnimalStates
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
 
-      if (Vector3Util.InRange(_animal.transform.position, _destination, closeToDest) &&
+      
+      /*if (Vector3Util.InRange(_animal.transform.position, _destination, closeToDest) &&
           !_animal.IsHungry && !_animal.IsThirsty)
         return AnimalState.Wander;
 
       //If animal is trying to run outside the navmesh, find a new point to go to.
-      if (!IsMovingForward()) GoToFarAwayPoint();
+      if (!IsMovingForward()) GoToFarAwayPoint();*/
 
       return AnimalState.SearchWorld;
     }

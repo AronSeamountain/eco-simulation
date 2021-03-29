@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
 using Logger;
@@ -32,6 +32,7 @@ namespace Core
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
+    [SerializeField] private GameObject walkablePointPrefab;
     [SerializeField] private bool log;
     private AnimalPool _animalPool;
     private float _hoursPassed;
@@ -46,6 +47,8 @@ namespace Core
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
 
+    public IList<MonoBehaviour> WalkablePoints { get; private set; }
+
     private void Awake()
     {
       _animalPool = AnimalPool.SharedInstance;
@@ -56,6 +59,10 @@ namespace Core
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
 
+      WalkablePoints = new List<MonoBehaviour>();
+      SpawnAndAddGeneric(1, walkablePointPrefab,WalkablePoints);
+      NavMeshUtil.WalkablePoints = WalkablePoints;
+      
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
