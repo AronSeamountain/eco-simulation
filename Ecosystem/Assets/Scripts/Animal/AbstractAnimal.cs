@@ -57,17 +57,17 @@ namespace Animal
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     [SerializeField] private int fertilityTimeInHours = 5;
-    [SerializeField] private AnimalSpecies _species;
+    [SerializeField] private AnimalSpecies species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
     [SerializeField] private int hoursBetweenPregnancyAndFertility;
     [SerializeField] public Collider animalCollider;
-    [SerializeField] private int oldAgeThreshold = 10; //this is serialized to test for equilibrium easier TODO make private
+    [SerializeField] private int oldAgeThreshold = 10;
 
     private float _fleeSpeed;
     private float _fullyGrownSpeed;
     private float _fullyGrownSize;
-    
+
     protected HealthDelegate _healthDelegate;
     private int _hoursUntilFertile;
 
@@ -115,8 +115,8 @@ namespace Animal
 
     public AnimalSpecies Species
     {
-      get => _species;
-      protected set => _species = value;
+      get => species;
+      protected set => species = value;
     }
 
     public bool MultipleChildren => maxNumberOfChildren > 1;
@@ -283,12 +283,13 @@ namespace Animal
         UpdateScale();
       }
 
+      // if the animal is older than the old age set, it will decrease in speed
       if (AgeInDays > oldAgeThreshold)
       {
-        SpeedModifier = SpeedModifier * 4/5; 
+        SpeedModifier = SpeedModifier * 4 / 5;
         SetSpeed();
-        //kills the animal if it is too slow, to not wait for them to actually die from being crippled
-        if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue); 
+        //kills the animal if it is too slow, to not wait for them to actually die from being starved
+        if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue);
       }
 
       Mutate();
@@ -486,7 +487,7 @@ namespace Animal
     protected abstract void DecreaseStaminaIfRunning();
 
     public void SetMouthColor(Color color)
-    { 
+    {
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
       mouthParticles.Emit(1);
@@ -628,7 +629,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
       UpdateNourishmentDelegate();
-      
+
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
@@ -648,6 +649,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       return sizeCubed + SpeedModifier * SpeedModifier;
     }
+
     public bool NeedsNourishment()
     {
       return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
