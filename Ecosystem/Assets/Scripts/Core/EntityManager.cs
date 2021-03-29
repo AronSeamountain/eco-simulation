@@ -26,12 +26,14 @@ namespace Core
     public static float HoursInRealSeconds = 0.5f;
 
     private const float HoursPerDay = 24;
-    public static int InitialWolves = 25;
-    public static int InitialRabbits = 100;
+    public static int InitialWolves = 110;
+    public static int InitialRabbits = 0;
     public static int InitialPlants = 100;
+    public static int WalkablePointsAmount = 1000;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
+    [SerializeField] private GameObject walkablePointPrefab;
     [SerializeField] private bool log;
     private AnimalPool _animalPool;
     private float _hoursPassed;
@@ -46,6 +48,8 @@ namespace Core
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
 
+    public IList<MonoBehaviour> WalkablePoints { get; private set; }
+
     private void Awake()
     {
       _animalPool = AnimalPool.SharedInstance;
@@ -55,6 +59,14 @@ namespace Core
       SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
+
+      
+      WalkablePoints = new List<MonoBehaviour>();
+      SpawnAndAddWalkablePoints();
+   
+      
+      
+      
 
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
@@ -113,6 +125,14 @@ namespace Core
       }
     }
 
+    /// <summary>
+    ///   Creates the walkable points which the animals will look for
+    /// </summary>
+    private void SpawnAndAddWalkablePoints()
+    {
+      SpawnAndAddGeneric(WalkablePointsAmount, walkablePointPrefab,WalkablePoints);
+      NavMeshUtil.WalkablePoints = WalkablePoints;
+    }
     /// <summary>
     ///   Spawns animals and adds them to the list of animals.
     /// </summary>

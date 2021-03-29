@@ -12,7 +12,7 @@ namespace Animal.AnimalStates
   {
     private readonly AbstractAnimal _animal;
     private readonly float closeToDest = 2.0f;
-    private Vector3 _destination;
+    private GameObject _destination;
     private float _distance;
 
     public SearchWorldState(AbstractAnimal animal)
@@ -30,8 +30,10 @@ namespace Animal.AnimalStates
       //speed is a bit faster than wander, since it needs to find food or water fast
       _animal.IsRunning = true;
       _animal.SetSpeed();
-      GoToFarAwayPoint();
-      _distance = Vector3.Distance(_animal.transform.position, _destination);
+      var walkablePoint =  NavMeshUtil.getRandomWalkablePoint();
+      _destination = walkablePoint.gameObject;
+      _animal.GoTo(_destination.transform.position);
+      
     }
 
     public AnimalState Execute()
@@ -49,44 +51,17 @@ namespace Animal.AnimalStates
         if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
       }
 
-      if (Vector3Util.InRange(_animal.transform.position, _destination, closeToDest) &&
-          !_animal.IsHungry && !_animal.IsThirsty)
+      var position = _animal.gameObject.transform.position;
+      var closestPoint = _destination.GetComponent<Collider>().ClosestPoint(position);
+      if (Vector3.Distance(position, closestPoint) < _animal.Reach)
         return AnimalState.Wander;
 
-      //If animal is trying to run outside the navmesh, find a new point to go to.
-      if (!IsMovingForward()) GoToFarAwayPoint();
-
+      
       return AnimalState.SearchWorld;
     }
 
     public void Exit()
     {
-    }
-
-    private void GoToFarAwayPoint()
-    {
-      var point = NavMeshUtil.GetRandomPointFarAway(_animal.transform.position);
-      _destination = point;
-      _animal.GoTo(_destination);
-    }
-
-    //checks if distance to destination shrinks. If not, the animal should find new position.
-    private bool IsMovingForward()
-    {
-      var distTemp = Vector3.Distance(_destination, _animal.transform.position);
-      if (distTemp < _distance)
-      {
-        _distance = distTemp;
-        return true;
-      }
-
-      if (distTemp >= _distance)
-      {
-        _distance = distTemp;
-        return false;
-      }
-
-      return false;
     }
   }
 }
