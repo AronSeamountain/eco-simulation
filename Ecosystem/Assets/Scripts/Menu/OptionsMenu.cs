@@ -37,10 +37,12 @@ namespace Menu
       if (number == 0)
       {
         World = "LargeWorld";
+        EntityManager.World = "LargeWorld"; 
       }
       else if (number == 1)
       {
         World = "World";
+        EntityManager.World = "World"; 
       }
     }
   }

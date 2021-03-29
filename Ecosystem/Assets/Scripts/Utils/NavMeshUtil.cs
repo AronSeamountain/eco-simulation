@@ -11,6 +11,7 @@ namespace Utils
     private const string WalkableLayerName = "Walkable";
     private const int AllLayers = -1;
     public static IList<MonoBehaviour> WalkablePoints;
+    public static List<MonoBehaviour>[,] WalkablePointMatrix;
 
     public static int WalkableLayer => NavMesh.GetAreaFromName(WalkableLayerName);
     
@@ -82,6 +83,22 @@ namespace Utils
     {
       int index = Random.Range(0,WalkablePoints.Count);
       return WalkablePoints[index];
+    }
+    public static MonoBehaviour getRandomWalkablePointInMatrix(Vector3 selfPos)
+    {
+      var x  = (int) selfPos.x / 50;
+      var z  = (int) selfPos.z / 50;
+
+      var count = WalkablePointMatrix[x, z].Count;
+      if (count == 0)
+      {
+        Debug.Log("Count was 0");
+        return null;
+      }
+      
+      int index = Random.Range(0, WalkablePointMatrix[x, z].Count);
+     
+      return WalkablePointMatrix[x, z][index];
     }
   }
 }

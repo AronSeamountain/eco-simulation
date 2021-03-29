@@ -289,7 +289,7 @@ namespace Animal
 
     private void ResetWorldPointFinder()
     {
-      WorldPointFinder = new AnimalWorldPointFinderImpl();
+      WorldPointFinder = new AnimalWorldPointFinderMatrixImpl();
     }
     private void ResetHealthAndActivate()
     {

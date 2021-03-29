@@ -25,11 +25,12 @@ namespace Core
     /// </summary>
     public static float HoursInRealSeconds = 0.5f;
 
+    public static string World;
     private const float HoursPerDay = 24;
-    public static int InitialWolves = 110;
+    public static int InitialWolves = 300;
     public static int InitialRabbits = 0;
-    public static int InitialPlants = 100;
-    public static int WalkablePointsAmount = 100;
+    public static int InitialPlants = 600;
+    public static int WalkablePointsAmount = 200;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -127,6 +128,26 @@ namespace Core
     {
       SpawnAndAddGeneric(WalkablePointsAmount, walkablePointPrefab,WalkablePoints);
       NavMeshUtil.WalkablePoints = WalkablePoints;
+      var size = 500;
+      
+      List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[10, 10];
+      for (int i = 0; i < matrix.GetLength(0); i++)
+      {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+          matrix[i, j] = new List<MonoBehaviour>();
+        }
+      }
+      foreach (var wp in WalkablePoints)
+      {
+        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x/50);
+        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z/50);
+        Debug.Log("X" + x +  " Z" + z );
+        
+        matrix[x, z].Add(wp);
+      }
+
+      NavMeshUtil.WalkablePointMatrix = matrix;
     }
     /// <summary>
     ///   Spawns animals and adds them to the list of animals.
@@ -164,6 +185,7 @@ namespace Core
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
+
         Place(instance);
         list?.Add(instance);
       }

@@ -6,7 +6,7 @@ namespace Animal
 {
   public class AnimalWorldPointFinderImpl : IWorldPointFinder
   {
-    public MonoBehaviour getRandomWalkablePoint()
+    public MonoBehaviour getRandomWalkablePoint(AbstractAnimal _animal)
     {
       return NavMeshUtil.getRandomWalkablePoint();
     }
