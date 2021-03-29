@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
 using Logger;
@@ -26,9 +26,10 @@ namespace Core
     public static float HoursInRealSeconds = 0.5f;
 
     private const float HoursPerDay = 24;
-    public static int InitialWolves = 25;
-    public static int InitialRabbits = 100;
+    public static int InitialWolves = 110;
+    public static int InitialRabbits = 0;
     public static int InitialPlants = 100;
+    public static int WalkablePointsAmount = 1000;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -59,10 +60,14 @@ namespace Core
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
 
-      WalkablePoints = new List<MonoBehaviour>();
-      SpawnAndAddGeneric(1, walkablePointPrefab,WalkablePoints);
-      NavMeshUtil.WalkablePoints = WalkablePoints;
       
+      WalkablePoints = new List<MonoBehaviour>();
+      SpawnAndAddWalkablePoints();
+   
+      
+      
+      
+
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
@@ -120,6 +125,14 @@ namespace Core
       }
     }
 
+    /// <summary>
+    ///   Creates the walkable points which the animals will look for
+    /// </summary>
+    private void SpawnAndAddWalkablePoints()
+    {
+      SpawnAndAddGeneric(WalkablePointsAmount, walkablePointPrefab,WalkablePoints);
+      NavMeshUtil.WalkablePoints = WalkablePoints;
+    }
     /// <summary>
     ///   Spawns animals and adds them to the list of animals.
     /// </summary>
