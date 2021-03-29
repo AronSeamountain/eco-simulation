@@ -26,13 +26,14 @@ namespace Core
     public static float HoursInRealSeconds = 0.5f;
 
     private const float HoursPerDay = 24;
-    public static int InitialWolves = 50;
+    public static int InitialWolves = 300;
     public static int InitialRabbits = 300;
-    public static int InitialPlants = 600;
+    public static int InitialPlants = 300;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
+    [SerializeField] private bool performanceMode;
     private float _hoursPassed;
     private float _hourTicker;
     private ILogger _logger;
@@ -45,9 +46,12 @@ namespace Core
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
     public FpsDelegate FpsDelegate { get; private set; }
+    public static bool PerformanceMode;
 
     private void Awake()
     {
+      PerformanceMode = performanceMode;
+
       FpsDelegate = new FpsDelegate();
 
       // Lists

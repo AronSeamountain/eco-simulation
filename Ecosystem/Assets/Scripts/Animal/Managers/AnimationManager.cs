@@ -19,13 +19,13 @@ namespace Animal.Managers
 
     private void Start()
     {
-      if (Simulation.PerformanceMode)
+      if (EntityManager.PerformanceMode)
         animator.enabled = false;
     }
 
     public void ReceiveState(AnimalState state, AbstractAnimal animal)
     {
-      if (Simulation.PerformanceMode) return;
+      if (EntityManager.PerformanceMode) return;
 
       float animationSpeed;
       switch (state)
@@ -65,7 +65,7 @@ namespace Animal.Managers
 
     private void SetAnimation(int state, float animationSpeed)
     {
-      if (Simulation.PerformanceMode) return;
+      if (EntityManager.PerformanceMode) return;
 
       animator.SetInteger(State, state);
       animator.SetFloat(AnimationSpeed, animationSpeed);
@@ -73,7 +73,7 @@ namespace Animal.Managers
 
     public void SetAnimationStaminaZero(AbstractAnimal animal)
     {
-      if (Simulation.PerformanceMode) return;
+      if (EntityManager.PerformanceMode) return;
 
       var animationSpeed =
         animal.SizeModifier * animal.SpeedModifier * 2 / (animal.SizeModifier + animal.SpeedModifier);
@@ -83,7 +83,7 @@ namespace Animal.Managers
 
     public void AnimalSound()
     {
-      if (Simulation.PerformanceMode) return;
+      if (EntityManager.PerformanceMode) return;
 
       //audioSource.Play();
     }

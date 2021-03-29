@@ -237,7 +237,7 @@ namespace Animal
       ResetStateMachine();
       ResetFertility();
 
-      if (Simulation.PerformanceMode)
+      if (EntityManager.PerformanceMode)
       {
         Boost();
       }
@@ -395,7 +395,7 @@ namespace Animal
 
     private void EmitMouthParticle()
     {
-      if (Simulation.PerformanceMode) return;
+      if (EntityManager.PerformanceMode) return;
       mouthParticles.Emit(1);
     }
 
@@ -486,7 +486,7 @@ namespace Animal
 
     public void SetMouthColor(Color color)
     {
-      if (Simulation.PerformanceMode) return;
+      if (EntityManager.PerformanceMode) return;
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
       EmitMouthParticle();
