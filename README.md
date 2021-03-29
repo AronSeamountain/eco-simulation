@@ -30,7 +30,7 @@ Install python packages with `pip install -r requirements.txt` inside the Plotti
 Run `average.py`. opens an interactive graph. Searches for `detailed.json`.
 
 <div align="center">
-  <img alt="average plot" src="Meta/Plots/average.png" style="width: 400px;">
+  <img alt="average plot" src="Meta/Plots/average.png" width="400px">
 </div>
 
 ### Amount of Animals
@@ -38,7 +38,7 @@ Run `average.py`. opens an interactive graph. Searches for `detailed.json`.
 Run `n_animals.py`. Searches for `detailed.json`.
 
 <div align="center">
-  <img alt="average plot" src="Meta/Plots/n_animals.png" style="width: 400px;">
+  <img alt="average plot" src="Meta/Plots/n_animals.png" width="400px">
 </div>
 
 ### FPS
@@ -46,7 +46,7 @@ Run `n_animals.py`. Searches for `detailed.json`.
 Run `avg_fps.py`. plots fps. Searches for `fps.csv`, `overview.csv`, `fps_baseline.csv` (the baseline fps to compare to).
 
 <div align="center">
-  <img alt="average plot" src="Meta/Plots/avg_fps.png" style="width: 400px;">
+  <img alt="average plot" src="Meta/Plots/avg_fps.png" width="400px">
 </div>
 
 ## Render State Diagrams
