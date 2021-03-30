@@ -29,11 +29,10 @@ namespace Core
     public static int InitialWolves = 300;
     public static int InitialRabbits = 300;
     public static int InitialPlants = 300;
-    [SerializeField] private GameObject rabbitPrefab;
-    [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
     [SerializeField] private bool performanceMode;
+    [SerializeField] private bool overlappableAnimals;
     private float _hoursPassed;
     private float _hourTicker;
     private ILogger _logger;
@@ -51,6 +50,7 @@ namespace Core
     private void Awake()
     {
       PerformanceMode = performanceMode;
+      AnimalPool.OverlappableAnimals = overlappableAnimals;
 
       FpsDelegate = new FpsDelegate();
 
@@ -126,10 +126,10 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(InitialRabbits, rabbitPrefab, Animals);
+      SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
-      SpawnAndAddGeneric(InitialWolves, wolfPrefab, Animals);
+      SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
       CarnivoreCount += InitialWolves;
     }
 
@@ -138,10 +138,22 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialPlants()
     {
-      SpawnAndAddGeneric(InitialPlants, plantPrefab, Plants);
+      SpawnAndAddPrefab(InitialPlants, plantPrefab, Plants);
     }
 
-    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list = null)
+    private void SpawnAndAddSpecies<T>(int amount, AnimalSpecies species, ICollection<T> list = null)
+      where T : MonoBehaviour
+    {
+      var pool = AnimalPool.SharedInstance;
+      for (var i = 0; i < amount; i++)
+      {
+        var instance = pool.Get(species) as T;
+        Place(instance);
+        list?.Add(instance);
+      }
+    }
+
+    private void SpawnAndAddPrefab<T>(int amount, GameObject prefab, ICollection<T> list = null)
       where T : MonoBehaviour
     {
       for (var i = 0; i < amount; i++)
