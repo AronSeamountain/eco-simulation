@@ -20,9 +20,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TEST_OUTLINES
+  m_Name: Outlines
   m_Shader: {fileID: 4800000, guid: d3f5fb8cf04813b46b294d7497a637dd, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: USE_PRECALCULATED_OUTLINE_NORMALS
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -73,6 +73,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _PrecalculateNormals: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
