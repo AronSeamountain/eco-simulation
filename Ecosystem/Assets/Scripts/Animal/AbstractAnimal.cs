@@ -65,6 +65,8 @@ namespace Animal
 
     private float _fleeSpeed;
     private float _fullyGrownSpeed;
+    private float _fullyGrownSize;
+    
     protected HealthDelegate _healthDelegate;
     private float _hoursUntilPregnancy;
     private AbstractAnimal _mateTarget;
@@ -83,8 +85,8 @@ namespace Animal
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
-    public Gene Size;
     public Gene Speed;
+    public Gene Size;
     public StateChanged StateChangedListeners;
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
@@ -100,8 +102,8 @@ namespace Animal
     }
 
     public AbstractAnimal EnemyToFleeFrom { get; set; }
-    public float SizeModifier { get; private set; }
     public float SpeedModifier { get; private set; }
+    public float SizeModifier { get; private set; }
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
@@ -448,8 +450,8 @@ namespace Animal
 
       child.ResetGameObject(); //resets to default/random values
 
-      child.Size = new Gene(father.Size, Size);
       child.Speed = new Gene(father.Speed, Speed);
+      child.Size = new Gene(father.Size, Size);
       child._fullyGrownSpeed = child.Speed.Value;
       child.FullyGrownSize = child.Size.Value;
 
@@ -475,8 +477,8 @@ namespace Animal
 
     private void IncreaseHealthIfSatiated()
     {
-      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation * 0.75 &&
-          GetSaturation() >= _nourishmentDelegate.MaxHydration * 0.75)
+      if (GetSaturation() >= _nourishmentDelegate.MaxSaturation * 0.5 &&
+          GetSaturation() >= _nourishmentDelegate.MaxHydration * 0.5)
         _healthDelegate.IncreaseHealth(1);
     }
 
@@ -637,8 +639,8 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = GetNourishmentDecreaseFactor();
 
-      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 2;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 4;
+      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 4;
+      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 2;
       _nourishmentDelegate.UpdateMaxNourishment(sizeCubed * _nourishmentMultiplier);
       NutritionalValue = _nourishmentMultiplier * sizeCubed;
     }
@@ -646,7 +648,7 @@ namespace Animal
     public virtual float GetNourishmentDecreaseFactor()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      return  sizeCubed + SpeedModifier * SpeedModifier;
+      return sizeCubed + SpeedModifier * SpeedModifier;
     }
     public bool NeedsNourishment()
     {
@@ -666,9 +668,9 @@ namespace Animal
     {
       if (IsChild) return; //child no need
       IsChild = true;
-      Size = new Gene();
       Speed = new Gene();
-      InitProperties(Size.Value, Speed.Value);
+      Size = new Gene();
+      InitProperties(Speed.Value, Size.Value);
     }
 
     private void ResetStateMachine()

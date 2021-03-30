@@ -12,13 +12,20 @@ namespace Animal
     private const float SafeDistance = 15f;
     private bool _hearsCarnivore;
     private bool _seesCarnivore;
+    private Texture _tex;
 
     protected override void RenderAnimalSpecificColors()
     {
       if (Gender == Gender.Male)
-        meshRenderer.material.color = new Color(1f, 0.8f, 0.8f);
+      {
+        _tex = Resources.Load("Rabbit_White_COL_1k") as Texture;
+        meshRenderer.material.SetTexture("Texture2D_animal_texture",_tex);
+      }
       else
-        meshRenderer.material.color = new Color(0.99f, 0.65f, 0.87f);
+      {
+        _tex = Resources.Load<Texture2D>("Rabbit_COL_1k");
+        meshRenderer.material.SetTexture("Texture2D_animal_texture",_tex);
+      }
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
