@@ -46,6 +46,7 @@ namespace Core
     public int CarnivoreCount { get; private set; }
     public FpsDelegate FpsDelegate { get; private set; }
     public static bool PerformanceMode;
+    public bool Log => log;
 
     private void Awake()
     {
