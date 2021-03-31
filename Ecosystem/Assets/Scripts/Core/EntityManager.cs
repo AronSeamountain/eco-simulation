@@ -30,9 +30,9 @@ namespace Core
 
 
     private const float HoursPerDay = 24;
-    public static int InitialWolves = 300;
-    public static int InitialRabbits = 0;
-    public static int InitialPlants = 600;
+    public static int InitialWolves = 70;
+    public static int InitialRabbits = 300;
+    public static int InitialPlants = 150;
 
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
