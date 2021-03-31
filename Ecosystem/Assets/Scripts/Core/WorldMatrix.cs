@@ -8,10 +8,10 @@ namespace Core
   public static class WorldMatrix
   {
     public static string World = "LargeWorld";
-    public static int WalkablePointsAmountPerBox = 25;
-    public static int amountOfBoxesPerMatrixLayer = 3;
-    public static int WalkableMatrixBoxSize; //should not be set manually
-    public static int WorldSize;
+    public const int  WalkablePointsAmountPerBox = 3; 
+    public static int amountOfBoxesPerMatrixLayer;
+    public const int WalkableMatrixBoxSize = 25; 
+    private static int WorldSize;
     public static IList<MonoBehaviour> WalkablePoints;
     
     
@@ -29,9 +29,7 @@ namespace Core
       {
         WorldSize = 150;
       }
-      
-      WalkableMatrixBoxSize =(int) Math.Ceiling(WorldSize / (float) amountOfBoxesPerMatrixLayer);
-      Debug.Log("WALK" + WalkableMatrixBoxSize);
+      amountOfBoxesPerMatrixLayer =(int) Math.Ceiling(WorldSize /(float) WalkableMatrixBoxSize );
       List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[amountOfBoxesPerMatrixLayer, amountOfBoxesPerMatrixLayer];
       for (int i = 0; i < matrix.GetLength(0); i++)
       {
@@ -87,12 +85,29 @@ namespace Core
           if (i < matrix.GetLength(0) - 1)
             foreach (var monoBehaviour in matrix[i + 1, j]) // adds all from matrix entry below
               tempList.Add(monoBehaviour);
+          //CORNERS-----------------------------
+          if(i > 0 && j > 0)
+            foreach (var monoBehaviour in matrix[i - 1, j - 1]) // adds all from matrix top left
+              tempList.Add(monoBehaviour);
+
           
-         
+          if(i > 0 && j < matrix.GetLength(1) - 1)
+            foreach (var monoBehaviour in matrix[i - 1, j + 1]) // adds all from matrix top right
+              tempList.Add(monoBehaviour);
+
+          if(i < matrix.GetLength(0) - 1 && j > 0 )
+            foreach (var monoBehaviour in matrix[i + 1, j -1]) // adds all from matrix bottom left
+              tempList.Add(monoBehaviour);
+
+          if(i < matrix.GetLength(0) - 1 && j < matrix.GetLength(1) - 1)
+            foreach (var monoBehaviour in matrix[i + 1, j + 1]) // adds all from matrix bottom right
+              tempList.Add(monoBehaviour);
+
+          
           foreach (var monoBehaviour in matrix[i, j]) // adds all from current matrix entry 
             tempList.Add(monoBehaviour);
 
-          if(tempList.Count < 1) Debug.Log("You done fucked up");
+          if(tempList.Count < 1) Debug.LogError("Error with Worldmatrix instantiation. All entries in the matrix does not have a walkable point");
           adjacencyList.Add(tempList);
         }
       }
