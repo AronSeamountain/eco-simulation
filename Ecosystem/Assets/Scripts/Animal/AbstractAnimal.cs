@@ -36,10 +36,7 @@ namespace Animal
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-
-
-    private const float BiggestMutationChange = 0.3f;
-    private const float MutationPercentPerDay = 10f;
+    
     private const float RunningSpeedFactor = 5f;
 
     /// <summary>
@@ -58,11 +55,12 @@ namespace Animal
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     [SerializeField] private int fertilityTimeInHours = 5;
-    [SerializeField] private AnimalSpecies _species;
+    [SerializeField] private AnimalSpecies species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
     [SerializeField] private int hoursBetweenPregnancyAndFertility;
     [SerializeField] public Collider animalCollider;
+    [SerializeField] private int oldAgeThreshold = 10;
 
     private float _fleeSpeed;
     private float _fullyGrownSpeed;
@@ -117,8 +115,8 @@ namespace Animal
 
     public AnimalSpecies Species
     {
-      get => _species;
-      protected set => _species = value;
+      get => species;
+      protected set => species = value;
     }
 
     public bool MultipleChildren => maxNumberOfChildren > 1;
@@ -282,11 +280,18 @@ namespace Animal
         var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
         SpeedModifier += _fullyGrownSpeed * updateAmount;
         SizeModifier += _fullyGrownSize * updateAmount;
-        //PropertiesChangedListeners?.Invoke();
         UpdateScale();
       }
 
-      Mutate();
+      // if the animal is older than the old age set, it will decrease in speed
+      if (AgeInDays > oldAgeThreshold)
+      {
+        SpeedModifier = SpeedModifier * 4 / 5;
+        SetSpeed();
+        PropertiesChangedListeners?.Invoke();
+        //kills the animal if it is too slow, to not wait for them to actually die from being starved
+        if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue);
+      }
     }
 
     private void ResetWorldPointFinder()
@@ -298,25 +303,6 @@ namespace Animal
     {
       gameObject.SetActive(true);
       _healthDelegate.ResetHealth();
-    }
-
-    private void Mutate()
-    {
-      if (Size.Mutate())
-      {
-        SizeModifier = Size.Value;
-        PropertiesChangedListeners?.Invoke();
-
-        UpdateScale();
-      }
-
-      if (Speed.Mutate())
-      {
-        SpeedModifier = Speed.Value;
-        PropertiesChangedListeners?.Invoke();
-
-        UpdateNourishmentDelegate();
-      }
     }
 
     public virtual void UpdateScale()
