@@ -8,8 +8,8 @@ namespace Core
   public static class WorldMatrix
   {
     public static string World = "LargeWorld";
-    public static int WalkablePointsAmountPerBox = 5;
-    public static int amountOfBoxesPerMatrixLayer = 50;
+    public static int WalkablePointsAmountPerBox = 25;
+    public static int amountOfBoxesPerMatrixLayer = 3;
     public static int WalkableMatrixBoxSize; //should not be set manually
     public static int WorldSize;
     public static IList<MonoBehaviour> WalkablePoints;
