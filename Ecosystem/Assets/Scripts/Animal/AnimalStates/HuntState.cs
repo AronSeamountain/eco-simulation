@@ -29,13 +29,17 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-       _target = _carnivore.Target;
+      _target = _carnivore.Target;
+      var position = _carnivore.transform.position;
+      var closestPoint = _target.animalCollider.ClosestPointOnBounds(position);
+      _carnivore.GoTo(closestPoint);
+      
       if (!_carnivore.Alive) return AnimalState.Dead;
       if (_carnivore.IsThirsty && !_carnivore.KnowsWaterLocation && !_carnivore.IsHungry)
         return AnimalState.SearchWorld;
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
-      if (_carnivore.GetStaminaDelegate().StaminaZero)
+      if (_carnivore.GetStaminaDelegate().StaminaZero && !_target.Dead && Vector3.Distance(position, closestPoint) > _carnivore.Reach + 1f)
       {
         _carnivore.Target = null;
         _carnivore.GetStaminaDelegate().IncreaseStamina(3);
@@ -47,10 +51,7 @@ namespace Animal.AnimalStates
         _carnivore.Target = null;
         return AnimalState.Wander;
       }
-
-      var position = _carnivore.transform.position;
-      var closestPoint = _target.animalCollider.ClosestPointOnBounds(position);
-      _carnivore.GoTo(closestPoint);
+      
       
       if (Vector3.Distance(position, closestPoint) < _carnivore.Reach)
       {
