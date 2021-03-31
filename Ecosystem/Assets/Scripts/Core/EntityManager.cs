@@ -202,9 +202,8 @@ namespace Core
         var z = Random.Range(zMin, zMax);
         var vector = new Vector3(x, 0, z);
         var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
-
-
-        Place(instance);
+        
+        Place(instance,vector);
         list?.Add(instance);
       }
     }
