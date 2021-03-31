@@ -27,9 +27,9 @@ namespace Core
     public static float HoursInRealSeconds = 0.5f;
 
     private const float HoursPerDay = 24;
-    public static int InitialWolves = 300;
-    public static int InitialRabbits = 300;
-    public static int InitialPlants = 300;
+    public static int InitialWolves = 25;
+    public static int InitialRabbits = 100;
+    public static int InitialPlants = 100;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
     [SerializeField] private bool performanceMode;
