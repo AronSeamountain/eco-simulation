@@ -131,15 +131,8 @@ namespace Core
       SpawnAndAddGeneric(WalkablePointsAmount, walkablePointPrefab, WalkablePoints);
       NavMeshUtil.WalkablePoints = WalkablePoints;
       var size = 500;
-
-      List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[10, 10];
-      for (int i = 0; i < matrix.GetLength(0); i++)
-      {
-        for (int j = 0; j < matrix.GetLength(1); j++)
-        {
-          matrix[i, j] = new List<MonoBehaviour>();
-        }
-      }
+     
+      List<MonoBehaviour>[,] matrix = InitMatrix();
 
       foreach (var wp in WalkablePoints)
       {
@@ -149,6 +142,25 @@ namespace Core
         matrix[x, z].Add(wp);
       }
 
+      PopulateAdjacencyList(matrix);
+      NavMeshUtil.WalkablePointMatrix = matrix;
+    }
+
+    private List<MonoBehaviour>[,]  InitMatrix()
+    {
+      List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[10, 10];
+      for (int i = 0; i < matrix.GetLength(0); i++)
+      {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+          matrix[i, j] = new List<MonoBehaviour>();
+        }
+      }
+
+      return matrix;
+    }
+    private void PopulateAdjacencyList(List<MonoBehaviour>[,] matrix)
+    {
       IList<List<MonoBehaviour>> adjacencyList =
         new List<List<MonoBehaviour>>();
 
@@ -187,40 +199,8 @@ namespace Core
           adjacencyList.Add(tempList);
         }
       }
-
       NavMeshUtil.WalkablePointAdjacencyList = adjacencyList;
-
-      /* var current = matrix[0, 0];
-       for (int i = 0; i < matrix.GetLength(0); i++)
-       {
-         for (int j = 0; j < matrix.GetLength(1); j++)
-         {
-           if (matrix[i, j].Count == 0) matrix[i, j] = current;
- 
-           current = matrix[i, j];
-         }
-       }
-       
-       for (int i = matrix.GetLength(0) - 1; i>= 0 ; i--)
-       {
-         for (int j = matrix.GetLength(1) - 1; j>= 0;  j--)
-         {
-           if (matrix[i, j].Count == 0) matrix[i, j] = current;
- 
-           current = matrix[i, j];
-         }
-       }
-       for (int i = matrix.GetLength(0) - 1; i>= 0 ; i--)
-       {
-         for (int j = matrix.GetLength(1) - 1; j>= 0;  j--)
-         {
-           Debug.Log(matrix[i, j].Count);
-         }
-       }*/
-
-      NavMeshUtil.WalkablePointMatrix = matrix;
     }
-
     /// <summary>
     ///   Spawns animals and adds them to the list of animals.
     /// </summary>
