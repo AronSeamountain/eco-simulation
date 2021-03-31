@@ -12,7 +12,7 @@ namespace Utils
     private const int AllLayers = -1;
     public static IList<MonoBehaviour> WalkablePoints;
     public static List<MonoBehaviour>[,] WalkablePointMatrix;
-
+    
     public static int WalkableLayer => NavMesh.GetAreaFromName(WalkableLayerName);
     
     /// <summary>
@@ -74,10 +74,6 @@ namespace Utils
       throw new Exception("Failed to find point far away " + direction);
     }
 
-    public static void initWalkablePoints(List<MonoBehaviour> walkablePoints)
-    {
-      WalkablePoints = walkablePoints;
-    }
 
     public static MonoBehaviour getRandomWalkablePoint()
     {
@@ -89,16 +85,16 @@ namespace Utils
       var x  = (int) selfPos.x / 50;
       var z  = (int) selfPos.z / 50;
 
-      var count = WalkablePointMatrix[x, z].Count;
-      if (count == 0)
-      {
-        Debug.Log("Count was 0");
-        return null;
-      }
+      var listWithEntry = findMatrixEntryWithWalkablePoint(x, z);
       
-      int index = Random.Range(0, WalkablePointMatrix[x, z].Count);
+      var index = Random.Range(0, listWithEntry.Count);
      
       return WalkablePointMatrix[x, z][index];
+    }
+
+    private static List<MonoBehaviour> findMatrixEntryWithWalkablePoint(int x, int z)
+    {
+      return WalkablePointMatrix[x, z];
     }
   }
 }

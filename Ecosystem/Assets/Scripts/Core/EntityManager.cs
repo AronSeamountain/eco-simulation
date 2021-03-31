@@ -30,7 +30,7 @@ namespace Core
     public static int InitialWolves = 300;
     public static int InitialRabbits = 0;
     public static int InitialPlants = 600;
-    public static int WalkablePointsAmount = 200;
+    public static int WalkablePointsAmount = 100;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -147,6 +147,33 @@ namespace Core
         matrix[x, z].Add(wp);
       }
 
+      var current = matrix[0, 0];
+      for (int i = 0; i < matrix.GetLength(0); i++)
+      {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+          if (matrix[i, j].Count == 0) matrix[i, j] = current;
+
+          current = matrix[i, j];
+        }
+      }
+      
+      for (int i = matrix.GetLength(0) - 1; i>= 0 ; i--)
+      {
+        for (int j = matrix.GetLength(1) - 1; j>= 0;  j--)
+        {
+          if (matrix[i, j].Count == 0) matrix[i, j] = current;
+
+          current = matrix[i, j];
+        }
+      }
+      for (int i = matrix.GetLength(0) - 1; i>= 0 ; i--)
+      {
+        for (int j = matrix.GetLength(1) - 1; j>= 0;  j--)
+        {
+          Debug.Log(matrix[i, j].Count);
+        }
+      }
       NavMeshUtil.WalkablePointMatrix = matrix;
     }
     /// <summary>

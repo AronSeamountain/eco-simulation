@@ -15,6 +15,7 @@ namespace Animal.AnimalStates
     private GameObject _destination;
     private float _distance;
 
+
     public SearchWorldState(AbstractAnimal animal)
     {
       _animal = animal;
@@ -30,7 +31,8 @@ namespace Animal.AnimalStates
       //speed is a bit faster than wander, since it needs to find food or water fast
       _animal.IsRunning = true;
       _animal.SetSpeed();
-      var walkablePoint = _animal.WorldPointFinder.getRandomWalkablePoint();
+      var walkablePoint = _animal.WorldPointFinder.getRandomWalkablePoint(_animal);
+        
       _destination = walkablePoint.gameObject;
       _animal.GoTo(_destination.transform.position);
       
