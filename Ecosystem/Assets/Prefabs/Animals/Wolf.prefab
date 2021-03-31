@@ -1832,9 +1832,19 @@ PrefabInstance:
       objectReference: {fileID: 140937291025682952}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
+      propertyPath: oldAgeThreshold
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
       propertyPath: animationManager
       value: 
       objectReference: {fileID: 3880049339338096485}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: maximumAgeInDays
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: VisualSizeModifier
