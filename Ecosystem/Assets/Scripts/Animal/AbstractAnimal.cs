@@ -282,7 +282,6 @@ namespace Animal
         var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
         SpeedModifier += _fullyGrownSpeed * updateAmount;
         SizeModifier += FullyGrownSize * updateAmount;
-        //PropertiesChangedListeners?.Invoke();
         UpdateScale();
       }
 
