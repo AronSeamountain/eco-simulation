@@ -32,10 +32,9 @@ namespace Animal.AnimalStates
       _animal.IsRunning = true;
       _animal.SetSpeed();
       var walkablePoint = _animal.WorldPointFinder.getRandomWalkablePoint(_animal);
-        
+
       _destination = walkablePoint.gameObject;
       _animal.GoTo(_destination.transform.position);
-      
     }
 
     public AnimalState Execute()
@@ -55,10 +54,10 @@ namespace Animal.AnimalStates
 
       var position = _animal.gameObject.transform.position;
       var closestPoint = _destination.GetComponent<Collider>().ClosestPoint(position);
-      if (Vector3.Distance(position, closestPoint) < _animal.Reach*2) 
+      if (Vector3.Distance(position, closestPoint) < _animal.Reach * 2)
         return AnimalState.Wander; // needs to change state so that it finds a new walkablePoint
 
-      
+
       return AnimalState.SearchWorld;
     }
 

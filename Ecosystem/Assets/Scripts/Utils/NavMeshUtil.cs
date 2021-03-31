@@ -14,9 +14,9 @@ namespace Utils
     private const int AllLayers = -1;
     public static List<MonoBehaviour>[,] WalkablePointMatrix;
     public static IList<List<MonoBehaviour>> WalkablePointAdjacencyList;
-    
+
     public static int WalkableLayer => NavMesh.GetAreaFromName(WalkableLayerName);
-    
+
     /// <summary>
     ///   Gets a random point of the nav mesh.
     /// </summary>
@@ -79,35 +79,36 @@ namespace Utils
 
     public static MonoBehaviour getRandomWalkablePoint()
     {
-      int index = Random.Range(0,WorldMatrix.WalkablePoints.Count);
+      int index = Random.Range(0, WorldMatrix.WalkablePoints.Count);
       return WorldMatrix.WalkablePoints[index];
     }
+
     public static MonoBehaviour getRandomWalkablePointInMatrix(Vector3 selfPos)
     {
       var x = (int) selfPos.x / WorldMatrix.WalkableMatrixBoxSize;
-      var z  = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
+      var z = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
 
       var listWithEntry = findMatrixEntryWithWalkablePoint(x, z);
-      
+
       var index = Random.Range(0, listWithEntry.Count);
-     
+
       return WalkablePointMatrix[x, z][index];
     }
-  
+
     private static List<MonoBehaviour> findMatrixEntryWithWalkablePoint(int x, int z)
     {
       return WalkablePointMatrix[x, z];
     }
-    
+
     public static MonoBehaviour getRandomWalkablePointAdjacencyList(Vector3 selfPos)
     {
       var x = (int) selfPos.x / WorldMatrix.WalkableMatrixBoxSize;
-      var z  = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
-      
-    
+      var z = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
+
+
       var adjacentWalkablePoints = WalkablePointAdjacencyList[x * WorldMatrix.amountOfBoxesPerMatrixLayer + z];
       var walkablePoint = adjacentWalkablePoints[Random.Range(0, adjacentWalkablePoints.Count)];
-    
+
       return walkablePoint;
     }
   }

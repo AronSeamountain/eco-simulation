@@ -28,12 +28,12 @@ namespace Core
     /// </summary>
     public static float HoursInRealSeconds = 0.5f;
 
-    
+
     private const float HoursPerDay = 24;
     public static int InitialWolves = 300;
     public static int InitialRabbits = 0;
     public static int InitialPlants = 600;
-    
+
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -46,14 +46,13 @@ namespace Core
     public DayTick DayTickListeners;
     public Tick HourTickListeners;
     private int plantCount;
-    
+
     public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
 
-    
 
     private void Awake()
     {
@@ -64,8 +63,8 @@ namespace Core
       SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
-     
-    
+
+
       SpawnAndAddWalkablePoints();
 
       foreach (var animal in Animals)
@@ -130,24 +129,26 @@ namespace Core
     /// </summary>
     public void SpawnAndAddWalkablePoints()
     {
-     
       List<MonoBehaviour>[,] matrix = WorldMatrix.InitMatrix();
       PopulateWorldWithWalkablePoints(matrix);
       WorldMatrix.AddWalkablePointsToMatrix(matrix);
       WorldMatrix.PopulateAdjacencyList(matrix);
-     
     }
-    private void PopulateWorldWithWalkablePoints( List<MonoBehaviour>[,] matrix)
+
+    private void PopulateWorldWithWalkablePoints(List<MonoBehaviour>[,] matrix)
     {
       for (int i = 0; i < matrix.GetLength(0); i++)
       {
         for (int j = 0; j < matrix.GetLength(1); j++)
         {
-          SpawnAndAddGeneric(WorldMatrix.WalkablePointsAmountPerBox, walkablePointPrefab, i * WorldMatrix.WalkableMatrixBoxSize, (i + 1) * WorldMatrix.WalkableMatrixBoxSize,
-            j * WorldMatrix.WalkableMatrixBoxSize, (j + 1) * WorldMatrix.WalkableMatrixBoxSize, WorldMatrix.WalkablePoints);
+          SpawnAndAddGeneric(WorldMatrix.WalkablePointsAmountPerBox, walkablePointPrefab,
+            i * WorldMatrix.WalkableMatrixBoxSize, (i + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            j * WorldMatrix.WalkableMatrixBoxSize, (j + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            WorldMatrix.WalkablePoints);
         }
       }
     }
+
     /// <summary>
     ///   Spawns animals and adds them to the list of animals.
     /// </summary>
@@ -184,14 +185,15 @@ namespace Core
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
-        
+
 
         Place(instance);
         list?.Add(instance);
       }
     }
-    
-    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab,int xMin, int xMax, int zMin,int zMax, ICollection<T> list = null)
+
+    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, int xMin, int xMax, int zMin, int zMax,
+      ICollection<T> list = null)
       where T : MonoBehaviour
     {
       for (var i = 0; i < amount; i++)
@@ -200,7 +202,7 @@ namespace Core
         var z = Random.Range(zMin, zMax);
         var vector = new Vector3(x, 0, z);
         var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
-        
+
 
         Place(instance);
         list?.Add(instance);
@@ -210,11 +212,11 @@ namespace Core
     private void Place<T>(T instance) where T : MonoBehaviour
     {
       var vector = NavMeshUtil.GetRandomLocation();
-      Place(instance,vector);
+      Place(instance, vector);
     }
+
     private void Place<T>(T instance, Vector3 v) where T : MonoBehaviour
     {
-      
       var foundPointOnNavMesh = NavMesh.SamplePosition(v, out var hit, 300, -1);
 
       if (!foundPointOnNavMesh)

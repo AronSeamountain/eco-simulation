@@ -37,14 +37,13 @@ namespace Menu
       if (number == 0)
       {
         World = "LargeWorld";
-        WorldMatrix.World = "LargeWorld"; 
+        WorldMatrix.World = "LargeWorld";
       }
       else if (number == 1)
       {
         World = "World";
-        WorldMatrix.World = "World"; 
+        WorldMatrix.World = "World";
       }
     }
   }
-
 }

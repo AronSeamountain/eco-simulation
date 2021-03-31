@@ -67,7 +67,7 @@ namespace Animal
     private float _fleeSpeed;
     private float _fullyGrownSpeed;
     private float _fullyGrownSize;
-    
+
     protected HealthDelegate _healthDelegate;
     private int _hoursUntilFertile;
 
@@ -114,6 +114,7 @@ namespace Animal
     public Gender Gender { get; private set; }
 
     public IWorldPointFinder WorldPointFinder { get; private set; }
+
     public AnimalSpecies Species
     {
       get => _species;
@@ -292,6 +293,7 @@ namespace Animal
     {
       WorldPointFinder = new AdjacencyListWorldPointFinderImpl();
     }
+
     private void ResetHealthAndActivate()
     {
       gameObject.SetActive(true);
@@ -484,7 +486,7 @@ namespace Animal
     protected abstract void DecreaseStaminaIfRunning();
 
     public void SetMouthColor(Color color)
-    { 
+    {
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
       mouthParticles.Emit(1);
@@ -626,7 +628,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
       UpdateNourishmentDelegate();
-      
+
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
@@ -646,6 +648,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       return sizeCubed + SpeedModifier * SpeedModifier;
     }
+
     public bool NeedsNourishment()
     {
       return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
