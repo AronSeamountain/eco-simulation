@@ -257,7 +257,7 @@ namespace Core
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
-        Instantiate()
+        
 
         Place(instance);
         list?.Add(instance);
