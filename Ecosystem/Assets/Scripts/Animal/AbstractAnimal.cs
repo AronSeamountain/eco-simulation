@@ -713,7 +713,6 @@ namespace Animal
 
     public void Boost()
     {
-      // meshRenderer.enabled = false;
     }
   }
 }
