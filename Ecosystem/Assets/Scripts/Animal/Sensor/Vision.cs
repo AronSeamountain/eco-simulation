@@ -37,6 +37,9 @@ namespace Animal.Sensor
     public delegate void WaterFound(Water water);
 
     [SerializeField] private Transform eyesTransform;
+    private int _maxHeight = 5;
+    private int _maxLength = 40;
+    private int _maxWidth = 10;
     private int _height;
     private int _length;
     private int _width;
@@ -45,6 +48,15 @@ namespace Animal.Sensor
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
+
+    /// <summary>
+    /// Sets the size to be the given Percentage of the max size.
+    /// </summary>
+    /// <param name="percecntage"></param>
+    public void SetLengthPercentage(float percecntage)
+    {
+      Length =  (int) (_maxLength * percecntage);
+    }
 
     private int Height
     {
@@ -78,9 +90,9 @@ namespace Animal.Sensor
 
     private void Start()
     {
-      Height = 5;
-      Width = 10;
-      Length = 10;
+      Height = _maxHeight;
+      Width = _maxWidth;
+      Length = _maxLength/2;
     }
 
     private void OnTriggerEnter(Collider other)

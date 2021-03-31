@@ -82,8 +82,8 @@ namespace Animal
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
-    public Gene Speed;
-    public Gene Size;
+    public Gene SpeedGene;
+    public Gene SizeGene;
     public Gene VisionGene;
     public Gene HearingGene;
     public StateChanged StateChangedListeners;
@@ -417,10 +417,10 @@ namespace Animal
 
       child.ResetGameObject(); //resets to default/random values
 
-      child.Speed = new Gene(father.Speed, Speed);
-      child.Size = new Gene(father.Size, Size);
-      child._fullyGrownSpeed = child.Speed.Value;
-      child._fullyGrownSize = child.Size.Value;
+      child.SpeedGene = new Gene(father.SpeedGene, SpeedGene);
+      child.SizeGene = new Gene(father.SizeGene, SizeGene);
+      child._fullyGrownSpeed = child.SpeedGene.Value;
+      child._fullyGrownSize = child.SizeGene.Value;
 
       child.VisionGene = new Gene(father.VisionGene, VisionGene);
       child.HearingGene = new Gene(father.HearingGene, HearingGene);
@@ -608,10 +608,10 @@ namespace Animal
       var visionPercentage = VisionGene.Bits / totalBits;
 
       //set visual area
-      
+      vision.SetLengthPercentage(visionPercentage);
 
       //set hearing area
-
+      hearing.SetSizePercentage(hearingPercentage);
 
     }
 
@@ -658,11 +658,16 @@ namespace Animal
     {
       if (IsChild) return; //child no need
       IsChild = true;
-      Speed = new Gene();
-      Size = new Gene();
+      InitGenes();
+      InitProperties(SpeedGene.Value, SizeGene.Value);
+    }
+
+    private void InitGenes()
+    {
+      SpeedGene = new Gene();
+      SizeGene = new Gene();
       HearingGene = new Gene();
       VisionGene = new Gene();
-      InitProperties(Speed.Value, Size.Value);
     }
 
     private void ResetStateMachine()
