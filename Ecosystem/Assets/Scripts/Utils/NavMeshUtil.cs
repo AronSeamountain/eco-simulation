@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Animal;
 using Core;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,6 +14,7 @@ namespace Utils
     private const int AllLayers = -1;
     public static IList<MonoBehaviour> WalkablePoints;
     public static List<MonoBehaviour>[,] WalkablePointMatrix;
+    public static IList<List<MonoBehaviour>> WalkablePointAdjacencyList;
     
     public static int WalkableLayer => NavMesh.GetAreaFromName(WalkableLayerName);
     
@@ -92,10 +94,22 @@ namespace Utils
      
       return WalkablePointMatrix[x, z][index];
     }
-
+  
     private static List<MonoBehaviour> findMatrixEntryWithWalkablePoint(int x, int z)
     {
       return WalkablePointMatrix[x, z];
+    }
+    
+    public static MonoBehaviour getRandomWalkablePointAdjacencyList(Vector3 selfPos)
+    {
+      var x = (int) selfPos.x / EntityManager.walkableMatrixBoxSize;
+      var z  = (int) selfPos.z / EntityManager.walkableMatrixBoxSize;
+      
+    
+      var adjacentWalkablePoints = WalkablePointAdjacencyList[x * 10 + z];
+      var walkablePoint = adjacentWalkablePoints[Random.Range(0, adjacentWalkablePoints.Count)];
+    
+      return walkablePoint;
     }
   }
 }

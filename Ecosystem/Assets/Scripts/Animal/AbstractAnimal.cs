@@ -4,6 +4,7 @@ using System.Linq;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Animal.Sensor;
+using Animal.WorldPointFinders;
 using Core;
 using Foods;
 using Pools;
@@ -289,7 +290,7 @@ namespace Animal
 
     private void ResetWorldPointFinder()
     {
-      WorldPointFinder = new AnimalWorldPointFinderMatrixImpl();
+      WorldPointFinder = new AdjacencyListWorldPointFinderImpl();
     }
     private void ResetHealthAndActivate()
     {

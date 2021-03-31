@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
 using Logger;
@@ -30,7 +31,7 @@ namespace Core
     public static int InitialWolves = 300;
     public static int InitialRabbits = 0;
     public static int InitialPlants = 600;
-    public static int WalkablePointsAmount = 100;
+    public static int WalkablePointsAmount = 400;
     public static int walkableMatrixBoxSize = 50;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
@@ -64,7 +65,7 @@ namespace Core
 
       WalkablePoints = new List<MonoBehaviour>();
       SpawnAndAddWalkablePoints();
-   
+
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
@@ -127,10 +128,10 @@ namespace Core
     /// </summary>
     private void SpawnAndAddWalkablePoints()
     {
-      SpawnAndAddGeneric(WalkablePointsAmount, walkablePointPrefab,WalkablePoints);
+      SpawnAndAddGeneric(WalkablePointsAmount, walkablePointPrefab, WalkablePoints);
       NavMeshUtil.WalkablePoints = WalkablePoints;
       var size = 500;
-      
+
       List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[10, 10];
       for (int i = 0; i < matrix.GetLength(0); i++)
       {
@@ -139,44 +140,87 @@ namespace Core
           matrix[i, j] = new List<MonoBehaviour>();
         }
       }
+
       foreach (var wp in WalkablePoints)
       {
-        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x/walkableMatrixBoxSize);
-        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z/walkableMatrixBoxSize);
-        Debug.Log("X" + x +  " Z" + z );
-        
+        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x / walkableMatrixBoxSize);
+        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z / walkableMatrixBoxSize);
+
         matrix[x, z].Add(wp);
       }
 
-      var current = matrix[0, 0];
+      IList<List<MonoBehaviour>> adjacencyList =
+        new List<List<MonoBehaviour>>();
+
+
       for (int i = 0; i < matrix.GetLength(0); i++)
       {
         for (int j = 0; j < matrix.GetLength(1); j++)
         {
-          if (matrix[i, j].Count == 0) matrix[i, j] = current;
+          var tempList = new List<MonoBehaviour>();
+          if (j > 0)
+            foreach (var monoBehaviour in matrix[i, j - 1]) // adds all from matrix entry to the left
+              tempList.Add(monoBehaviour);
+          if (j < matrix.GetLength(1) - 1)
+          {
 
-          current = matrix[i, j];
-        }
-      }
-      
-      for (int i = matrix.GetLength(0) - 1; i>= 0 ; i--)
-      {
-        for (int j = matrix.GetLength(1) - 1; j>= 0;  j--)
-        {
-          if (matrix[i, j].Count == 0) matrix[i, j] = current;
+            foreach (var monoBehaviour in matrix[i, j + 1])
+            {
+              // adds all from matrix entry to the right
+              tempList.Add(monoBehaviour);
+            }
+          }
+          
+          if (i > 0)
+            foreach (var monoBehaviour in matrix[i - 1, j]) // adds all from matrix entry above
+              tempList.Add(monoBehaviour);
 
-          current = matrix[i, j];
+          if (i < matrix.GetLength(0) - 1)
+            foreach (var monoBehaviour in matrix[i + 1, j]) // adds all from matrix entry below
+              tempList.Add(monoBehaviour);
+          
+         
+          foreach (var monoBehaviour in matrix[i, j]) // adds all from current matrix entry 
+            tempList.Add(monoBehaviour);
+
+          if(tempList.Count < 1) Debug.Log("You done fucked up");
+          adjacencyList.Add(tempList);
         }
       }
-      for (int i = matrix.GetLength(0) - 1; i>= 0 ; i--)
-      {
-        for (int j = matrix.GetLength(1) - 1; j>= 0;  j--)
-        {
-          Debug.Log(matrix[i, j].Count);
-        }
-      }
+
+      NavMeshUtil.WalkablePointAdjacencyList = adjacencyList;
+
+      /* var current = matrix[0, 0];
+       for (int i = 0; i < matrix.GetLength(0); i++)
+       {
+         for (int j = 0; j < matrix.GetLength(1); j++)
+         {
+           if (matrix[i, j].Count == 0) matrix[i, j] = current;
+ 
+           current = matrix[i, j];
+         }
+       }
+       
+       for (int i = matrix.GetLength(0) - 1; i>= 0 ; i--)
+       {
+         for (int j = matrix.GetLength(1) - 1; j>= 0;  j--)
+         {
+           if (matrix[i, j].Count == 0) matrix[i, j] = current;
+ 
+           current = matrix[i, j];
+         }
+       }
+       for (int i = matrix.GetLength(0) - 1; i>= 0 ; i--)
+       {
+         for (int j = matrix.GetLength(1) - 1; j>= 0;  j--)
+         {
+           Debug.Log(matrix[i, j].Count);
+         }
+       }*/
+
       NavMeshUtil.WalkablePointMatrix = matrix;
     }
+
     /// <summary>
     ///   Spawns animals and adds them to the list of animals.
     /// </summary>
@@ -213,6 +257,7 @@ namespace Core
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
+        Instantiate()
 
         Place(instance);
         list?.Add(instance);

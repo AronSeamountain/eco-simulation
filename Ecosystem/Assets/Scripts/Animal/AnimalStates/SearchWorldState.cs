@@ -55,7 +55,7 @@ namespace Animal.AnimalStates
 
       var position = _animal.gameObject.transform.position;
       var closestPoint = _destination.GetComponent<Collider>().ClosestPoint(position);
-      if (Vector3.Distance(position, closestPoint) < _animal.Reach)
+      if (Vector3.Distance(position, closestPoint) < _animal.Reach*2)
         return AnimalState.Wander;
 
       
