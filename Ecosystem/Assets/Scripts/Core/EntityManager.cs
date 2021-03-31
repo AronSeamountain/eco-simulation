@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
 using Logger;
@@ -45,12 +46,18 @@ namespace Core
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
     public FpsDelegate FpsDelegate { get; private set; }
+    public static bool PerformanceModeMenuOverride = true;
     public static bool PerformanceMode;
+    public static bool OverlappableAnimalsMenuOverride = true;
+    public static bool LogMenuOverride = true;
+    public bool Log { get; private set; }
 
     private void Awake()
     {
-      PerformanceMode = performanceMode;
-      AnimalPool.OverlappableAnimals = overlappableAnimals;
+      Log = log || LogMenuOverride;
+      PerformanceMode = performanceMode || PerformanceModeMenuOverride;
+      
+      AnimalPool.OverlappableAnimals = overlappableAnimals || OverlappableAnimalsMenuOverride;
 
       FpsDelegate = new FpsDelegate();
 
@@ -82,7 +89,7 @@ namespace Core
     private void Update()
     {
       UpdateTick();
-      if (log) FpsDelegate.FramePassed();
+      if (Log) FpsDelegate.FramePassed();
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -245,7 +252,7 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log)
+          if (Log)
           {
             _logger.Snapshot(this);
             _logger.Persist();

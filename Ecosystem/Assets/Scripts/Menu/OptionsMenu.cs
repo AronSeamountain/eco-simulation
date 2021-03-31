@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Core;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Menu
 {
@@ -30,6 +31,21 @@ namespace Menu
     {
       float.TryParse(number, NumberStyles.Any, CultureInfo.InvariantCulture, out float result);
       EntityManager.HoursInRealSeconds = result;
+    }
+
+    public void SetPerformanceMode(Toggle toggle)
+    {
+      EntityManager.PerformanceModeMenuOverride = toggle.isOn;
+    }
+
+    public void SetOverlappableAnimals(Toggle toggle)
+    {
+      EntityManager.OverlappableAnimalsMenuOverride = toggle.isOn;
+    }
+    
+    public void SetLogger(Toggle toggle)
+    {
+      EntityManager.LogMenuOverride = toggle.isOn;
     }
 
     public void SetWorld(int number)
