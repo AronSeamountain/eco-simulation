@@ -31,6 +31,7 @@ namespace Core
     public static int InitialRabbits = 0;
     public static int InitialPlants = 600;
     public static int WalkablePointsAmount = 100;
+    public static int walkableMatrixBoxSize = 50;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -140,8 +141,8 @@ namespace Core
       }
       foreach (var wp in WalkablePoints)
       {
-        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x/50);
-        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z/50);
+        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x/walkableMatrixBoxSize);
+        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z/walkableMatrixBoxSize);
         Debug.Log("X" + x +  " Z" + z );
         
         matrix[x, z].Add(wp);

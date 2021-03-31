@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -82,8 +83,8 @@ namespace Utils
     }
     public static MonoBehaviour getRandomWalkablePointInMatrix(Vector3 selfPos)
     {
-      var x  = (int) selfPos.x / 50;
-      var z  = (int) selfPos.z / 50;
+      var x = (int) selfPos.x / EntityManager.walkableMatrixBoxSize;
+      var z  = (int) selfPos.z / EntityManager.walkableMatrixBoxSize;
 
       var listWithEntry = findMatrixEntryWithWalkablePoint(x, z);
       
