@@ -84,6 +84,8 @@ namespace Animal
     public PropertiesChanged PropertiesChangedListeners;
     public Gene Speed;
     public Gene Size;
+    public Gene VisionGene;
+    public Gene HearingGene;
     public StateChanged StateChangedListeners;
     public bool IsChild { get; private set; }
     public bool IsPregnant { get; private set; }
@@ -420,6 +422,9 @@ namespace Animal
       child._fullyGrownSpeed = child.Speed.Value;
       child._fullyGrownSize = child.Size.Value;
 
+      child.VisionGene = new Gene(father.VisionGene, VisionGene);
+      child.HearingGene = new Gene(father.HearingGene, HearingGene);
+
       child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
       ChildSpawnedListeners?.Invoke(child, this);
 
@@ -583,10 +588,31 @@ namespace Animal
       SizeModifier = size;
       movement.SpeedFactor = SpeedModifier;
 
+      SetSensorySizes();
+      
       InitNourishmentDelegate();
 
       // Setup size modification
       UpdateScale();
+    }
+
+    /// <summary>
+    /// Initializes the visual area and hearing radius depending on the sesnnseDistribution Gene. 
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    private void SetSensorySizes()
+    {
+      //calculate ratio
+      var totalBits = VisionGene.Bits + HearingGene.Bits;
+      var hearingPercentage = HearingGene.Bits / totalBits;
+      var visionPercentage = VisionGene.Bits / totalBits;
+
+      //set visual area
+      
+
+      //set hearing area
+
+
     }
 
     private void InitNourishmentDelegate()
@@ -634,6 +660,8 @@ namespace Animal
       IsChild = true;
       Speed = new Gene();
       Size = new Gene();
+      HearingGene = new Gene();
+      VisionGene = new Gene();
       InitProperties(Speed.Value, Size.Value);
     }
 
