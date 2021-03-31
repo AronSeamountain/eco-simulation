@@ -40,7 +40,8 @@ namespace Menu
 
     public void SetOverlappableAnimals(Toggle toggle)
     {
-      EntityManager.OverlappableAnimalsMenuOverride = toggle.isOn;
+      //!toggle because !collisions = overlap
+      EntityManager.OverlappableAnimalsMenuOverride = !toggle.isOn;
     }
     
     public void SetLogger(Toggle toggle)

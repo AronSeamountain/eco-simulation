@@ -48,7 +48,7 @@ namespace Core
     public FpsDelegate FpsDelegate { get; private set; }
     public static bool PerformanceModeMenuOverride = true;
     public static bool PerformanceMode;
-    public static bool OverlappableAnimalsMenuOverride = true;
+    public static bool OverlappableAnimalsMenuOverride = false;
     public static bool LogMenuOverride = true;
     public bool Log { get; private set; }
 
