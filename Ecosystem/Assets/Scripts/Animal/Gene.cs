@@ -8,6 +8,7 @@ namespace Animal
   {
     private const float BaseMax = 1.6f;
     private const float BaseMin = 0.8f;
+    private const float MutateChance = 0.005f;
 
     public Gene()
     {
@@ -18,19 +19,19 @@ namespace Animal
 
     public Gene(Gene father, Gene mother)
     {
-      //Chromosome = MakeChromosomeUniform(father.Chromosome, mother.Chromosome);
       Chromosome = MakeChromosomeUniform(father.Chromosome, mother.Chromosome);
+      Mutate();
       Bits = CountSetBits(Chromosome);
       Value = father.Value < mother.Value
         ? EvaluateValue2(mother, father)
         : EvaluateValue2(father, mother);
     }
 
-    public int Bits { get; }
+    private int Bits { get; }
     public float Value { get; private set; }
-    public byte Chromosome { get; private set; }
+    private byte Chromosome { get; set; }
 
-    public float ChosenParent { get; private set; }
+    private float ChosenParent { get; set; }
 
     private float EvaluateValue(float max, float min)
     {
@@ -257,7 +258,6 @@ namespace Animal
       var chromosome1 = (byte) (dadCrossover + momRemainder);
       var chromosome2 = (byte) (momCrossover + dadRemainder);
 
-
       if (Random.Range(0, 2) == 0)
       {
         ChosenParent = father.Value;
@@ -269,22 +269,25 @@ namespace Animal
     }
 
     /// <summary>
-    /// Mutates with a 2% chance. Renews the chromosome completely, so it can take on a value
-    /// between 0-255, or 0 1's - 8 1's. If the new chromosome is greater/lesser than the old it
-    /// increases/decreases the value with 5% 
+    /// Mutates with a MutateChance for every bit. For each bit it checks if it should mutate.
+    /// If it should it XOR's the bit with 1, simply flipping the bit.
     /// </summary>
     /// <returns></returns>
-    public bool Mutate()
+    private void Mutate()
     {
-      if (!(Random.Range(0, 1f) < 0.02f)) return false;
       var oldChromosome = Chromosome;
-      Chromosome = (byte) Random.Range(byte.MinValue, byte.MaxValue);
+      var bit = 7;
+      while (bit >= 0)
+      {
+        if (Random.Range(0, 1f) < MutateChance)
+        {
+          oldChromosome =  (byte) (oldChromosome ^ (1 << bit));
+        }
 
-      if (Chromosome > oldChromosome)
-        Value *= Random.Range(1, 1.05f);
-      else if (Chromosome < oldChromosome) Value *= Random.Range(0.95f, 1);
+        bit--;
+      }
 
-      return true;
+      Chromosome = oldChromosome;
     }
   }
 }
