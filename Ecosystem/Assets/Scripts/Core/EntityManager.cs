@@ -31,7 +31,7 @@ namespace Core
     public static int InitialWolves = 300;
     public static int InitialRabbits = 0;
     public static int InitialPlants = 600;
-    public static int WalkablePointsAmount = 400;
+    public static int WalkablePointsAmountPerBox = 5;
     public static int walkableMatrixBoxSize = 50;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
@@ -45,6 +45,7 @@ namespace Core
     public DayTick DayTickListeners;
     public Tick HourTickListeners;
     private int plantCount;
+    
     public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
@@ -62,7 +63,7 @@ namespace Core
       SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
-
+     
       WalkablePoints = new List<MonoBehaviour>();
       SpawnAndAddWalkablePoints();
 
@@ -128,24 +129,13 @@ namespace Core
     /// </summary>
     private void SpawnAndAddWalkablePoints()
     {
-      SpawnAndAddGeneric(WalkablePointsAmount, walkablePointPrefab, WalkablePoints);
-      NavMeshUtil.WalkablePoints = WalkablePoints;
-      var size = 500;
-     
       List<MonoBehaviour>[,] matrix = InitMatrix();
-
-      foreach (var wp in WalkablePoints)
-      {
-        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x / walkableMatrixBoxSize);
-        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z / walkableMatrixBoxSize);
-
-        matrix[x, z].Add(wp);
-      }
-
+      PopulateWorldWithWalkablePoints(matrix);
+      AddWalkablePointsToMatrix(matrix);
       PopulateAdjacencyList(matrix);
-      NavMeshUtil.WalkablePointMatrix = matrix;
+     
     }
-
+  
     private List<MonoBehaviour>[,]  InitMatrix()
     {
       List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[10, 10];
@@ -158,6 +148,30 @@ namespace Core
       }
 
       return matrix;
+    }
+
+    private void AddWalkablePointsToMatrix(List<MonoBehaviour>[,] matrix)
+    {
+      foreach (var wp in WalkablePoints)
+      {
+        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x / walkableMatrixBoxSize);
+        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z / walkableMatrixBoxSize);
+
+        matrix[x, z].Add(wp);
+      }
+      NavMeshUtil.WalkablePointMatrix = matrix;
+    }
+    private void PopulateWorldWithWalkablePoints( List<MonoBehaviour>[,] matrix)
+    {
+      for (int i = 0; i < matrix.GetLength(0); i++)
+      {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+          SpawnAndAddGeneric(WalkablePointsAmountPerBox, walkablePointPrefab, i * walkableMatrixBoxSize, (i + 1) * walkableMatrixBoxSize,
+            j * walkableMatrixBoxSize, (j + 1) * walkableMatrixBoxSize, WalkablePoints);
+        }
+      }
+      NavMeshUtil.WalkablePoints = WalkablePoints;
     }
     private void PopulateAdjacencyList(List<MonoBehaviour>[,] matrix)
     {
@@ -243,11 +257,33 @@ namespace Core
         list?.Add(instance);
       }
     }
+    
+    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab,int xMin, int xMax, int zMin,int zMax, ICollection<T> list = null)
+      where T : MonoBehaviour
+    {
+      for (var i = 0; i < amount; i++)
+      {
+        var x = Random.Range(xMin, xMax);
+        var z = Random.Range(zMin, zMax);
+        var vector = new Vector3(x, 0, z);
+        var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
+        
+
+        Place(instance);
+        Debug.Log(instance.gameObject.transform.position);
+        list?.Add(instance);
+      }
+    }
 
     private void Place<T>(T instance) where T : MonoBehaviour
     {
-      var coord = NavMeshUtil.GetRandomLocation();
-      var foundPointOnNavMesh = NavMesh.SamplePosition(coord, out var hit, 50, -1);
+      var vector = NavMeshUtil.GetRandomLocation();
+      Place(instance,vector);
+    }
+    private void Place<T>(T instance, Vector3 v) where T : MonoBehaviour
+    {
+      
+      var foundPointOnNavMesh = NavMesh.SamplePosition(v, out var hit, 300, -1);
 
       if (!foundPointOnNavMesh)
         QuitApplication("Could not find a position on the nav mesh when placing a game object");
