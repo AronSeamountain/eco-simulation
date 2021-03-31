@@ -76,6 +76,7 @@ namespace Animal
     public bool IsChild { get; private set; }
     public float FullyGrownSize => size.Value;
     public AgeChanged AgeChangedListeners;
+    public string Uuid { get; private set; }
 
     /// <summary>
     ///   The factor to decrease the speed and size with for newly spawned child animals.
@@ -235,6 +236,8 @@ namespace Animal
 
     public void ResetGameObject()
     {
+      Uuid = Guid.NewGuid().ToString();
+
       ResetGender();
       ResetProperties();
       ResetHealthAndActivate();
@@ -435,7 +438,8 @@ namespace Animal
       child.speed = new Gene(father.speed, speed);
       child.size = new Gene(father.size, size);
 
-      child.InitProperties(child.FullyGrownSpeed * ChildDecreaseValueFactor, child.FullyGrownSize * ChildDecreaseValueFactor);
+      child.InitProperties(child.FullyGrownSpeed * ChildDecreaseValueFactor,
+        child.FullyGrownSize * ChildDecreaseValueFactor);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
@@ -610,7 +614,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
       UpdateNourishmentDelegate();
-      
+
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
@@ -630,6 +634,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       return sizeCubed + SpeedModifier * SpeedModifier;
     }
+
     public bool NeedsNourishment()
     {
       return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
