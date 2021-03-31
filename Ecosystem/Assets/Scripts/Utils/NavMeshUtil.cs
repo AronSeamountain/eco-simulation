@@ -12,7 +12,6 @@ namespace Utils
   {
     private const string WalkableLayerName = "Walkable";
     private const int AllLayers = -1;
-    public static IList<MonoBehaviour> WalkablePoints;
     public static List<MonoBehaviour>[,] WalkablePointMatrix;
     public static IList<List<MonoBehaviour>> WalkablePointAdjacencyList;
     
@@ -80,13 +79,13 @@ namespace Utils
 
     public static MonoBehaviour getRandomWalkablePoint()
     {
-      int index = Random.Range(0,WalkablePoints.Count);
-      return WalkablePoints[index];
+      int index = Random.Range(0,WorldMatrix.WalkablePoints.Count);
+      return WorldMatrix.WalkablePoints[index];
     }
     public static MonoBehaviour getRandomWalkablePointInMatrix(Vector3 selfPos)
     {
-      var x = (int) selfPos.x / EntityManager.WalkableMatrixBoxSize;
-      var z  = (int) selfPos.z / EntityManager.WalkableMatrixBoxSize;
+      var x = (int) selfPos.x / WorldMatrix.WalkableMatrixBoxSize;
+      var z  = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
 
       var listWithEntry = findMatrixEntryWithWalkablePoint(x, z);
       
@@ -102,11 +101,11 @@ namespace Utils
     
     public static MonoBehaviour getRandomWalkablePointAdjacencyList(Vector3 selfPos)
     {
-      var x = (int) selfPos.x / EntityManager.WalkableMatrixBoxSize;
-      var z  = (int) selfPos.z / EntityManager.WalkableMatrixBoxSize;
+      var x = (int) selfPos.x / WorldMatrix.WalkableMatrixBoxSize;
+      var z  = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
       
     
-      var adjacentWalkablePoints = WalkablePointAdjacencyList[x * EntityManager.amountOfBoxesPerMatrixLayer + z];
+      var adjacentWalkablePoints = WalkablePointAdjacencyList[x * WorldMatrix.amountOfBoxesPerMatrixLayer + z];
       var walkablePoint = adjacentWalkablePoints[Random.Range(0, adjacentWalkablePoints.Count)];
     
       return walkablePoint;

@@ -28,15 +28,12 @@ namespace Core
     /// </summary>
     public static float HoursInRealSeconds = 0.5f;
 
-    public static string World = "LargeWorld";
+    
     private const float HoursPerDay = 24;
     public static int InitialWolves = 300;
     public static int InitialRabbits = 0;
     public static int InitialPlants = 600;
-    private static int WalkablePointsAmountPerBox = 5;
-    public static int amountOfBoxesPerMatrixLayer = 15;
-    public static int WalkableMatrixBoxSize; //should not be set manually
-    public static int WorldSize;
+    
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -56,7 +53,7 @@ namespace Core
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
 
-    public IList<MonoBehaviour> WalkablePoints { get; private set; }
+    
 
     private void Awake()
     {
@@ -68,7 +65,7 @@ namespace Core
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
      
-      WalkablePoints = new List<MonoBehaviour>();
+    
       SpawnAndAddWalkablePoints();
 
       foreach (var animal in Animals)
@@ -131,49 +128,14 @@ namespace Core
     /// <summary>
     ///   Creates the walkable points which the animals will look for
     /// </summary>
-    private void SpawnAndAddWalkablePoints()
+    public void SpawnAndAddWalkablePoints()
     {
-      if (World.Equals("LargeWorld"))
-      {
-        WorldSize = 500;
-      }
-      else
-      {
-        WorldSize = 150;
-      }
-      List<MonoBehaviour>[,] matrix = InitMatrix();
-      PopulateWorldWithWalkablePoints(matrix);
-      AddWalkablePointsToMatrix(matrix);
-      PopulateAdjacencyList(matrix);
      
-    }
-  
-    private List<MonoBehaviour>[,]  InitMatrix()
-    {
-      WalkableMatrixBoxSize =(int) Math.Ceiling(WorldSize / (float) amountOfBoxesPerMatrixLayer);
-      Debug.Log("WALK" + WalkableMatrixBoxSize);
-      List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[amountOfBoxesPerMatrixLayer, amountOfBoxesPerMatrixLayer];
-      for (int i = 0; i < matrix.GetLength(0); i++)
-      {
-        for (int j = 0; j < matrix.GetLength(1); j++)
-        {
-          matrix[i, j] = new List<MonoBehaviour>();
-        }
-      }
-
-      return matrix;
-    }
-
-    private void AddWalkablePointsToMatrix(List<MonoBehaviour>[,] matrix)
-    {
-      foreach (var wp in WalkablePoints)
-      {
-        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x / WalkableMatrixBoxSize);
-        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z / WalkableMatrixBoxSize);
-
-        matrix[x, z].Add(wp);
-      }
-      NavMeshUtil.WalkablePointMatrix = matrix;
+      List<MonoBehaviour>[,] matrix = WorldMatrix.InitMatrix();
+      PopulateWorldWithWalkablePoints(matrix);
+      WorldMatrix.AddWalkablePointsToMatrix(matrix);
+      WorldMatrix.PopulateAdjacencyList(matrix);
+     
     }
     private void PopulateWorldWithWalkablePoints( List<MonoBehaviour>[,] matrix)
     {
@@ -181,53 +143,10 @@ namespace Core
       {
         for (int j = 0; j < matrix.GetLength(1); j++)
         {
-          SpawnAndAddGeneric(WalkablePointsAmountPerBox, walkablePointPrefab, i * WalkableMatrixBoxSize, (i + 1) * WalkableMatrixBoxSize,
-            j * WalkableMatrixBoxSize, (j + 1) * WalkableMatrixBoxSize, WalkablePoints);
+          SpawnAndAddGeneric(WorldMatrix.WalkablePointsAmountPerBox, walkablePointPrefab, i * WorldMatrix.WalkableMatrixBoxSize, (i + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            j * WorldMatrix.WalkableMatrixBoxSize, (j + 1) * WorldMatrix.WalkableMatrixBoxSize, WorldMatrix.WalkablePoints);
         }
       }
-      NavMeshUtil.WalkablePoints = WalkablePoints;
-    }
-    private void PopulateAdjacencyList(List<MonoBehaviour>[,] matrix)
-    {
-      IList<List<MonoBehaviour>> adjacencyList =
-        new List<List<MonoBehaviour>>();
-
-
-      for (int i = 0; i < matrix.GetLength(0); i++)
-      {
-        for (int j = 0; j < matrix.GetLength(1); j++)
-        {
-          var tempList = new List<MonoBehaviour>();
-          if (j > 0)
-            foreach (var monoBehaviour in matrix[i, j - 1]) // adds all from matrix entry to the left
-              tempList.Add(monoBehaviour);
-          if (j < matrix.GetLength(1) - 1)
-          {
-
-            foreach (var monoBehaviour in matrix[i, j + 1])
-            {
-              // adds all from matrix entry to the right
-              tempList.Add(monoBehaviour);
-            }
-          }
-          
-          if (i > 0)
-            foreach (var monoBehaviour in matrix[i - 1, j]) // adds all from matrix entry above
-              tempList.Add(monoBehaviour);
-
-          if (i < matrix.GetLength(0) - 1)
-            foreach (var monoBehaviour in matrix[i + 1, j]) // adds all from matrix entry below
-              tempList.Add(monoBehaviour);
-          
-         
-          foreach (var monoBehaviour in matrix[i, j]) // adds all from current matrix entry 
-            tempList.Add(monoBehaviour);
-
-          if(tempList.Count < 1) Debug.Log("You done fucked up");
-          adjacencyList.Add(tempList);
-        }
-      }
-      NavMeshUtil.WalkablePointAdjacencyList = adjacencyList;
     }
     /// <summary>
     ///   Spawns animals and adds them to the list of animals.
