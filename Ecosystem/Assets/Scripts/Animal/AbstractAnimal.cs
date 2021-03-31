@@ -35,10 +35,7 @@ namespace Animal
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-
-
-    private const float BiggestMutationChange = 0.3f;
-    private const float MutationPercentPerDay = 10f;
+    
     private const float RunningSpeedFactor = 5f;
 
     /// <summary>
@@ -279,7 +276,6 @@ namespace Animal
         var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
         SpeedModifier += _fullyGrownSpeed * updateAmount;
         SizeModifier += _fullyGrownSize * updateAmount;
-        //PropertiesChangedListeners?.Invoke();
         UpdateScale();
       }
 
@@ -292,33 +288,12 @@ namespace Animal
         //kills the animal if it is too slow, to not wait for them to actually die from being starved
         if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue);
       }
-
-      Mutate();
     }
 
     private void ResetHealthAndActivate()
     {
       gameObject.SetActive(true);
       _healthDelegate.ResetHealth();
-    }
-
-    private void Mutate()
-    {
-      if (Size.Mutate())
-      {
-        SizeModifier = Size.Value;
-        PropertiesChangedListeners?.Invoke();
-
-        UpdateScale();
-      }
-
-      if (Speed.Mutate())
-      {
-        SpeedModifier = Speed.Value;
-        PropertiesChangedListeners?.Invoke();
-
-        UpdateNourishmentDelegate();
-      }
     }
 
     public virtual void UpdateScale()
