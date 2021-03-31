@@ -85,8 +85,8 @@ namespace Utils
     }
     public static MonoBehaviour getRandomWalkablePointInMatrix(Vector3 selfPos)
     {
-      var x = (int) selfPos.x / EntityManager.walkableMatrixBoxSize;
-      var z  = (int) selfPos.z / EntityManager.walkableMatrixBoxSize;
+      var x = (int) selfPos.x / EntityManager.WalkableMatrixBoxSize;
+      var z  = (int) selfPos.z / EntityManager.WalkableMatrixBoxSize;
 
       var listWithEntry = findMatrixEntryWithWalkablePoint(x, z);
       
@@ -102,11 +102,11 @@ namespace Utils
     
     public static MonoBehaviour getRandomWalkablePointAdjacencyList(Vector3 selfPos)
     {
-      var x = (int) selfPos.x / EntityManager.walkableMatrixBoxSize;
-      var z  = (int) selfPos.z / EntityManager.walkableMatrixBoxSize;
+      var x = (int) selfPos.x / EntityManager.WalkableMatrixBoxSize;
+      var z  = (int) selfPos.z / EntityManager.WalkableMatrixBoxSize;
       
     
-      var adjacentWalkablePoints = WalkablePointAdjacencyList[x * 10 + z];
+      var adjacentWalkablePoints = WalkablePointAdjacencyList[x * EntityManager.amountOfBoxesPerMatrixLayer + z];
       var walkablePoint = adjacentWalkablePoints[Random.Range(0, adjacentWalkablePoints.Count)];
     
       return walkablePoint;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
@@ -12,6 +13,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Utils;
 using ILogger = Logger.ILogger;
+using Random = UnityEngine.Random;
 
 namespace Core
 {
@@ -26,13 +28,15 @@ namespace Core
     /// </summary>
     public static float HoursInRealSeconds = 0.5f;
 
-    public static string World;
+    public static string World = "LargeWorld";
     private const float HoursPerDay = 24;
     public static int InitialWolves = 300;
     public static int InitialRabbits = 0;
     public static int InitialPlants = 600;
-    public static int WalkablePointsAmountPerBox = 5;
-    public static int walkableMatrixBoxSize = 50;
+    private static int WalkablePointsAmountPerBox = 5;
+    public static int amountOfBoxesPerMatrixLayer = 15;
+    public static int WalkableMatrixBoxSize; //should not be set manually
+    public static int WorldSize;
     [SerializeField] private GameObject rabbitPrefab;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
@@ -129,6 +133,14 @@ namespace Core
     /// </summary>
     private void SpawnAndAddWalkablePoints()
     {
+      if (World.Equals("LargeWorld"))
+      {
+        WorldSize = 500;
+      }
+      else
+      {
+        WorldSize = 150;
+      }
       List<MonoBehaviour>[,] matrix = InitMatrix();
       PopulateWorldWithWalkablePoints(matrix);
       AddWalkablePointsToMatrix(matrix);
@@ -138,7 +150,9 @@ namespace Core
   
     private List<MonoBehaviour>[,]  InitMatrix()
     {
-      List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[10, 10];
+      WalkableMatrixBoxSize =(int) Math.Ceiling(WorldSize / (float) amountOfBoxesPerMatrixLayer);
+      Debug.Log("WALK" + WalkableMatrixBoxSize);
+      List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[amountOfBoxesPerMatrixLayer, amountOfBoxesPerMatrixLayer];
       for (int i = 0; i < matrix.GetLength(0); i++)
       {
         for (int j = 0; j < matrix.GetLength(1); j++)
@@ -154,8 +168,8 @@ namespace Core
     {
       foreach (var wp in WalkablePoints)
       {
-        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x / walkableMatrixBoxSize);
-        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z / walkableMatrixBoxSize);
+        int x = (int) Mathf.Floor(wp.gameObject.transform.position.x / WalkableMatrixBoxSize);
+        int z = (int) Mathf.Floor(wp.gameObject.transform.position.z / WalkableMatrixBoxSize);
 
         matrix[x, z].Add(wp);
       }
@@ -167,8 +181,8 @@ namespace Core
       {
         for (int j = 0; j < matrix.GetLength(1); j++)
         {
-          SpawnAndAddGeneric(WalkablePointsAmountPerBox, walkablePointPrefab, i * walkableMatrixBoxSize, (i + 1) * walkableMatrixBoxSize,
-            j * walkableMatrixBoxSize, (j + 1) * walkableMatrixBoxSize, WalkablePoints);
+          SpawnAndAddGeneric(WalkablePointsAmountPerBox, walkablePointPrefab, i * WalkableMatrixBoxSize, (i + 1) * WalkableMatrixBoxSize,
+            j * WalkableMatrixBoxSize, (j + 1) * WalkableMatrixBoxSize, WalkablePoints);
         }
       }
       NavMeshUtil.WalkablePoints = WalkablePoints;
@@ -270,7 +284,6 @@ namespace Core
         
 
         Place(instance);
-        Debug.Log(instance.gameObject.transform.position);
         list?.Add(instance);
       }
     }
