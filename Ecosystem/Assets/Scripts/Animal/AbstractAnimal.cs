@@ -46,6 +46,7 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
+    [SerializeField] private Transform visuals;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -312,7 +313,7 @@ namespace Animal
 
     public virtual void UpdateScale()
     {
-      transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
+      visuals.transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
       UpdateNourishmentDelegate();
     }
 
@@ -641,7 +642,7 @@ namespace Animal
     }
     public bool NeedsNourishment()
     {
-      return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
+      return (IsThirsty && !KnowsWaterLocation) || (IsHungry && !KnowsFoodLocation);
     }
 
     #region ResetSetup
