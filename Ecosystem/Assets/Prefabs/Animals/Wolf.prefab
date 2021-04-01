@@ -1787,6 +1787,11 @@ PrefabInstance:
       objectReference: {fileID: 6162471939074386772}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
+      propertyPath: visuals
+      value: 
+      objectReference: {fileID: 560823100493473401}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
       propertyPath: meshRenderer
       value: 
       objectReference: {fileID: 140937291025682952}
@@ -1856,6 +1861,12 @@ PrefabInstance:
 --- !u!195 &1783928942632099552 stripped
 NavMeshAgent:
   m_CorrespondingSourceObject: {fileID: 3773733403073822651, guid: 85ba19cd4fe588c41a63c69561385f30,
+    type: 3}
+  m_PrefabInstance: {fileID: 3215349556319510875}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &560823100493473401 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3123042664360789794, guid: 85ba19cd4fe588c41a63c69561385f30,
     type: 3}
   m_PrefabInstance: {fileID: 3215349556319510875}
   m_PrefabAsset: {fileID: 0}

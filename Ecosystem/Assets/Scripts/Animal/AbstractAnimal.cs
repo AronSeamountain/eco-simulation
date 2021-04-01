@@ -53,6 +53,7 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
+    [SerializeField] private GameObject visuals;
     [SerializeField] private int fertilityTimeInHours = 5;
     [SerializeField] private AnimalSpecies species;
     [SerializeField] private int maxNumberOfChildren = 1;
@@ -310,7 +311,7 @@ namespace Animal
 
     public virtual void UpdateScale()
     {
-      transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
+      visuals.transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
       UpdateNourishmentDelegate();
     }
 
