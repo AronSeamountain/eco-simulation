@@ -94,6 +94,7 @@ namespace Logger.ConcreteLogger
       public int age;
       public int day;
       public float fullyGrownSize;
+      public string uuid;
 
       public AnimalSnapshot(AbstractAnimal animal, int day)
       {
@@ -103,6 +104,7 @@ namespace Logger.ConcreteLogger
         age = animal.AgeInDays;
         fullyGrownSize = animal.FullyGrownSize;
         this.day = day;
+        uuid = animal.Uuid;
       }
     }
   }

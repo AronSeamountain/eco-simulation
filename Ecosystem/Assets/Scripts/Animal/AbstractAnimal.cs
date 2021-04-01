@@ -35,10 +35,7 @@ namespace Animal
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-
-
-    private const float BiggestMutationChange = 0.3f;
-    private const float MutationPercentPerDay = 10f;
+    
     private const float RunningSpeedFactor = 5f;
 
     /// <summary>
@@ -57,16 +54,14 @@ namespace Animal
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     [SerializeField] private int fertilityTimeInHours = 5;
-    [SerializeField] private AnimalSpecies _species;
+    [SerializeField] private AnimalSpecies species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
     [SerializeField] private int hoursBetweenPregnancyAndFertility;
     [SerializeField] public Collider animalCollider;
-
+    [SerializeField] private int oldAgeThreshold = 10;
     private float _fleeSpeed;
-    private float _fullyGrownSpeed;
-    private float _fullyGrownSize;
-    
+    private float FullyGrownSpeed => speed.Value;
     protected HealthDelegate _healthDelegate;
     private float _hoursUntilPregnancy;
     private AbstractAnimal _mateTarget;
@@ -77,16 +72,22 @@ namespace Animal
     private StateMachine<AnimalState> _stateMachine;
     private int _hoursUntilFertile;
     public bool IsChild { get; private set; }
-    public float FullyGrownSize { get; private set; }
+    public float FullyGrownSize => size.Value;
     public AgeChanged AgeChangedListeners;
-    private readonly float childrenSizeWhenBorn = 0.5f;
+    public string Uuid { get; private set; }
+
+    /// <summary>
+    ///   The factor to decrease the speed and size with for newly spawned child animals.
+    /// </summary>
+    private const float ChildDecreaseValueFactor = 0.5f;
+
     public ChildSpawned ChildSpawnedListeners;
     public AnimalDecayed DecayedListeners;
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
-    public Gene Speed;
-    public Gene Size;
+    private Gene speed;
+    private Gene size;
     public StateChanged StateChangedListeners;
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
@@ -113,8 +114,8 @@ namespace Animal
 
     public AnimalSpecies Species
     {
-      get => _species;
-      protected set => _species = value;
+      get => species;
+      protected set => species = value;
     }
 
     public bool MultipleChildren => maxNumberOfChildren > 1;
@@ -233,6 +234,8 @@ namespace Animal
 
     public void ResetGameObject()
     {
+      Uuid = Guid.NewGuid().ToString();
+
       ResetGender();
       ResetProperties();
       ResetHealthAndActivate();
@@ -277,40 +280,30 @@ namespace Animal
 
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+
       if (IsChild)
       {
-        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
-        SpeedModifier += _fullyGrownSpeed * updateAmount;
+        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24f) * ChildDecreaseValueFactor;
+        SpeedModifier += FullyGrownSpeed * updateAmount;
         SizeModifier += FullyGrownSize * updateAmount;
         UpdateScale();
       }
 
-      Mutate();
+      // if the animal is older than the old age set, it will decrease in speed
+      if (AgeInDays > oldAgeThreshold)
+      {
+        SpeedModifier = SpeedModifier * 4 / 5;
+        SetSpeed();
+        PropertiesChangedListeners?.Invoke();
+        //kills the animal if it is too slow, to not wait for them to actually die from being starved
+        if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue);
+      }
     }
 
     private void ResetHealthAndActivate()
     {
       gameObject.SetActive(true);
       _healthDelegate.ResetHealth();
-    }
-
-    private void Mutate()
-    {
-      if (Size.Mutate())
-      {
-        SizeModifier = Size.Value;
-        PropertiesChangedListeners?.Invoke();
-
-        UpdateScale();
-      }
-
-      if (Speed.Mutate())
-      {
-        SpeedModifier = Speed.Value;
-        PropertiesChangedListeners?.Invoke();
-
-        UpdateNourishmentDelegate();
-      }
     }
 
     public virtual void UpdateScale()
@@ -449,12 +442,11 @@ namespace Animal
 
       child.ResetGameObject(); //resets to default/random values
 
-      child.Speed = new Gene(father.Speed, Speed);
-      child.Size = new Gene(father.Size, Size);
-      child._fullyGrownSpeed = child.Speed.Value;
-      child.FullyGrownSize = child.Size.Value;
+      child.speed = new Gene(father.speed, speed);
+      child.size = new Gene(father.size, size);
 
-      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child.FullyGrownSize * childrenSizeWhenBorn);
+      child.InitProperties(child.FullyGrownSpeed * ChildDecreaseValueFactor,
+        child.FullyGrownSize * ChildDecreaseValueFactor);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
@@ -629,7 +621,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
       UpdateNourishmentDelegate();
-      
+
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
@@ -649,6 +641,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       return sizeCubed + SpeedModifier * SpeedModifier;
     }
+
     public bool NeedsNourishment()
     {
       return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
@@ -666,10 +659,9 @@ namespace Animal
     private void ResetProperties()
     {
       if (IsChild) return; //child no need
-      IsChild = true;
-      Speed = new Gene();
-      Size = new Gene();
-      InitProperties(Speed.Value, Size.Value);
+      speed = new Gene();
+      size = new Gene();
+      InitProperties(speed.Value, size.Value);
     }
 
     private void ResetStateMachine()
@@ -712,7 +704,6 @@ namespace Animal
 
     public void Boost()
     {
-      // meshRenderer.enabled = false;
     }
   }
 }
