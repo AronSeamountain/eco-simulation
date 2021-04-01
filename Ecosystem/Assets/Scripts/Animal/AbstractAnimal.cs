@@ -61,7 +61,7 @@ namespace Animal
     [SerializeField] public Collider animalCollider;
     [SerializeField] private int oldAgeThreshold = 10;
     private float _fleeSpeed;
-    private float FullyGrownSpeed => speed.Value;
+    private float FullyGrownSpeed => SpeedGene.Value;
     protected HealthDelegate _healthDelegate;
     private float _hoursUntilPregnancy;
     private AbstractAnimal _mateTarget;
@@ -72,7 +72,7 @@ namespace Animal
     private StateMachine<AnimalState> _stateMachine;
     private int _hoursUntilFertile;
     public bool IsChild { get; private set; }
-    public float FullyGrownSize => size.Value;
+    public float FullyGrownSize => SizeGene.Value;
     public AgeChanged AgeChangedListeners;
     public string Uuid { get; private set; }
 
@@ -450,6 +450,7 @@ namespace Animal
       child.VisionGene = new Gene(father.VisionGene, VisionGene);
       child.HearingGene = new Gene(father.HearingGene, HearingGene);
       child.InitProperties(child.FullyGrownSpeed * ChildDecreaseValueFactor,
+        child.FullyGrownSize * ChildDecreaseValueFactor);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
