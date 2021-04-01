@@ -45,5 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   barPrefab: {fileID: 1614070849303720730, guid: 1d49f6c78a90ed546950df43b86577b4,
     type: 3}
-  KeyValuePairTextPrefab: {fileID: 8482848097796713726, guid: 9e0c98fc912682e46b04fd365fbe937a,
+  KeyValuePairTextPrefab: {fileID: 8313738106806634249, guid: 7178ed687c7aab04e9a9b25d0ac8a637,
     type: 3}

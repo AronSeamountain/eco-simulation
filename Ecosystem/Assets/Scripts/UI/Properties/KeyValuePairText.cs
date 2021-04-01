@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Properties
 {
   public sealed class KeyValuePairText : AbstractProperty
   {
-    [SerializeField] private Text text;
+    [SerializeField] private TextMeshProUGUI text;
     private string _key;
 
     public void Configure(string key, string value)
@@ -21,7 +22,11 @@ namespace UI.Properties
 
     private void UpdateText(string key, string value)
     {
-      text.text = $"{key}: {value}";
+      var str = $@"<b><align=left>{key}<line-height=0></b>
+<align=right>{value}
+      ";
+
+      text.text = str;
     }
   }
 }
