@@ -19,7 +19,7 @@ namespace Animal
   ///   A very basic animal that searches for food.
   /// </summary>
   public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable,
-    IResetable
+    IResetable, IBoostable
   {
     public delegate void AgeChanged(int age);
 
@@ -54,19 +54,15 @@ namespace Animal
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
     [SerializeField] private int fertilityTimeInHours = 5;
-    [SerializeField] private AnimalSpecies _species;
+    [SerializeField] private AnimalSpecies species;
     [SerializeField] private int maxNumberOfChildren = 1;
     [SerializeField] private float pregnancyTimeInHours;
     [SerializeField] private int hoursBetweenPregnancyAndFertility;
     [SerializeField] public Collider animalCollider;
-
+    [SerializeField] private int oldAgeThreshold = 10;
     private float _fleeSpeed;
-    private float _fullyGrownSpeed;
-    private float _fullyGrownSize;
-    
+    private float FullyGrownSpeed => speed.Value;
     protected HealthDelegate _healthDelegate;
-    private int _hoursUntilFertile;
-
     private float _hoursUntilPregnancy;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -74,9 +70,17 @@ namespace Animal
     private float _nutritionalValue;
     protected StaminaDelegate _staminaDelegate;
     private StateMachine<AnimalState> _stateMachine;
+    private int _hoursUntilFertile;
+    public bool IsChild { get; private set; }
+    public float FullyGrownSize => size.Value;
     public AgeChanged AgeChangedListeners;
+    public string Uuid { get; private set; }
 
-    private readonly float childrenSizeWhenBorn = 0.5f;
+    /// <summary>
+    ///   The factor to decrease the speed and size with for newly spawned child animals.
+    /// </summary>
+    private const float ChildDecreaseValueFactor = 0.5f;
+
     public ChildSpawned ChildSpawnedListeners;
     public AnimalDecayed DecayedListeners;
     public Died DiedListeners;
@@ -87,7 +91,6 @@ namespace Animal
     public Gene VisionGene;
     public Gene HearingGene;
     public StateChanged StateChangedListeners;
-    public bool IsChild { get; private set; }
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
 
@@ -113,8 +116,8 @@ namespace Animal
 
     public AnimalSpecies Species
     {
-      get => _species;
-      protected set => _species = value;
+      get => species;
+      protected set => species = value;
     }
 
     public bool MultipleChildren => maxNumberOfChildren > 1;
@@ -233,11 +236,18 @@ namespace Animal
 
     public void ResetGameObject()
     {
+      Uuid = Guid.NewGuid().ToString();
+
       ResetGender();
       ResetProperties();
       ResetHealthAndActivate();
       ResetStateMachine();
       ResetFertility();
+
+      if (EntityManager.PerformanceMode)
+      {
+        Boost();
+      }
     }
 
     public void HourTick()
@@ -272,12 +282,23 @@ namespace Animal
 
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+
       if (IsChild)
       {
-        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
-        SpeedModifier += _fullyGrownSpeed * updateAmount;
-        SizeModifier += _fullyGrownSize * updateAmount;
+        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24f) * ChildDecreaseValueFactor;
+        SpeedModifier += FullyGrownSpeed * updateAmount;
+        SizeModifier += FullyGrownSize * updateAmount;
         UpdateScale();
+      }
+
+      // if the animal is older than the old age set, it will decrease in speed
+      if (AgeInDays > oldAgeThreshold)
+      {
+        SpeedModifier = SpeedModifier * 4 / 5;
+        SetSpeed();
+        PropertiesChangedListeners?.Invoke();
+        //kills the animal if it is too slow, to not wait for them to actually die from being starved
+        if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue);
       }
     }
 
@@ -365,6 +386,12 @@ namespace Animal
       var biteSize = Math.Min(20 * SizeModifier * SizeModifier,
         _nourishmentDelegate.SaturationFromFull());
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
+      EmitMouthParticle();
+    }
+
+    private void EmitMouthParticle()
+    {
+      if (EntityManager.PerformanceMode) return;
       mouthParticles.Emit(1);
     }
 
@@ -386,7 +413,7 @@ namespace Animal
     {
       var sip = 30 * SizeModifier * SizeModifier;
       Drink(water.SaturationModifier * sip * Time.deltaTime);
-      mouthParticles.Emit(1);
+      EmitMouthParticle();
     }
 
     /// <summary>
@@ -419,13 +446,10 @@ namespace Animal
 
       child.SpeedGene = new Gene(father.SpeedGene, SpeedGene);
       child.SizeGene = new Gene(father.SizeGene, SizeGene);
-      child._fullyGrownSpeed = child.SpeedGene.Value;
-      child._fullyGrownSize = child.SizeGene.Value;
 
       child.VisionGene = new Gene(father.VisionGene, VisionGene);
       child.HearingGene = new Gene(father.HearingGene, HearingGene);
-
-      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
+      child.InitProperties(child.FullyGrownSpeed * ChildDecreaseValueFactor,
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
@@ -457,10 +481,11 @@ namespace Animal
     protected abstract void DecreaseStaminaIfRunning();
 
     public void SetMouthColor(Color color)
-    { 
+    {
+      if (EntityManager.PerformanceMode) return;
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
-      mouthParticles.Emit(1);
+      EmitMouthParticle();
     }
 
     public AbstractAnimal GetMateTarget()
@@ -620,7 +645,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       _nourishmentDelegate.SetMaxNourishment(sizeCubed * _nourishmentMultiplier);
       UpdateNourishmentDelegate();
-      
+
       PregnancyChangedListeners += _nourishmentDelegate.OnPregnancyChanged;
     }
 
@@ -640,6 +665,7 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       return sizeCubed + SpeedModifier * SpeedModifier;
     }
+
     public bool NeedsNourishment()
     {
       return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
@@ -707,5 +733,9 @@ namespace Animal
     }
 
     #endregion
+
+    public void Boost()
+    {
+    }
   }
 }

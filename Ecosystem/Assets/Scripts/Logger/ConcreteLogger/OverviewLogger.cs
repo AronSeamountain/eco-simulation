@@ -1,63 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Animal;
-using Core;
+﻿using System.Collections.Generic;
 
 namespace Logger.ConcreteLogger
 {
-  /// <summary>
-  ///   Singleton logger class that logs the world. Logs average values.
-  /// </summary>
-  public sealed class OverviewLogger : ILogger
+  public sealed class OverviewLogger : AbstractCsvLogger
   {
-    private const string Delimiter = ",";
-    private const string Path = "Assets/Logs/overview.csv";
-    private readonly IList<LoggableColumn> _loggableColumns;
-    private bool _firstLog;
-    private IList<string> _snapshots;
-
-    static OverviewLogger()
+    public OverviewLogger()
     {
+      Path = "Assets/Logs/overview.csv";
     }
 
-    private OverviewLogger()
-    {
-      _loggableColumns = GetLoggableColumns();
-      _snapshots = new List<string>();
-      _firstLog = true;
-    }
-
-    public static OverviewLogger Instance { get; } = new OverviewLogger();
-
-    public void Snapshot(EntityManager entityManager)
-    {
-      var values = _loggableColumns.Select(column => column.GetValue(entityManager)).ToList();
-      var snapshot = string.Join(Delimiter, values);
-      _snapshots.Add(snapshot);
-    }
-
-    public void Persist()
-    {
-      if (_firstLog)
-      {
-        Clear();
-        AppendHeader();
-        _firstLog = false;
-      }
-
-      var writer = File.AppendText(Path);
-
-      foreach (var snapshot in _snapshots)
-        writer.WriteLine(snapshot);
-
-      writer.Close();
-
-      _snapshots = new List<string>();
-    }
-
-    private IList<LoggableColumn> GetLoggableColumns()
+    protected override IList<LoggableColumn> GetLoggableColumns()
     {
       return new List<LoggableColumn>
       {
@@ -95,36 +47,5 @@ namespace Logger.ConcreteLogger
         )
       };
     }
-
-    #region Helper
-
-    private string CalcAverage(ICollection<AbstractAnimal> animals, Func<AbstractAnimal, float> animalAspect)
-    {
-      if (animals.Any())
-        return (animals.Sum(animalAspect) / animals.Count).ToString();
-
-      return 0.ToString();
-    }
-
-    #endregion
-
-    #region RowHandling
-
-    public void Clear()
-    {
-      File.WriteAllText(Path, string.Empty);
-    }
-
-    private void AppendHeader()
-    {
-      var headerNames = _loggableColumns.Select(column => column.ColumnName).ToList();
-      var header = string.Join(Delimiter, headerNames);
-
-      var writer = File.AppendText(Path);
-      writer.WriteLine(header);
-      writer.Close();
-    }
-
-    #endregion
   }
 }
