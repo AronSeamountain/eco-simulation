@@ -25,7 +25,6 @@ namespace Animal.AnimalStates
       _carnivore.IsRunning = true;
       _carnivore.SetSpeed();
       _carnivore.IsHunting = true;
-      _target = _carnivore.Target;
     }
 
     public AnimalState Execute()
