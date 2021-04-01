@@ -7,6 +7,7 @@ namespace Animal.AnimalStates
   public sealed class HuntState : IState<AnimalState>
   {
     private readonly Carnivore _carnivore;
+    private const float EatingRange = 2f;
     private Herbivore _target;
 
     public HuntState(Carnivore carnivore)
@@ -37,8 +38,12 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
       if (_carnivore.GetStaminaDelegate().StaminaZero)
       {
-        _carnivore.Target = null;
-        return AnimalState.Wander;
+        if (!Vector3Util.InRange(_carnivore.gameObject, _carnivore.Target.gameObject, EatingRange))
+        {
+          _carnivore.Target = null;
+          return AnimalState.Wander;
+        }
+        
       }
       if (_target.DoesNotExist())
       {
