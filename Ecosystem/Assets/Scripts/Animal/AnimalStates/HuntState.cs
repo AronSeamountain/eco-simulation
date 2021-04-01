@@ -40,7 +40,6 @@ namespace Animal.AnimalStates
         _carnivore.Target = null;
         return AnimalState.Wander;
       }
-
       if (_target.DoesNotExist())
       {
         _carnivore.Target = null;

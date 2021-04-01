@@ -2,7 +2,6 @@
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
-using UnityEditor.Experimental;
 using UnityEngine;
 using Utils;
 
@@ -12,12 +11,12 @@ namespace Animal
   {
     private const float HuntRange = 15;
     public const float EatingRange = 2f;
-    private bool _animalOfSameType;
-    private Texture _tex;
     private const float baseAttackDamage = 2;
-    private float attackDamage = baseAttackDamage;
+    private bool _animalOfSameType;
 
     private bool _hearsHerbivore;
+    private Texture _tex;
+    private float attackDamage = baseAttackDamage;
     public Herbivore Target { get; set; }
     public bool HasTargetSet => Target != null;
 
@@ -25,14 +24,17 @@ namespace Animal
 
     private void OnPreyFound(Herbivore herbivore)
     {
-        if(Target.DoesNotExist())
-          Target = herbivore;
+      if (Target.DoesNotExist())
+        Target = herbivore;
 
-        var newTarget = Vector3Util.Distance(gameObject, herbivore.gameObject);
-        var oldTarget = Vector3Util.Distance(gameObject, Target.gameObject);
+      if (IsCloserTarget(herbivore)) Target = herbivore;
+    }
 
-        if (newTarget < oldTarget)
-          Target = herbivore;
+    private bool IsCloserTarget(Herbivore closerTarget)
+    {
+      var newTarget = Vector3Util.Distance(gameObject, closerTarget.gameObject);
+      var oldTarget = Vector3Util.Distance(gameObject, Target.gameObject);
+      return newTarget < oldTarget;
     }
 
     protected override void RenderAnimalSpecificColors()
@@ -40,12 +42,12 @@ namespace Animal
       if (Gender == Gender.Male)
       {
         _tex = Resources.Load("Wolf_White_COL_1k") as Texture;
-        meshRenderer.material.SetTexture("Texture2D_animal_texture",_tex);
+        meshRenderer.material.SetTexture("Texture2D_animal_texture", _tex);
       }
       else
       {
         _tex = Resources.Load<Texture2D>("Wolf_COL_1k");
-        meshRenderer.material.SetTexture("Texture2D_animal_texture",_tex);
+        meshRenderer.material.SetTexture("Texture2D_animal_texture", _tex);
       }
     }
 
@@ -112,7 +114,7 @@ namespace Animal
     public override float GetNourishmentDecreaseFactor()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      return  sizeCubed + SpeedModifier * SpeedModifier / 1.5f;
+      return sizeCubed + SpeedModifier * SpeedModifier / 1.5f;
     }
   }
 }

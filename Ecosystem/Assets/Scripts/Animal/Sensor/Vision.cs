@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Foods;
 using UnityEngine;
 using Utils;
