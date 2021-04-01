@@ -14,17 +14,17 @@ namespace Menu
 
     public void SetRabbits(string number)
     {
-      EntityManager.InitialRabbits = int.Parse(number);
+      EntityManager.InitialRabbits = number == "" ? 0 : int.Parse(number);
     }
 
     public void SetWolves(string number)
     {
-      EntityManager.InitialWolves = int.Parse(number);
+      EntityManager.InitialWolves = number == "" ? 0 : int.Parse(number);
     }
 
     public void SetPlants(string number)
     {
-      EntityManager.InitialPlants = int.Parse(number);
+      EntityManager.InitialPlants = number == "" ? 0 : int.Parse(number);
     }
 
     public void SetHoursInRealSeconds(string number)
