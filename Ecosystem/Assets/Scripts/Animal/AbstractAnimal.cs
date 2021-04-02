@@ -35,7 +35,7 @@ namespace Animal
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-    
+
     private const float RunningSpeedFactor = 5f;
 
     /// <summary>
@@ -311,7 +311,12 @@ namespace Animal
 
     public virtual void UpdateScale()
     {
+      var difference = visuals.transform.localScale.y;
       visuals.transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
+      difference = visuals.transform.localScale.y - difference;
+      var y = visuals.transform.localPosition.y;
+      visuals.transform.localPosition =
+        new Vector3(0, y + difference, 0);
       UpdateNourishmentDelegate();
     }
 
@@ -616,7 +621,7 @@ namespace Animal
       movement.SpeedFactor = SpeedModifier;
 
       SetSensorySizes();
-      
+
       InitNourishmentDelegate();
 
       // Setup size modification
@@ -639,7 +644,6 @@ namespace Animal
 
       //set hearing area
       hearing.SetSizePercentage(hearingPercentage);
-
     }
 
     private void InitNourishmentDelegate()
