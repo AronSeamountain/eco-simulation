@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Logger.ConcreteLogger
 {
@@ -44,6 +44,16 @@ namespace Logger.ConcreteLogger
         new LoggableColumn(
           "size",
           (day, animals, em) => CalcAverage(animals, animal => animal.SizeModifier)
+        ),
+        new LoggableColumn(
+          "vision percentage",
+          (day, animals, em) => CalcAverage(animals,
+            animal => animal.VisionGene.Bits * 100 / (animal.VisionGene.Bits + animal.HearingGene.Bits))
+        ),
+        new LoggableColumn(
+          "hearing percentage",
+          (day, animals, em) => CalcAverage(animals,
+            animal => animal.HearingGene.Bits * 100 / (animal.VisionGene.Bits + animal.HearingGene.Bits))
         )
       };
     }
