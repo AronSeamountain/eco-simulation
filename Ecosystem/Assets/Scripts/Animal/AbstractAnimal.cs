@@ -50,6 +50,7 @@ namespace Animal
     [SerializeField] private MatingManager matingManager;
     [SerializeField] protected ParticleSystem mouthParticles;
     [SerializeField] protected ParticleSystem matingCue;
+    [SerializeField] protected ParticleSystem pregnancyCue;
     [SerializeField] protected Hearing hearing;
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
@@ -260,6 +261,7 @@ namespace Animal
 
       if (IsPregnant)
       {
+        EmitPregnancyCue();
         _hoursUntilPregnancy--;
         if (_hoursUntilPregnancy <= 0)
         {
@@ -395,6 +397,12 @@ namespace Animal
       matingCue.Emit(1);
     }
 
+    public void EmitPregnancyCue()
+    {
+      if (EntityManager.PerformanceMode) return;
+      pregnancyCue.Emit(5);
+    }
+
     private void EmitMouthParticle()
     {
       if (EntityManager.PerformanceMode) return;
@@ -507,12 +515,6 @@ namespace Animal
       {
         LastMaleMate = father;
         IsPregnant = true;
-        //visual cue
-        Sprite heart = Resources.Load<Sprite>("heart15px");
-        matingCue.startLifetime = pregnancyTimeInHours * EntityManager.HoursInRealSeconds;
-        
-        EmitMatingCue();
-        
         Fertile = false;
         _hoursUntilPregnancy = pregnancyTimeInHours;
         PregnancyChangedListeners?.Invoke(IsPregnant);

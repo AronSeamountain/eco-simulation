@@ -1828,6 +1828,101 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 1664839363925479290}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2869314153609778142
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4035984478325316077}
+    m_Modifications:
+    - target: {fileID: 3203949065458842491, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: ShapeModule.type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3203949065458842491, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3203949065458842491, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3203949065458842491, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.minMaxState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251684652743291432, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_Name
+      value: PregnancyCue
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423547142424799359, guid: 31b9320bf9b569b42a0120d36d94af1c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 31b9320bf9b569b42a0120d36d94af1c, type: 3}
+--- !u!198 &839759385004026021 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3203949065458842491, guid: 31b9320bf9b569b42a0120d36d94af1c,
+    type: 3}
+  m_PrefabInstance: {fileID: 2869314153609778142}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3215349556319510875
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2070,6 +2165,11 @@ PrefabInstance:
       propertyPath: meshRenderer
       value: 
       objectReference: {fileID: 140937291025682952}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: pregnancyCue
+      value: 
+      objectReference: {fileID: 839759385004026021}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: pregnancyTime

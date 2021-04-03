@@ -56,6 +56,7 @@ namespace Animal.AnimalStates
         mateTarget.StopMoving();
         // visual cue
         _animal.EmitMatingCue();
+        mateTarget.EmitMatingCue();
         
         mateTarget.Mate(_animal);
         _animal.ClearMateTarget();
