@@ -54,6 +54,11 @@ namespace Animal.AnimalStates
       {
         _animal.StopMoving();
         mateTarget.StopMoving();
+        // visual cue
+        Sprite heart = Resources.Load<Sprite>("heart15px");
+        _animal.SetVisualCue(heart);
+        mateTarget.SetVisualCue(heart);
+        
         mateTarget.Mate(_animal);
         _animal.ClearMateTarget();
         _animal.Children++; // TODO: Small possibility that female dies before birthing

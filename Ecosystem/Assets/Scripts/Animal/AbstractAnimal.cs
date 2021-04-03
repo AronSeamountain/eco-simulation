@@ -49,6 +49,7 @@ namespace Animal
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
     [SerializeField] protected ParticleSystem mouthParticles;
+    [SerializeField] protected ParticleSystem visualCue;
     [SerializeField] protected Hearing hearing;
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
@@ -387,6 +388,12 @@ namespace Animal
       EmitMouthParticle();
     }
 
+    private void EmitVisualCue()
+    {
+      if (EntityManager.PerformanceMode) return;
+      visualCue.Emit(1);
+    }
+
     private void EmitMouthParticle()
     {
       if (EntityManager.PerformanceMode) return;
@@ -483,6 +490,18 @@ namespace Animal
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
       EmitMouthParticle();
+    }
+
+    /// <summary>
+    ///   Render a particular sprite depending on the context
+    /// </summary>
+    /// <param name="sprite">The sprite to be rendered</param>
+    public void SetVisualCue(Sprite sprite)
+    {
+      if (EntityManager.PerformanceMode) return;
+      var textureSheet = visualCue.textureSheetAnimation;
+      textureSheet.SetSprite(0, sprite);
+      EmitVisualCue();
     }
 
     public AbstractAnimal GetMateTarget()
