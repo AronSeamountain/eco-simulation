@@ -54,7 +54,10 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
 
       //If animal is trying to run outside the navmesh, find a new point to go to.
-      if (!IsMovingForward()) GoToFarAwayPoint();
+      if (!IsMovingForward())
+      {
+        GoToFarAwayPoint();
+      }
 
       return AnimalState.SearchWorld;
     }

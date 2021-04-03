@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
 using Logger;
@@ -29,11 +30,10 @@ namespace Core
     public static int InitialWolves = 25;
     public static int InitialRabbits = 100;
     public static int InitialPlants = 100;
-    [SerializeField] private GameObject rabbitPrefab;
-    [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
-    private AnimalPool _animalPool;
+    [SerializeField] private bool performanceMode;
+    [SerializeField] private bool overlappableAnimals;
     private float _hoursPassed;
     private float _hourTicker;
     private ILogger _logger;
@@ -45,10 +45,21 @@ namespace Core
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
+    public FpsDelegate FpsDelegate { get; private set; }
+    public static bool PerformanceModeMenuOverride = true;
+    public static bool PerformanceMode;
+    public static bool OverlappableAnimalsMenuOverride = false;
+    public static bool LogMenuOverride = true;
+    public bool Log { get; private set; }
 
     private void Awake()
     {
-      _animalPool = AnimalPool.SharedInstance;
+      Log = log || LogMenuOverride;
+      PerformanceMode = performanceMode || PerformanceModeMenuOverride;
+      
+      AnimalPool.OverlappableAnimals = overlappableAnimals || OverlappableAnimalsMenuOverride;
+
+      FpsDelegate = new FpsDelegate();
 
       // Lists
       Animals = new List<AbstractAnimal>();
@@ -68,13 +79,17 @@ namespace Core
       // Logger
       _logger = new MultiLogger(
         DetailedIndividualLogger.Instance,
-        OverviewLogger.Instance
+        new OverviewLogger(),
+        new FpsLogger()
       );
+
+      _logger.Clear();
     }
 
     private void Update()
     {
       UpdateTick();
+      if (Log) FpsDelegate.FramePassed();
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -118,21 +133,11 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(InitialRabbits, rabbitPrefab, Animals);
+      SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
-      SpawnAndAddGeneric(InitialWolves, wolfPrefab, Animals);
+      SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
       CarnivoreCount += InitialWolves;
-    }
-
-    private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
-    {
-      for (var i = 0; i < amount; i++)
-      {
-        var animal = _animalPool.Get(animalSpecies);
-        Place(animal);
-        Animals.Add(animal);
-      }
     }
 
     /// <summary>
@@ -140,10 +145,22 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialPlants()
     {
-      SpawnAndAddGeneric(InitialPlants, plantPrefab, Plants);
+      SpawnAndAddPrefab(InitialPlants, plantPrefab, Plants);
     }
 
-    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list = null)
+    private void SpawnAndAddSpecies<T>(int amount, AnimalSpecies species, ICollection<T> list = null)
+      where T : MonoBehaviour
+    {
+      var pool = AnimalPool.SharedInstance;
+      for (var i = 0; i < amount; i++)
+      {
+        var instance = pool.Get(species) as T;
+        Place(instance);
+        list?.Add(instance);
+      }
+    }
+
+    private void SpawnAndAddPrefab<T>(int amount, GameObject prefab, ICollection<T> list = null)
       where T : MonoBehaviour
     {
       for (var i = 0; i < amount; i++)
@@ -235,10 +252,11 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log)
+          if (Log)
           {
             _logger.Snapshot(this);
             _logger.Persist();
+            FpsDelegate.Reset();
           }
         }
       }
