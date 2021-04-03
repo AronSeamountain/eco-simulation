@@ -21,6 +21,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6513327966355736006}
     m_Modifications:
+    - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
+        type: 3}
+      propertyPath: ShapeModule.type
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
+        type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2109957774996146334, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
       propertyPath: m_RootOrder
@@ -34,12 +44,12 @@ PrefabInstance:
     - target: {fileID: 2109957774996146334, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.129
+      value: -0.55
       objectReference: {fileID: 0}
     - target: {fileID: 2109957774996146334, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.04
+      value: -0.14
       objectReference: {fileID: 0}
     - target: {fileID: 2109957774996146334, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
@@ -79,7 +89,7 @@ PrefabInstance:
     - target: {fileID: 4795602295244444084, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
       propertyPath: m_Name
-      value: VisualCue
+      value: MatingCue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8192de61e3b4f8847a3f77dc6faa0e54, type: 3}
@@ -151,6 +161,11 @@ PrefabInstance:
       propertyPath: _species
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3791994684587924501, guid: 51020aa19a9877a49924a41101ce6231,
+        type: 3}
+      propertyPath: matingCue
+      value: 
+      objectReference: {fileID: 490410624556266925}
     - target: {fileID: 3791994684587924501, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}
       propertyPath: visualCue

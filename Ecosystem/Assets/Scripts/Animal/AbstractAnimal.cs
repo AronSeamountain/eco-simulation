@@ -49,7 +49,7 @@ namespace Animal
     [SerializeField] protected GameObject childPrefab;
     [SerializeField] private MatingManager matingManager;
     [SerializeField] protected ParticleSystem mouthParticles;
-    [SerializeField] protected ParticleSystem visualCue;
+    [SerializeField] protected ParticleSystem matingCue;
     [SerializeField] protected Hearing hearing;
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
@@ -387,11 +387,12 @@ namespace Animal
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
       EmitMouthParticle();
     }
-
-    private void EmitVisualCue()
+    
+    // List of visual cues to be emitted:
+    public void EmitMatingCue()
     {
       if (EntityManager.PerformanceMode) return;
-      visualCue.Emit(1);
+      matingCue.Emit(1);
     }
 
     private void EmitMouthParticle()
@@ -492,18 +493,6 @@ namespace Animal
       EmitMouthParticle();
     }
 
-    /// <summary>
-    ///   Render a particular sprite depending on the context
-    /// </summary>
-    /// <param name="sprite">The sprite to be rendered</param>
-    public void SetVisualCue(Sprite sprite)
-    {
-      if (EntityManager.PerformanceMode) return;
-      var textureSheet = visualCue.textureSheetAnimation;
-      textureSheet.SetSprite(0, sprite);
-      EmitVisualCue();
-    }
-
     public AbstractAnimal GetMateTarget()
     {
       return _mateTarget;
@@ -518,6 +507,12 @@ namespace Animal
       {
         LastMaleMate = father;
         IsPregnant = true;
+        //visual cue
+        Sprite heart = Resources.Load<Sprite>("heart15px");
+        matingCue.startLifetime = pregnancyTimeInHours * EntityManager.HoursInRealSeconds;
+        
+        EmitMatingCue();
+        
         Fertile = false;
         _hoursUntilPregnancy = pregnancyTimeInHours;
         PregnancyChangedListeners?.Invoke(IsPregnant);

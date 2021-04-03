@@ -1577,8 +1577,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
+      propertyPath: ShapeModule.type
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
+        type: 3}
       propertyPath: SizeModule.enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
@@ -1602,6 +1607,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
+        type: 3}
       propertyPath: ExternalForcesModule.enabled
       value: 0
       objectReference: {fileID: 0}
@@ -1619,6 +1629,11 @@ PrefabInstance:
         type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 549564592795897612, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
@@ -1803,7 +1818,7 @@ PrefabInstance:
     - target: {fileID: 4795602295244444084, guid: 8192de61e3b4f8847a3f77dc6faa0e54,
         type: 3}
       propertyPath: m_Name
-      value: VisualCue
+      value: MatingCue
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8192de61e3b4f8847a3f77dc6faa0e54, type: 3}
@@ -2040,6 +2055,11 @@ PrefabInstance:
       propertyPath: vision
       value: 
       objectReference: {fileID: 6162471939074386772}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: matingCue
+      value: 
+      objectReference: {fileID: 1205487512444125302}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: visualCues
