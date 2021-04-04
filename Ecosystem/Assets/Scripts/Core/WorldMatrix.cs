@@ -102,10 +102,6 @@ namespace Core
             foreach (var monoBehaviour in matrix[i + 1, j + 1]) // adds all from matrix bottom right
               tempList.Add(monoBehaviour);
 
-
-          foreach (var monoBehaviour in matrix[i, j]) // adds all from current matrix entry 
-            tempList.Add(monoBehaviour);
-
           if (tempList.Count < 1)
             Debug.LogError(
               "Error with Worldmatrix instantiation. All entries in the matrix does not have a walkable point");
