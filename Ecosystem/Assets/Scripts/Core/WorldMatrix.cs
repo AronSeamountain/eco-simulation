@@ -7,27 +7,16 @@ namespace Core
 {
   public static class WorldMatrix
   {
-    public static string World = "LargeWorld";
     public const int WalkablePointsAmountPerBox = 3;
     public static int amountOfBoxesPerMatrixLayer;
     public const int WalkableMatrixBoxSize = 25;
-    private static int WorldSize;
+    public static int WorldSize;
     public static IList<MonoBehaviour> WalkablePoints;
 
 
     public static List<MonoBehaviour>[,] InitMatrix()
     {
       WalkablePoints = new List<MonoBehaviour>();
-
-      if (World.Equals("LargeWorld"))
-      {
-        WorldSize = 500;
-      }
-      else
-      {
-        WorldSize = 150;
-      }
-
       amountOfBoxesPerMatrixLayer = (int) Math.Ceiling(WorldSize / (float) WalkableMatrixBoxSize);
       List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[amountOfBoxesPerMatrixLayer, amountOfBoxesPerMatrixLayer];
       for (int i = 0; i < matrix.GetLength(0); i++)
