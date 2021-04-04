@@ -20,7 +20,7 @@ namespace Animal
   ///   A very basic animal that searches for food.
   /// </summary>
   public abstract class AbstractAnimal : MonoBehaviour, ICanDrink, ICanEat, ITickable, IInspectable, IEatable,
-    IResetable
+    IResetable, IBoostable
   {
     public delegate void AgeChanged(int age);
 
@@ -61,14 +61,9 @@ namespace Animal
     [SerializeField] private int hoursBetweenPregnancyAndFertility;
     [SerializeField] public Collider animalCollider;
     [SerializeField] private int oldAgeThreshold = 10;
-
     private float _fleeSpeed;
-    private float _fullyGrownSpeed;
-    private float _fullyGrownSize;
-
+    private float FullyGrownSpeed => speed.Value;
     protected HealthDelegate _healthDelegate;
-    private int _hoursUntilFertile;
-
     private float _hoursUntilPregnancy;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
@@ -76,18 +71,25 @@ namespace Animal
     private float _nutritionalValue;
     protected StaminaDelegate _staminaDelegate;
     private StateMachine<AnimalState> _stateMachine;
+    private int _hoursUntilFertile;
+    public bool IsChild { get; private set; }
+    public float FullyGrownSize => size.Value;
     public AgeChanged AgeChangedListeners;
+    public string Uuid { get; private set; }
 
-    private readonly float childrenSizeWhenBorn = 0.5f;
+    /// <summary>
+    ///   The factor to decrease the speed and size with for newly spawned child animals.
+    /// </summary>
+    private const float ChildDecreaseValueFactor = 0.5f;
+
     public ChildSpawned ChildSpawnedListeners;
     public AnimalDecayed DecayedListeners;
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
-    public Gene Speed;
-    public Gene Size;
+    private Gene speed;
+    private Gene size;
     public StateChanged StateChangedListeners;
-    public bool IsChild { get; private set; }
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
 
@@ -235,12 +237,19 @@ namespace Animal
 
     public void ResetGameObject()
     {
+      Uuid = Guid.NewGuid().ToString();
+
       ResetWorldPointFinder();
       ResetGender();
       ResetProperties();
       ResetHealthAndActivate();
       ResetStateMachine();
       ResetFertility();
+
+      if (EntityManager.PerformanceMode)
+      {
+        Boost();
+      }
     }
 
     public void HourTick()
@@ -275,11 +284,12 @@ namespace Animal
 
       AgeInDays++;
       AgeChangedListeners?.Invoke(AgeInDays);
+
       if (IsChild)
       {
-        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24) * childrenSizeWhenBorn;
-        SpeedModifier += _fullyGrownSpeed * updateAmount;
-        SizeModifier += _fullyGrownSize * updateAmount;
+        var updateAmount = 1 / Mathf.Floor(fertilityTimeInHours / 24f) * ChildDecreaseValueFactor;
+        SpeedModifier += FullyGrownSpeed * updateAmount;
+        SizeModifier += FullyGrownSize * updateAmount;
         UpdateScale();
       }
 
@@ -383,6 +393,12 @@ namespace Animal
       var biteSize = Math.Min(20 * SizeModifier * SizeModifier,
         _nourishmentDelegate.SaturationFromFull());
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
+      EmitMouthParticle();
+    }
+
+    private void EmitMouthParticle()
+    {
+      if (EntityManager.PerformanceMode) return;
       mouthParticles.Emit(1);
     }
 
@@ -404,7 +420,7 @@ namespace Animal
     {
       var sip = 30 * SizeModifier * SizeModifier;
       Drink(water.SaturationModifier * sip * Time.deltaTime);
-      mouthParticles.Emit(1);
+      EmitMouthParticle();
     }
 
     /// <summary>
@@ -435,12 +451,11 @@ namespace Animal
 
       child.ResetGameObject(); //resets to default/random values
 
-      child.Speed = new Gene(father.Speed, Speed);
-      child.Size = new Gene(father.Size, Size);
-      child._fullyGrownSpeed = child.Speed.Value;
-      child._fullyGrownSize = child.Size.Value;
+      child.speed = new Gene(father.speed, speed);
+      child.size = new Gene(father.size, size);
 
-      child.InitProperties(child._fullyGrownSpeed * childrenSizeWhenBorn, child._fullyGrownSize * childrenSizeWhenBorn);
+      child.InitProperties(child.FullyGrownSpeed * ChildDecreaseValueFactor,
+        child.FullyGrownSize * ChildDecreaseValueFactor);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
@@ -473,9 +488,10 @@ namespace Animal
 
     public void SetMouthColor(Color color)
     {
+      if (EntityManager.PerformanceMode) return;
       var main = mouthParticles.main;
       main.startColor = new ParticleSystem.MinMaxGradient(color);
-      mouthParticles.Emit(1);
+      EmitMouthParticle();
     }
 
     public AbstractAnimal GetMateTarget()
@@ -652,10 +668,9 @@ namespace Animal
     private void ResetProperties()
     {
       if (IsChild) return; //child no need
-      IsChild = true;
-      Speed = new Gene();
-      Size = new Gene();
-      InitProperties(Speed.Value, Size.Value);
+      speed = new Gene();
+      size = new Gene();
+      InitProperties(speed.Value, size.Value);
     }
 
     private void ResetStateMachine()
@@ -695,5 +710,9 @@ namespace Animal
     }
 
     #endregion
+
+    public void Boost()
+    {
+    }
   }
 }

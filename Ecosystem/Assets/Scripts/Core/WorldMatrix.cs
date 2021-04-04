@@ -10,7 +10,7 @@ namespace Core
     public const int WalkablePointsAmountPerBox = 3;
     public static int amountOfBoxesPerMatrixLayer;
     public const int WalkableMatrixBoxSize = 25;
-    public static int WorldSize;
+    public static int WorldSize = 500;
     public static IList<MonoBehaviour> WalkablePoints;
 
 
