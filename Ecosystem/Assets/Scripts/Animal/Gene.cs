@@ -8,7 +8,7 @@ namespace Animal
   {
     private const float BaseMax = 1.6f;
     private const float BaseMin = 0.8f;
-    private const float MutateChance = 0.005f;
+    private readonly float _mutateChance = Random.Range(0.005f, 0.05f);
 
     public Gene()
     {
@@ -279,7 +279,7 @@ namespace Animal
       var bit = 7;
       while (bit >= 0)
       {
-        if (Random.Range(0, 1f) < MutateChance)
+        if (Random.Range(0, 1f) < _mutateChance)
         {
           oldChromosome =  (byte) (oldChromosome ^ (1 << bit));
         }
