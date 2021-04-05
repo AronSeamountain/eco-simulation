@@ -16,6 +16,13 @@ namespace Animal
       Bits = CountSetBits(Chromosome);
       Value = EvaluateValue(BaseMax, BaseMin);
     }
+    
+    public Gene(float max, float min)
+    {
+      Chromosome = (byte) Random.Range(byte.MinValue, byte.MaxValue);
+      Bits = CountSetBits(Chromosome);
+      Value = EvaluateValue(max, min);
+    }
 
     public Gene(Gene father, Gene mother)
     {

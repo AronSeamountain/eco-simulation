@@ -105,6 +105,11 @@ namespace UI
       animal.PropertiesChangedListeners += SizeChangedImpl;
       size.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
       properties.Add(size);
+      // ---------- Bait ----------
+      var bait = RowFactory.CreateKeyValuePair();
+      bait.Configure("Bait", animal.BaitValue.ToString());
+
+      properties.Add(bait);
 
       // ---------- Gender ----------
       var gender = RowFactory.CreateKeyValuePair();

@@ -31,7 +31,7 @@ namespace Animal
         var newTarget = Vector3Util.Distance(gameObject, herbivore.gameObject);
         var oldTarget = Vector3Util.Distance(gameObject, Target.gameObject);
 
-        if (newTarget < oldTarget)
+        if (newTarget < oldTarget || herbivore.BaitValue > Target.BaitValue)
           Target = herbivore;
     }
 

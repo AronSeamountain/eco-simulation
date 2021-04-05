@@ -88,6 +88,7 @@ namespace Animal
     public PropertiesChanged PropertiesChangedListeners;
     private Gene speed;
     private Gene size;
+    private Gene bait;
     public StateChanged StateChangedListeners;
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
@@ -105,6 +106,7 @@ namespace Animal
     public AbstractAnimal EnemyToFleeFrom { get; set; }
     public float SpeedModifier { get; private set; }
     public float SizeModifier { get; private set; }
+    public float BaitValue { get; private set; }
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
@@ -444,9 +446,10 @@ namespace Animal
 
       child.speed = new Gene(father.speed, speed);
       child.size = new Gene(father.size, size);
+      child.bait = new Gene(father.bait, bait);
 
       child.InitProperties(child.FullyGrownSpeed * ChildDecreaseValueFactor,
-        child.FullyGrownSize * ChildDecreaseValueFactor);
+        child.FullyGrownSize * ChildDecreaseValueFactor, child.bait.Value);
       ChildSpawnedListeners?.Invoke(child, this);
 
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
@@ -604,10 +607,11 @@ namespace Animal
     /// </summary>
     /// <param name="value"></param>
     /// <param name="value2"></param>
-    private void InitProperties(float speed, float size)
+    private void InitProperties(float speed, float size, float bait)
     {
       SpeedModifier = speed;
       SizeModifier = size;
+      BaitValue = bait;
       movement.SpeedFactor = SpeedModifier;
 
       InitNourishmentDelegate();
@@ -661,7 +665,8 @@ namespace Animal
       if (IsChild) return; //child no need
       speed = new Gene();
       size = new Gene();
-      InitProperties(speed.Value, size.Value);
+      bait = new Gene(200, 10);
+      InitProperties(speed.Value, size.Value, bait.Value);
     }
 
     private void ResetStateMachine()
