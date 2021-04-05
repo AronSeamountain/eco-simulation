@@ -2152,6 +2152,11 @@ PrefabInstance:
       objectReference: {fileID: 6162471939074386772}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
+      propertyPath: fleeCue
+      value: 
+      objectReference: {fileID: 4255195114184639481}
+    - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
       propertyPath: matingCue
       value: 
       objectReference: {fileID: 1205487512444125302}
@@ -2263,3 +2268,78 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87a0dd06dd8ac4f478f2456d4bfb2289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &5582821837022488585
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4035984478325316077}
+    m_Modifications:
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.038
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735674441618847451, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3650433460799286685, guid: fccb11038b305e540ab0d276917fb205,
+        type: 3}
+      propertyPath: m_Name
+      value: FleeCue
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fccb11038b305e540ab0d276917fb205, type: 3}
+--- !u!198 &4255195114184639481 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8536387864474217456, guid: fccb11038b305e540ab0d276917fb205,
+    type: 3}
+  m_PrefabInstance: {fileID: 5582821837022488585}
+  m_PrefabAsset: {fileID: 0}
