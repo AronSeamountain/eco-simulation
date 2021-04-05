@@ -508,6 +508,14 @@ namespace Animal
       EmitMouthParticle();
     }
 
+    public void SetMouthSprite(Sprite sprite)
+    {
+      if (EntityManager.PerformanceMode) return;
+      var ts = mouthParticles.textureSheetAnimation;
+      ts.SetSprite(0, sprite);
+      EmitMouthParticle();
+    }
+
     public AbstractAnimal GetMateTarget()
     {
       return _mateTarget;

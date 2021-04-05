@@ -28,7 +28,11 @@ namespace Animal.AnimalStates
       _animal.IsRunning = false;
 
       //set Color
-      _animal.SetMouthColor(Color.blue);
+      //_animal.SetMouthColor(Color.blue);
+      
+      //set sprite
+      Sprite sp = Resources.Load<Sprite>("water20px");
+      _animal.SetMouthSprite(sp);
     }
 
     public AnimalState Execute()

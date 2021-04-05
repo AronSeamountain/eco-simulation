@@ -9,6 +9,7 @@ namespace Animal.AnimalStates
   {
     private readonly AbstractAnimal _animal;
     private IEatable _food;
+    private Sprite _sprite;
 
     public EatState(AbstractAnimal animal)
     {
@@ -28,7 +29,17 @@ namespace Animal.AnimalStates
       _animal.IsRunning = false;
 
       //Set Color
-      _animal.SetMouthColor(Color.green);
+      //_animal.SetMouthColor(Color.green);
+      
+      if (_animal.IsCarnivore)
+      {
+        _sprite = Resources.Load<Sprite>("blood20px");
+      }
+      else
+      {
+        _sprite= Resources.Load<Sprite>("leaf10px");
+      }
+      _animal.SetMouthSprite(_sprite);
     }
 
     public AnimalState Execute()

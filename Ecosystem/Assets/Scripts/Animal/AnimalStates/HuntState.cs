@@ -8,6 +8,7 @@ namespace Animal.AnimalStates
   {
     private readonly Carnivore _carnivore;
     private Herbivore _target;
+    private Sprite _sprite;
 
     public HuntState(Carnivore carnivore)
     {
@@ -25,6 +26,7 @@ namespace Animal.AnimalStates
       _carnivore.SetSpeed();
       _carnivore.IsHunting = true;
       _target = _carnivore.Target;
+      _sprite = Resources.Load<Sprite>("blood20px");
     }
 
     public AnimalState Execute()
@@ -59,7 +61,8 @@ namespace Animal.AnimalStates
           return AnimalState.Eat;
         }
 
-        _carnivore.SetMouthColor(Color.red);
+        //_carnivore.SetMouthColor(Color.red);
+        _carnivore.SetMouthSprite(_sprite);
         _carnivore.AttackTarget(_target);
       }
 

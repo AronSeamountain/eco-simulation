@@ -1997,29 +1997,59 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
+      propertyPath: UVModule.mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: UVModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
       propertyPath: ColorModule.enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
+      propertyPath: UVModule.sprites.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.32941177
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.32941177
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.32941177
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: UVModule.sprites.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: UVModule.sprites.Array.data[1].sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 804819275111858027, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: UVModule.sprites.Array.data[2].sprite
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1350833864400568698, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+      objectReference: {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
     - target: {fileID: 1350833864400568698, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_Materials.Array.data[1]
