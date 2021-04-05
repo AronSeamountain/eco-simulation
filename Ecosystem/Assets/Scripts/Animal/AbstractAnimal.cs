@@ -52,6 +52,7 @@ namespace Animal
     [SerializeField] protected ParticleSystem matingCue;
     [SerializeField] protected ParticleSystem pregnancyCue;
     [SerializeField] protected ParticleSystem fleeCue;
+    [SerializeField] protected ParticleSystem deathCue;
     [SerializeField] protected Hearing hearing;
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
@@ -408,6 +409,12 @@ namespace Animal
     {
       if (EntityManager.PerformanceMode) return;
       fleeCue.Emit(1);
+    }
+
+    public void EmitDeathCue()
+    {
+      if (EntityManager.PerformanceMode) return;
+      deathCue.Emit(1);
     }
 
     private void EmitMouthParticle()
