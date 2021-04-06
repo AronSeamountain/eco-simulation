@@ -147,7 +147,7 @@ namespace Animal
     /// <summary>
     ///   Whether the animal knows about a water location.
     /// </summary>
-    public bool KnowsWaterLocation { get; private set; }
+    public bool KnowsWaterLocation { get; set; }
 
     /// <summary>
     ///   Returns a collection of the foods that the animal is aware of.

@@ -31,7 +31,13 @@ namespace Animal.AnimalStates
       if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsThirsty) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists())
+      {
+        if (_animal.KnowsWaterLocation) _animal.KnowsWaterLocation = false;
+
+        return AnimalState.Flee;
+      }
+
       if (!_animal.IsThirsty && _animal.IsHungry && !_animal.KnowsFoodLocation) return AnimalState.SearchWorld;
       if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
 
