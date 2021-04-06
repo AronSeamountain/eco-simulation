@@ -33,11 +33,7 @@ namespace Animal.AnimalStates
       if (!_animal.IsThirsty) return AnimalState.Wander;
       if (_animal.EnemyToFleeFrom.Exists())
       {
-        if (_animal.KnowsWaterLocation)
-        {
-          _animal.KnowsWaterLocation = false;
-          return AnimalState.Flee;
-        }
+        if (_animal.KnowsWaterLocation) _animal.KnowsWaterLocation = false;
 
         return AnimalState.Flee;
       }
