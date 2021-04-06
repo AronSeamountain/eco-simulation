@@ -28,6 +28,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VisualSizeModifier: 1
   visuals: {fileID: 6006934142661635652}
+  agent: {fileID: 3773733403073822651}
   movement: {fileID: 5802323596056786700}
   foodManager: {fileID: 4747830557226467101}
   waterManager: {fileID: 2339196169049295007}
@@ -230,6 +231,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &3773733403073822651 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 583815280997529235, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 4342840507159857448}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1806244766759171930 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2690281087483412082, guid: bf200501b32dda54c93cca32e5f22aba,

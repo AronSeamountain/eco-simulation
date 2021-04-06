@@ -10,6 +10,7 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
+using UnityEngine.AI;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -47,6 +48,7 @@ namespace Animal
     [SerializeField] private float VisualSizeModifier;
 
     [SerializeField] private Transform visuals;
+    [SerializeField] private NavMeshAgent agent;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -314,6 +316,7 @@ namespace Animal
     public virtual void UpdateScale()
     {
       visuals.transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
+      if(_species == AnimalSpecies.Wolf) agent.baseOffset = SizeModifier * VisualSizeModifier;
       UpdateNourishmentDelegate();
     }
 
