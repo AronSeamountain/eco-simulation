@@ -8,6 +8,15 @@ def plot():
     df = pd.read_csv(full_path)
     fig = go.figure()
 
+    rabbitVisionAverages  = []
+    rabbitHearingAverages = []
+    wolfVisionAverages  = []
+    wolfHearingAverages = []
+
+    def calcAverage(){
+        day_counter
+    }
+
     fig.add_trace(
         go.scatter(
             x = df['day'], 
