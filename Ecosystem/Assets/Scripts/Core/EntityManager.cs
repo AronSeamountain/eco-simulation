@@ -26,9 +26,9 @@ namespace Core
     public static float HoursInRealSeconds = 0.5f;
 
     private const float HoursPerDay = 24;
-    public static int InitialWolves = 300;
-    public static int InitialRabbits = 300;
-    public static int InitialPlants = 300;
+    public static int InitialWolves = 25;
+    public static int InitialRabbits = 100;
+    public static int InitialPlants = 100;
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private bool log;
     [SerializeField] private bool performanceMode;
@@ -45,13 +45,18 @@ namespace Core
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
     public FpsDelegate FpsDelegate { get; private set; }
+    public static bool PerformanceModeMenuOverride = true;
     public static bool PerformanceMode;
-    public bool Log => log;
+    public static bool OverlappableAnimalsMenuOverride = false;
+    public static bool LogMenuOverride = true;
+    public bool Log { get; private set; }
 
     private void Awake()
     {
-      PerformanceMode = performanceMode;
-      AnimalPool.OverlappableAnimals = overlappableAnimals;
+      Log = log || LogMenuOverride;
+      PerformanceMode = performanceMode || PerformanceModeMenuOverride;
+      
+      AnimalPool.OverlappableAnimals = overlappableAnimals || OverlappableAnimalsMenuOverride;
 
       FpsDelegate = new FpsDelegate();
 
@@ -83,7 +88,7 @@ namespace Core
     private void Update()
     {
       UpdateTick();
-      if (log) FpsDelegate.FramePassed();
+      if (Log) FpsDelegate.FramePassed();
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -246,7 +251,7 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log)
+          if (Log)
           {
             _logger.Snapshot(this);
             _logger.Persist();
