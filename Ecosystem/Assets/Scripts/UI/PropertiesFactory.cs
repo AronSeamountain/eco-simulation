@@ -217,7 +217,7 @@ namespace UI
 
       // ---------- Animals (herbivores/rabbits) ----------
       var herbivoreText = RowFactory.CreateKeyValuePair();
-      herbivoreText.Configure("Rabbits", entityManager.HerbivoreCount.ToString());
+      herbivoreText.Configure("very long and many amount iof leys", entityManager.HerbivoreCount.ToString());
 
       void HerbivoreUpdateImpl()
       {

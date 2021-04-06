@@ -48,6 +48,7 @@ namespace Core
 
     private void Awake()
     {
+      Time.timeScale = 8f;
       _animalPool = AnimalPool.SharedInstance;
 
       // Lists

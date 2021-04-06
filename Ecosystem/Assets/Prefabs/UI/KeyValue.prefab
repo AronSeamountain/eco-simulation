@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 200, y: 150.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3871592950248218167
 CanvasRenderer:
@@ -65,9 +65,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<b><align=left>left<line-height=0></b>
+  m_text: '<b><u>key here</u></b>
 
-    <align=right>right'
+    value'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4271a1d83a6d7de479f161eddd6a7cbb, type: 2}
   m_sharedMaterial: {fileID: 3523914141514340889, guid: 4271a1d83a6d7de479f161eddd6a7cbb,
@@ -103,11 +103,11 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -36.8
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
