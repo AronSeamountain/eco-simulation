@@ -48,8 +48,7 @@ namespace Animal.AnimalStates
         _carnivore.GetStaminaDelegate().IncreaseStamina(3);
         return AnimalState.Wander;
       }
-
-
+      
       _carnivore.GoTo(closestPoint);
       
       if (Vector3.Distance(position, closestPoint) < _carnivore.Reach && _target.NutritionalValue >= 3f)
