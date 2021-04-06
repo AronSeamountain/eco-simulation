@@ -35,8 +35,13 @@ namespace Animal
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-    
+
     private const float RunningSpeedFactor = 5f;
+
+    /// <summary>
+    ///   The factor to decrease the speed and size with for newly spawned child animals.
+    /// </summary>
+    private const float ChildDecreaseValueFactor = 0.5f;
 
     /// <summary>
     ///   Scales the animal, is not correlated to actual size for the model logic.
@@ -64,35 +69,30 @@ namespace Animal
     [SerializeField] private int hoursBetweenPregnancyAndFertility;
     [SerializeField] public Collider animalCollider;
     [SerializeField] private int oldAgeThreshold = 10;
+    private readonly int _nourishmentMultiplier = 100;
     private float _fleeSpeed;
-    private float FullyGrownSpeed => speed.Value;
     protected HealthDelegate _healthDelegate;
+    private int _hoursUntilFertile;
     private float _hoursUntilPregnancy;
     private AbstractAnimal _mateTarget;
     protected NourishmentDelegate _nourishmentDelegate;
-    private readonly int _nourishmentMultiplier = 100;
     private float _nutritionalValue;
     protected StaminaDelegate _staminaDelegate;
     private StateMachine<AnimalState> _stateMachine;
-    private int _hoursUntilFertile;
-    public bool IsChild { get; private set; }
-    public float FullyGrownSize => size.Value;
     public AgeChanged AgeChangedListeners;
-    public string Uuid { get; private set; }
-
-    /// <summary>
-    ///   The factor to decrease the speed and size with for newly spawned child animals.
-    /// </summary>
-    private const float ChildDecreaseValueFactor = 0.5f;
 
     public ChildSpawned ChildSpawnedListeners;
     public AnimalDecayed DecayedListeners;
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
-    private Gene speed;
     private Gene size;
+    private Gene speed;
     public StateChanged StateChangedListeners;
+    private float FullyGrownSpeed => speed.Value;
+    public bool IsChild { get; private set; }
+    public float FullyGrownSize => size.Value;
+    public string Uuid { get; private set; }
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
 
@@ -178,6 +178,10 @@ namespace Animal
       _stateMachine.Execute();
     }
 
+    public void Boost()
+    {
+    }
+
     public float GetHydration()
     {
       return _nourishmentDelegate.Hydration;
@@ -246,10 +250,7 @@ namespace Animal
       ResetStateMachine();
       ResetFertility();
 
-      if (EntityManager.PerformanceMode)
-      {
-        Boost();
-      }
+      if (EntityManager.PerformanceMode) Boost();
     }
 
     public void HourTick()
@@ -301,7 +302,7 @@ namespace Animal
         SetSpeed();
         PropertiesChangedListeners?.Invoke();
         //kills the animal if it is too slow, to not wait for them to actually die from being starved
-        if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue);
+        if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(int.MaxValue);
       }
     }
 
@@ -391,7 +392,7 @@ namespace Animal
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
       EmitMouthParticle();
     }
-    
+
     // List of visual cues to be emitted:
     public void EmitMatingCue()
     {
@@ -506,14 +507,6 @@ namespace Animal
     protected abstract void IncreaseStaminaIfNotRunning();
 
     protected abstract void DecreaseStaminaIfRunning();
-
-    public void SetMouthColor(Color color)
-    {
-      if (EntityManager.PerformanceMode) return;
-      var main = mouthParticles.main;
-      main.startColor = new ParticleSystem.MinMaxGradient(color);
-      EmitMouthParticle();
-    }
 
     public void SetMouthSprite(Sprite sprite)
     {
@@ -739,9 +732,5 @@ namespace Animal
     }
 
     #endregion
-
-    public void Boost()
-    {
-    }
   }
 }

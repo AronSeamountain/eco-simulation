@@ -9,6 +9,7 @@ namespace Animal.AnimalStates
   {
     private readonly AbstractAnimal _animal;
     private Water _water;
+    private readonly Sprite _sp = Resources.Load<Sprite>("water20px");
 
     public DrinkState(AbstractAnimal animal)
     {
@@ -27,12 +28,8 @@ namespace Animal.AnimalStates
 
       _animal.IsRunning = false;
 
-      //set Color
-      //_animal.SetMouthColor(Color.blue);
-      
       //set sprite
-      Sprite sp = Resources.Load<Sprite>("water20px");
-      _animal.SetMouthSprite(sp);
+      _animal.SetMouthSprite(_sp);
     }
 
     public AnimalState Execute()
