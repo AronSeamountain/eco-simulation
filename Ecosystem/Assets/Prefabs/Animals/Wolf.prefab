@@ -1567,6 +1567,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 91534308159536396, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 91534308159536396, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c33aaeef8566b4a4490ca077405f2d38, type: 2}
@@ -1715,6 +1720,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1491322730628140666, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2665653930107916300, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2885285359664208470, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -1724,6 +1739,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.946
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123042664360789794, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3231871282151071052, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
@@ -1765,6 +1785,11 @@ PrefabInstance:
       propertyPath: navMeshAgent
       value: 
       objectReference: {fileID: 1783928942632099552}
+    - target: {fileID: 5338946744386887091, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6917418751418810914, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -1780,6 +1805,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c33aaeef8566b4a4490ca077405f2d38, type: 2}
+    - target: {fileID: 8249104832863150935, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 8261543688819276837, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
       propertyPath: vision
@@ -1844,6 +1874,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Wolf
+      objectReference: {fileID: 0}
+    - target: {fileID: 8672377695379901830, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868110960028306985, guid: 85ba19cd4fe588c41a63c69561385f30,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 9205929201712440949, guid: 85ba19cd4fe588c41a63c69561385f30,
         type: 3}
