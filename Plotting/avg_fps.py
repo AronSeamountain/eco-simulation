@@ -18,13 +18,13 @@ def plot():
     try:
         fps_baseline_full_path = get_full_path('fps_baseline.csv')
     except:
-        print('Did not find fps_baseline.csv, create it with create_snapshot.py if desired')
+        print('Did not find fps_baseline.csv, create it with create_baseline.py if desired')
         has_baseline = False
 
     try:
         overview_baseline_full_path = get_full_path('overview_baseline.csv')
     except:
-        print('Did not find overview_baseline.csv, create it with create_snapshot.py if desired')
+        print('Did not find overview_baseline.csv, create it with create_baseline.py if desired')
         has_baseline = False
 
     if has_baseline:

@@ -16,8 +16,6 @@ def snapshot():
     overview_full_path = get_full_path(overview_filename)
     overview_full_path_baseline = overview_full_path.replace(overview_filename, overview_baseline_filename)
 
-    print(fps_full_path)
-
     shutil.copy2(fps_full_path, fps_full_path_baseline)
     print('Created ' + fps_full_path_baseline)
 
