@@ -91,5 +91,15 @@ namespace Animal
     {
       if (IsRunning && EnemyToFleeFrom) _staminaDelegate.DecreaseStamina(5);
     }
+    
+    public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor / 2;
+    }
+    
+    public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor/2;
+    }
   }
 }
