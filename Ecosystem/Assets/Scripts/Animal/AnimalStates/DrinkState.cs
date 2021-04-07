@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -9,6 +9,7 @@ namespace Animal.AnimalStates
   {
     private readonly AbstractAnimal _animal;
     private Water _water;
+    private readonly Sprite _sp = Resources.Load<Sprite>("water20px");
 
     public DrinkState(AbstractAnimal animal)
     {
@@ -27,8 +28,8 @@ namespace Animal.AnimalStates
 
       _animal.IsRunning = false;
 
-      //set Color
-      _animal.SetMouthColor(Color.blue);
+      //set sprite
+      _animal.SetMouthSprite(_sp);
     }
 
     public AnimalState Execute()

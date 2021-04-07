@@ -106,7 +106,7 @@ namespace Utils
       var z = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
 
 
-      var adjacentWalkablePoints = WalkablePointAdjacencyList[x * WorldMatrix.amountOfBoxesPerMatrixLayer + z];
+      var adjacentWalkablePoints = WalkablePointAdjacencyList[x * WorldMatrix.amountOfBoxesOnXLayer + z];
       var walkablePoint = adjacentWalkablePoints[Random.Range(0, adjacentWalkablePoints.Count)];
 
       return walkablePoint;

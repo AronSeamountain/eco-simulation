@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using Utils;
 
 namespace Animal.AnimalStates
@@ -21,6 +21,7 @@ namespace Animal.AnimalStates
     {
       _animal.IsRunning = true;
       _animal.SetSpeed();
+      _animal.EmitFleeCue();
     }
 
     public AnimalState Execute()
