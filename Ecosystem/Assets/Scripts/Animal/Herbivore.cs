@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using Foods;
 using UnityEngine;
 using Utils;
 
@@ -10,8 +11,6 @@ namespace Animal
   public sealed class Herbivore : AbstractAnimal
   {
     private const float SafeDistance = 15f;
-    private bool _hearsCarnivore;
-    private bool _seesCarnivore;
     private Texture _tex;
 
     protected override void RenderAnimalSpecificColors()
@@ -58,16 +57,25 @@ namespace Animal
       _healthDelegate.DecreaseHealth(damage);
     }
 
+    private bool WolfDiscovered(AbstractAnimal animal)
+    {
+      return animal.IsCarnivore;
+    }
+
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
-      _hearsCarnivore = animal.IsCarnivore;
-      if (_hearsCarnivore) EnemyToFleeFrom = animal;
+      if(WolfDiscovered(animal))
+      {
+        EnemyToFleeFrom = animal;
+      }
     }
 
     protected override void OnEnemySeen(AbstractAnimal animal)
     {
-      _seesCarnivore = animal.IsCarnivore;
-      if (_seesCarnivore) EnemyToFleeFrom = animal;
+      if(WolfDiscovered(animal))
+      {
+        EnemyToFleeFrom = animal;
+      }
     }
 
 

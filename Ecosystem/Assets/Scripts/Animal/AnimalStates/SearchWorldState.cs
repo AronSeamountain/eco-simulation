@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using UnityEngine;
 using Utils;
 

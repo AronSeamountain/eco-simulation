@@ -9,6 +9,7 @@ namespace Animal.AnimalStates
     private readonly Carnivore _carnivore;
     private const float EatingRange = 2f;
     private Herbivore _target;
+    private readonly Sprite _sp = Resources.Load<Sprite>("blood20px");
 
     public HuntState(Carnivore carnivore)
     {
@@ -29,7 +30,7 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-       _target = _carnivore.Target;
+      _target = _carnivore.Target;
       if (!_carnivore.Alive) return AnimalState.Dead;
       if (_carnivore.IsThirsty && !_carnivore.KnowsWaterLocation && !_carnivore.IsHungry)
         return AnimalState.SearchWorld;
@@ -53,7 +54,7 @@ namespace Animal.AnimalStates
       var position = _carnivore.transform.position;
       var closestPoint = _target.animalCollider.ClosestPointOnBounds(position);
       _carnivore.GoTo(closestPoint);
-      
+
       if (Vector3.Distance(position, closestPoint) < _carnivore.Reach)
       {
         if (!_target.Alive)
@@ -62,7 +63,7 @@ namespace Animal.AnimalStates
           return AnimalState.Eat;
         }
 
-        _carnivore.SetMouthColor(Color.red);
+        _carnivore.SetMouthSprite(_sp);
         _carnivore.AttackTarget(_target);
       }
 
