@@ -96,6 +96,7 @@ namespace Animal
     public string Uuid { get; private set; }
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
+    public bool IsMoving => movement.IsMoving;
 
     public float NutritionalValue
     {
@@ -599,15 +600,6 @@ namespace Animal
       var vectorToEnemy = transform.position - animal.transform.position;
       var rotation = Quaternion.LookRotation(vectorToEnemy);
       transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * Time.deltaTime);
-    }
-
-    public void Flee()
-    {
-      if (EnemyToFleeFrom)
-      {
-        Turn(EnemyToFleeFrom);
-        GoTo(transform.position + transform.forward);
-      }
     }
 
     public void SetSpeed()

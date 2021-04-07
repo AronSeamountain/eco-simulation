@@ -1,4 +1,6 @@
 using Core;
+using JetBrains.Annotations;
+using UnityEngine;
 using Utils;
 
 namespace Animal.AnimalStates
@@ -29,7 +31,15 @@ namespace Animal.AnimalStates
       if (_animal.Dead) return AnimalState.Dead;
       if (_animal.SafeDistanceFromEnemy()) return AnimalState.Wander;
       if (_animal.EnemyToFleeFrom.Dead || _animal.EnemyToFleeFrom.DoesNotExist()) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom.Exists()) _animal.Flee();
+
+      if (_animal.EnemyToFleeFrom.Exists() && !_animal.IsMoving)
+      {
+        var t = _animal.transform;
+        var point = NavMeshUtil.GetRandomClosePoint(t.position + t.forward);
+        Debug.Log("bout to flee");
+        _animal.GoTo(point);
+      }
+
       return AnimalState.Flee;
     }
 

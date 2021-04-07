@@ -83,7 +83,6 @@ namespace Animal
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
       _hearsHerbivore = animal.IsHerbivore;
-      if (_hearsHerbivore) Turn(animal);
     }
 
     protected override void OnEnemySeen(AbstractAnimal animal)
