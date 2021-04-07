@@ -46,7 +46,7 @@ namespace Animal.Sensor
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
-    private IList<ObjectSensedAction> _sensedActions;
+    private SensedActionsDelegate _sensedActionsDelegate;
 
     private int Height
     {
@@ -84,7 +84,7 @@ namespace Animal.Sensor
       Width = 10;
       Length = 10;
 
-      _sensedActions = new List<ObjectSensedAction>()
+      var actions = new List<ObjectSensedAction>()
       {
         new ObjectSensedAction(obj =>
         {
@@ -128,15 +128,13 @@ namespace Animal.Sensor
           return false;
         })
       };
+
+      _sensedActionsDelegate = new SensedActionsDelegate(actions);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-      foreach (var sensedAction in _sensedActions)
-      {
-        var finalAction = sensedAction.Do(other);
-        if (finalAction) break;
-      }
+      _sensedActionsDelegate.Do(other);
     }
 
     /// <summary>
