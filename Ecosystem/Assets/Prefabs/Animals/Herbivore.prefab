@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VisualSizeModifier: 1
+  visuals: {fileID: 2047054994926531180}
+  agent: {fileID: 8893076424420123539}
   movement: {fileID: 2283762596506970916}
   foodManager: {fileID: 1069567349259084597}
   waterManager: {fileID: 8016985608681985207}
@@ -27,6 +29,7 @@ MonoBehaviour:
   _species: 0
   maxNumberOfChildren: 1
   pregnancyTimeInHours: 0
+  hoursBetweenPregnancyAndFertility: 0
   animalCollider: {fileID: 4985773637478856858}
 --- !u!114 &8410095186163081469
 MonoBehaviour:
@@ -267,6 +270,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6ff778b4069405585c7540ad8ec2982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &8893076424420123539 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 583815280997529235, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 8318338745849550080}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6207474732365605746 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2690281087483412082, guid: bf200501b32dda54c93cca32e5f22aba,
@@ -297,6 +306,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 832a2cdb1b1e3534f808ff2f77949a9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &2047054994926531180 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8005206234950264684, guid: bf200501b32dda54c93cca32e5f22aba,
+    type: 3}
+  m_PrefabInstance: {fileID: 8318338745849550080}
+  m_PrefabAsset: {fileID: 0}
 --- !u!198 &4908705577462801219 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 3994574892230850115, guid: bf200501b32dda54c93cca32e5f22aba,

@@ -11,6 +11,7 @@ using Pools;
 using UI;
 using UI.Properties;
 using UnityEngine;
+using UnityEngine.AI;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -49,6 +50,8 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
+    [SerializeField] private Transform visuals;
+    [SerializeField] private NavMeshAgent agent;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
     [SerializeField] protected WaterManager waterManager;
@@ -321,7 +324,8 @@ namespace Animal
 
     public virtual void UpdateScale()
     {
-      transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
+      visuals.transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
+      if(species == AnimalSpecies.Wolf) agent.baseOffset = SizeModifier * VisualSizeModifier;
       UpdateNourishmentDelegate();
     }
 
@@ -351,8 +355,9 @@ namespace Animal
       var sameTypeOfAnimal = animal.Species == Species;
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
+      var dead = animal.Dead;
 
-      if (sameTypeOfAnimal && oppositeGender && fertile &&
+      if (sameTypeOfAnimal && oppositeGender && fertile && !dead &&
           (_mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal)))
         _mateTarget = animal;
     }
@@ -534,7 +539,7 @@ namespace Animal
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if (Gender == Gender.Female && Fertile && !IsPregnant)
+      if (Gender == Gender.Female && Fertile && !IsPregnant && !Dead)
       {
         LastMaleMate = father;
         IsPregnant = true;
@@ -683,7 +688,7 @@ namespace Animal
 
     public bool NeedsNourishment()
     {
-      return (IsThirsty || IsHungry) && (!KnowsFoodLocation || !KnowsWaterLocation);
+      return (IsThirsty && !KnowsWaterLocation) || (IsHungry && !KnowsFoodLocation);
     }
 
     #region ResetSetup
