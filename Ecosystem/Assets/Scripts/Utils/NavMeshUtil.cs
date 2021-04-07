@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Animal;
+using Core;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -9,6 +12,8 @@ namespace Utils
   {
     private const string WalkableLayerName = "Walkable";
     private const int AllLayers = -1;
+    public static List<MonoBehaviour>[,] WalkablePointMatrix;
+    public static IList<List<MonoBehaviour>> WalkablePointAdjacencyList;
 
     public static int WalkableLayer => NavMesh.GetAreaFromName(WalkableLayerName);
 
@@ -69,6 +74,42 @@ namespace Utils
         return hit.position;
 
       throw new Exception("Failed to find point far away " + direction);
+    }
+
+
+    public static MonoBehaviour getRandomWalkablePoint()
+    {
+      int index = Random.Range(0, WorldMatrix.WalkablePoints.Count);
+      return WorldMatrix.WalkablePoints[index];
+    }
+
+    public static MonoBehaviour getRandomWalkablePointInMatrix(Vector3 selfPos)
+    {
+      var x = (int) selfPos.x / WorldMatrix.WalkableMatrixBoxSize;
+      var z = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
+
+      var listWithEntry = findMatrixEntryWithWalkablePoint(x, z);
+
+      var index = Random.Range(0, listWithEntry.Count);
+
+      return WalkablePointMatrix[x, z][index];
+    }
+
+    private static List<MonoBehaviour> findMatrixEntryWithWalkablePoint(int x, int z)
+    {
+      return WalkablePointMatrix[x, z];
+    }
+
+    public static MonoBehaviour getRandomWalkablePointAdjacencyList(Vector3 selfPos)
+    {
+      var x = (int) selfPos.x / WorldMatrix.WalkableMatrixBoxSize;
+      var z = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
+
+
+      var adjacentWalkablePoints = WalkablePointAdjacencyList[x * WorldMatrix.amountOfBoxesPerMatrixLayer + z];
+      var walkablePoint = adjacentWalkablePoints[Random.Range(0, adjacentWalkablePoints.Count)];
+
+      return walkablePoint;
     }
   }
 }

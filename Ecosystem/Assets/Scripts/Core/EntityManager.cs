@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
@@ -12,6 +13,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Utils;
 using ILogger = Logger.ILogger;
+using Random = UnityEngine.Random;
 
 namespace Core
 {
@@ -26,11 +28,13 @@ namespace Core
     /// </summary>
     public static float HoursInRealSeconds = 0.5f;
 
+
     private const float HoursPerDay = 24;
     public static int InitialWolves = 25;
     public static int InitialRabbits = 100;
     public static int InitialPlants = 100;
     [SerializeField] private GameObject plantPrefab;
+    [SerializeField] private GameObject walkablePointPrefab;
     [SerializeField] private bool log;
     [SerializeField] private bool performanceMode;
     [SerializeField] private bool overlappableAnimals;
@@ -40,6 +44,7 @@ namespace Core
     public DayTick DayTickListeners;
     public Tick HourTickListeners;
     private int plantCount;
+
     public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
@@ -51,6 +56,7 @@ namespace Core
     public static bool OverlappableAnimalsMenuOverride = false;
     public static bool LogMenuOverride = true;
     public bool Log { get; private set; }
+
 
     private void Awake()
     {
@@ -66,6 +72,9 @@ namespace Core
       SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
+
+
+      SpawnAndAddWalkablePoints();
 
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
@@ -129,6 +138,31 @@ namespace Core
     }
 
     /// <summary>
+    ///   Creates the walkable points which the animals will look for
+    /// </summary>
+    public void SpawnAndAddWalkablePoints()
+    {
+      List<MonoBehaviour>[,] matrix = WorldMatrix.InitMatrix();
+      PopulateWorldWithWalkablePoints(matrix);
+      WorldMatrix.AddWalkablePointsToMatrix(matrix);
+      WorldMatrix.PopulateAdjacencyList(matrix);
+    }
+
+    private void PopulateWorldWithWalkablePoints(List<MonoBehaviour>[,] matrix)
+    {
+      for (int i = 0; i < matrix.GetLength(0); i++)
+      {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+          SpawnAndAddGeneric(WorldMatrix.WalkablePointsAmountPerBox, walkablePointPrefab,
+            i * WorldMatrix.WalkableMatrixBoxSize, (i + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            j * WorldMatrix.WalkableMatrixBoxSize, (j + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            WorldMatrix.WalkablePoints);
+        }
+      }
+    }
+
+    /// <summary>
     ///   Spawns animals and adds them to the list of animals.
     /// </summary>
     private void SpawnAndAddInitialAnimals()
@@ -166,15 +200,38 @@ namespace Core
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
+
+
         Place(instance);
+        list?.Add(instance);
+      }
+    }
+
+    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, int xMin, int xMax, int zMin, int zMax,
+      ICollection<T> list = null)
+      where T : MonoBehaviour
+    {
+      for (var i = 0; i < amount; i++)
+      {
+        var x = Random.Range(xMin, xMax);
+        var z = Random.Range(zMin, zMax);
+        var vector = new Vector3(x, 0, z);
+        var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
+        
+        Place(instance,vector);
         list?.Add(instance);
       }
     }
 
     private void Place<T>(T instance) where T : MonoBehaviour
     {
-      var coord = NavMeshUtil.GetRandomLocation();
-      var foundPointOnNavMesh = NavMesh.SamplePosition(coord, out var hit, 50, -1);
+      var vector = NavMeshUtil.GetRandomLocation();
+      Place(instance, vector);
+    }
+
+    private void Place<T>(T instance, Vector3 v) where T : MonoBehaviour
+    {
+      var foundPointOnNavMesh = NavMesh.SamplePosition(v, out var hit, 300, -1);
 
       if (!foundPointOnNavMesh)
         QuitApplication("Could not find a position on the nav mesh when placing a game object");

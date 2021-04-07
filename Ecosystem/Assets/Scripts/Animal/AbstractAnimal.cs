@@ -4,6 +4,7 @@ using System.Linq;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Animal.Sensor;
+using Animal.WorldPointFinders;
 using Core;
 using Foods;
 using Pools;
@@ -111,6 +112,8 @@ namespace Animal
     public AbstractAnimal LastMaleMate { get; private set; }
     public bool Fertile { get; private set; }
     public Gender Gender { get; private set; }
+
+    public IWorldPointFinder WorldPointFinder { get; private set; }
 
     public AnimalSpecies Species
     {
@@ -236,6 +239,7 @@ namespace Animal
     {
       Uuid = Guid.NewGuid().ToString();
 
+      ResetWorldPointFinder();
       ResetGender();
       ResetProperties();
       ResetHealthAndActivate();
@@ -298,6 +302,11 @@ namespace Animal
         //kills the animal if it is too slow, to not wait for them to actually die from being starved
         if (SpeedModifier < 0.1) _healthDelegate.DecreaseHealth(Int32.MaxValue);
       }
+    }
+
+    private void ResetWorldPointFinder()
+    {
+      WorldPointFinder = new AdjacencyListWorldPointFinderImpl();
     }
 
     private void ResetHealthAndActivate()
