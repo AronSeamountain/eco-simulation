@@ -11,6 +11,7 @@ using UI.Properties;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using Utils;
 using ILogger = Logger.ILogger;
 using Random = UnityEngine.Random;
@@ -60,6 +61,8 @@ namespace Core
 
     private void Awake()
     {
+
+     
       Log = log || LogMenuOverride;
       PerformanceMode = performanceMode || PerformanceModeMenuOverride;
       
@@ -69,12 +72,20 @@ namespace Core
 
       // Lists
       Animals = new List<AbstractAnimal>();
-      SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
-      SpawnAndAddInitialPlants();
-
-
-      SpawnAndAddWalkablePoints();
+      var sceneName = SceneManager.GetActiveScene().name;
+      if (sceneName.Equals("EvadeScene"))
+      {
+        InitEvadeScene();
+      }
+      else
+      {
+        SpawnAndAddInitialAnimals();
+        Plants = new List<Plant>();
+        SpawnAndAddInitialPlants();
+        SpawnAndAddWalkablePoints();
+      }
+      
 
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
@@ -167,6 +178,7 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
+      
       SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
@@ -175,6 +187,11 @@ namespace Core
       SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
       CarnivoreCount += InitialWolves;
       
+      InitAnimalGameObejcts();
+    }
+
+    private void InitAnimalGameObejcts()
+    {
       for (int i = 0; i < Animals.Count; i++)
       {
         Animals[i].ResetGameObject();
@@ -324,6 +341,35 @@ namespace Core
           }
         }
       }
+    }
+    
+    private void InitEvadeScene()
+    {
+        GeneralTestInit();
+        var pool = AnimalPool.SharedInstance;
+      
+        var wolf = pool.Get(AnimalSpecies.Wolf);
+        var vector = new Vector3(5,0,5);
+        Place(wolf,vector);
+        Animals?.Add(wolf);
+       
+        var rabbit = pool.Get(AnimalSpecies.Rabbit);
+        var vector2 = new Vector3(5,0,10);
+        Place(rabbit,vector2);
+        Animals?.Add(rabbit);
+        
+        InitAnimalGameObejcts();
+        wolf.GetNourishmentDelegate().Saturation = 0;
+        rabbit.SpeedModifier = 1;
+        wolf.SpeedModifier = 1.3f;
+
+    }
+
+    private void GeneralTestInit()
+    {
+      PerformanceMode = false;
+      Log = false;
+      
     }
   }
 }
