@@ -2,6 +2,7 @@
 using Animal;
 using Core;
 using Foods.Plants;
+using JetBrains.Annotations;
 using UI.Properties;
 using UnityEngine;
 using Utils;
@@ -200,6 +201,7 @@ namespace UI
 
     public static IEnumerable<AbstractProperty> Create(EntityManager entityManager)
     {
+      var output = new List<AbstractProperty>();
       var ecoSystemText = RowFactory.CreateKeyValuePair();
       ecoSystemText.Configure("Ecosystem", "Forest");
 
@@ -215,6 +217,8 @@ namespace UI
       entityManager.DayTickListeners += DayChangeImpl;
       ageText.CleanupListeners += () => entityManager.DayTickListeners -= DayChangeImpl;
 
+      output.Add(ageText);
+
       // ---------- Animals (herbivores/rabbits) ----------
       var herbivoreText = RowFactory.CreateKeyValuePair();
       herbivoreText.Configure("Rabbits", entityManager.HerbivoreCount.ToString());
@@ -226,6 +230,8 @@ namespace UI
 
       entityManager.HourTickListeners += HerbivoreUpdateImpl;
       herbivoreText.CleanupListeners += () => entityManager.HourTickListeners -= HerbivoreUpdateImpl;
+
+      output.Add(herbivoreText);
 
       // ---------- Animals (carnivores/wolves) ----------
       var carnivoreText = RowFactory.CreateKeyValuePair();
@@ -239,11 +245,34 @@ namespace UI
       entityManager.HourTickListeners += AnimalUpdateImpl;
       carnivoreText.CleanupListeners += () => entityManager.HourTickListeners -= AnimalUpdateImpl;
 
+      output.Add(carnivoreText);
+
       // ---------- Plants ----------
       var plantText = RowFactory.CreateKeyValuePair();
       plantText.Configure("Plants", entityManager.Plants.Count.ToString());
 
-      return new List<AbstractProperty> {ecoSystemText, ageText, herbivoreText, carnivoreText, plantText};
+      output.Add(plantText);
+
+      // ---------- Fps ----------
+      if (entityManager.Log)
+      {
+        var fpsText = RowFactory.CreateKeyValuePair();
+        fpsText.Configure("Fps", "averaging...");
+
+        void FpsUpdateImpl()
+        {
+          fpsText.OnValueChanged(
+            Prettifier.Round(entityManager.FpsDelegate.AvgSinceLastSnapshot, 2)
+          );
+        }
+
+        entityManager.DayTickListeners += FpsUpdateImpl;
+        fpsText.CleanupListeners += () => entityManager.DayTickListeners -= FpsUpdateImpl;
+
+        output.Add(fpsText);
+      }
+
+      return output;
     }
   }
 }
