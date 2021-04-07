@@ -107,8 +107,8 @@ namespace Logger.ConcreteLogger
         fullyGrownSize = animal.FullyGrownSize;
         
         var totalAnimalBits = animal.VisionGene.Bits + animal.HearingGene.Bits;
-        visionPercentage = animal.VisionGene.Bits * 100/totalAnimalBits;
-        hearingPercentage = animal.HearingGene.Bits * 100/totalAnimalBits;
+        visionPercentage = animal.VisionGene.Bits * 100f/totalAnimalBits;
+        hearingPercentage = animal.HearingGene.Bits * 100f/totalAnimalBits;
         this.day = day;
         uuid = animal.Uuid;
       }

@@ -13,16 +13,16 @@ from util.file_finder import get_full_path
 from util.json_extracter import extract_unique
 
 def plot():
-    full_path = get_full_path('overview.csv')
-    df = pd.read_csv(full_path)
+    full_path = get_full_path('detailed.json')
     fig = go.Figure()
     data = json.load(open(full_path))
 
     all_days = extract_unique('day', data)
 
+#TODO make all of this into a metho dewhen something works
     fig.add_trace(
-        go.scatter(//TODO make all of this into a metho dewhen something works
-            x = df['day'], 
+        go.Scatter(
+            x = all_days, 
             y = calcAverage(data, 'Rabbit', 'hearingPercentage'), 
             line = dict(color = 'firebrick', width = 4),
             stackgroup='one',
@@ -31,9 +31,9 @@ def plot():
     )
 
     fig.add_trace(
-        go.scatter(
-            x = df['day'], 
-            y = calcAverage(data, Rabbit, 'visionPercentage'), 
+        go.Scatter(
+            x = all_days, 
+            y = calcAverage(data, 'Rabbit', 'visionPercentage'), 
             line = dict(color = 'royalblue', width = 4),
             stackgroup='one',
             groupnorm='percent'
@@ -41,7 +41,7 @@ def plot():
     )
 
     fig.add_trace(go.Scatter(
-    x=df['day'], 
+    x=all_days, 
     y=[100 for i in all_days],
     mode='lines',
     line=dict(width=0.5, color='rgb(131, 90, 241)'),
@@ -71,7 +71,8 @@ def calcAverage(data, species, dataToConsider):
     for day in all_days:
         values = [i[dataToConsider] for i in data if i['day'] == day and i['species'] == species]
 
-        average = values.sum()/values.len()
+     
+        average = sum(values)/len(values)
 
         averages.append(average)
     
