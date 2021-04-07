@@ -76,6 +76,10 @@ namespace Animal
       return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, HuntRange);
     }
 
+    public bool ShouldStartHunt(Herbivore carnivoretarget)
+    {
+      return GetStaminaDelegate().HasMaxStamina && ShouldHunt(carnivoretarget);
+    }
     public void AttackTarget(Herbivore carnivoreTarget)
     {
       carnivoreTarget.TakeDamage(attackDamage);

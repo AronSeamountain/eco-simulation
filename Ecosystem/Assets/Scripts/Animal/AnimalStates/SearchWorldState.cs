@@ -49,7 +49,7 @@ namespace Animal.AnimalStates
       if (_animal is Carnivore carnivore)
       {
         var target = carnivore.Target;
-        if (carnivore.ShouldHunt(target)) return AnimalState.Hunt;
+        if (carnivore.ShouldStartHunt(target)) return AnimalState.Hunt;
       }
 
       var position = _animal.gameObject.transform.position;
