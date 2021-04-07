@@ -9,6 +9,7 @@ namespace Animal.AnimalStates
   {
     private readonly AbstractAnimal _animal;
     private Water _waterTarget;
+    private Vector3 _targetPoint;
 
     public PursueWaterState(AbstractAnimal animal)
     {
@@ -49,6 +50,8 @@ namespace Animal.AnimalStates
       var closestPoint = _waterTarget.GetComponent<Collider>().ClosestPoint(position);
       if (Vector3.Distance(position, closestPoint) < _animal.Reach) return AnimalState.Drink;
 
+      if (closestPoint == _targetPoint) return AnimalState.PursueWater;
+      _targetPoint = closestPoint;
       _animal.GoTo(closestPoint);
 
       return AnimalState.PursueWater;
