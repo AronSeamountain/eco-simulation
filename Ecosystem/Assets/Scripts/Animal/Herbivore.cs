@@ -13,6 +13,7 @@ namespace Animal
     private bool _hearsCarnivore;
     private bool _seesCarnivore;
     private Texture _tex;
+    public override float RunningSpeedFactor { get; } = 3f;
 
     protected override void RenderAnimalSpecificColors()
     {

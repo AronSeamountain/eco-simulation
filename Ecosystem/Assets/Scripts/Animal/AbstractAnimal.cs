@@ -36,8 +36,8 @@ namespace Animal
     public delegate void PropertiesChanged();
 
     public delegate void StateChanged(string state);
-    
-    private const float RunningSpeedFactor = 5f;
+
+    public virtual float RunningSpeedFactor { get; } = 5f;
 
     /// <summary>
     ///   Scales the animal, is not correlated to actual size for the model logic.
@@ -653,7 +653,7 @@ namespace Animal
     {
       return decreaseFactor / 4;
     }
-    public virtual float GetNourishmentDecreaseFactor()
+    private float GetNourishmentDecreaseFactor()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       return sizeCubed + SpeedModifier * SpeedModifier;
