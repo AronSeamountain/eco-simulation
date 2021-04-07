@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 
 namespace Core
@@ -8,17 +9,25 @@ namespace Core
   public static class WorldMatrix
   {
     public const int WalkablePointsAmountPerBox = 3;
-    public static int amountOfBoxesPerMatrixLayer;
     public const int WalkableMatrixBoxSize = 25;
-    public static int WorldSize = 500;
     public static IList<MonoBehaviour> WalkablePoints;
+    private static Terrain terrain;
+    
 
 
     public static List<MonoBehaviour>[,] InitMatrix()
     {
+      terrain = Terrain.activeTerrain;
+      var bounds = terrain.terrainData.bounds;
+      var x = (int) bounds.max.x - bounds.min.x;
+      var z = (int) bounds.max.z - bounds.min.z;
+     
       WalkablePoints = new List<MonoBehaviour>();
-      amountOfBoxesPerMatrixLayer = (int) Math.Ceiling(WorldSize / (float) WalkableMatrixBoxSize);
-      List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[amountOfBoxesPerMatrixLayer, amountOfBoxesPerMatrixLayer];
+      
+    
+      var amountOfBoxesOnXLayer = (int) Math.Ceiling(x / WalkableMatrixBoxSize);
+      var amountOfBoxesOnZLayer = (int) Math.Ceiling(z / WalkableMatrixBoxSize);
+      List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[amountOfBoxesOnXLayer, amountOfBoxesOnZLayer];
       for (int i = 0; i < matrix.GetLength(0); i++)
       {
         for (int j = 0; j < matrix.GetLength(1); j++)
@@ -26,7 +35,12 @@ namespace Core
           matrix[i, j] = new List<MonoBehaviour>();
         }
       }
-
+      //Logs for testing, dont remove
+      /* 
+      Debug.Log("Created matrix with " + amountOfBoxesOnXLayer + " amount of boxes in the x layer");
+      Debug.Log("Created matrix with " + amountOfBoxesOnZLayer + " amount of boxes in the z layer");
+      Debug.Log("Each box is " + WalkableMatrixBoxSize + "x" + WalkableMatrixBoxSize);
+      */
       return matrix;
     }
 
