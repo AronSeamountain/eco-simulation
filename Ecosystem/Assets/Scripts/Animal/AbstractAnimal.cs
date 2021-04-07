@@ -346,8 +346,9 @@ namespace Animal
       var sameTypeOfAnimal = animal.Species == Species;
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
+      var dead = animal.Dead;
 
-      if (sameTypeOfAnimal && oppositeGender && fertile &&
+      if (sameTypeOfAnimal && oppositeGender && fertile && !dead &&
           (_mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal)))
         _mateTarget = animal;
     }
@@ -497,7 +498,7 @@ namespace Animal
     /// </summary>
     public void Mate(AbstractAnimal father)
     {
-      if (Gender == Gender.Female && Fertile && !IsPregnant)
+      if (Gender == Gender.Female && Fertile && !IsPregnant && !Dead)
       {
         LastMaleMate = father;
         IsPregnant = true;
