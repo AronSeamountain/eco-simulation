@@ -22,6 +22,7 @@ namespace Animal.AnimalStates
       _animal.StopMoving();
       _animal.DiedListeners?.Invoke(_animal);
       _animal.IsRunning = false;
+      _animal.EmitDeathCue();
     }
 
     public AnimalState Execute()

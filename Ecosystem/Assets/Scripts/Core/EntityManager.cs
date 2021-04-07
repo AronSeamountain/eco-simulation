@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
 using Logger;
@@ -11,6 +13,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Utils;
 using ILogger = Logger.ILogger;
+using Random = UnityEngine.Random;
 
 namespace Core
 {
@@ -25,36 +28,53 @@ namespace Core
     /// </summary>
     public static float HoursInRealSeconds = 0.5f;
 
+
     private const float HoursPerDay = 24;
     public static int InitialWolves = 25;
     public static int InitialRabbits = 100;
     public static int InitialPlants = 100;
-    [SerializeField] private GameObject rabbitPrefab;
-    [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject plantPrefab;
+    [SerializeField] private GameObject walkablePointPrefab;
     [SerializeField] private bool log;
-    private AnimalPool _animalPool;
+    [SerializeField] private bool performanceMode;
+    [SerializeField] private bool overlappableAnimals;
     private float _hoursPassed;
     private float _hourTicker;
     private ILogger _logger;
     public DayTick DayTickListeners;
     public Tick HourTickListeners;
     private int plantCount;
+
     public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
+    public FpsDelegate FpsDelegate { get; private set; }
+    public static bool PerformanceModeMenuOverride = true;
+    public static bool PerformanceMode;
+    public static bool OverlappableAnimalsMenuOverride = false;
+    public static bool LogMenuOverride = true;
+    public bool Log { get; private set; }
+
 
     private void Awake()
     {
-      _animalPool = AnimalPool.SharedInstance;
+      Log = log || LogMenuOverride;
+      PerformanceMode = performanceMode || PerformanceModeMenuOverride;
+      
+      AnimalPool.OverlappableAnimals = overlappableAnimals || OverlappableAnimalsMenuOverride;
+
+      FpsDelegate = new FpsDelegate();
 
       // Lists
       Animals = new List<AbstractAnimal>();
       SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
       SpawnAndAddInitialPlants();
+
+
+      SpawnAndAddWalkablePoints();
 
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
@@ -68,13 +88,17 @@ namespace Core
       // Logger
       _logger = new MultiLogger(
         DetailedIndividualLogger.Instance,
-        OverviewLogger.Instance
+        new OverviewLogger(),
+        new FpsLogger()
       );
+
+      _logger.Clear();
     }
 
     private void Update()
     {
       UpdateTick();
+      if (Log) FpsDelegate.FramePassed();
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -114,24 +138,46 @@ namespace Core
     }
 
     /// <summary>
+    ///   Creates the walkable points which the animals will look for
+    /// </summary>
+    public void SpawnAndAddWalkablePoints()
+    {
+      List<MonoBehaviour>[,] matrix = WorldMatrix.InitMatrix();
+      PopulateWorldWithWalkablePoints(matrix);
+      WorldMatrix.AddWalkablePointsToMatrix(matrix);
+      WorldMatrix.PopulateAdjacencyList(matrix);
+    }
+
+    private void PopulateWorldWithWalkablePoints(List<MonoBehaviour>[,] matrix)
+    {
+      for (int i = 0; i < matrix.GetLength(0); i++)
+      {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+          SpawnAndAddGeneric(WorldMatrix.WalkablePointsAmountPerBox, walkablePointPrefab,
+            i * WorldMatrix.WalkableMatrixBoxSize, (i + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            j * WorldMatrix.WalkableMatrixBoxSize, (j + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            WorldMatrix.WalkablePoints);
+        }
+      }
+    }
+
+    /// <summary>
     ///   Spawns animals and adds them to the list of animals.
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      SpawnAndAddGeneric(InitialRabbits, rabbitPrefab, Animals);
+      SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
-      SpawnAndAddGeneric(InitialWolves, wolfPrefab, Animals);
-      CarnivoreCount += InitialWolves;
-    }
+      
 
-    private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
-    {
-      for (var i = 0; i < amount; i++)
+      SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
+      CarnivoreCount += InitialWolves;
+      
+      for (int i = 0; i < Animals.Count; i++)
       {
-        var animal = _animalPool.Get(animalSpecies);
-        Place(animal);
-        Animals.Add(animal);
+        Animals[i].ResetGameObject();
       }
     }
 
@@ -140,24 +186,59 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialPlants()
     {
-      SpawnAndAddGeneric(InitialPlants, plantPrefab, Plants);
+      SpawnAndAddPrefab(InitialPlants, plantPrefab, Plants);
     }
 
-    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list = null)
+    private void SpawnAndAddSpecies<T>(int amount, AnimalSpecies species, ICollection<T> list = null)
+      where T : MonoBehaviour
+    {
+      var pool = AnimalPool.SharedInstance;
+      for (var i = 0; i < amount; i++)
+      {
+        var instance = pool.Get(species) as T;
+        Place(instance);
+        list?.Add(instance);
+      }
+    }
+
+    private void SpawnAndAddPrefab<T>(int amount, GameObject prefab, ICollection<T> list = null)
       where T : MonoBehaviour
     {
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
+
+
         Place(instance);
+        list?.Add(instance);
+      }
+    }
+
+    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, int xMin, int xMax, int zMin, int zMax,
+      ICollection<T> list = null)
+      where T : MonoBehaviour
+    {
+      for (var i = 0; i < amount; i++)
+      {
+        var x = Random.Range(xMin, xMax);
+        var z = Random.Range(zMin, zMax);
+        var vector = new Vector3(x, 0, z);
+        var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
+        
+        Place(instance,vector);
         list?.Add(instance);
       }
     }
 
     private void Place<T>(T instance) where T : MonoBehaviour
     {
-      var coord = NavMeshUtil.GetRandomLocation();
-      var foundPointOnNavMesh = NavMesh.SamplePosition(coord, out var hit, 50, -1);
+      var vector = NavMeshUtil.GetRandomLocation();
+      Place(instance, vector);
+    }
+
+    private void Place<T>(T instance, Vector3 v) where T : MonoBehaviour
+    {
+      var foundPointOnNavMesh = NavMesh.SamplePosition(v, out var hit, 300, -1);
 
       if (!foundPointOnNavMesh)
         QuitApplication("Could not find a position on the nav mesh when placing a game object");
@@ -235,10 +316,11 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log)
+          if (Log)
           {
             _logger.Snapshot(this);
             _logger.Persist();
+            FpsDelegate.Reset();
           }
         }
       }

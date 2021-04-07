@@ -7,7 +7,9 @@ namespace Animal.AnimalStates
   public sealed class HuntState : IState<AnimalState>
   {
     private readonly Carnivore _carnivore;
+    private const float EatingRange = 2f;
     private Herbivore _target;
+    private readonly Sprite _sp = Resources.Load<Sprite>("blood20px");
 
     public HuntState(Carnivore carnivore)
     {
@@ -24,7 +26,6 @@ namespace Animal.AnimalStates
       _carnivore.IsRunning = true;
       _carnivore.SetSpeed();
       _carnivore.IsHunting = true;
-      _target = _carnivore.Target;
     }
 
     public AnimalState Execute()
@@ -58,7 +59,7 @@ namespace Animal.AnimalStates
           return AnimalState.Eat;
         }
 
-        _carnivore.SetMouthColor(Color.red);
+        _carnivore.SetMouthSprite(_sp);
         _carnivore.AttackTarget(_target);
       }
 
