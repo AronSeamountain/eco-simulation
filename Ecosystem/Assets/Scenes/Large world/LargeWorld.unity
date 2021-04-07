@@ -2498,6 +2498,12 @@ PrefabInstance:
       propertyPath: initialRabbits
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 5352134160174575543, guid: 1159ec73a46948a438b1b74cc111085c,
+        type: 3}
+      propertyPath: walkablePointPrefab
+      value: 
+      objectReference: {fileID: 3541123829617220350, guid: b04d7fe4416bb964b9022085759da3bb,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1159ec73a46948a438b1b74cc111085c, type: 3}
 --- !u!114 &1146953735 stripped
