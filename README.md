@@ -64,15 +64,18 @@ This section covers information about the simulation.
 
 The time in the simulation is not a perfect model of reality. We do however want the relationships between the animals fertilties/pregnancy times to be correct.
 Therefore we have said that 12 hour in the game represents 1 month in real life.
-1 day is therefore 2 moths
+1 day is therefore 2 months
 
 ## Wolves
 
 https://en.wikipedia.org/wiki/Wolf
+https://www.nationalgeographic.org/media/growing-up-wolf/
 Pregnancy time wolf 62-75 days
 Offspring amount 5-6
 Fertility time after 2 years
 Generally can have 1 litter per year.
+Live for 5-12 years
+
 
 ## Rabbits
 

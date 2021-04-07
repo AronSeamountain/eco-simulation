@@ -95,12 +95,12 @@ namespace Animal
     
     public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor / 2;
+      return decreaseFactor / 2.5f;
     }
     
     public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor/2;
+      return decreaseFactor / 3f;
     }
   }
 }
