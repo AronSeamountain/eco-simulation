@@ -21,7 +21,7 @@ def plot():
     all_days = extract_unique('day', data)
 
     fig.add_trace(
-        go.scatter(
+        go.scatter(//TODO make all of this into a metho dewhen something works
             x = df['day'], 
             y = calcAverage(data, 'Rabbit', 'hearingPercentage'), 
             line = dict(color = 'firebrick', width = 4),
