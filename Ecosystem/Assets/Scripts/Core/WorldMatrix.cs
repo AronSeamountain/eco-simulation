@@ -12,7 +12,8 @@ namespace Core
     public const int WalkableMatrixBoxSize = 25;
     public static IList<MonoBehaviour> WalkablePoints;
     private static Terrain terrain;
-    
+    public static int amountOfBoxesOnXLayer;
+    public static int amountOfBoxesOnZLayer;
 
 
     public static List<MonoBehaviour>[,] InitMatrix()
@@ -25,8 +26,8 @@ namespace Core
       WalkablePoints = new List<MonoBehaviour>();
       
     
-      var amountOfBoxesOnXLayer = (int) Math.Ceiling(x / WalkableMatrixBoxSize);
-      var amountOfBoxesOnZLayer = (int) Math.Ceiling(z / WalkableMatrixBoxSize);
+       amountOfBoxesOnXLayer = (int) Math.Ceiling(x / WalkableMatrixBoxSize);
+       amountOfBoxesOnZLayer = (int) Math.Ceiling(z / WalkableMatrixBoxSize);
       List<MonoBehaviour>[,] matrix = new List<MonoBehaviour>[amountOfBoxesOnXLayer, amountOfBoxesOnZLayer];
       for (int i = 0; i < matrix.GetLength(0); i++)
       {
