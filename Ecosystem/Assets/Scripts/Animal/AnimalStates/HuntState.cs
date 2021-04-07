@@ -8,6 +8,7 @@ namespace Animal.AnimalStates
   {
     private readonly Carnivore _carnivore;
     private Herbivore _target;
+    private Vector3 _targetPoint;
 
     public HuntState(Carnivore carnivore)
     {
@@ -49,8 +50,12 @@ namespace Animal.AnimalStates
 
       var position = _carnivore.transform.position;
       var closestPoint = _target.animalCollider.ClosestPointOnBounds(position);
-      _carnivore.GoTo(closestPoint);
-      
+      if (!(_targetPoint == closestPoint))
+      {
+        _carnivore.GoTo(closestPoint);
+        _targetPoint = closestPoint; 
+      }
+
       if (Vector3.Distance(position, closestPoint) < _carnivore.Reach)
       {
         if (!_target.Alive)
