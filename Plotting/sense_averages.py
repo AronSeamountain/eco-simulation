@@ -6,26 +6,24 @@ import dash_html_components as html
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 
 from util.file_finder import get_full_path
+from util.json_extracter import extract_unique
 
 def plot():
     full_path = get_full_path('overview.csv')
     df = pd.read_csv(full_path)
     fig = go.Figure()
+    data = json.load(open(full_path))
 
     all_days = extract_unique('day', data)
-
-    rabbitVisionAverages  = []
-    rabbitHearingAverages = []
-    wolfVisionAverages  = []
-    wolfHearingAverages = []
 
     fig.add_trace(
         go.scatter(
             x = df['day'], 
-            y = calcAverage(df, 'Rabbit', 'hearingPercentage'), 
+            y = calcAverage(data, 'Rabbit', 'hearingPercentage'), 
             line = dict(color = 'firebrick', width = 4),
             stackgroup='one',
             groupnorm='percent'
@@ -35,7 +33,7 @@ def plot():
     fig.add_trace(
         go.scatter(
             x = df['day'], 
-            y = calcAverage(df, Rabbit, 'visionPercentage'), 
+            y = calcAverage(data, Rabbit, 'visionPercentage'), 
             line = dict(color = 'royalblue', width = 4),
             stackgroup='one',
             groupnorm='percent'
@@ -65,6 +63,7 @@ def plot():
     fig.show()
 
 def calcAverage(data, species, dataToConsider):
+
     all_days = extract_unique('day', data)
 
     averages = []
@@ -77,6 +76,7 @@ def calcAverage(data, species, dataToConsider):
         averages.append(average)
     
     return averages
+
 
 
 if __name__ == '__main__':
