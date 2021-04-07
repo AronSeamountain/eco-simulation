@@ -6,25 +6,32 @@ from util.file_finder import get_full_path
 
 
 def plot():
+    # Load data
     fps_full_path = get_full_path('fps.csv')
     df_fps = pd.read_csv(fps_full_path)
-
-    has_baseline = False
-    try:
-        fps_baseline_full_path = get_full_path('fps_baseline.csv')
-        has_baseline = True
-    except:
-        print('Did not find fps_baseline.csv, create it manually if desired')
-
-    if has_baseline:
-        df_fps_baseline = pd.read_csv(fps_baseline_full_path)
 
     overview_full_path = get_full_path('overview.csv')
     df_overview = pd.read_csv(overview_full_path)
 
-    overview_baseline_full_path = get_full_path('overview_baseline.csv')
-    df_overview_baseline = pd.read_csv(overview_baseline_full_path)
+    # Load optional baseline data
+    has_baseline = True
+    try:
+        fps_baseline_full_path = get_full_path('fps_baseline.csv')
+    except:
+        print('Did not find fps_baseline.csv, create it with create_baseline.py if desired')
+        has_baseline = False
 
+    try:
+        overview_baseline_full_path = get_full_path('overview_baseline.csv')
+    except:
+        print('Did not find overview_baseline.csv, create it with create_baseline.py if desired')
+        has_baseline = False
+
+    if has_baseline:
+        df_fps_baseline = pd.read_csv(fps_baseline_full_path)
+        df_overview_baseline = pd.read_csv(overview_baseline_full_path)
+
+    # Plot
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     fig.add_trace(
