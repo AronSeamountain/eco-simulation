@@ -25,7 +25,15 @@ namespace Utils
         "UI",
         "TransparentFX",
         "PostProcessing",
-        "Water"
+        "Water",
+        "CarnivoreFemaleHearing",
+        "CarnivoreFemaleVision",
+        "CarnivoreMaleHearing",
+        "CarnivoreMaleVision",
+        "HerbivoreMaleHearing",
+        "HerbivoreMaleVision",
+        "HerbivoreFemaleHearing",
+        "HerbivoreFemaleVision"
       );
       return _nonRayCastableLayers;
     }

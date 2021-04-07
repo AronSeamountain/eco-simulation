@@ -85,23 +85,26 @@ namespace Animal.Sensor
 
     private void OnTriggerEnter(Collider other)
     {
-      if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten())
-        FoodFoundListeners?.Invoke(food);
-
-      if (other.GetComponent<AbstractFood>() is AbstractFood potentialFood && potentialFood.CanBeEatenSoon())
-        FoodFoundListeners?.Invoke(potentialFood);
-
-      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
-        PreyFoundListeners?.Invoke(animal);
+      if (other.GetComponent<AbstractFood>() is AbstractFood food)
+      {
+        if(food.CanBeEaten() || food.CanBeEatenSoon()) FoodFoundListeners?.Invoke(food);
+        return;
+      }
 
       if (other.GetComponent<Water>() is Water water)
+      {
         WaterFoundListeners?.Invoke(water);
+        return;
+      }
+
+      if (other.GetComponent<AbstractAnimal>() is Carnivore carnivore)
+        EnemySeenListeners?.Invoke(carnivore);
 
       if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
         AnimalFoundListeners?.Invoke(foundAnimal);
 
-      if (other.GetComponent<AbstractAnimal>() is Carnivore carnivore)
-        EnemySeenListeners?.Invoke(carnivore);
+      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
+        PreyFoundListeners?.Invoke(animal);
     }
 
     /// <summary>

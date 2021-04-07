@@ -102,7 +102,7 @@ MonoBehaviour:
   mainCamera: {fileID: 2457495662526005564}
   selectableLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 528482816
 --- !u!114 &2457495662526005553
 MonoBehaviour:
   m_ObjectHideFlags: 0

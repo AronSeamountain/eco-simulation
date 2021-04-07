@@ -90,6 +90,7 @@ namespace Animal
     private Gene size;
     private Gene speed;
     public StateChanged StateChangedListeners;
+    private bool _fertile;
     private float FullyGrownSpeed => speed.Value;
     public bool IsChild { get; private set; }
     public float FullyGrownSize => size.Value;
@@ -114,7 +115,22 @@ namespace Animal
     public int AgeInDays { get; private set; }
     public bool ShouldBirth { get; private set; }
     public AbstractAnimal LastMaleMate { get; private set; }
-    public bool Fertile { get; private set; }
+
+    public bool Fertile
+    {
+      get => _fertile;
+      private set
+      {
+        _fertile = value;
+        UpdateLayers();
+      }
+    }
+
+    private void UpdateLayers()
+    {
+      throw new NotImplementedException();
+    }
+
     public Gender Gender { get; private set; }
 
     public IWorldPointFinder WorldPointFinder { get; private set; }
@@ -278,7 +294,11 @@ namespace Animal
       else
       {
         if (!Fertile) _hoursUntilFertile--;
-        if (_hoursUntilFertile <= 0) Fertile = true;
+        if (_hoursUntilFertile <= 0)
+        {
+          Fertile = true;
+          gameObject.layer = IsHerbivore ? LayerUtil.HerbivoreFemaleFertile : LayerUtil.CarnivoreFemaleFertile;
+        }
       }
     }
 
@@ -489,6 +509,7 @@ namespace Animal
 
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
       Fertile = false;
+      gameObject.layer = IsHerbivore ? LayerUtil.HerbivoreFemaleInfertile : LayerUtil.CarnivoreFemaleInfertile;
       ShouldBirth = false;
       child.IsChild = true;
     }
@@ -539,6 +560,7 @@ namespace Animal
         LastMaleMate = father;
         IsPregnant = true;
         Fertile = false;
+        gameObject.layer = IsHerbivore ? LayerUtil.HerbivoreFemaleInfertile : LayerUtil.CarnivoreFemaleInfertile;
         _hoursUntilPregnancy = pregnancyTimeInHours;
         PregnancyChangedListeners?.Invoke(IsPregnant);
       }
@@ -692,7 +714,37 @@ namespace Animal
     {
       Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
       RenderAnimalSpecificColors();
-      if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+      if (Gender == Gender.Male)
+      {
+        matingManager.MateListeners += OnMateFound;
+        if (IsHerbivore)
+        {
+          gameObject.layer = LayerUtil.HerbivoreMale;
+          vision.gameObject.layer = LayerUtil.HerbivoreMaleVision;
+          hearing.gameObject.layer = LayerUtil.HerbivoreMaleHearing;
+        }
+        else
+        {
+          gameObject.layer = LayerUtil.CarnivoreMale;
+          vision.gameObject.layer = LayerUtil.CarnivoreMaleVision;
+          hearing.gameObject.layer = LayerUtil.CarnivoreMaleHearing;
+        }
+      }
+      else
+      {
+        if (IsHerbivore)
+        {
+          gameObject.layer = LayerUtil.HerbivoreFemaleInfertile;
+          vision.gameObject.layer = LayerUtil.HerbivoreFemaleVision;
+          hearing.gameObject.layer = LayerUtil.HerbivoreFemaleHearing;
+        }
+        else
+        {
+          gameObject.layer = LayerUtil.CarnivoreFemaleInfertile;
+          vision.gameObject.layer = LayerUtil.CarnivoreFemaleVision;
+          hearing.gameObject.layer = LayerUtil.CarnivoreFemaleHearing;
+        }
+      }
     }
 
     private void ResetProperties()

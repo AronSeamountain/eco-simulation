@@ -20,20 +20,20 @@ TagManager:
   - AnimalHearing
   - PostProcessing
   - Outlines
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - HerbivoreMaleHearing
+  - HerbivoreFemaleHearing
+  - CarnivoreMaleHearing
+  - CarnivoreFemaleHearing
+  - HerbivoreMaleVision
+  - HerbivoreFemaleVision
+  - CarnivoreMaleVision
+  - CarnivoreFemaleVision
+  - HerbivoreMale
+  - HerbivoreFemaleFertile
+  - HerbivoreFemaleInfertile
+  - CarnivoreMale
+  - CarnivoreFemaleFertile
+  - CarnivoreFemaleInfertile
   - 
   - 
   - 
