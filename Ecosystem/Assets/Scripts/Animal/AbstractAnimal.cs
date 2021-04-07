@@ -168,8 +168,6 @@ namespace Animal
     {
       InitStateMachine();
       InitSensoryEvents();
-
-      ResetGameObject();
     }
 
     private void Update()
@@ -461,6 +459,7 @@ namespace Animal
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
       Fertile = false;
       ShouldBirth = false;
+      child.IsChild = true;
     }
 
     /// <summary>

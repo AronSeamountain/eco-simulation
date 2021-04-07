@@ -170,8 +170,15 @@ namespace Core
       SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
+      
+
       SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
       CarnivoreCount += InitialWolves;
+      
+      for (int i = 0; i < Animals.Count; i++)
+      {
+        Animals[i].ResetGameObject();
+      }
     }
 
     /// <summary>
