@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -45,6 +46,7 @@ namespace Animal.Sensor
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
+    private IList<ObjectSensedAction> _sensedActions;
 
     private int Height
     {
@@ -81,27 +83,60 @@ namespace Animal.Sensor
       Height = 5;
       Width = 10;
       Length = 10;
+
+      _sensedActions = new List<ObjectSensedAction>()
+      {
+        new ObjectSensedAction(obj =>
+        {
+          if (obj.GetComponent<AbstractFood>() is AbstractFood food && (food.CanBeEaten() || food.CanBeEatenSoon()))
+          {
+            FoodFoundListeners?.Invoke(food);
+            return true;
+          }
+
+          return false;
+        }),
+        new ObjectSensedAction(obj =>
+        {
+          if (obj.GetComponent<Water>() is Water water)
+          {
+            WaterFoundListeners?.Invoke(water);
+            return true;
+          }
+
+          return false;
+        }),
+        new ObjectSensedAction(obj =>
+        {
+          if (obj.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
+            PreyFoundListeners?.Invoke(animal);
+
+          return false;
+        }),
+        new ObjectSensedAction(obj =>
+        {
+          if (obj.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
+            AnimalFoundListeners?.Invoke(foundAnimal);
+
+          return false;
+        }),
+        new ObjectSensedAction(obj =>
+        {
+          if (obj.GetComponent<AbstractAnimal>() is Carnivore carnivore)
+            EnemySeenListeners?.Invoke(carnivore);
+
+          return false;
+        })
+      };
     }
 
     private void OnTriggerEnter(Collider other)
     {
-      if (other.GetComponent<AbstractFood>() is AbstractFood food && food.CanBeEaten())
-        FoodFoundListeners?.Invoke(food);
-
-      if (other.GetComponent<AbstractFood>() is AbstractFood potentialFood && potentialFood.CanBeEatenSoon())
-        FoodFoundListeners?.Invoke(potentialFood);
-
-      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
-        PreyFoundListeners?.Invoke(animal);
-
-      if (other.GetComponent<Water>() is Water water)
-        WaterFoundListeners?.Invoke(water);
-
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
-        AnimalFoundListeners?.Invoke(foundAnimal);
-
-      if (other.GetComponent<AbstractAnimal>() is Carnivore carnivore)
-        EnemySeenListeners?.Invoke(carnivore);
+      foreach (var sensedAction in _sensedActions)
+      {
+        var finalAction = sensedAction.Do(other);
+        if (finalAction) break;
+      }
     }
 
     /// <summary>
