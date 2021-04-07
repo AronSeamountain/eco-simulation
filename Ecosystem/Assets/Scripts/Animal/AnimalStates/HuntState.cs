@@ -9,6 +9,7 @@ namespace Animal.AnimalStates
     private readonly Carnivore _carnivore;
     private const float EatingRange = 2f;
     private Herbivore _target;
+    private Vector3 _targetPoint;
     private readonly Sprite _sp = Resources.Load<Sprite>("blood20px");
 
     public HuntState(Carnivore carnivore)
@@ -49,8 +50,15 @@ namespace Animal.AnimalStates
       }
       var position = _carnivore.transform.position;
       var closestPoint = _target.animalCollider.ClosestPointOnBounds(position);
+
       _carnivore.GoTo(closestPoint);
       
+
+      if (!(_targetPoint == closestPoint))
+      {
+        _carnivore.GoTo(closestPoint);
+        _targetPoint = closestPoint; 
+      }
       if (Vector3.Distance(position, closestPoint) < _carnivore.Reach && _target.NutritionalValue >= 3f)
       {
         if (!_target.Alive)
@@ -58,9 +66,8 @@ namespace Animal.AnimalStates
           _carnivore.FoodAboutTooEat = _target;
           return AnimalState.Eat;
         }
-
-        _carnivore.SetMouthSprite(_sp);
-        _carnivore.AttackTarget(_target);
+      _carnivore.SetMouthSprite(_sp);
+      _carnivore.AttackTarget(_target);
       }
 
       return AnimalState.Hunt;
