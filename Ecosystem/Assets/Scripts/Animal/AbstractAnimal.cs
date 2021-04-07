@@ -325,7 +325,7 @@ namespace Animal
     public virtual void UpdateScale()
     {
       visuals.transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
-      if(_species == AnimalSpecies.Wolf) agent.baseOffset = SizeModifier * VisualSizeModifier;
+      if(species == AnimalSpecies.Wolf) agent.baseOffset = SizeModifier * VisualSizeModifier;
       UpdateNourishmentDelegate();
     }
 
