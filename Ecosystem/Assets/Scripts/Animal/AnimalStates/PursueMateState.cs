@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using UnityEngine;
 using Utils;
 
@@ -32,7 +32,7 @@ namespace Animal.AnimalStates
       if (_animal is Carnivore carnivore) // TODO: no no :-)
       {
         var target = carnivore.Target;
-        if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
+        if (target && carnivore.ShouldHunt(target) && carnivore.GetStaminaDelegate().Stamina > 50) return AnimalState.Hunt;
       }
 
       var mateTarget = _animal.GetMateTarget();
@@ -54,6 +54,10 @@ namespace Animal.AnimalStates
       {
         _animal.StopMoving();
         mateTarget.StopMoving();
+        // visual cue
+        _animal.EmitMatingCue();
+        mateTarget.EmitMatingCue();
+        
         mateTarget.Mate(_animal);
         _animal.ClearMateTarget();
         _animal.Children++; // TODO: Small possibility that female dies before birthing
