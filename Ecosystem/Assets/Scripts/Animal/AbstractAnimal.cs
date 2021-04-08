@@ -141,7 +141,7 @@ namespace Animal
     public bool IsHerbivore => Species == AnimalSpecies.Rabbit;
     public bool IsSatisfied => !IsHungry && !IsThirsty;
     
-    public bool HasForgottenWater;
+    [HideInInspector] public bool HasForgottenWater;
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -241,7 +241,7 @@ namespace Animal
     /// </summary>
     public void ForgetWaterLocationForSomeTime()
     {
-      if (IsCarnivore) _timeUntilRememberWater += 40;
+      if (IsCarnivore) _timeUntilRememberWater += 30;
       else _timeUntilRememberWater += 10;
       KnowsWaterLocation = false;
       HasForgottenWater = true;
