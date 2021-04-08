@@ -19,53 +19,24 @@ def plot():
 
     all_days = extract_unique('day', data)
 
-#TODO make all of this into a metho dewhen something works
     fig.append_trace(
-        go.Scatter(
-            x = all_days, 
-            y = calcAverage(data, 'Rabbit', 'hearingPercentage'), 
-            line = dict(color = 'firebrick', width = 4),
-            name = 'Eyesight',
-            stackgroup='one',
-            groupnorm='percent'
-        ),
+        genScatter(data, 'Rabbit', 'hearingPercentage', 'firebrick', 'Eyesight'),
         row=1, col=1
     )
 
     fig.append_trace(
-        go.Scatter(
-            x = all_days, 
-            y = calcAverage(data, 'Rabbit', 'visionPercentage'), 
-            line = dict(color = 'royalblue', width = 4),
-            name = 'Hearing',
-            stackgroup='one',
-            groupnorm='percent'
-        ),
+        genScatter(data, 'Rabbit', 'visionPercentage', 'royalblue', 'Hearing'),
         row=1, col=1
     )
 
     #wolf graph
     fig.append_trace(
-        go.Scatter(
-            x = all_days, 
-            y = calcAverage(data, 'Wolf', 'hearingPercentage'), 
-            line = dict(color = 'firebrick', width = 4),
-            name = 'Eyesight',
-            stackgroup='one',
-            groupnorm='percent'
-        ),
+        genScatter(data, 'Wolf', 'hearingPercentage', 'firebrick', 'Eyesight'),
         row=2, col=1
     )
 
     fig.append_trace(
-        go.Scatter(
-            x = all_days, 
-            y = calcAverage(data, 'Wolf', 'visionPercentage'), 
-            line = dict(color = 'royalblue', width = 4),
-            name = 'Hearing',
-            stackgroup='one',
-            groupnorm='percent'
-        ),
+        genScatter(data, 'Wolf', 'visionPercentage', 'royalblue', 'Hearing'),
         row=2, col=1
     )
 
@@ -107,6 +78,18 @@ def plot():
     )
 
     fig.show()
+
+def genScatter(data, species, type, color, title):
+    all_days = extract_unique('day', data)
+
+    return go.Scatter(
+            x = all_days, 
+            y = calcAverage(data, species, type), 
+            line = dict(color = color, width = 4),
+            name = title,
+            stackgroup='one',
+            groupnorm='percent'
+        )
 
 def calcAverage(data, species, dataToConsider):
 
