@@ -85,16 +85,7 @@ namespace Animal.Sensor
       Width = 10;
       Length = 10;
 
-      var actions = new List<SensorAction>()
-      {
-        VisionActionFactory.CreateEatableFoodFoundAction(this),
-        VisionActionFactory.CreateWaterSeenAction(this),
-        VisionActionFactory.CreatePreyFoundAction(this),
-        VisionActionFactory.CreateAnimalFoundAction(this),
-        VisionActionFactory.CreateEnemySeenAction(this)
-      };
-
-      sensorActionDelegate = new SensorActionDelegate(actions);
+      sensorActionDelegate = new SensorActionDelegate();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -134,8 +125,29 @@ namespace Animal.Sensor
     private void AdjustScaleAndPosition()
     {
       transform.localScale = new Vector3(Width, Height, Length);
-      var centerOffset = new Vector3(0, -1, Length / 2 - 0.5f);
+      var centerOffset = new Vector3(0, -1, Length / 2f - 0.5f);
       transform.localPosition = eyesTransform.localPosition + centerOffset;
+    }
+
+    /// <summary>
+    ///   Populates the vision events for the specific species.
+    /// </summary>
+    /// <param name="species">The type of species the hearing is attached to.</param>
+    public void Config(AnimalSpecies species)
+    {
+      // Shared actions
+      sensorActionDelegate.AddAction(VisionActionFactory.CreateWaterSeenAction(this));
+      sensorActionDelegate.AddAction(VisionActionFactory.CreateAnimalFoundAction(this));
+
+      if (species == AnimalSpecies.Rabbit)
+      {
+        sensorActionDelegate.AddAction(VisionActionFactory.CreateEatableFoodFoundAction(this));
+        sensorActionDelegate.AddAction(VisionActionFactory.CreateEnemySeenAction(this));
+      }
+      else
+      {
+        sensorActionDelegate.AddAction(VisionActionFactory.CreatePreyFoundAction(this));
+      }
     }
   }
 }

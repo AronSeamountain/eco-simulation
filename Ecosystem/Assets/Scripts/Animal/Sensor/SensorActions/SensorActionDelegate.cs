@@ -7,9 +7,14 @@ namespace Animal.Sensor.SensorActions
   {
     private readonly IList<SensorAction> _sensorActions;
 
-    public SensorActionDelegate(IList<SensorAction> sensorActions)
+    public SensorActionDelegate()
     {
-      _sensorActions = sensorActions;
+      _sensorActions = new List<SensorAction>();
+    }
+
+    public void AddAction(SensorAction sensorAction)
+    {
+      _sensorActions.Add(sensorAction);
     }
 
     public void Do(Component component)

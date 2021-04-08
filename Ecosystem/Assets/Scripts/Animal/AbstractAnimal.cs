@@ -4,6 +4,7 @@ using System.Linq;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Animal.Sensor;
+using Animal.Sensor.SensorActions;
 using Animal.WorldPointFinders;
 using Core;
 using Foods;
@@ -175,6 +176,7 @@ namespace Animal
     {
       InitStateMachine();
       InitSensoryEvents();
+      InitSensors();
     }
 
     private void Update()
@@ -733,6 +735,12 @@ namespace Animal
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
       vision.EnemySeenListeners += OnEnemySeen;
       _staminaDelegate.StaminaZeroListeners += StaminaZero;
+    }
+
+    private void InitSensors()
+    {
+      vision.Config(species);
+      hearing.Config(species);
     }
 
     private void InitStateMachine()

@@ -34,7 +34,7 @@ namespace Animal.Sensor
         HearingActionFactory.CreateAnimalHeardAction(this)
       };
 
-      _sensorActionDelegate = new SensorActionDelegate(actions);
+      _sensorActionDelegate = new SensorActionDelegate();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,6 +45,15 @@ namespace Animal.Sensor
     public bool NotSelf(Component animal)
     {
       return animal.transform.position != transform.parent.position;
+    }
+
+    /// <summary>
+    ///   Populates the hearing events for the specific species.
+    /// </summary>
+    /// <param name="species">The type of species the hearing is attached to.</param>
+    public void Config(AnimalSpecies species)
+    {
+      _sensorActionDelegate.AddAction(HearingActionFactory.CreateAnimalHeardAction(this));
     }
   }
 }
