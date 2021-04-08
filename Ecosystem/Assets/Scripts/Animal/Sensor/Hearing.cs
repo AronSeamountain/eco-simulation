@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Animal.Sensor.SensorActions;
+using UnityEngine;
 
 namespace Animal.Sensor
 {
@@ -15,11 +17,17 @@ namespace Animal.Sensor
 
     private int _radius;
     public AnimalHeard AnimalHeardListeners;
+    private SensorActionDelegate _sensorActionDelegate;
 
     private int Radius
     {
       get => _radius;
       set => _radius = Mathf.Clamp(value, 0, int.MaxValue);
+    }
+
+    private void Awake()
+    {
+      _sensorActionDelegate = new SensorActionDelegate();
     }
 
     private void Start()
@@ -29,13 +37,21 @@ namespace Animal.Sensor
 
     private void OnTriggerEnter(Collider other)
     {
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal animal && NotSelf(animal) && animal.Alive)
-        AnimalHeardListeners?.Invoke(animal);
+      _sensorActionDelegate.Do(other);
     }
 
-    private bool NotSelf(Component animal)
+    public bool NotSelf(Component animal)
     {
       return animal.transform.position != transform.parent.position;
+    }
+
+    /// <summary>
+    ///   Populates the hearing events for the specific species.
+    /// </summary>
+    /// <param name="species">The type of species the hearing is attached to.</param>
+    public void Config(AnimalSpecies species)
+    {
+      _sensorActionDelegate.AddAction(HearingActionFactory.CreateAnimalHeardAction(this));
     }
   }
 }

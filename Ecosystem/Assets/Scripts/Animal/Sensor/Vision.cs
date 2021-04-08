@@ -1,4 +1,6 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using Animal.Sensor.SensorActions;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -45,6 +47,7 @@ namespace Animal.Sensor
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
+    private SensorActionDelegate _sensorActionDelegate;
 
     private int Height
     {
@@ -76,6 +79,11 @@ namespace Animal.Sensor
       }
     }
 
+    private void Awake()
+    {
+      _sensorActionDelegate = new SensorActionDelegate();
+    }
+
     private void Start()
     {
       Height = 5;
@@ -85,26 +93,7 @@ namespace Animal.Sensor
 
     private void OnTriggerEnter(Collider other)
     {
-      if (other.GetComponent<AbstractFood>() is AbstractFood food)
-      {
-        if(food.CanBeEaten() || food.CanBeEatenSoon()) FoodFoundListeners?.Invoke(food);
-        return;
-      }
-
-      if (other.GetComponent<Water>() is Water water)
-      {
-        WaterFoundListeners?.Invoke(water);
-        return;
-      }
-
-      if (other.GetComponent<AbstractAnimal>() is Carnivore carnivore)
-        EnemySeenListeners?.Invoke(carnivore);
-
-      if (other.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
-        AnimalFoundListeners?.Invoke(foundAnimal);
-
-      if (other.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
-        PreyFoundListeners?.Invoke(animal);
+      _sensorActionDelegate.Do(other);
     }
 
     /// <summary>
@@ -139,8 +128,29 @@ namespace Animal.Sensor
     private void AdjustScaleAndPosition()
     {
       transform.localScale = new Vector3(Width, Height, Length);
-      var centerOffset = new Vector3(0, -1, Length / 2 - 0.5f);
+      var centerOffset = new Vector3(0, -1, Length / 2f - 0.5f);
       transform.localPosition = eyesTransform.localPosition + centerOffset;
+    }
+
+    /// <summary>
+    ///   Populates the vision events for the specific species.
+    /// </summary>
+    /// <param name="species">The type of species the hearing is attached to.</param>
+    public void Config(AnimalSpecies species)
+    {
+      // Shared actions
+      _sensorActionDelegate.AddAction(VisionActionFactory.CreateWaterSeenAction(this));
+      _sensorActionDelegate.AddAction(VisionActionFactory.CreateAnimalFoundAction(this));
+
+      if (species == AnimalSpecies.Rabbit)
+      {
+        _sensorActionDelegate.AddAction(VisionActionFactory.CreateEatableFoodFoundAction(this));
+        _sensorActionDelegate.AddAction(VisionActionFactory.CreateEnemySeenAction(this));
+      }
+      else
+      {
+        _sensorActionDelegate.AddAction(VisionActionFactory.CreatePreyFoundAction(this));
+      }
     }
   }
 }
