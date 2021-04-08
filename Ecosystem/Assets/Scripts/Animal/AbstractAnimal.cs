@@ -13,6 +13,7 @@ using UI;
 using UI.Properties;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Assertions;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -306,7 +307,6 @@ namespace Animal
         if (_hoursUntilFertile <= 0)
         {
           Fertile = true;
-          gameObject.layer = IsHerbivore ? LayerUtil.HerbivoreFemaleFertile : LayerUtil.CarnivoreFemaleFertile;
         }
       }
     }
@@ -520,7 +520,6 @@ namespace Animal
 
       _hoursUntilFertile = hoursBetweenPregnancyAndFertility;
       Fertile = false;
-      gameObject.layer = IsHerbivore ? LayerUtil.HerbivoreFemaleInfertile : LayerUtil.CarnivoreFemaleInfertile;
       ShouldBirth = false;
       child.IsChild = true;
     }
@@ -571,7 +570,6 @@ namespace Animal
         LastMaleMate = father;
         IsPregnant = true;
         Fertile = false;
-        gameObject.layer = IsHerbivore ? LayerUtil.HerbivoreFemaleInfertile : LayerUtil.CarnivoreFemaleInfertile;
         _hoursUntilPregnancy = pregnancyTimeInHours;
         PregnancyChangedListeners?.Invoke(IsPregnant);
       }
