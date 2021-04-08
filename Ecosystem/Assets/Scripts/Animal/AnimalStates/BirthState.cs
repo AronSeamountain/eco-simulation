@@ -26,6 +26,7 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
+      _animal.StopMoving();
       if (_animal.MultipleChildren)
         _animal.SpawnMultipleChildren(_father);
       else

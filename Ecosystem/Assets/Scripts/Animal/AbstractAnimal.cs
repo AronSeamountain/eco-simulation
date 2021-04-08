@@ -138,6 +138,7 @@ namespace Animal
     public bool Dead => !Alive;
     public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
     public bool IsHerbivore => Species == AnimalSpecies.Rabbit;
+    public bool IsSatisfied => !IsHungry && !IsThirsty;
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -158,7 +159,7 @@ namespace Animal
     ///   Whether the animal knows about a water location.
     /// </summary>
     public bool KnowsWaterLocation { get; set; }
-
+    
     /// <summary>
     ///   Returns a collection of the foods that the animal is aware of.
     /// </summary>
