@@ -66,7 +66,6 @@ namespace Animal
     [SerializeField] protected Vision vision;
     [SerializeField] private AnimationManager animationManager;
     [SerializeField] protected SkinnedMeshRenderer meshRenderer;
-    [SerializeField] private GameObject visuals;
     [SerializeField] private int fertilityTimeInHours = 5;
     [SerializeField] private AnimalSpecies species;
     [SerializeField] private int maxNumberOfChildren = 1;
@@ -98,9 +97,7 @@ namespace Animal
     public Gene VisionGene;
     public Gene HearingGene;
     public StateChanged StateChangedListeners;
-    private float FullyGrownSpeed => speed.Value;
     public bool IsChild { get; private set; }
-    public float FullyGrownSize => size.Value;
     public string Uuid { get; private set; }
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
