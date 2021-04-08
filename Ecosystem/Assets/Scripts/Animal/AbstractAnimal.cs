@@ -74,6 +74,7 @@ namespace Animal
     [SerializeField] public Collider animalCollider;
     [SerializeField] private int oldAgeThreshold = 10;
     private readonly int _nourishmentMultiplier = 100;
+    private int _timeUntilRememberWater;
     private float _fleeSpeed;
     protected HealthDelegate _healthDelegate;
     private int _hoursUntilFertile;
@@ -139,6 +140,8 @@ namespace Animal
     public bool IsCarnivore => Species == AnimalSpecies.Wolf; // TODO
     public bool IsHerbivore => Species == AnimalSpecies.Rabbit;
     public bool IsSatisfied => !IsHungry && !IsThirsty;
+    
+    public bool HasForgottenWater;
 
     /// <summary>
     ///   The amount of children that the animal has birthed.
@@ -231,6 +234,18 @@ namespace Animal
     {
       return NutritionalValue > 0.1;
     }
+    
+    /// <summary>
+    /// Gets invoked when the animals enter hunt and flee state respectively.
+    /// Makes them forget location of water for some time.
+    /// </summary>
+    public void ForgetWaterLocationForSomeTime()
+    {
+      if (IsCarnivore) _timeUntilRememberWater += 40;
+      else _timeUntilRememberWater += 10;
+      KnowsWaterLocation = false;
+      HasForgottenWater = true;
+    }
 
     public IEnumerable<AbstractProperty> GetProperties()
     {
@@ -267,6 +282,16 @@ namespace Animal
       IncreaseHealthIfSatiated();
       DecreaseStaminaIfRunning();
       IncreaseStaminaIfNotRunning();
+
+      if (HasForgottenWater)
+      {
+        _timeUntilRememberWater--;
+        if (_timeUntilRememberWater <= 0)
+        {
+          KnowsWaterLocation = true;
+          HasForgottenWater = false;
+        }
+      }
 
       if (IsPregnant)
       {
@@ -380,6 +405,7 @@ namespace Animal
     public void OnWaterLocationChanged(Water water)
     {
       KnowsWaterLocation = water != null;
+      HasForgottenWater = false;
     }
 
     /// <summary>
