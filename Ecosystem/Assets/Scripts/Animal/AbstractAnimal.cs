@@ -124,8 +124,6 @@ namespace Animal
         _fertile = value;
         if (Gender == Gender.Female)
           UpdateLayers();
-        else
-          Debug.Log("male changes fertility");
       }
     }
 
