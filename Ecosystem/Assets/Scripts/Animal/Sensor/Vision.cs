@@ -87,38 +87,11 @@ namespace Animal.Sensor
 
       var actions = new List<SensorAction>()
       {
-        new SensorAction(obj =>
-        {
-          if (obj.GetComponent<AbstractFood>() is AbstractFood food && (food.CanBeEaten() || food.CanBeEatenSoon()))
-          {
-            FoodFoundListeners?.Invoke(food);
-            return true;
-          }
-
-          return false;
-        }),
+        VisionActionFactory.CreateEatableFoodFoundAction(this),
         VisionActionFactory.CreateWaterSeenAction(this),
-        new SensorAction(obj =>
-        {
-          if (obj.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
-            PreyFoundListeners?.Invoke(animal);
-
-          return false;
-        }),
-        new SensorAction(obj =>
-        {
-          if (obj.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
-            AnimalFoundListeners?.Invoke(foundAnimal);
-
-          return false;
-        }),
-        new SensorAction(obj =>
-        {
-          if (obj.GetComponent<AbstractAnimal>() is Carnivore carnivore)
-            EnemySeenListeners?.Invoke(carnivore);
-
-          return false;
-        })
+        VisionActionFactory.CreatePreyFoundAction(this),
+        VisionActionFactory.CreateAnimalFoundAction(this),
+        VisionActionFactory.CreateEnemySeenAction(this)
       };
 
       sensorActionDelegate = new SensorActionDelegate(actions);
