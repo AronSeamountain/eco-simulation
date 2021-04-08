@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Animal.Sensor.SensorActions;
 using UnityEngine;
 
 namespace Animal.Sensor
@@ -16,7 +17,7 @@ namespace Animal.Sensor
 
     private int _radius;
     public AnimalHeard AnimalHeardListeners;
-    private SensedActionsDelegate _sensedActionsDelegate;
+    private SensorActionDelegate _sensorActionDelegate;
 
     private int Radius
     {
@@ -28,27 +29,20 @@ namespace Animal.Sensor
     {
       Radius = 12;
 
-      var actions = new List<ObjectSensedAction>()
+      var actions = new List<SensorAction>()
       {
-        new ObjectSensedAction(obj =>
-          {
-            if (obj.GetComponent<AbstractAnimal>() is AbstractAnimal animal && NotSelf(animal) && animal.Alive)
-              AnimalHeardListeners?.Invoke(animal);
-
-            return false;
-          }
-        )
+        HearingActionFactory.CreateAnimalHeardAction(this)
       };
 
-      _sensedActionsDelegate = new SensedActionsDelegate(actions);
+      _sensorActionDelegate = new SensorActionDelegate(actions);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-      _sensedActionsDelegate.Do(other);
+      _sensorActionDelegate.Do(other);
     }
 
-    private bool NotSelf(Component animal)
+    public bool NotSelf(Component animal)
     {
       return animal.transform.position != transform.parent.position;
     }

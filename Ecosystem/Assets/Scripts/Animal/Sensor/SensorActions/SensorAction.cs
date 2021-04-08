@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 
-namespace Animal.Sensor
+namespace Animal.Sensor.SensorActions
 {
-  public sealed class ObjectSensedAction
+  public sealed class SensorAction
   {
     public delegate bool SensedAction(Component component);
 
-    private readonly SensedAction sensedAction;
+    private readonly SensedAction _sensedAction;
 
-    public ObjectSensedAction(SensedAction sensedAction)
+    public SensorAction(SensedAction sensedAction)
     {
-      this.sensedAction = sensedAction;
+      _sensedAction = sensedAction;
     }
 
     /// <summary>
@@ -20,7 +20,7 @@ namespace Animal.Sensor
     /// <returns>True if the action is a "final" action, the rest of the actions should not be looped trough.</returns>
     public bool Do(Component component)
     {
-      return sensedAction(component);
+      return _sensedAction(component);
     }
   }
 }

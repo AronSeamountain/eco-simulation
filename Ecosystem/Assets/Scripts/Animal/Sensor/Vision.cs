@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Animal.Sensor.SensorActions;
 using Foods;
 using UnityEngine;
 using Utils;
@@ -46,7 +47,7 @@ namespace Animal.Sensor
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
-    private SensedActionsDelegate _sensedActionsDelegate;
+    private SensorActionDelegate sensorActionDelegate;
 
     private int Height
     {
@@ -84,9 +85,9 @@ namespace Animal.Sensor
       Width = 10;
       Length = 10;
 
-      var actions = new List<ObjectSensedAction>()
+      var actions = new List<SensorAction>()
       {
-        new ObjectSensedAction(obj =>
+        new SensorAction(obj =>
         {
           if (obj.GetComponent<AbstractFood>() is AbstractFood food && (food.CanBeEaten() || food.CanBeEatenSoon()))
           {
@@ -96,31 +97,22 @@ namespace Animal.Sensor
 
           return false;
         }),
-        new ObjectSensedAction(obj =>
-        {
-          if (obj.GetComponent<Water>() is Water water)
-          {
-            WaterFoundListeners?.Invoke(water);
-            return true;
-          }
-
-          return false;
-        }),
-        new ObjectSensedAction(obj =>
+        VisionActionFactory.CreateWaterSeenAction(this),
+        new SensorAction(obj =>
         {
           if (obj.GetComponent<Herbivore>() is Herbivore animal && animal.CanBeEaten())
             PreyFoundListeners?.Invoke(animal);
 
           return false;
         }),
-        new ObjectSensedAction(obj =>
+        new SensorAction(obj =>
         {
           if (obj.GetComponent<AbstractAnimal>() is AbstractAnimal foundAnimal)
             AnimalFoundListeners?.Invoke(foundAnimal);
 
           return false;
         }),
-        new ObjectSensedAction(obj =>
+        new SensorAction(obj =>
         {
           if (obj.GetComponent<AbstractAnimal>() is Carnivore carnivore)
             EnemySeenListeners?.Invoke(carnivore);
@@ -129,12 +121,12 @@ namespace Animal.Sensor
         })
       };
 
-      _sensedActionsDelegate = new SensedActionsDelegate(actions);
+      sensorActionDelegate = new SensorActionDelegate(actions);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-      _sensedActionsDelegate.Do(other);
+      sensorActionDelegate.Do(other);
     }
 
     /// <summary>
