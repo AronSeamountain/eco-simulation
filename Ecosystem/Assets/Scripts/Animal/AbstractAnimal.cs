@@ -200,6 +200,10 @@ namespace Animal
     {
       return _nourishmentDelegate.Saturation;
     }
+    public float GetMaxSaturation()
+    {
+      return _nourishmentDelegate.MaxSaturation;
+    }
 
     public void SwallowEat(float saturation)
     {
@@ -513,7 +517,7 @@ namespace Animal
     private void IncreaseHealthIfSatiated()
     {
       if (GetSaturation() >= _nourishmentDelegate.MaxSaturation * 0.5 &&
-          GetSaturation() >= _nourishmentDelegate.MaxHydration * 0.5)
+          GetHydration() >= _nourishmentDelegate.MaxHydration * 0.5)
         _healthDelegate.IncreaseHealth(1);
     }
 
