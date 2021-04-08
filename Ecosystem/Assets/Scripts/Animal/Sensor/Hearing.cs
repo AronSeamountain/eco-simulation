@@ -33,11 +33,6 @@ namespace Animal.Sensor
     private void Start()
     {
       Radius = 12;
-
-      var actions = new List<SensorAction>()
-      {
-        HearingActionFactory.CreateAnimalHeardAction(this)
-      };
     }
 
     private void OnTriggerEnter(Collider other)
