@@ -122,13 +122,19 @@ namespace Animal
       private set
       {
         _fertile = value;
-        UpdateLayers();
+        if (Gender == Gender.Female)
+          UpdateLayers();
+        else
+          Debug.Log("male changes fertility");
       }
     }
 
     private void UpdateLayers()
     {
-      throw new NotImplementedException();
+      if (_fertile)
+        gameObject.layer = IsHerbivore ? LayerUtil.HerbivoreFemaleFertile : LayerUtil.CarnivoreFemaleFertile;
+      else 
+        gameObject.layer = IsHerbivore ? LayerUtil.HerbivoreFemaleInfertile : LayerUtil.CarnivoreFemaleInfertile;
     }
 
     public Gender Gender { get; private set; }
