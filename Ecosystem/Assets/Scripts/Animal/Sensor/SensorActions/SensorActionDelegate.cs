@@ -19,9 +19,9 @@ namespace Animal.Sensor.SensorActions
 
     public void Do(Component component)
     {
-      foreach (var sensedAction in _sensorActions)
+      foreach (var action in _sensorActions)
       {
-        var finalAction = sensedAction.Do(component);
+        var finalAction = action.Do(component);
         if (finalAction) return;
       }
     }

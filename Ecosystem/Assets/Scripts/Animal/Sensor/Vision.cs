@@ -47,7 +47,7 @@ namespace Animal.Sensor
     public FoodFound FoodFoundListeners;
     public PreyFound PreyFoundListeners;
     public WaterFound WaterFoundListeners;
-    private SensorActionDelegate sensorActionDelegate;
+    private SensorActionDelegate _sensorActionDelegate;
 
     private int Height
     {
@@ -79,18 +79,21 @@ namespace Animal.Sensor
       }
     }
 
+    private void Awake()
+    {
+      _sensorActionDelegate = new SensorActionDelegate();
+    }
+
     private void Start()
     {
       Height = 5;
       Width = 10;
       Length = 10;
-
-      sensorActionDelegate = new SensorActionDelegate();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-      sensorActionDelegate.Do(other);
+      _sensorActionDelegate.Do(other);
     }
 
     /// <summary>
@@ -136,17 +139,17 @@ namespace Animal.Sensor
     public void Config(AnimalSpecies species)
     {
       // Shared actions
-      sensorActionDelegate.AddAction(VisionActionFactory.CreateWaterSeenAction(this));
-      sensorActionDelegate.AddAction(VisionActionFactory.CreateAnimalFoundAction(this));
+      _sensorActionDelegate.AddAction(VisionActionFactory.CreateWaterSeenAction(this));
+      _sensorActionDelegate.AddAction(VisionActionFactory.CreateAnimalFoundAction(this));
 
       if (species == AnimalSpecies.Rabbit)
       {
-        sensorActionDelegate.AddAction(VisionActionFactory.CreateEatableFoodFoundAction(this));
-        sensorActionDelegate.AddAction(VisionActionFactory.CreateEnemySeenAction(this));
+        _sensorActionDelegate.AddAction(VisionActionFactory.CreateEatableFoodFoundAction(this));
+        _sensorActionDelegate.AddAction(VisionActionFactory.CreateEnemySeenAction(this));
       }
       else
       {
-        sensorActionDelegate.AddAction(VisionActionFactory.CreatePreyFoundAction(this));
+        _sensorActionDelegate.AddAction(VisionActionFactory.CreatePreyFoundAction(this));
       }
     }
   }

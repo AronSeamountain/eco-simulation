@@ -25,6 +25,11 @@ namespace Animal.Sensor
       set => _radius = Mathf.Clamp(value, 0, int.MaxValue);
     }
 
+    private void Awake()
+    {
+      _sensorActionDelegate = new SensorActionDelegate();
+    }
+
     private void Start()
     {
       Radius = 12;
@@ -33,8 +38,6 @@ namespace Animal.Sensor
       {
         HearingActionFactory.CreateAnimalHeardAction(this)
       };
-
-      _sensorActionDelegate = new SensorActionDelegate();
     }
 
     private void OnTriggerEnter(Collider other)
