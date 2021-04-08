@@ -25,6 +25,7 @@ def plot():
             x = all_days, 
             y = calcAverage(data, 'Rabbit', 'hearingPercentage'), 
             line = dict(color = 'firebrick', width = 4),
+            name = 'Vision',
             stackgroup='one',
             groupnorm='percent'
         )
@@ -35,18 +36,11 @@ def plot():
             x = all_days, 
             y = calcAverage(data, 'Rabbit', 'visionPercentage'), 
             line = dict(color = 'royalblue', width = 4),
+            name = 'Hearing',
             stackgroup='one',
             groupnorm='percent'
         )
     )
-
-    fig.add_trace(go.Scatter(
-    x=all_days, 
-    y=[100 for i in all_days],
-    mode='lines',
-    line=dict(width=0.5, color='rgb(131, 90, 241)'),
-    stackgroup='one'
-    ))
 
     fig.update_layout(
         showlegend=True,
