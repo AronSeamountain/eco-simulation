@@ -44,7 +44,7 @@ namespace Animal.AnimalStates
       if (_animal is Carnivore carnivore)
       {
         var target = carnivore.Target;
-        if (target && carnivore.ShouldHunt(target) && carnivore.GetStaminaDelegate().Stamina > 50 && //TODO ändra när Aron mergat sin PR
+        if (target && carnivore.ShouldHunt(target) && carnivore.ShouldStartHunt(target) && //TODO ändra när Aron mergat sin PR
             carnivore.GetSaturation() + carnivore.GetMaxSaturation() * 0.2 < carnivore.GetHydration() ) return AnimalState.Hunt;
       }
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry &&
