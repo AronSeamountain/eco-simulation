@@ -27,17 +27,22 @@ namespace Animal.AnimalStates
       _carnivore.IsRunning = true;
       _carnivore.SetSpeed();
       _carnivore.IsHunting = true;
+      if (_carnivore.KnowsWaterLocation || _carnivore.HasForgottenWater)
+      {
+        _carnivore.ForgetWaterLocationForSomeTime();
+      }
     }
 
     public AnimalState Execute()
     {
+      if (!_carnivore.Alive) return AnimalState.Dead;
+      
       _target = _carnivore.Target;
       if (_target.DoesNotExist())
       {
         _carnivore.Target = null;
         return AnimalState.Wander;
       }
-      if (!_carnivore.Alive) return AnimalState.Dead;
       if (_carnivore.IsThirsty && !_carnivore.KnowsWaterLocation && !_carnivore.IsHungry)
         return AnimalState.SearchWorld;
       if (!_carnivore.ShouldHunt(_target))
@@ -65,9 +70,9 @@ namespace Animal.AnimalStates
         {
           _carnivore.FoodAboutTooEat = _target;
           return AnimalState.Eat;
-        }
-      _carnivore.SetMouthSprite(_sp);
-      _carnivore.AttackTarget(_target);
+        } 
+        _carnivore.SetMouthSprite(_sp); 
+        _carnivore.AttackTarget(_target);
       }
 
       return AnimalState.Hunt;

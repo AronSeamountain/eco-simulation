@@ -26,6 +26,8 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
+      if (_animal.Dead) return AnimalState.Dead;
+      if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
@@ -34,18 +36,15 @@ namespace Animal.AnimalStates
         var target = carnivore.Target;
         if (target && carnivore.ShouldStartHunt(target)) return AnimalState.Hunt;
       }
-
+      
       var mateTarget = _animal.GetMateTarget();
-
-      if (_animal.Dead) return AnimalState.Dead;
-      if (_animal.ShouldBirth) return AnimalState.Birth;
       if (mateTarget.DoesNotExist()) return AnimalState.Wander;
-      if (!mateTarget.Fertile)
+      if (!mateTarget.Fertile || !mateTarget.IsSatisfied)
       {
         _animal.ClearMateTarget();
         return AnimalState.Wander;
       }
-      
+
       var position = _animal.transform.position;
       var closestPoint = mateTarget.animalCollider.ClosestPointOnBounds(position);
 

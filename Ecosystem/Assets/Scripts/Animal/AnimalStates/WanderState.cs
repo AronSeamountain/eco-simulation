@@ -37,13 +37,11 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      var isSatisfied = !_animal.IsHungry && !_animal.IsThirsty;
-
       if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
-      if (isSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male && !_animal.IsChild)
+      if (_animal.IsSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male && !_animal.IsChild)
         return AnimalState.PursueMate;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
       if (_animal is Carnivore carnivore) // TODO: no no :-)
