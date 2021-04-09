@@ -13,6 +13,7 @@ namespace Animal.Sensor
     /// <param name="animal"></param>
     public delegate void AnimalHeard(AbstractAnimal animal);
 
+    private int _maxRadius = 24;
     private int _radius;
     public AnimalHeard AnimalHeardListeners;
 
@@ -24,7 +25,7 @@ namespace Animal.Sensor
 
     private void Start()
     {
-      Radius = 12;
+      Radius = _maxRadius/2;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -36,6 +37,11 @@ namespace Animal.Sensor
     private bool NotSelf(Component animal)
     {
       return animal.transform.position != transform.parent.position;
+    }
+
+    public void SetSizePercentage(float percentage)
+    {
+      Radius = (int) (_maxRadius * percentage);
     }
   }
 }

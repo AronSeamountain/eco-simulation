@@ -12,6 +12,7 @@ namespace Animal
     private const float HuntRange = 15;
     private const float baseAttackDamage = 2;
     private bool _animalOfSameType;
+    public override float RunningSpeedFactor { get; } = 5f;
 
     private bool _hearsHerbivore;
     private Texture _tex;
@@ -75,6 +76,10 @@ namespace Animal
       return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, HuntRange);
     }
 
+    public bool ShouldStartHunt(Herbivore carnivoretarget)
+    {
+      return GetStaminaDelegate().HasMaxStamina && ShouldHunt(carnivoretarget);
+    }
     public void AttackTarget(Herbivore carnivoreTarget)
     {
       carnivoreTarget.TakeDamage(attackDamage);
@@ -107,13 +112,15 @@ namespace Animal
       attackDamage = baseAttackDamage * SizeModifier;
     }
 
-    /**
-     * Wolfs should get thirsty/hungry slower than rabbits because they are bigger.
-     */
-    public override float GetNourishmentDecreaseFactor()
+    
+    public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
     {
-      var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
-      return sizeCubed + SpeedModifier * SpeedModifier / 1.5f;
+      return decreaseFactor /3f;
+    }
+    
+    public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor/4f;
     }
   }
 }

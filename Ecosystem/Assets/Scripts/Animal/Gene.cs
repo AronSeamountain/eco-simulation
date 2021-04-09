@@ -19,7 +19,7 @@ namespace Animal
 
     public Gene(Gene father, Gene mother)
     {
-      Chromosome = MakeChromosomeUniform(father.Chromosome, mother.Chromosome);
+      Chromosome = MakeChromosomeUniform(father, mother);
       Mutate();
       Bits = CountSetBits(Chromosome);
       Value = father.Value < mother.Value
@@ -27,9 +27,9 @@ namespace Animal
         : EvaluateValue2(father, mother);
     }
 
-    private int Bits { get; }
+    public int Bits { get; private set; }
     public float Value { get; private set; }
-    private byte Chromosome { get; set; }
+    public byte Chromosome { get; private set; }
 
     private float ChosenParent { get; set; }
 
@@ -173,25 +173,29 @@ namespace Animal
     /// <param name="father"></param>
     /// <param name="mother"></param>
     /// <returns>the bit string of the child</returns>
-    private static byte MakeChromosomeUniform(byte father, byte mother)
+    private static byte MakeChromosomeUniform(Gene father, Gene mother)
     {
+      var motherChromosome = mother.Chromosome;
+      var fatherChromosome = father.Chromosome;
+
       byte chromosome = 0;
       byte currentBitValue = 1;
-      while (father > 0 || mother > 0)
+      while (fatherChromosome > 0 || motherChromosome > 0)
       {
+        
         if (Random.Range(0, 1f) <= 0.5f)
         {
-          var fatherBit = father & 1;
+          var fatherBit = fatherChromosome & 1;
           chromosome += (byte) (currentBitValue * fatherBit);
         }
         else
         {
-          var motherBit = mother & 1;
+          var motherBit = motherChromosome & 1;
           chromosome += (byte) (currentBitValue * motherBit);
         }
 
-        father >>= 1;
-        mother >>= 1;
+        fatherChromosome >>= 1;
+        motherChromosome >>= 1;
         currentBitValue *= 2;
       }
 
@@ -269,6 +273,45 @@ namespace Animal
     }
 
     /// <summary>
+    /// Gives a chromosone which has a number of ones which are a random number between the parents values,
+    /// the placement of the ones are irrelevant.
+    /// This gives a result which is always in between the parents. 
+    /// </summary>
+    /// <param name="father"></param>
+    /// <param name="mother"></param>
+    /// <returns>the bit string of the child</returns>
+    public byte MakeChromosoneInBetween(Gene father, Gene mother)
+    {
+      var motherBits = mother.Bits;
+      var fatherBits = father.Bits;
+      int resultingBits;
+
+      if (motherBits < fatherBits) resultingBits = Random.Range(motherBits, fatherBits);
+      else if (fatherBits < motherBits) resultingBits = Random.Range(fatherBits, motherBits);
+      else resultingBits = mother.Bits;
+
+      var bit = 7;
+      byte chromosone = 0;
+
+      while (resultingBits > 0)
+      {
+        if (bit == 0)
+        {
+          chromosone = (byte) (chromosone | (1 << bit));
+          resultingBits--;
+        } else if (Random.Range(0, 1) <= resultingBits / bit)
+        {
+          chromosone = (byte) (chromosone | (1 << bit));
+          resultingBits--;
+        }
+
+        bit--;
+      }
+
+      return chromosone;
+    }
+
+    /// <summary>
     /// Mutates with a MutateChance for every bit. For each bit it checks if it should mutate.
     /// If it should it XOR's the bit with 1, simply flipping the bit.
     /// </summary>
@@ -281,7 +324,7 @@ namespace Animal
       {
         if (Random.Range(0, 1f) < MutateChance)
         {
-          oldChromosome =  (byte) (oldChromosome ^ (1 << bit));
+          oldChromosome = (byte) (oldChromosome ^ (1 << bit));
         }
 
         bit--;
