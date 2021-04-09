@@ -345,7 +345,7 @@ namespace Core
     
     private void InitEvadeScene()
     {
-        GeneralTestInit();
+     
         var pool = AnimalPool.SharedInstance;
       
         var wolf = pool.Get(AnimalSpecies.Wolf);
@@ -362,14 +362,20 @@ namespace Core
         wolf.GetNourishmentDelegate().Saturation = 0;
         rabbit.SpeedModifier = 1;
         wolf.SpeedModifier = 1.3f;
-
+        GeneralTestInit();
     }
 
     private void GeneralTestInit()
     {
       PerformanceMode = false;
       Log = false;
-      
+      foreach(var animal in Animals)
+      {
+        if(animal.Species == AnimalSpecies.Rabbit)
+          HerbivoreCount++;
+        if (animal.Species == AnimalSpecies.Wolf)
+          CarnivoreCount++;
+      }
     }
   }
 }
