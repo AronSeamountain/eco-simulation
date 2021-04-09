@@ -83,10 +83,10 @@ namespace Core
         SpawnAndAddInitialAnimals();
         Plants = new List<Plant>();
         SpawnAndAddInitialPlants();
-        SpawnAndAddWalkablePoints();
+       
       }
       
-
+      SpawnAndAddWalkablePoints();
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
