@@ -22,6 +22,11 @@ namespace Animal.AnimalStates
       _animal.IsRunning = true;
       _animal.SetSpeed();
       _animal.EmitFleeCue();
+      if (_animal.KnowsWaterLocation || _animal.HasForgottenWater)
+      {
+        _animal.ForgetWaterLocationForSomeTime();
+      }
+
     }
 
     public AnimalState Execute()
