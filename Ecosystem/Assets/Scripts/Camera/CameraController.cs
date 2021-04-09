@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
@@ -76,6 +77,7 @@ namespace Camera
     private static void OnRestart(InputAction.CallbackContext obj)
     {
       SceneManager.LoadScene("Menu");
+      EntityManager.Restart();
     }
 
     private void Start()

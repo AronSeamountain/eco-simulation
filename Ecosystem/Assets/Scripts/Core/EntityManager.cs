@@ -5,6 +5,7 @@ using Animal;
 using Foods.Plants;
 using Logger;
 using Logger.ConcreteLogger;
+using Menu;
 using Pools;
 using UI;
 using UI.Properties;
@@ -28,6 +29,17 @@ namespace Core
     /// </summary>
     public static float HoursInRealSeconds = 0.5f;
 
+    public static void Restart()
+    {
+      HoursInRealSeconds = 0.5f;
+      InitialWolves = 25;
+      InitialRabbits = 100;
+      InitialPlants = 100;
+      PerformanceModeMenuOverride = true;
+      OverlappableAnimalsMenuOverride = false;
+      LogMenuOverride = true;
+      OptionsMenu.World = "LargeWorld";
+    }
 
     private const float HoursPerDay = 24;
     public static int InitialWolves = 25;
