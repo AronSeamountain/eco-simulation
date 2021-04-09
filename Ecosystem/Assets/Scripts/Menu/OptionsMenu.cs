@@ -58,6 +58,9 @@ namespace Menu
       else if (number == 1)
       {
         World = "World";
+      } else if (number == 2)
+      {
+        World = "Medium-scene";
       }
     }
   }
