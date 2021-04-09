@@ -81,7 +81,6 @@ namespace Core
       else
       {
         SpawnAndAddInitialAnimals();
-        Plants = new List<Plant>();
         SpawnAndAddInitialPlants();
        
       }
