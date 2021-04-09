@@ -35,7 +35,14 @@ namespace Animal.AnimalStates
       if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (!_animal.IsThirsty && _animal.IsHungry && !_animal.KnowsFoodLocation) return AnimalState.SearchWorld;
       if (!_animal.KnowsWaterLocation) return AnimalState.SearchWorld;
-
+      if (_animal is Carnivore carnivore)
+      {
+        var target = carnivore.Target;
+        if (target && carnivore.ShouldHunt(target) && carnivore.ShouldStartHunt(target) && //TODO ändra när Aron mergat sin PR
+            carnivore.GetSaturation() + carnivore.GetMaxSaturation() * 0.2 < carnivore.GetHydration() ) return AnimalState.Hunt;
+      }
+      if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry &&
+          _animal.GetSaturation() + _animal.GetMaxSaturation() * 0.2 < _animal.GetHydration() ) return AnimalState.PursueFood;
 
       _waterTarget = _animal.ClosestKnownWater;
       if (!_waterTarget) return AnimalState.Wander;

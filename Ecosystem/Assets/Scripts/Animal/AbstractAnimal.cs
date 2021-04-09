@@ -206,6 +206,10 @@ namespace Animal
     {
       return _nourishmentDelegate.Saturation;
     }
+    public float GetMaxSaturation()
+    {
+      return _nourishmentDelegate.MaxSaturation;
+    }
 
     public void SwallowEat(float saturation)
     {
@@ -767,7 +771,6 @@ namespace Animal
     private void ResetProperties()
     {
       if (IsChild) return; //child no need
-      IsChild = true;
       InitGenes();
       InitProperties(SpeedGene.Value, SizeGene.Value);
     }
