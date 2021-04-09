@@ -76,35 +76,33 @@ namespace Utils
       throw new Exception("Failed to find point far away " + direction);
     }
 
-
-    public static MonoBehaviour getRandomWalkablePoint()
+    public static MonoBehaviour GetRandomWalkablePoint()
     {
       int index = Random.Range(0, WorldMatrix.WalkablePoints.Count);
       return WorldMatrix.WalkablePoints[index];
     }
 
-    public static MonoBehaviour getRandomWalkablePointInMatrix(Vector3 selfPos)
+    public static MonoBehaviour GetRandomWalkablePointInMatrix(Vector3 selfPos)
     {
       var x = (int) selfPos.x / WorldMatrix.WalkableMatrixBoxSize;
       var z = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
 
-      var listWithEntry = findMatrixEntryWithWalkablePoint(x, z);
+      var listWithEntry = FindMatrixEntryWithWalkablePoint(x, z);
 
       var index = Random.Range(0, listWithEntry.Count);
 
       return WalkablePointMatrix[x, z][index];
     }
 
-    private static List<MonoBehaviour> findMatrixEntryWithWalkablePoint(int x, int z)
+    private static List<MonoBehaviour> FindMatrixEntryWithWalkablePoint(int x, int z)
     {
       return WalkablePointMatrix[x, z];
     }
 
-    public static MonoBehaviour getRandomWalkablePointAdjacencyList(Vector3 selfPos)
+    public static MonoBehaviour GetRandomWalkablePointAdjacencyList(Vector3 selfPos)
     {
       var x = (int) selfPos.x / WorldMatrix.WalkableMatrixBoxSize;
       var z = (int) selfPos.z / WorldMatrix.WalkableMatrixBoxSize;
-
 
       var adjacentWalkablePoints = WalkablePointAdjacencyList[x * WorldMatrix.amountOfBoxesOnXLayer + z];
       var walkablePoint = adjacentWalkablePoints[Random.Range(0, adjacentWalkablePoints.Count)];

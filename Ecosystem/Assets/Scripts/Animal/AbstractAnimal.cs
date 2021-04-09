@@ -632,15 +632,6 @@ namespace Animal
       transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * Time.deltaTime);
     }
 
-    public void Flee()
-    {
-      if (EnemyToFleeFrom)
-      {
-        Turn(EnemyToFleeFrom);
-        GoTo(transform.position + transform.forward);
-      }
-    }
-
     public void SetSpeed()
     {
       switch (IsRunning)

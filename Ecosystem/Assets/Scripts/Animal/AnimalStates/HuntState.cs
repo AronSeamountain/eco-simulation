@@ -37,28 +37,34 @@ namespace Animal.AnimalStates
         _carnivore.Target = null;
         return AnimalState.Wander;
       }
+
       if (!_carnivore.Alive) return AnimalState.Dead;
+
       if (_carnivore.IsThirsty && !_carnivore.KnowsWaterLocation && !_carnivore.IsHungry)
         return AnimalState.SearchWorld;
+
       if (!_carnivore.ShouldHunt(_target))
         return AnimalState.Wander;
-      if (_carnivore.GetStaminaDelegate().StaminaZero && !_target.Dead && !Vector3Util.InRange(_carnivore.gameObject, _carnivore.Target.gameObject, _carnivore.Reach + 2f))
+
+      if (_carnivore.GetStaminaDelegate().StaminaZero && !_target.Dead && !Vector3Util.InRange(_carnivore.gameObject,
+        _carnivore.Target.gameObject, _carnivore.Reach + 2f))
       {
         _carnivore.Target = null;
         _carnivore.GetStaminaDelegate().IncreaseStamina(3);
         return AnimalState.Wander;
       }
+
       var position = _carnivore.transform.position;
       var closestPoint = _target.animalCollider.ClosestPoint(position);
 
-      _carnivore.GoTo(closestPoint);
-      
+      // _carnivore.GoTo(closestPoint);
 
       if (!(_targetPoint == closestPoint))
       {
         _carnivore.GoTo(closestPoint);
-        _targetPoint = closestPoint; 
+        _targetPoint = closestPoint;
       }
+
       if (Vector3.Distance(position, closestPoint) < _carnivore.Reach && _target.NutritionalValue >= 3f)
       {
         if (!_target.Alive)
@@ -66,8 +72,9 @@ namespace Animal.AnimalStates
           _carnivore.FoodAboutTooEat = _target;
           return AnimalState.Eat;
         }
-      _carnivore.SetMouthSprite(_sp);
-      _carnivore.AttackTarget(_target);
+
+        _carnivore.SetMouthSprite(_sp);
+        _carnivore.AttackTarget(_target);
       }
 
       return AnimalState.Hunt;

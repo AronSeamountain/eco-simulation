@@ -1,10 +1,9 @@
-﻿using Animal;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Core
+namespace Animal.WorldPointFinders
 {
   public interface IWorldPointFinder
   { 
-     MonoBehaviour getRandomWalkablePoint(AbstractAnimal _animal);
+     MonoBehaviour GetRandomWalkablePoint(AbstractAnimal animal);
   }
 }

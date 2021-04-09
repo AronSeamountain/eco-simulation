@@ -1,6 +1,7 @@
 using Core;
 using Foods;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Utils;
 
 namespace Animal.AnimalStates
@@ -42,17 +43,19 @@ namespace Animal.AnimalStates
       if (!_animal.IsThirsty && _animal.IsHungry && !_animal.KnowsFoodLocation) return AnimalState.SearchWorld;
       if (!_animal.KnowsWaterLocation) return AnimalState.Wander;
 
-
       _waterTarget = _animal.ClosestKnownWater;
       if (!_waterTarget) return AnimalState.Wander;
 
       var position = _animal.transform.position;
-      var closestPoint = _waterTarget.GetComponent<Collider>().ClosestPoint(position);
-      if (Vector3.Distance(position, closestPoint) < _animal.Reach) return AnimalState.Drink;
+      var waterPosition = _waterTarget.transform.position;
 
-      if (closestPoint == _targetPoint) return AnimalState.PursueWater;
-      _targetPoint = closestPoint;
-      _animal.GoTo(closestPoint);
+      if (Vector3.Distance(position, waterPosition) < _animal.Reach + 4) return AnimalState.Drink;
+
+      if (waterPosition != _targetPoint)
+      {
+        _targetPoint = waterPosition;
+        _animal.GoTo(_targetPoint);
+      }
 
       return AnimalState.PursueWater;
     }

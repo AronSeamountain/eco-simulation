@@ -57,12 +57,11 @@ namespace Core
     public static bool LogMenuOverride = true;
     public bool Log { get; private set; }
 
-
     private void Awake()
     {
       Log = log || LogMenuOverride;
       PerformanceMode = performanceMode || PerformanceModeMenuOverride;
-      
+
       AnimalPool.OverlappableAnimals = overlappableAnimals || OverlappableAnimalsMenuOverride;
 
       FpsDelegate = new FpsDelegate();
@@ -170,11 +169,10 @@ namespace Core
       SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
-      
 
       SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
       CarnivoreCount += InitialWolves;
-      
+
       for (int i = 0; i < Animals.Count; i++)
       {
         Animals[i].ResetGameObject();
@@ -224,8 +222,8 @@ namespace Core
         var z = Random.Range(zMin, zMax);
         var vector = new Vector3(x, 0, z);
         var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
-        
-        Place(instance,vector);
+
+        Place(instance, vector);
         list?.Add(instance);
       }
     }
