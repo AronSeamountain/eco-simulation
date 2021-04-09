@@ -114,7 +114,7 @@ namespace Animal
     }
 
     public AbstractAnimal EnemyToFleeFrom { get; set; }
-    public float SpeedModifier { get; private set; }
+    public float SpeedModifier { get;  set; }
     public float SizeModifier { get; private set; }
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
