@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Animal;
 using Core;
 using Foods.Plants;
@@ -109,12 +109,12 @@ namespace UI
       // ---------- Eyesight -----------
       var brainScore = animal.VisionGene.Bits + animal.HearingGene.Bits; 
       var eyesight = RowFactory.CreateKeyValuePair();
-      eyesight.Configure("Eyesight %", Prettifier.Round(animal.VisionGene.Bits / brainScore, 2));
+      eyesight.Configure("Eyesight %", Prettifier.Round(animal.VisionGene.Bits * 100f/ brainScore, 2));
 
       properties.Add(eyesight);
       // ---------- Hearing ---------- 
       var hearing = RowFactory.CreateKeyValuePair();
-      hearing.Configure("Hearing %", Prettifier.Round(animal.HearingGene.Bits / brainScore, 2));
+      hearing.Configure("Hearing %", Prettifier.Round(animal.HearingGene.Bits * 100f/ brainScore, 2));
       
       properties.Add(hearing);
       // ---------- Gender ----------
