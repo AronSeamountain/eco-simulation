@@ -32,7 +32,7 @@ namespace Animal.AnimalStates
       if (_animal is Carnivore carnivore) // TODO: no no :-)
       {
         var target = carnivore.Target;
-        if (target && carnivore.ShouldHunt(target) && carnivore.GetStaminaDelegate().Stamina > 50) return AnimalState.Hunt;
+        if (target && carnivore.ShouldStartHunt(target)) return AnimalState.Hunt;
       }
 
       var mateTarget = _animal.GetMateTarget();
