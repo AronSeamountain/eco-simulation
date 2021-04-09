@@ -12,6 +12,7 @@ namespace Animal
   {
     private const float SafeDistance = 15f;
     private Texture _tex;
+    public override float RunningSpeedFactor { get; } = 3f;
 
     protected override void RenderAnimalSpecificColors()
     {
@@ -98,6 +99,16 @@ namespace Animal
     protected override void DecreaseStaminaIfRunning()
     {
       if (IsRunning && EnemyToFleeFrom) _staminaDelegate.DecreaseStamina(5);
+    }
+    
+    public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor / 2.5f;
+    }
+    
+    public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor / 3f;
     }
   }
 }

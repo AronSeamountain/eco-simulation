@@ -18,6 +18,7 @@ namespace Animal
     }
 
     public bool StaminaZero => Stamina <= 0;
+    public bool HasMaxStamina => Stamina == MaxStamina;
 
     public float Stamina
     {

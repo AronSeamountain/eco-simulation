@@ -209,7 +209,7 @@ PrefabInstance:
     - target: {fileID: 3791994684587924501, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}
       propertyPath: oldAgeThreshold
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3791994684587924501, guid: 51020aa19a9877a49924a41101ce6231,
         type: 3}

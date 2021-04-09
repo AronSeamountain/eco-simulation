@@ -38,7 +38,7 @@ namespace Animal
 
     public delegate void StateChanged(string state);
 
-    private const float RunningSpeedFactor = 5f;
+    public virtual float RunningSpeedFactor { get; } = 5f;
 
     /// <summary>
     ///   The factor to decrease the speed and size with for newly spawned child animals.
@@ -513,7 +513,7 @@ namespace Animal
     private void IncreaseHealthIfSatiated()
     {
       if (GetSaturation() >= _nourishmentDelegate.MaxSaturation * 0.5 &&
-          GetSaturation() >= _nourishmentDelegate.MaxHydration * 0.5)
+          GetHydration() >= _nourishmentDelegate.MaxHydration * 0.5)
         _healthDelegate.IncreaseHealth(1);
     }
 
@@ -674,13 +674,22 @@ namespace Animal
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       var decreaseFactor = GetNourishmentDecreaseFactor();
 
-      _nourishmentDelegate.SaturationDecreasePerHour = decreaseFactor / 4;
-      _nourishmentDelegate.HydrationDecreasePerHour = decreaseFactor / 2;
+      _nourishmentDelegate.SaturationDecreasePerHour = GetSaturationDecreaseAmountPerHour(decreaseFactor);
+      _nourishmentDelegate.HydrationDecreasePerHour = GetHydrationDecreaseAmountPerHour(decreaseFactor);
       _nourishmentDelegate.UpdateMaxNourishment(sizeCubed * _nourishmentMultiplier);
       NutritionalValue = _nourishmentMultiplier * sizeCubed;
     }
 
-    public virtual float GetNourishmentDecreaseFactor()
+    public virtual float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor / 2;
+    }
+
+    public virtual float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor / 4;
+    }
+    private float GetNourishmentDecreaseFactor()
     {
       var sizeCubed = SizeModifier * SizeModifier * SizeModifier;
       return sizeCubed + SpeedModifier * SpeedModifier;
