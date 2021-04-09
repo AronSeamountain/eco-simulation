@@ -744,7 +744,6 @@ namespace Animal
     private void ResetProperties()
     {
       if (IsChild) return; //child no need
-      IsChild = true;
       InitGenes();
       InitProperties(SpeedGene.Value, SizeGene.Value);
     }
