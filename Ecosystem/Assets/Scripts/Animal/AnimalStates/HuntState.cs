@@ -49,7 +49,7 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
       }
       var position = _carnivore.transform.position;
-      var closestPoint = _target.animalCollider.ClosestPointOnBounds(position);
+      var closestPoint = _target.animalCollider.ClosestPoint(position);
 
       _carnivore.GoTo(closestPoint);
       

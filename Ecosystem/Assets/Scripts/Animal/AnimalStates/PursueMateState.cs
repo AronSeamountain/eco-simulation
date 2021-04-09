@@ -47,7 +47,7 @@ namespace Animal.AnimalStates
       }
       
       var position = _animal.transform.position;
-      var closestPoint = mateTarget.animalCollider.ClosestPointOnBounds(position);
+      var closestPoint = mateTarget.animalCollider.ClosestPoint(position);
 
       var reachesMate = Vector3.Distance(position, closestPoint) < _animal.Reach;
       if (reachesMate)
