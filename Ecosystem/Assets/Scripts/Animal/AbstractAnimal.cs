@@ -50,7 +50,7 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
-    [SerializeField] private Transform visuals;
+    [SerializeField] private GameObject visuals;
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
@@ -326,8 +326,12 @@ namespace Animal
 
     public virtual void UpdateScale()
     {
+      var difference = visuals.transform.localScale.y;
       visuals.transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
-      if(species == AnimalSpecies.Wolf) agent.baseOffset = SizeModifier * VisualSizeModifier;
+      difference = visuals.transform.localScale.y - difference;
+      var y = visuals.transform.localPosition.y;
+      visuals.transform.localPosition =
+        new Vector3(0, y + difference, 0);
       UpdateNourishmentDelegate();
     }
 
