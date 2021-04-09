@@ -50,7 +50,7 @@ namespace Animal
     /// </summary>
     [SerializeField] private float VisualSizeModifier;
 
-    [SerializeField] private Transform visuals;
+    [SerializeField] private GameObject visuals;
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] protected GoToMovement movement;
     [SerializeField] protected FoodManager foodManager;
@@ -75,6 +75,7 @@ namespace Animal
     [SerializeField] private int oldAgeThreshold = 10;
     private readonly int _nourishmentMultiplier = 100;
     private float _fleeSpeed;
+    private float FullyGrownSpeed => SpeedGene.Value;
     protected HealthDelegate _healthDelegate;
     private int _hoursUntilFertile;
     private float _hoursUntilPregnancy;
@@ -83,6 +84,7 @@ namespace Animal
     private float _nutritionalValue;
     protected StaminaDelegate _staminaDelegate;
     private StateMachine<AnimalState> _stateMachine;
+    public float FullyGrownSize => SizeGene.Value;
     public AgeChanged AgeChangedListeners;
 
     public ChildSpawned ChildSpawnedListeners;
@@ -90,12 +92,12 @@ namespace Animal
     public Died DiedListeners;
     public PregnancyChanged PregnancyChangedListeners;
     public PropertiesChanged PropertiesChangedListeners;
-    private Gene size;
-    private Gene speed;
+    public Gene SpeedGene;
+    public Gene SizeGene;
+    public Gene VisionGene;
+    public Gene HearingGene;
     public StateChanged StateChangedListeners;
-    private float FullyGrownSpeed => speed.Value;
     public bool IsChild { get; private set; }
-    public float FullyGrownSize => size.Value;
     public string Uuid { get; private set; }
     public bool IsPregnant { get; private set; }
     public bool IsRunning { get; set; }
@@ -324,8 +326,12 @@ namespace Animal
 
     public virtual void UpdateScale()
     {
+      var difference = visuals.transform.localScale.y;
       visuals.transform.localScale = Vector3.one * (SizeModifier * VisualSizeModifier);
-      if(species == AnimalSpecies.Wolf) agent.baseOffset = SizeModifier * VisualSizeModifier;
+      difference = visuals.transform.localScale.y - difference;
+      var y = visuals.transform.localPosition.y;
+      visuals.transform.localPosition =
+        new Vector3(0, y + difference, 0);
       UpdateNourishmentDelegate();
     }
 
@@ -485,9 +491,11 @@ namespace Animal
 
       child.ResetGameObject(); //resets to default/random values
 
-      child.speed = new Gene(father.speed, speed);
-      child.size = new Gene(father.size, size);
+      child.SpeedGene = new Gene(father.SpeedGene, SpeedGene);
+      child.SizeGene = new Gene(father.SizeGene, SizeGene);
 
+      child.VisionGene = new Gene(father.VisionGene, VisionGene);
+      child.HearingGene = new Gene(father.HearingGene, HearingGene);
       child.InitProperties(child.FullyGrownSpeed * ChildDecreaseValueFactor,
         child.FullyGrownSize * ChildDecreaseValueFactor);
       ChildSpawnedListeners?.Invoke(child, this);
@@ -654,10 +662,30 @@ namespace Animal
       SizeModifier = size;
       movement.SpeedFactor = SpeedModifier;
 
+      SetSensorySizes();
+
       InitNourishmentDelegate();
 
       // Setup size modification
       UpdateScale();
+    }
+
+    /// <summary>
+    /// Initializes the visual area and hearing radius depending on the sesnnseDistribution Gene. 
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    private void SetSensorySizes()
+    {
+      //calculate ratio
+      var totalBits = VisionGene.Bits + HearingGene.Bits;
+      var hearingPercentage = HearingGene.Bits / totalBits;
+      var visionPercentage = VisionGene.Bits / totalBits;
+
+      //set visual area
+      vision.SetLengthPercentage(visionPercentage);
+
+      //set hearing area
+      hearing.SetSizePercentage(hearingPercentage);
     }
 
     private void InitNourishmentDelegate()
@@ -712,9 +740,17 @@ namespace Animal
     private void ResetProperties()
     {
       if (IsChild) return; //child no need
-      speed = new Gene();
-      size = new Gene();
-      InitProperties(speed.Value, size.Value);
+      IsChild = true;
+      InitGenes();
+      InitProperties(SpeedGene.Value, SizeGene.Value);
+    }
+
+    private void InitGenes()
+    {
+      SpeedGene = new Gene();
+      SizeGene = new Gene();
+      HearingGene = new Gene();
+      VisionGene = new Gene();
     }
 
     private void ResetStateMachine()

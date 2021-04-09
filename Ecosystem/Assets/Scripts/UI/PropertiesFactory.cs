@@ -104,8 +104,19 @@ namespace UI
 
       animal.PropertiesChangedListeners += SizeChangedImpl;
       size.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
-      properties.Add(size);
+      properties.Add(size); 
+      
+      // ---------- Eyesight -----------
+      var brainScore = animal.VisionGene.Bits + animal.HearingGene.Bits; 
+      var eyesight = RowFactory.CreateKeyValuePair();
+      eyesight.Configure("Eyesight %", Prettifier.Round(animal.VisionGene.Bits / brainScore, 2));
 
+      properties.Add(eyesight);
+      // ---------- Hearing ---------- 
+      var hearing = RowFactory.CreateKeyValuePair();
+      hearing.Configure("Hearing %", Prettifier.Round(animal.HearingGene.Bits / brainScore, 2));
+      
+      properties.Add(hearing);
       // ---------- Gender ----------
       var gender = RowFactory.CreateKeyValuePair();
       gender.Configure("Gender", animal.Gender.ToString());
