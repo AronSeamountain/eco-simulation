@@ -282,6 +282,7 @@ namespace Animal
 
     public void HourTick()
     {
+      if (Dead) return;
       _nourishmentDelegate.HourTick();
       foodManager.HourTick();
       DecreaseHealthIfStarving();
@@ -319,6 +320,7 @@ namespace Animal
 
     public void DayTick()
     {
+      if (Dead) return;
       if (IsChild && AgeInDays >= fertilityTimeInHours / 24) IsChild = false;
 
       AgeInDays++;
