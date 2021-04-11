@@ -247,8 +247,8 @@ namespace Animal
     /// </summary>
     public void ForgetWaterLocationForSomeTime()
     {
-      if (IsCarnivore) _timeUntilRememberWater += 30;
-      else _timeUntilRememberWater += 10;
+      if (IsCarnivore) _timeUntilRememberWater += 66;
+      else _timeUntilRememberWater += 1;
       KnowsWaterLocation = false;
       HasForgottenWater = true;
     }
