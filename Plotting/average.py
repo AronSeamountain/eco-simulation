@@ -45,7 +45,7 @@ def create_scatter(data, species, days_to_average, color):
 
         day_species_data = [i for i in data if i['species'] == species and i['day'] == day]
         day_sequence_size = day_sequence_size + [i['fullyGrownSize'] for i in day_species_data]
-        day_sequence_speed = day_sequence_speed + [i['speed'] for i in day_species_data]
+        day_sequence_speed = day_sequence_speed + [i['fullyGrownSpeed'] for i in day_species_data]
 
         if day_counter == days_to_average:
             day_counter = 0
@@ -91,8 +91,8 @@ def update_graph_live(days_to_average):
         title_text='Average Values by Species',
         scene=dict(
             xaxis_title='day',
-            yaxis_title='size',
-            zaxis_title='speed'
+            yaxis_title='fully grown size',
+            zaxis_title='fully grown speed'
         )
     )
 

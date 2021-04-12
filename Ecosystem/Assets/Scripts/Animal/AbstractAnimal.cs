@@ -76,7 +76,7 @@ namespace Animal
     private readonly int _nourishmentMultiplier = 100;
     private int _timeUntilRememberWater;
     private float _fleeSpeed;
-    private float FullyGrownSpeed => SpeedGene.Value;
+    public float FullyGrownSpeed => SpeedGene.Value;
     protected HealthDelegate _healthDelegate;
     private int _hoursUntilFertile;
     private float _hoursUntilPregnancy;
