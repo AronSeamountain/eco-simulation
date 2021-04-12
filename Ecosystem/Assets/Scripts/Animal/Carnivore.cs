@@ -10,13 +10,14 @@ namespace Animal
   public sealed class Carnivore : AbstractAnimal
   {
     private const float HuntRange = 15;
-    private const float baseAttackDamage = 2;
+    private const float BaseAttackDamage = 2;
+    private const float DeadNutritionPriority = 30;
     private bool _animalOfSameType;
     public override float RunningSpeedFactor { get; } = 5f;
 
     private bool _hearsHerbivore;
     private Texture _tex;
-    private float attackDamage = baseAttackDamage;
+    private float _attackDamage = BaseAttackDamage;
     public Herbivore Target { get; set; }
     public bool HasTargetSet => Target != null;
 
@@ -32,6 +33,7 @@ namespace Animal
 
     private bool IsCloserTarget(Herbivore closerTarget)
     {
+      if (closerTarget == Dead && NutritionalValue > DeadNutritionPriority) return true;
       var newTarget = Vector3Util.Distance(gameObject, closerTarget.gameObject);
       var oldTarget = Vector3Util.Distance(gameObject, Target.gameObject);
       return newTarget < oldTarget;
@@ -82,7 +84,7 @@ namespace Animal
     }
     public void AttackTarget(Herbivore carnivoreTarget)
     {
-      carnivoreTarget.TakeDamage(attackDamage);
+      carnivoreTarget.TakeDamage(_attackDamage);
     }
 
     protected override void OnAnimalHeard(AbstractAnimal animal)
@@ -109,7 +111,7 @@ namespace Animal
     public override void UpdateScale()
     {
       base.UpdateScale();
-      attackDamage = baseAttackDamage * SizeModifier;
+      _attackDamage = BaseAttackDamage * SizeModifier;
     }
 
     
