@@ -27,13 +27,14 @@ namespace Animal
     {
       if (Target.DoesNotExist())
         Target = herbivore;
-
+      
+      if (herbivore == Dead && herbivore.NutritionalValue > DeadNutritionPriority) Target = herbivore;
+      
       if (IsCloserTarget(herbivore)) Target = herbivore;
     }
 
     private bool IsCloserTarget(Herbivore closerTarget)
     {
-      if (closerTarget == Dead && NutritionalValue > DeadNutritionPriority) return true;
       var newTarget = Vector3Util.Distance(gameObject, closerTarget.gameObject);
       var oldTarget = Vector3Util.Distance(gameObject, Target.gameObject);
       return newTarget < oldTarget;
