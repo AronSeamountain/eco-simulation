@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Animal;
@@ -17,9 +18,11 @@ namespace Logger.ConcreteLogger
     private bool _firstLog;
     private IList<string> _snapshots;
     protected string Path;
+    protected readonly CultureInfo LoggerCultureInfo;
 
     protected AbstractCsvLogger()
     {
+      LoggerCultureInfo = CultureInfo.GetCultureInfoByIetfLanguageTag("en-US");
       _loggableColumns = GetLoggableColumns();
       _snapshots = new List<string>();
       _firstLog = true;
@@ -58,7 +61,7 @@ namespace Logger.ConcreteLogger
     protected string CalcAverage(ICollection<AbstractAnimal> animals, Func<AbstractAnimal, float> animalAspect)
     {
       if (animals.Any())
-        return (animals.Sum(animalAspect) / animals.Count).ToString();
+        return (animals.Sum(animalAspect) / animals.Count).ToString(LoggerCultureInfo);
 
       return 0.ToString();
     }

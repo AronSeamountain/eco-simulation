@@ -21,11 +21,10 @@ namespace Logger.ConcreteLogger
           em.FpsDelegate.FramesSinceLastSnapshot.ToString()
         ),
         new LoggableColumn("time", (day, animals, em) =>
-          em.FpsDelegate.TimeSinceLastSnapshot.ToString(CultureInfo.InvariantCulture)
+          em.FpsDelegate.TimeSinceLastSnapshot.ToString(LoggerCultureInfo)
         ),
         new LoggableColumn("average", (day, animals, em) =>
-          (em.FpsDelegate.FramesSinceLastSnapshot / em.FpsDelegate.TimeSinceLastSnapshot).ToString(CultureInfo
-            .InvariantCulture)
+          (em.FpsDelegate.FramesSinceLastSnapshot / em.FpsDelegate.TimeSinceLastSnapshot).ToString(LoggerCultureInfo)
         )
       };
     }
