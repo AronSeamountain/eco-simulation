@@ -48,12 +48,12 @@ namespace Logger.ConcreteLogger
         new LoggableColumn(
           "vision percentage",
           (day, animals, em) => CalcAverage(animals,
-            animal => animal.VisionGene.Bits * 100 / (animal.VisionGene.Bits + animal.HearingGene.Bits))
+            animal => animal.VisionGene.Bits * 100f / (animal.VisionGene.Bits + animal.HearingGene.Bits))
         ),
         new LoggableColumn(
           "hearing percentage",
           (day, animals, em) => CalcAverage(animals,
-            animal => animal.HearingGene.Bits * 100 / (animal.VisionGene.Bits + animal.HearingGene.Bits))
+            animal => animal.HearingGene.Bits * 100f / (animal.VisionGene.Bits + animal.HearingGene.Bits))
         )
       };
     }

@@ -5,12 +5,14 @@ using Animal;
 using Foods.Plants;
 using Logger;
 using Logger.ConcreteLogger;
+using Menu;
 using Pools;
 using UI;
 using UI.Properties;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using Utils;
 using ILogger = Logger.ILogger;
 using Random = UnityEngine.Random;
@@ -28,6 +30,17 @@ namespace Core
     /// </summary>
     public static float HoursInRealSeconds = 0.5f;
 
+    public static void Restart()
+    {
+      HoursInRealSeconds = 0.5f;
+      InitialWolves = 25;
+      InitialRabbits = 100;
+      InitialPlants = 100;
+      PerformanceModeMenuOverride = true;
+      OverlappableAnimalsMenuOverride = false;
+      LogMenuOverride = true;
+      OptionsMenu.World = "LargeWorld";
+    }
 
     private const float HoursPerDay = 24;
     public static int InitialWolves = 25;
@@ -60,6 +73,8 @@ namespace Core
 
     private void Awake()
     {
+
+     
       Log = log || LogMenuOverride;
       PerformanceMode = performanceMode || PerformanceModeMenuOverride;
       
@@ -69,13 +84,20 @@ namespace Core
 
       // Lists
       Animals = new List<AbstractAnimal>();
-      SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
-      SpawnAndAddInitialPlants();
-
-
+      var sceneName = SceneManager.GetActiveScene().name;
+      if (sceneName.Equals("EvadeScene"))
+      {
+        InitEvadeScene();
+      }
+      else
+      {
+        SpawnAndAddInitialAnimals();
+        SpawnAndAddInitialPlants();
+       
+      }
+      
       SpawnAndAddWalkablePoints();
-
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
@@ -167,6 +189,7 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
+      
       SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
@@ -175,6 +198,11 @@ namespace Core
       SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
       CarnivoreCount += InitialWolves;
       
+      InitAnimalGameObejcts();
+    }
+
+    private void InitAnimalGameObejcts()
+    {
       for (int i = 0; i < Animals.Count; i++)
       {
         Animals[i].ResetGameObject();
@@ -323,6 +351,41 @@ namespace Core
             FpsDelegate.Reset();
           }
         }
+      }
+    }
+    
+    private void InitEvadeScene()
+    {
+     
+        var pool = AnimalPool.SharedInstance;
+      
+        var wolf = pool.Get(AnimalSpecies.Wolf);
+        var vector = new Vector3(5,0,5);
+        Place(wolf,vector);
+        Animals?.Add(wolf);
+       
+        var rabbit = pool.Get(AnimalSpecies.Rabbit);
+        var vector2 = new Vector3(5,0,10);
+        Place(rabbit,vector2);
+        Animals?.Add(rabbit);
+        
+        InitAnimalGameObejcts();
+        wolf.GetNourishmentDelegate().Saturation = 0;
+        rabbit.SpeedModifier = 1;
+        wolf.SpeedModifier = 1.3f;
+        GeneralTestInit();
+    }
+
+    private void GeneralTestInit()
+    {
+      PerformanceMode = false;
+      Log = false;
+      foreach(var animal in Animals)
+      {
+        if(animal.Species == AnimalSpecies.Rabbit)
+          HerbivoreCount++;
+        if (animal.Species == AnimalSpecies.Wolf)
+          CarnivoreCount++;
       }
     }
   }

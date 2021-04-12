@@ -114,7 +114,7 @@ namespace Animal
     }
 
     public AbstractAnimal EnemyToFleeFrom { get; set; }
-    public float SpeedModifier { get; private set; }
+    public float SpeedModifier { get;  set; }
     public float SizeModifier { get; private set; }
     public IEatable FoodAboutTooEat { get; set; }
     public int AgeInDays { get; private set; }
@@ -247,8 +247,8 @@ namespace Animal
     /// </summary>
     public void ForgetWaterLocationForSomeTime()
     {
-      if (IsCarnivore) _timeUntilRememberWater += 30;
-      else _timeUntilRememberWater += 10;
+      if (IsCarnivore) _timeUntilRememberWater += 66;
+      else _timeUntilRememberWater += 1;
       KnowsWaterLocation = false;
       HasForgottenWater = true;
     }
@@ -282,6 +282,7 @@ namespace Animal
 
     public void HourTick()
     {
+      if (Dead) return;
       _nourishmentDelegate.HourTick();
       foodManager.HourTick();
       DecreaseHealthIfStarving();
@@ -319,6 +320,7 @@ namespace Animal
 
     public void DayTick()
     {
+      if (Dead) return;
       if (IsChild && AgeInDays >= fertilityTimeInHours / 24) IsChild = false;
 
       AgeInDays++;
