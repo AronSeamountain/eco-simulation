@@ -24,9 +24,30 @@ namespace Utils
         "Ignore Raycast",
         "UI",
         "TransparentFX",
-        "PostProcessing"
+        "PostProcessing",
+        "Water"
       );
       return _nonRayCastableLayers;
+    }
+
+    public static RaycastHit RayCastLayer(Vector3 startPoint, Vector3 endPoint, int layer)
+    {
+      var layerMask = 1 << layer; //only looks for one layer
+      return rayCastWithMask(startPoint, endPoint, layerMask);
+    }
+
+    public static RaycastHit RayCastLayer(Vector3 startPoint, Vector3 endPoint, string[] layers)
+    {
+      var layerMasks = LayerMask.GetMask(layers);
+      return rayCastWithMask(startPoint, endPoint, layerMasks);
+      ;
+    }
+
+    private static RaycastHit rayCastWithMask(Vector3 startPoint, Vector3 endPoint, int layerMasks)
+    {
+      var ray = new Ray(startPoint, endPoint);
+      Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMasks);
+      return hit;
     }
   }
 }

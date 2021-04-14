@@ -12,6 +12,8 @@ namespace Animal
 
     public delegate void SaturationChanged(float saturation, float maxSaturation);
 
+    private readonly float _pregnancyEnergyMutliplier = 1.2f;
+
     private float _hydration;
     private float _saturation;
     public HydrationChanged HydrationChangedListeners;
@@ -95,8 +97,16 @@ namespace Animal
     {
       MaxHydration = maxValue;
       MaxSaturation = maxValue;
-      _hydration = maxValue;
-      _saturation = maxValue;
+      _hydration = MaxHydration;
+      _saturation = MaxSaturation;
+      ThirstyHydrationLevel = maxValue / 2;
+      HungrySaturationLevel = maxValue / 2;
+    }
+
+    public void UpdateMaxNourishment(float maxValue)
+    {
+      MaxHydration = maxValue;
+      MaxSaturation = maxValue;
       ThirstyHydrationLevel = maxValue / 2;
       HungrySaturationLevel = maxValue / 2;
     }
@@ -109,6 +119,20 @@ namespace Animal
     private void HydrationInvoker()
     {
       HydrationChangedListeners?.Invoke(Hydration, MaxHydration);
+    }
+
+    public void OnPregnancyChanged(bool isPregnant)
+    {
+      if (isPregnant)
+      {
+        HydrationDecreasePerHour = HydrationDecreasePerHour * _pregnancyEnergyMutliplier;
+        SaturationDecreasePerHour = SaturationDecreasePerHour * _pregnancyEnergyMutliplier;
+      }
+      else
+      {
+        HydrationDecreasePerHour = HydrationDecreasePerHour / _pregnancyEnergyMutliplier;
+        SaturationDecreasePerHour = SaturationDecreasePerHour / _pregnancyEnergyMutliplier;
+      }
     }
   }
 }

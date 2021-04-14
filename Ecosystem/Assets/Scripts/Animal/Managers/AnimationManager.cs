@@ -1,5 +1,6 @@
 using System;
 using Animal.AnimalStates;
+using Core;
 using UnityEngine;
 
 namespace Animal.Managers
@@ -16,8 +17,17 @@ namespace Animal.Managers
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource audioSource;
 
-    public void ReceiveState(AnimalState state)
+    private void Start()
     {
+      if (EntityManager.PerformanceMode)
+        animator.enabled = false;
+    }
+
+    public void ReceiveState(AnimalState state, AbstractAnimal animal)
+    {
+      if (EntityManager.PerformanceMode) return;
+
+      float animationSpeed;
       switch (state)
       {
         case AnimalState.Birth:
@@ -27,14 +37,19 @@ namespace Animal.Managers
           SetAnimation(Dead, 1);
           break;
         case AnimalState.Wander:
-          SetAnimation(Wander, 1);
+          animationSpeed = animal.SizeModifier * animal.SpeedModifier * 2 /
+                           (animal.SizeModifier + animal.SpeedModifier);
+          SetAnimation(Wander, animationSpeed);
           break;
         case AnimalState.PursueFood:
         case AnimalState.PursueMate:
         case AnimalState.PursueWater:
+        case AnimalState.SearchWorld:
         case AnimalState.Flee:
         case AnimalState.Hunt:
-          SetAnimation(Pursue, 1.5f);
+          animationSpeed = animal.SizeModifier * animal.SpeedModifier * 1.4f * 2 /
+                           (animal.SizeModifier + animal.SpeedModifier);
+          SetAnimation(Pursue, animationSpeed);
           break;
         case AnimalState.Eat:
         case AnimalState.Drink:
@@ -50,12 +65,26 @@ namespace Animal.Managers
 
     private void SetAnimation(int state, float animationSpeed)
     {
+      if (EntityManager.PerformanceMode) return;
+
       animator.SetInteger(State, state);
+      animator.SetFloat(AnimationSpeed, animationSpeed);
+    }
+
+    public void SetAnimationStaminaZero(AbstractAnimal animal)
+    {
+      if (EntityManager.PerformanceMode) return;
+
+      var animationSpeed =
+        animal.SizeModifier * animal.SpeedModifier * 2 / (animal.SizeModifier + animal.SpeedModifier);
+      animator.SetInteger(State, Wander);
       animator.SetFloat(AnimationSpeed, animationSpeed);
     }
 
     public void AnimalSound()
     {
+      if (EntityManager.PerformanceMode) return;
+
       //audioSource.Play();
     }
   }

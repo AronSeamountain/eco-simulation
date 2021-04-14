@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using UnityEngine;
 using Utils;
 
@@ -26,6 +26,8 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
+      _animal.IsRunning = false;
+      _animal.SetSpeed();
       GoToClosePoint();
     }
 
@@ -35,19 +37,20 @@ namespace Animal.AnimalStates
 
     public AnimalState Execute()
     {
-      var isSatisfied = !_animal.IsHungry && !_animal.IsThirsty;
-
       if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
       if (_animal.IsThirsty && _animal.KnowsWaterLocation) return AnimalState.PursueWater;
-      if (isSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male) return AnimalState.PursueMate;
+      if (_animal.IsSatisfied && _animal.GetMateTarget() && _animal.Gender == Gender.Male && !_animal.IsChild)
+        return AnimalState.PursueMate;
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry) return AnimalState.PursueFood;
       if (_animal is Carnivore carnivore) // TODO: no no :-)
       {
         var target = carnivore.Target;
-        if (target && carnivore.ShouldHunt(target)) return AnimalState.Hunt;
+        if (target && carnivore.ShouldStartHunt(target) && carnivore.GetStaminaDelegate().Stamina > 50) return AnimalState.Hunt;
       }
+
+      if (_animal.NeedsNourishment()) return AnimalState.SearchWorld;
 
       if (Vector3Util.InRange(_animal.transform.position, _destination, MarginToReachDestination))
         return AnimalState.Idle;

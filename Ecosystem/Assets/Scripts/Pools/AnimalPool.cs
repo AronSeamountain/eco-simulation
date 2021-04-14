@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using Animal;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Pools
 {
   public sealed class AnimalPool : MonoBehaviour
   {
-    private const int AmountToPool = 50;
+    private const int AmountToPool = 0;
     public static AnimalPool SharedInstance;
     [SerializeField] private GameObject wolfPrefab;
     [SerializeField] private GameObject rabbitPrefab;
     private IDictionary<AnimalSpecies, Stack<AbstractAnimal>> _speciePoolMapping;
     private IDictionary<AnimalSpecies, GameObject> _speciePrefabMapping;
+    public static bool OverlappableAnimals;
 
     private void Awake()
     {
@@ -46,10 +48,25 @@ namespace Pools
       return _speciePoolMapping[species];
     }
 
+    /// <summary>
+    ///   Creates a new animal that has collision avoidance according to the OverlappableAnimals field.
+    /// </summary>
+    /// <param name="species">The type of animal to create.</param>
+    /// <returns>A animal instance.</returns>
     private AbstractAnimal CreateAnimal(AnimalSpecies species)
     {
       var prefab = _speciePrefabMapping[species];
-      return Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<AbstractAnimal>();
+      var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+
+      // Overlap
+      var agent = instance.GetComponent<NavMeshAgent>();
+
+      if (OverlappableAnimals)
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+      else
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.LowQualityObstacleAvoidance;
+
+      return instance.GetComponent<AbstractAnimal>();
     }
 
     public void Pool(AbstractAnimal animal)

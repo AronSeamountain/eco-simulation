@@ -1,6 +1,7 @@
 using Core;
 using Foods;
 using UnityEngine;
+using Utils;
 
 namespace Animal.AnimalStates
 {
@@ -8,6 +9,9 @@ namespace Animal.AnimalStates
   {
     private readonly AbstractAnimal _animal;
     private IEatable _food;
+    private readonly Sprite _spWolf = Resources.Load<Sprite>("flesh20px");
+    private readonly Sprite _spRabbit = Resources.Load<Sprite>("leaf10px");
+    
 
     public EatState(AbstractAnimal animal)
     {
@@ -24,8 +28,12 @@ namespace Animal.AnimalStates
       //retrieve target
       _food = _animal.FoodAboutTooEat;
 
-      //Set Color
-      _animal.SetMouthColor(Color.green);
+      _animal.IsRunning = false;
+      
+      // set sprite depending on which animal is eating
+      if (_animal.IsCarnivore) _animal.SetMouthSprite(_spWolf);
+      else
+        _animal.SetMouthSprite(_spRabbit);
     }
 
     public AnimalState Execute()
@@ -34,7 +42,7 @@ namespace Animal.AnimalStates
       if (_food == null) return AnimalState.Wander;
       if (!_food.CanBeEaten()) return AnimalState.Wander;
       if (!_animal.CanEatMore()) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
 
       _animal.StopMoving();
       _animal.Eat(_food);

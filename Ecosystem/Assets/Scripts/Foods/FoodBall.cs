@@ -20,5 +20,10 @@
     {
       return Saturation > 0;
     }
+
+    public override bool CanBeEatenSoon()
+    {
+      return Saturation > 0;
+    }
   }
 }

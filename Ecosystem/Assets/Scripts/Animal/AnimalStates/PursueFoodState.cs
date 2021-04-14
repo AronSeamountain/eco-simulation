@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Animal.Managers;
 using Core;
@@ -30,6 +30,8 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
+      _animal.IsRunning = true;
+      _animal.SetSpeed();
     }
 
     public AnimalState Execute()
@@ -37,7 +39,8 @@ namespace Animal.AnimalStates
       if (!_animal.Alive) return AnimalState.Dead;
       if (_animal.ShouldBirth) return AnimalState.Birth;
       if (!_animal.IsHungry) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
+      if (_animal.IsThirsty && !_animal.KnowsWaterLocation && !_animal.IsHungry) return AnimalState.SearchWorld;
 
       // A new food source has been found. Change the food target to the closest food.
       if (_knownFoodTargetsChanged)
@@ -48,28 +51,40 @@ namespace Animal.AnimalStates
         _foodTarget = GetClosestFood();
         _animal.GoTo(_foodTarget.Position);
       }
-
-      // Eat the current food if it can be reached.
-      var reachesFood = Vector3Util.InRange(_animal.transform.position, _foodTarget.Position, _animal.Reach);
-      if (reachesFood)
+      
+      if (_foodTarget != null)
       {
-        var colliders = Physics.OverlapSphere(_animal.transform.position, _animal.Reach * 1.5f);
-        foreach (var collider in colliders)
-          if (collider.GetComponent<AbstractFood>() is AbstractFood f)
-            if (f == _foodTarget.Food)
-            {
-              _animal.FoodAboutTooEat = _foodTarget.Food;
-              _animal.Forget(_foodTarget);
-              _foodTarget = null;
-              return AnimalState.Eat;
-            }
+        var position = _animal.transform.position;
+        var closestPoint = _foodTarget.Food.foodCollider.ClosestPoint(position);
+        var reachesFood = Vector3.Distance(position, closestPoint) < _animal.Reach;
+        if (reachesFood)
+        {
+          if (!_foodTarget.Food.CanBeEaten())
+          {
+            _animal.Forget(_foodTarget);
+            //wait for food to mature
+            return AnimalState.Idle;
+          }
 
-        _animal.Forget(_foodTarget);
-        _foodTarget = null;
+          
+          if (_foodTarget.Food.Exists())
+          {
+            _animal.FoodAboutTooEat = _foodTarget.Food;
+            _animal.Forget(_foodTarget);
+            _foodTarget = null;
+            return AnimalState.Eat;
+          }
+
+          _animal.Forget(_foodTarget);
+          _foodTarget = null;
+        }
+
+        return AnimalState.PursueFood;
       }
 
-      return AnimalState.PursueFood;
+      return AnimalState.Wander;
     }
+
 
     public void Exit()
     {

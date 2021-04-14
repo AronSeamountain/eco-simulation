@@ -1,30 +1,31 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
 using Core;
+using Foods;
 using UnityEngine;
+using Utils;
 
 namespace Animal
 {
   public sealed class Herbivore : AbstractAnimal
   {
-    [SerializeField] private int fertilityTimeInDays = 5;
     private const float SafeDistance = 15f;
-    private bool _hearsCarnivore;
-    private bool _seesCarnivore;
-
-    protected override void AnimalSetup()
-    {
-      Species = AnimalSpecies.Rabbit;
-      FertilitySetup(fertilityTimeInDays);
-    }
+    private Texture _tex;
+    public override float RunningSpeedFactor { get; } = 3f;
 
     protected override void RenderAnimalSpecificColors()
     {
       if (Gender == Gender.Male)
-        meshRenderer.material.color = new Color(1f, 0.8f, 0.8f);
+      {
+        _tex = Resources.Load("Rabbit_White_COL_1k") as Texture;
+        meshRenderer.material.SetTexture("Texture2D_animal_texture",_tex);
+      }
       else
-        meshRenderer.material.color = new Color(0.99f, 0.65f, 0.87f);
+      {
+        _tex = Resources.Load<Texture2D>("Rabbit_COL_1k");
+        meshRenderer.material.SetTexture("Texture2D_animal_texture",_tex);
+      }
     }
 
     protected override List<IState<AnimalState>> GetStates(FoodManager fManager)
@@ -42,7 +43,8 @@ namespace Animal
         new EatState(this),
         new DrinkState(this),
         new FleeState(this),
-        new IdleState(this)
+        new IdleState(this),
+        new SearchWorldState(this)
       };
     }
 
@@ -51,26 +53,62 @@ namespace Animal
       return true;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
       _healthDelegate.DecreaseHealth(damage);
     }
 
+    private bool WolfDiscovered(AbstractAnimal animal)
+    {
+      return animal.IsCarnivore;
+    }
+
     protected override void OnAnimalHeard(AbstractAnimal animal)
     {
-      _hearsCarnivore = animal.IsCarnivore;
-      if (_hearsCarnivore) EnemyToFleeFrom = animal;
+      if(WolfDiscovered(animal))
+      {
+        EnemyToFleeFrom = animal;
+      }
     }
+
     protected override void OnEnemySeen(AbstractAnimal animal)
     {
-      _seesCarnivore = animal.IsCarnivore;
-      if (_seesCarnivore) EnemyToFleeFrom = animal;
+      if(WolfDiscovered(animal))
+      {
+        EnemyToFleeFrom = animal;
+      }
     }
+
 
     public override bool SafeDistanceFromEnemy()
     {
-      var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
-      return SafeDistance < distance;
+      if (EnemyToFleeFrom.Exists())
+      {
+        var distance = Vector3.Distance(gameObject.transform.position, EnemyToFleeFrom.transform.position);
+        return SafeDistance < distance;
+      }
+
+      return false;
+    }
+
+    protected override void IncreaseStaminaIfNotRunning()
+    {
+      if (!EnemyToFleeFrom && Alive) _staminaDelegate.IncreaseStamina(3);
+    }
+
+    protected override void DecreaseStaminaIfRunning()
+    {
+      if (IsRunning && EnemyToFleeFrom) _staminaDelegate.DecreaseStamina(5);
+    }
+    
+    public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor / 2.5f;
+    }
+    
+    public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
+    {
+      return decreaseFactor / 3f;
     }
   }
 }

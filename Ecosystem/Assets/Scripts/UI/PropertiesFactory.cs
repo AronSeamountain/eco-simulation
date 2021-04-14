@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Animal;
 using Core;
 using Foods.Plants;
+using JetBrains.Annotations;
 using UI.Properties;
 using UnityEngine;
 using Utils;
@@ -57,6 +58,19 @@ namespace UI
 
       properties.Add(hydrationSlider);
 
+      // ----------- Stamina ------------
+      var staminaSlider = RowFactory.CreateSlider();
+      staminaSlider.Configure(
+        animal.GetStaminaDelegate().Stamina,
+        animal.GetStaminaDelegate().GetMaxStamina(),
+        Color.yellow
+      );
+      animal.GetStaminaDelegate().StaminaChangedListeners += staminaSlider.OnValueChanged;
+      staminaSlider.CleanupListeners += () =>
+        animal.GetStaminaDelegate().StaminaChangedListeners -= staminaSlider.OnValueChanged;
+
+      properties.Add(staminaSlider);
+
       // ---------- State name ----------
       var state = RowFactory.CreateKeyValuePair();
       state.Configure("State", animal.GetCurrentStateEnum().ToString());
@@ -85,12 +99,30 @@ namespace UI
 
       void SizeChangedImpl()
       {
-        speed.OnValueChanged(Prettifier.Round(animal.SpeedModifier, 2));
+        size.OnValueChanged(Prettifier.Round(animal.SizeModifier, 2));
       }
 
       animal.PropertiesChangedListeners += SizeChangedImpl;
-      speed.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
-      properties.Add(size);
+      size.CleanupListeners += () => animal.PropertiesChangedListeners -= SizeChangedImpl;
+      properties.Add(size); 
+      
+      // ---------- Eyesight -----------
+      var brainScore = animal.VisionGene.Bits + animal.HearingGene.Bits; 
+      var eyesight = RowFactory.CreateKeyValuePair();
+      eyesight.Configure("Eyesight %", Prettifier.Round(animal.VisionGene.Bits * 100f/ brainScore, 2));
+
+      properties.Add(eyesight);
+      // ---------- Hearing ---------- 
+      var hearing = RowFactory.CreateKeyValuePair();
+      hearing.Configure("Hearing %", Prettifier.Round(animal.HearingGene.Bits * 100f/ brainScore, 2));
+      
+      properties.Add(hearing);
+      // ---------- Gender ----------
+      var gender = RowFactory.CreateKeyValuePair();
+      gender.Configure("Gender", animal.Gender.ToString());
+
+      properties.Add(gender);
+
       // ---------- Children ----------
       var children = RowFactory.CreateKeyValuePair();
       children.Configure("Children", animal.Children.ToString());
@@ -99,6 +131,7 @@ namespace UI
       {
         children.OnValueChanged(parent.Children.ToString());
       }
+
       properties.Add(children);
 
       animal.ChildSpawnedListeners += ChildSpawnedImpl;
@@ -112,11 +145,43 @@ namespace UI
       {
         age.OnValueChanged($"{newAge} days");
       }
-      
+
       properties.Add(age);
 
       animal.AgeChangedListeners += AgeChangedImpl;
       age.CleanupListeners += () => animal.AgeChangedListeners -= AgeChangedImpl;
+
+      // ---------- Nutrition ----------
+      var nutrition = RowFactory.CreateKeyValuePair();
+      nutrition.Configure("Nutrition", Prettifier.Round(animal.NutritionalValue, 4));
+
+      void NutritionChangedImpl()
+      {
+        nutrition.OnValueChanged(Prettifier.Round(animal.NutritionalValue, 4));
+      }
+
+      properties.Add(nutrition);
+
+      animal.PropertiesChangedListeners += NutritionChangedImpl;
+      nutrition.CleanupListeners += () => animal.PropertiesChangedListeners -= NutritionChangedImpl;
+
+
+      //------------Pregnant -------------
+      if (animal.Gender == Gender.Female)
+      {
+        var pregnancy = RowFactory.CreateKeyValuePair();
+        pregnancy.Configure("Pregnant", $"{animal.IsPregnant}");
+
+        void PregnancyChangedImpl(bool pregnant)
+        {
+          pregnancy.OnValueChanged($"{pregnant}");
+        }
+
+        properties.Add(pregnancy);
+
+        animal.PregnancyChangedListeners += PregnancyChangedImpl;
+        pregnancy.CleanupListeners += () => animal.PregnancyChangedListeners -= PregnancyChangedImpl;
+      }
 
       return properties;
     }
@@ -132,7 +197,7 @@ namespace UI
       saturationBar.Configure("Saturation", plant.Saturation.ToString());
 
       var age = RowFactory.CreateKeyValuePair();
-      age.Configure("Age", ((int) plant.AgeInHours / 24).ToString());
+      age.Configure("Age", (plant.AgeInHours / 24).ToString());
 
       void SaturationChangedImpl(float saturation)
       {
@@ -147,6 +212,7 @@ namespace UI
 
     public static IEnumerable<AbstractProperty> Create(EntityManager entityManager)
     {
+      var output = new List<AbstractProperty>();
       var ecoSystemText = RowFactory.CreateKeyValuePair();
       ecoSystemText.Configure("Ecosystem", "Forest");
 
@@ -162,6 +228,8 @@ namespace UI
       entityManager.DayTickListeners += DayChangeImpl;
       ageText.CleanupListeners += () => entityManager.DayTickListeners -= DayChangeImpl;
 
+      output.Add(ageText);
+
       // ---------- Animals (herbivores/rabbits) ----------
       var herbivoreText = RowFactory.CreateKeyValuePair();
       herbivoreText.Configure("Rabbits", entityManager.HerbivoreCount.ToString());
@@ -174,9 +242,11 @@ namespace UI
       entityManager.HourTickListeners += HerbivoreUpdateImpl;
       herbivoreText.CleanupListeners += () => entityManager.HourTickListeners -= HerbivoreUpdateImpl;
 
-      // ---------- Animals (carnivores/wolfs) ----------
+      output.Add(herbivoreText);
+
+      // ---------- Animals (carnivores/wolves) ----------
       var carnivoreText = RowFactory.CreateKeyValuePair();
-      carnivoreText.Configure("Wolfs", entityManager.CarnivoreCount.ToString());
+      carnivoreText.Configure("Wolves", entityManager.CarnivoreCount.ToString());
 
       void AnimalUpdateImpl()
       {
@@ -186,11 +256,34 @@ namespace UI
       entityManager.HourTickListeners += AnimalUpdateImpl;
       carnivoreText.CleanupListeners += () => entityManager.HourTickListeners -= AnimalUpdateImpl;
 
+      output.Add(carnivoreText);
+
       // ---------- Plants ----------
       var plantText = RowFactory.CreateKeyValuePair();
       plantText.Configure("Plants", entityManager.Plants.Count.ToString());
 
-      return new List<AbstractProperty> {ecoSystemText, ageText, herbivoreText, carnivoreText, plantText};
+      output.Add(plantText);
+
+      // ---------- Fps ----------
+      if (entityManager.Log)
+      {
+        var fpsText = RowFactory.CreateKeyValuePair();
+        fpsText.Configure("Fps", "averaging...");
+
+        void FpsUpdateImpl()
+        {
+          fpsText.OnValueChanged(
+            Prettifier.Round(entityManager.FpsDelegate.AvgSinceLastSnapshot, 2)
+          );
+        }
+
+        entityManager.DayTickListeners += FpsUpdateImpl;
+        fpsText.CleanupListeners += () => entityManager.DayTickListeners -= FpsUpdateImpl;
+
+        output.Add(fpsText);
+      }
+
+      return output;
     }
   }
 }

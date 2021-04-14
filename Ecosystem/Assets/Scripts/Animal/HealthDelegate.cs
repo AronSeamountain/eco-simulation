@@ -27,9 +27,21 @@ namespace Animal
       return MaxHealth;
     }
 
-    public void DecreaseHealth(int decrease)
+    public void DecreaseHealth(float decrease)
     {
       Health -= decrease;
+      HealthChangedListeners?.Invoke(Health, MaxHealth);
+    }
+
+    public void IncreaseHealth(int increase)
+    {
+      Health += increase;
+      HealthChangedListeners?.Invoke(Health, MaxHealth);
+    }
+
+    public void ResetHealth()
+    {
+      Health = MaxHealth;
       HealthChangedListeners?.Invoke(Health, MaxHealth);
     }
   }

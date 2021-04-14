@@ -1,14 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Animal;
 using Foods.Plants;
 using Logger;
+using Logger.ConcreteLogger;
+using Menu;
 using Pools;
 using UI;
 using UI.Properties;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using Utils;
+using ILogger = Logger.ILogger;
+using Random = UnityEngine.Random;
 
 namespace Core
 {
@@ -21,41 +28,76 @@ namespace Core
     /// <summary>
     ///   The amount of time that a "unit" is in.
     /// </summary>
-    private const float HoursInRealSeconds = 0.5f;
+    public static float HoursInRealSeconds = 0.5f;
+
+    public static void Restart()
+    {
+      HoursInRealSeconds = 0.5f;
+      InitialWolves = 25;
+      InitialRabbits = 100;
+      InitialPlants = 100;
+      PerformanceModeMenuOverride = true;
+      OverlappableAnimalsMenuOverride = false;
+      LogMenuOverride = true;
+      OptionsMenu.World = "LargeWorld";
+    }
 
     private const float HoursPerDay = 24;
-    [SerializeField] private int initialWolves = 1;
-    [SerializeField] private int initialRabbits = 1;
-    [SerializeField] private int initialPlants = 4;
-    [SerializeField] private int waterAmount;
-    [SerializeField] private GameObject rabbitPrefab;
-    [SerializeField] private GameObject wolfPrefab;
+    public static int InitialWolves = 25;
+    public static int InitialRabbits = 100;
+    public static int InitialPlants = 100;
     [SerializeField] private GameObject plantPrefab;
+    [SerializeField] private GameObject walkablePointPrefab;
     [SerializeField] private bool log;
-    private AnimalPool _animalPool;
-    private DataLogger _logger;
+    [SerializeField] private bool performanceMode;
+    [SerializeField] private bool overlappableAnimals;
     private float _hoursPassed;
     private float _hourTicker;
-    private int animalCount = 0;
+    private ILogger _logger;
     public DayTick DayTickListeners;
-    private int plantCount;
     public Tick HourTickListeners;
-    private IList<AbstractAnimal> Animals { get; set; }
+    private int plantCount;
+
+    public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
+    public FpsDelegate FpsDelegate { get; private set; }
+    public static bool PerformanceModeMenuOverride = true;
+    public static bool PerformanceMode;
+    public static bool OverlappableAnimalsMenuOverride = false;
+    public static bool LogMenuOverride = true;
+    public bool Log { get; private set; }
+
 
     private void Awake()
     {
-      _animalPool = AnimalPool.SharedInstance;
+
+     
+      Log = log || LogMenuOverride;
+      PerformanceMode = performanceMode || PerformanceModeMenuOverride;
+      
+      AnimalPool.OverlappableAnimals = overlappableAnimals || OverlappableAnimalsMenuOverride;
+
+      FpsDelegate = new FpsDelegate();
 
       // Lists
       Animals = new List<AbstractAnimal>();
-      SpawnAndAddInitialAnimals();
       Plants = new List<Plant>();
-      SpawnAndAddInitialPlants();
-
+      var sceneName = SceneManager.GetActiveScene().name;
+      if (sceneName.Equals("EvadeScene"))
+      {
+        InitEvadeScene();
+      }
+      else
+      {
+        SpawnAndAddInitialAnimals();
+        SpawnAndAddInitialPlants();
+       
+      }
+      
+      SpawnAndAddWalkablePoints();
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
@@ -66,13 +108,19 @@ namespace Core
       }
 
       // Logger
-      _logger = DataLogger.Instance;
-      _logger.InitializeLogging();
+      _logger = new MultiLogger(
+        DetailedIndividualLogger.Instance,
+        new OverviewLogger(),
+        new FpsLogger()
+      );
+
+      _logger.Clear();
     }
 
     private void Update()
     {
       UpdateTick();
+      if (Log) FpsDelegate.FramePassed();
     }
 
     public IEnumerable<AbstractProperty> GetProperties()
@@ -112,24 +160,52 @@ namespace Core
     }
 
     /// <summary>
+    ///   Creates the walkable points which the animals will look for
+    /// </summary>
+    public void SpawnAndAddWalkablePoints()
+    {
+      List<MonoBehaviour>[,] matrix = WorldMatrix.InitMatrix();
+      PopulateWorldWithWalkablePoints(matrix);
+      WorldMatrix.AddWalkablePointsToMatrix(matrix);
+      WorldMatrix.PopulateAdjacencyList(matrix);
+    }
+
+    private void PopulateWorldWithWalkablePoints(List<MonoBehaviour>[,] matrix)
+    {
+      for (int i = 0; i < matrix.GetLength(0); i++)
+      {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+          SpawnAndAddGeneric(WorldMatrix.WalkablePointsAmountPerBox, walkablePointPrefab,
+            i * WorldMatrix.WalkableMatrixBoxSize, (i + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            j * WorldMatrix.WalkableMatrixBoxSize, (j + 1) * WorldMatrix.WalkableMatrixBoxSize,
+            WorldMatrix.WalkablePoints);
+        }
+      }
+    }
+
+    /// <summary>
     ///   Spawns animals and adds them to the list of animals.
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-        SpawnAndAddGeneric(initialRabbits, rabbitPrefab, Animals);
-        HerbivoreCount += initialRabbits;
+      
+      SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
+      HerbivoreCount += InitialRabbits;
 
-        SpawnAndAddGeneric(initialWolves, wolfPrefab, Animals);
-        CarnivoreCount += initialWolves;
+      
+
+      SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
+      CarnivoreCount += InitialWolves;
+      
+      InitAnimalGameObejcts();
     }
 
-    private void SpawnAnimalSpecie(int amount, AnimalSpecies animalSpecies)
+    private void InitAnimalGameObejcts()
     {
-      for (var i = 0; i < initialPlants; i++)
+      for (int i = 0; i < Animals.Count; i++)
       {
-        var animal = _animalPool.Get(animalSpecies);
-        Place(animal);
-        Animals.Add(animal);
+        Animals[i].ResetGameObject();
       }
     }
 
@@ -138,24 +214,59 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialPlants()
     {
-      SpawnAndAddGeneric(initialPlants, plantPrefab, Plants);
+      SpawnAndAddPrefab(InitialPlants, plantPrefab, Plants);
     }
 
-    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, ICollection<T> list = null)
+    private void SpawnAndAddSpecies<T>(int amount, AnimalSpecies species, ICollection<T> list = null)
+      where T : MonoBehaviour
+    {
+      var pool = AnimalPool.SharedInstance;
+      for (var i = 0; i < amount; i++)
+      {
+        var instance = pool.Get(species) as T;
+        Place(instance);
+        list?.Add(instance);
+      }
+    }
+
+    private void SpawnAndAddPrefab<T>(int amount, GameObject prefab, ICollection<T> list = null)
       where T : MonoBehaviour
     {
       for (var i = 0; i < amount; i++)
       {
         var instance = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<T>();
+
+
         Place(instance);
+        list?.Add(instance);
+      }
+    }
+
+    private void SpawnAndAddGeneric<T>(int amount, GameObject prefab, int xMin, int xMax, int zMin, int zMax,
+      ICollection<T> list = null)
+      where T : MonoBehaviour
+    {
+      for (var i = 0; i < amount; i++)
+      {
+        var x = Random.Range(xMin, xMax);
+        var z = Random.Range(zMin, zMax);
+        var vector = new Vector3(x, 0, z);
+        var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
+        
+        Place(instance,vector);
         list?.Add(instance);
       }
     }
 
     private void Place<T>(T instance) where T : MonoBehaviour
     {
-      var coord = NavMeshUtil.GetRandomLocation();
-      var foundPointOnNavMesh = NavMesh.SamplePosition(coord, out var hit, 50, -1);
+      var vector = NavMeshUtil.GetRandomLocation();
+      Place(instance, vector);
+    }
+
+    private void Place<T>(T instance, Vector3 v) where T : MonoBehaviour
+    {
+      var foundPointOnNavMesh = NavMesh.SamplePosition(v, out var hit, 300, -1);
 
       if (!foundPointOnNavMesh)
         QuitApplication("Could not find a position on the nav mesh when placing a game object");
@@ -199,15 +310,22 @@ namespace Core
       DayTickListeners += animal.DayTick;
       animal.ChildSpawnedListeners += OnChildSpawned;
       animal.DiedListeners += OnAnimalDied;
+      animal.DecayedListeners += UnobserveAnimal;
+    }
+
+    private void UnobserveAnimal(AbstractAnimal animal)
+    {
+      Animals.Remove(animal);
+      HourTickListeners -= animal.HourTick;
+      DayTickListeners -= animal.DayTick;
+      animal.ChildSpawnedListeners -= OnChildSpawned;
+      animal.DiedListeners -= OnAnimalDied;
+      animal.DecayedListeners -= UnobserveAnimal;
     }
 
     private void OnAnimalDied(AbstractAnimal animal)
     {
       CountAnimal(animal, false);
-      Animals.Remove(animal);
-
-      HourTickListeners -= animal.HourTick;
-      DayTickListeners -= animal.DayTick;
     }
 
     private void UpdateTick()
@@ -226,8 +344,48 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
-          if (log) _logger.Snapshot(Days, Animals, this);
+          if (Log)
+          {
+            _logger.Snapshot(this);
+            _logger.Persist();
+            FpsDelegate.Reset();
+          }
         }
+      }
+    }
+    
+    private void InitEvadeScene()
+    {
+     
+        var pool = AnimalPool.SharedInstance;
+      
+        var wolf = pool.Get(AnimalSpecies.Wolf);
+        var vector = new Vector3(5,0,5);
+        Place(wolf,vector);
+        Animals?.Add(wolf);
+       
+        var rabbit = pool.Get(AnimalSpecies.Rabbit);
+        var vector2 = new Vector3(5,0,10);
+        Place(rabbit,vector2);
+        Animals?.Add(rabbit);
+        
+        InitAnimalGameObejcts();
+        wolf.GetNourishmentDelegate().Saturation = 0;
+        rabbit.SpeedModifier = 1;
+        wolf.SpeedModifier = 1.3f;
+        GeneralTestInit();
+    }
+
+    private void GeneralTestInit()
+    {
+      PerformanceMode = false;
+      Log = false;
+      foreach(var animal in Animals)
+      {
+        if(animal.Species == AnimalSpecies.Rabbit)
+          HerbivoreCount++;
+        if (animal.Species == AnimalSpecies.Wolf)
+          CarnivoreCount++;
       }
     }
   }

@@ -1,6 +1,7 @@
-﻿using Core;
+using Core;
 using Foods;
 using UnityEngine;
+using Utils;
 
 namespace Animal.AnimalStates
 {
@@ -8,6 +9,7 @@ namespace Animal.AnimalStates
   {
     private readonly AbstractAnimal _animal;
     private Water _water;
+    private readonly Sprite _sp = Resources.Load<Sprite>("water20px");
 
     public DrinkState(AbstractAnimal animal)
     {
@@ -24,8 +26,10 @@ namespace Animal.AnimalStates
       //retrieve target
       _water = _animal.ClosestKnownWater;
 
-      //set Color
-      _animal.SetMouthColor(Color.blue);
+      _animal.IsRunning = false;
+
+      //set sprite
+      _animal.SetMouthSprite(_sp);
     }
 
     public AnimalState Execute()
@@ -33,7 +37,7 @@ namespace Animal.AnimalStates
       if (!_animal.Alive) return AnimalState.Dead;
       if (!_water) return AnimalState.Wander;
       if (!_animal.CanDrinkMore()) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom) return AnimalState.Flee;
+      if (_animal.EnemyToFleeFrom.Exists()) return AnimalState.Flee;
 
       _animal.StopMoving();
       _animal.Drink(_water);

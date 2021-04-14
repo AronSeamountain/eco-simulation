@@ -21,11 +21,17 @@ namespace Animal.AnimalStates
     public void Enter()
     {
       _father = _animal.LastMaleMate;
+      _animal.IsRunning = false;
     }
 
     public AnimalState Execute()
     {
-      _animal.SpawnChild(_father);
+      _animal.StopMoving();
+      if (_animal.MultipleChildren)
+        _animal.SpawnMultipleChildren(_father);
+      else
+        _animal.SpawnChild(_father);
+
       return AnimalState.Wander;
     }
 

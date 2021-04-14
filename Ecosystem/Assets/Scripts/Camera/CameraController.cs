@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using Utils;
 
 namespace Camera
@@ -69,6 +71,13 @@ namespace Camera
       _controls.CameraMovement.MoveFast.canceled += OnMoveFast;
       _controls.CameraMovement.ZoomIn.performed += OnZoomIn;
       _controls.CameraMovement.ZoomOut.performed += OnZoomOut;
+      _controls.CameraMovement.Restart.performed += OnRestart;
+    }
+
+    private static void OnRestart(InputAction.CallbackContext obj)
+    {
+      SceneManager.LoadScene("Menu");
+      EntityManager.Restart();
     }
 
     private void Start()

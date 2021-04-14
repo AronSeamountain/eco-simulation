@@ -11,18 +11,22 @@ namespace Foods.Plants
   {
     public delegate void StateChanged(string state);
 
+    // plant can be alive for 5 in-game days, then i has to start over as seed again
+    private const int MaxHoursAlive = 120;
     private const int HoursAsSeed = 24;
     private const int SaturationPerHour = 3;
     [SerializeField] private Material seedMaterial;
     [SerializeField] private Material growingMaterial;
     [SerializeField] private Material matureMaterial;
-    public int AgeInHours { get; set; }
+    private Renderer _meshRend;
     private StateMachine<PlantState> _stateMachine;
     public StateChanged StateChangedListeners;
+    public int AgeInHours { get; set; }
     public bool LeaveSeedState { get; private set; }
 
     private void Awake()
     {
+      _meshRend = GetComponent<MeshRenderer>();
       MaxSaturation = 100;
 
       var states = new List<IState<PlantState>>
@@ -68,6 +72,8 @@ namespace Foods.Plants
 
       if (LeaveSeedState)
         Saturation += SaturationPerHour;
+
+      //if (AgeInHours >= MaxHoursAlive) Reset();
     }
 
     public void DayTick()
@@ -91,12 +97,18 @@ namespace Foods.Plants
 
     private void SetMaterial(Material material)
     {
-      var mesh = GetComponent<MeshRenderer>();
-      mesh.material = material;
+      var mat = _meshRend.materials;
+      mat[1] = material;
+      _meshRend.materials = mat;
     }
 
     protected override void FoodFullyConsumed()
     {
+    }
+
+    public override bool CanBeEatenSoon()
+    {
+      return _stateMachine.GetCurrentStateEnum() == PlantState.Grow;
     }
 
     public override bool CanBeEaten()
