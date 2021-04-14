@@ -93,12 +93,12 @@ namespace Animal
 
     protected override void IncreaseStaminaIfNotRunning()
     {
-      if (!EnemyToFleeFrom && Alive) _staminaDelegate.IncreaseStamina(3);
+      if (!EnemyToFleeFrom && Alive) _staminaDelegate.IncreaseStamina(5);
     }
 
     protected override void DecreaseStaminaIfRunning()
     {
-      if (IsRunning && EnemyToFleeFrom) _staminaDelegate.DecreaseStamina(5);
+      if (IsRunning && EnemyToFleeFrom) _staminaDelegate.DecreaseStamina(4);
     }
     
     public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)

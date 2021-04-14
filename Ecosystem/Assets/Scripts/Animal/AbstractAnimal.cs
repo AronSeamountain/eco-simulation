@@ -685,6 +685,7 @@ namespace Animal
     public void StopFleeing()
     {
       ClearEnemyTarget();
+      _staminaDelegate.IncreaseStamina(1); // so that it can run to water source afterwards
     }
 
 

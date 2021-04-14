@@ -21,7 +21,7 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
-      _framesFleeingToPos = 20000;
+      _framesFleeingToPos = 20000; //arbitrarily large value
       _animal.IsRunning = true;
       _animal.SetSpeed();
       _animal.EmitFleeCue();
