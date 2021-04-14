@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using UnityEngine;
 using Utils;
 
@@ -59,7 +59,7 @@ namespace Animal.AnimalStates
       _carnivore.GoTo(closestPoint);
       
 
-      if (!(_targetPoint == closestPoint))
+      if (!Vector3Util.InRange(_targetPoint,closestPoint,_carnivore.ChangeTargetThreshold))
       {
         _carnivore.GoTo(closestPoint);
         _targetPoint = closestPoint; 

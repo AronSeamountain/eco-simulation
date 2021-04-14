@@ -1,4 +1,6 @@
+using System;
 using Core;
+using UnityEngine;
 using Utils;
 
 namespace Animal.AnimalStates
@@ -6,7 +8,7 @@ namespace Animal.AnimalStates
   public sealed class FleeState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
-
+    private int _framesFleeingToPos;
     public FleeState(AbstractAnimal animal)
     {
       _animal = animal;
@@ -19,6 +21,7 @@ namespace Animal.AnimalStates
 
     public void Enter()
     {
+      _framesFleeingToPos = 20000; //arbitrarily large value
       _animal.IsRunning = true;
       _animal.SetSpeed();
       _animal.EmitFleeCue();
@@ -34,7 +37,15 @@ namespace Animal.AnimalStates
       if (_animal.Dead) return AnimalState.Dead;
       if (_animal.SafeDistanceFromEnemy()) return AnimalState.Wander;
       if (_animal.EnemyToFleeFrom.Dead || _animal.EnemyToFleeFrom.DoesNotExist()) return AnimalState.Wander;
-      if (_animal.EnemyToFleeFrom.Exists()) _animal.Flee();
+      if (_animal.EnemyToFleeFrom.Exists() && _framesFleeingToPos > 50)
+      {
+        _framesFleeingToPos = 1;
+        _animal.Flee();
+      }
+      else
+      {
+        _framesFleeingToPos++;
+      }
       return AnimalState.Flee;
     }
 

@@ -7,6 +7,7 @@ namespace Animal.AnimalStates
   public class PursueMateState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
+    private Vector3 _mateTargetPos;
 
     public PursueMateState(AbstractAnimal animal)
     {
@@ -47,7 +48,7 @@ namespace Animal.AnimalStates
 
       var position = _animal.transform.position;
       var closestPoint = mateTarget.animalCollider.ClosestPointOnBounds(position);
-
+      
       var reachesMate = Vector3.Distance(position, closestPoint) < _animal.Reach;
       if (reachesMate)
       {
@@ -63,6 +64,10 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
       }
 
+      if (_mateTargetPos != null && Vector3Util.InRange(_mateTargetPos, closestPoint, _animal.ChangeTargetThreshold))
+        return AnimalState.PursueMate;;
+      
+      _mateTargetPos = closestPoint;
       _animal.GoTo(mateTarget.transform.position);
 
       return AnimalState.PursueMate;
