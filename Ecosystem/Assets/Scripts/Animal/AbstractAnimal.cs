@@ -652,7 +652,7 @@ namespace Animal
       if (EnemyToFleeFrom)
       {
         Turn(EnemyToFleeFrom);
-        GoTo(transform.position + transform.forward);
+        GoTo(transform.position + transform.forward * 10);
       }
     }
 
