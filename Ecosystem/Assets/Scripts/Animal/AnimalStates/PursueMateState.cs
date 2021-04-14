@@ -64,10 +64,9 @@ namespace Animal.AnimalStates
         return AnimalState.Wander;
       }
 
-      if (_mateTargetPos != null && Vector3Util.InRange(_mateTargetPos, closestPoint, 1))
+      if (_mateTargetPos != null && Vector3Util.InRange(_mateTargetPos, closestPoint, _animal.ChangeTargetThreshold))
         return AnimalState.PursueMate;;
-
-      Debug.Log("Setting new mattargetpos");
+      
       _mateTargetPos = closestPoint;
       _animal.GoTo(mateTarget.transform.position);
 

@@ -59,7 +59,7 @@ namespace Animal.AnimalStates
       _carnivore.GoTo(closestPoint);
       
 
-      if (!Vector3Util.InRange(_targetPoint,closestPoint,1))
+      if (!Vector3Util.InRange(_targetPoint,closestPoint,_carnivore.ChangeTargetThreshold))
       {
         _carnivore.GoTo(closestPoint);
         _targetPoint = closestPoint; 

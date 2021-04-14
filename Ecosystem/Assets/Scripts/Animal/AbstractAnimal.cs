@@ -153,8 +153,12 @@ namespace Animal
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
     /// </summary>
-    public float Reach => SizeModifier * VisualSizeModifier * 2;
-
+    public float Reach => SizeModifier * VisualSizeModifier * 1.3f;
+    
+    /// <summary>
+    ///   The margin for which an animal will not change it's target point that it's running towards ( in order to reduce amount of GoTo calls)
+    /// </summary>
+    public float ChangeTargetThreshold => Reach * 0.8f;
     /// <summary>
     ///   Whether the animal knows about a food location.
     /// </summary>

@@ -52,7 +52,7 @@ namespace Animal.AnimalStates
       if (Vector3.Distance(position, closestPoint) < _animal.Reach) return AnimalState.Drink;
 
       //makes sure goto is not called every frame
-      if (Vector3Util.InRange(closestPoint,_targetPoint,1 )) return AnimalState.PursueWater;
+      if (Vector3Util.InRange(closestPoint,_targetPoint,_animal.ChangeTargetThreshold )) return AnimalState.PursueWater;
       _targetPoint = closestPoint;
       _animal.GoTo(closestPoint);
 
