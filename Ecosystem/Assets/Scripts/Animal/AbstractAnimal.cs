@@ -656,7 +656,8 @@ namespace Animal
       if (EnemyToFleeFrom)
       {
         Turn(EnemyToFleeFrom);
-        GoTo(transform.position + transform.forward * 10);
+        var vectorToEnemy = transform.position - EnemyToFleeFrom.transform.position;
+        GoTo(transform.position + vectorToEnemy.normalized * 10);
       }
     }
 
