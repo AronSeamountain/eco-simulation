@@ -90,6 +90,7 @@ namespace Logger.ConcreteLogger
     {
       public string species;
       public float speed;
+      public float fullyGrownSpeed;
       public float size;
       public int age;
       public int day;
@@ -105,10 +106,11 @@ namespace Logger.ConcreteLogger
         size = animal.SizeModifier;
         age = animal.AgeInDays;
         fullyGrownSize = animal.FullyGrownSize;
-        
+        fullyGrownSpeed = animal.FullyGrownSpeed;
+
         var totalAnimalBits = animal.VisionGene.Bits + animal.HearingGene.Bits;
-        visionPercentage = animal.VisionGene.Bits * 100f/totalAnimalBits;
-        hearingPercentage = animal.HearingGene.Bits * 100f/totalAnimalBits;
+        visionPercentage = animal.VisionGene.Bits * 100f / totalAnimalBits;
+        hearingPercentage = animal.HearingGene.Bits * 100f / totalAnimalBits;
         this.day = day;
         uuid = animal.Uuid;
       }
