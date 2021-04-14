@@ -153,7 +153,7 @@ namespace Animal
     /// <summary>
     ///   The margin for which is the animal considers to have reached its desired position.
     /// </summary>
-    public float Reach => SizeModifier * VisualSizeModifier;
+    public float Reach => SizeModifier * VisualSizeModifier * 2;
 
     /// <summary>
     ///   Whether the animal knows about a food location.
