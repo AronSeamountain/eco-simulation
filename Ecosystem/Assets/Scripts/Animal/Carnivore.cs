@@ -84,7 +84,7 @@ namespace Animal
       if (carnivoreTarget && carnivoreTarget.Dead && ShouldHunt(carnivoreTarget)) return true;
       return GetStaminaDelegate().HasMaxStamina && ShouldHunt(carnivoreTarget);
     }
-      public void AttackTarget(Herbivore carnivoreTarget)
+    public void AttackTarget(Herbivore carnivoreTarget)
     {
       carnivoreTarget.TakeDamage(_attackDamage);
     }
