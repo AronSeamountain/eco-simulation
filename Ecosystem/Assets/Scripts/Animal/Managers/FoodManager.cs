@@ -49,6 +49,7 @@ namespace Animal.Managers
     public void DayTick()
     {
     }
+    
 
     private void OnPreyFound(Herbivore herbivore)
     {
@@ -75,6 +76,11 @@ namespace Animal.Managers
     {
       _knownFoodMemories.Remove(memory);
       KnownFoodMemoriesChangedListeners?.Invoke(KnownFoodMemories);
+    }
+
+    public void ClearFoodMemory()
+    {
+      _knownFoodMemories.Clear();
     }
 
     public class FoodMemory : ITickable

@@ -434,6 +434,12 @@ namespace Animal
       KnowsFoodLocation = foods.Any();
     }
 
+    //Experimental method to make rabbits explore the map more
+    public void ForgetFoodLocations()
+    {
+      foodManager.ClearFoodMemory();
+      KnowsFoodLocation = false;
+    }
     /// <summary>
     ///   Eats the provided food.
     ///   Can only take bites proportionally to it's size and cannot eat more than there is room.
@@ -631,7 +637,7 @@ namespace Animal
     /// </summary>
     public void Decay()
     {
-      NutritionalValue -= Time.deltaTime * 5;
+      NutritionalValue -= Time.deltaTime * 15;
     }
 
     public virtual bool SafeDistanceFromEnemy()
