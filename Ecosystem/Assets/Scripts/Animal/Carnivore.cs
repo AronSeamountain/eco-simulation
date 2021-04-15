@@ -123,7 +123,7 @@ namespace Animal
     
     public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor/4f;
+      return decreaseFactor/3f;
     }
   }
 }
