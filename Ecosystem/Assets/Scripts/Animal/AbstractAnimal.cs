@@ -764,7 +764,7 @@ namespace Animal
 
     public bool NeedsNourishment()
     {
-      return (IsThirsty && !KnowsWaterLocation) || (IsHungry && !KnowsFoodLocation);
+      return (IsThirsty && !KnowsWaterLocation) || (IsHungry);
     }
 
     #region ResetSetup
@@ -814,6 +814,7 @@ namespace Animal
       hearing.AnimalHeardListeners += OnAnimalHeard;
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
+      waterManager.InitWaterManager(this);
       vision.EnemySeenListeners += OnEnemySeen;
       _staminaDelegate.StaminaZeroListeners += StaminaZero;
     }

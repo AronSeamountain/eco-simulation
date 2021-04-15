@@ -27,10 +27,7 @@ namespace Animal.AnimalStates
       _carnivore.IsRunning = true;
       _carnivore.SetSpeed();
       _carnivore.IsHunting = true;
-      if (_carnivore.KnowsWaterLocation || _carnivore.HasForgottenWater)
-      {
-        _carnivore.ForgetWaterLocationForSomeTime();
-      }
+     
     }
 
     public AnimalState Execute()
