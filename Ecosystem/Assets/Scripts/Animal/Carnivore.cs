@@ -13,7 +13,7 @@ namespace Animal
     private const float BaseAttackDamage = 2;
     private const float DeadNutritionPriority = 30;
     private bool _animalOfSameType;
-    public override float RunningSpeedFactor { get; } = 5f;
+    public override float RunningSpeedFactor { get; } = 4f;
 
     private bool _hearsHerbivore;
     private Texture _tex;
