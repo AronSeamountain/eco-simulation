@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
@@ -103,12 +104,17 @@ namespace Animal
     
     public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor / 2.5f;
+      return decreaseFactor / 3.5f;
     }
     
     public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
     {
       return decreaseFactor / 3f;
+    }
+    public override float GetBiteSize()
+    {
+      return Math.Min(160 * SizeModifier * SizeModifier,
+        _nourishmentDelegate.SaturationFromFull());
     }
   }
 }

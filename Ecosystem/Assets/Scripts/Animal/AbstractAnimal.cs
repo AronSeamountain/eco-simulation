@@ -451,10 +451,15 @@ namespace Animal
     public void Eat(IEatable food)
     {
       //full bite or what is left for a full stomach
-      var biteSize = Math.Min(20 * SizeModifier * SizeModifier,
-        _nourishmentDelegate.SaturationFromFull());
+      var biteSize = GetBiteSize();
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
       EmitMouthParticle();
+    }
+
+    public virtual float GetBiteSize()
+    {
+      return Math.Min(20 * SizeModifier * SizeModifier,
+        _nourishmentDelegate.SaturationFromFull());
     }
 
     // List of visual cues to be emitted:
