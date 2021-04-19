@@ -259,9 +259,13 @@ namespace Core
 
     private void Place<T>(T instance) where T : MonoBehaviour
     {
+      const int maxOffset = 20;
+
       var points = WorldMatrix.WalkablePoints;
-      var vector = points.PickRandom().gameObject.transform.position;
-      Place(instance, vector);
+      var walkablePoint = points.PickRandom().gameObject.transform.position;
+
+      var spawnPoint = walkablePoint + Random.onUnitSphere * Random.Range(-maxOffset, maxOffset);
+      Place(instance, spawnPoint);
     }
 
     private void Place<T>(T instance, Vector3 v) where T : MonoBehaviour
