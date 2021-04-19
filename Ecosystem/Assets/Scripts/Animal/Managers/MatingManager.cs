@@ -8,12 +8,14 @@ namespace Animal.Managers
     public delegate void AnimalFound(AbstractAnimal animal);
 
     [SerializeField] private Vision vision;
+    [SerializeField] private Hearing hearing;
 
     public AnimalFound MateListeners;
 
     private void Start()
     {
       vision.AnimalFoundListeners += OnAnimalFound;
+      hearing.AnimalHeardListeners += OnAnimalFound;
     }
 
     private void OnAnimalFound(AbstractAnimal animal)
