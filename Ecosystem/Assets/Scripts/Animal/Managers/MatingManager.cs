@@ -9,7 +9,7 @@ namespace Animal.Managers
 
     [SerializeField] private Vision vision;
     [SerializeField] private Hearing hearing;
-
+    private Gender _gender;
     public AnimalFound MateListeners;
 
     private void Start()
@@ -18,11 +18,15 @@ namespace Animal.Managers
       hearing.AnimalHeardListeners += OnAnimalFound;
     }
 
+    public void SetGender(Gender gender)
+    {
+      _gender = gender;
+    }
     private void OnAnimalFound(AbstractAnimal animal)
     {
       if (animal == null) return;
 
-      if (animal.Gender == Gender.Male) return;
+      if (animal.Gender == _gender) return;
 
       MateListeners?.Invoke(animal);
     }

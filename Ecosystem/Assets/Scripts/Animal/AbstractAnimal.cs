@@ -397,11 +397,14 @@ namespace Animal
       var sameTypeOfAnimal = animal.Species == Species;
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
+     
+      
       var dead = animal.Dead;
-
       if (sameTypeOfAnimal && oppositeGender && fertile && !dead &&
           (_mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal)))
+      {
         _mateTarget = animal;
+      }
     }
 
     private bool IsCloserThanPreviousMateTarget(AbstractAnimal newTarget)
@@ -779,7 +782,8 @@ namespace Animal
     {
       Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
       RenderAnimalSpecificColors();
-      if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+      matingManager.MateListeners += OnMateFound;
+      matingManager.SetGender(Gender);
     }
 
     private void ResetProperties()
