@@ -13,7 +13,7 @@ namespace Animal
     private const float BaseAttackDamage = 15;
     private const float DeadNutritionPriority = 30;
     private bool _animalOfSameType;
-    public override float RunningSpeedFactor { get; } = 4f;
+    public override float RunningSpeedFactor { get; } = 3.8f;
 
     private bool _hearsHerbivore;
     private Texture _tex;
@@ -119,12 +119,12 @@ namespace Animal
     
     public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor /3f;
+      return decreaseFactor /4f;
     }
     
     public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor/3f;
+      return decreaseFactor/2.2f;
     }
   }
 }
