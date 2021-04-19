@@ -7,6 +7,7 @@ using Animal.Sensor;
 using Animal.WorldPointFinders;
 using Core;
 using Foods;
+using Menu;
 using Pools;
 using UI;
 using UI.Properties;
@@ -251,8 +252,16 @@ namespace Animal
     /// </summary>
     public void ForgetWaterLocationForSomeTime()
     {
-      if (IsCarnivore) _timeUntilRememberWater += 66;
-      else _timeUntilRememberWater += 1;
+      if (OptionsMenu.World == "World")
+      {
+        if (IsCarnivore) _timeUntilRememberWater += 66;
+        else _timeUntilRememberWater += 1;
+      }
+      if (OptionsMenu.World == "Medium-scene")
+      {
+        if (IsCarnivore) _timeUntilRememberWater += 3;
+        else _timeUntilRememberWater += 1;
+      }
       KnowsWaterLocation = false;
       HasForgottenWater = true;
     }
