@@ -73,8 +73,7 @@ namespace Core
 
     private void Awake()
     {
-
-     
+      SpawnAndAddWalkablePoints();
       Log = log || LogMenuOverride;
       PerformanceMode = performanceMode || PerformanceModeMenuOverride;
       
@@ -260,7 +259,8 @@ namespace Core
 
     private void Place<T>(T instance) where T : MonoBehaviour
     {
-      var vector = NavMeshUtil.GetRandomLocation();
+      var points = WorldMatrix.WalkablePoints;
+      var vector = points.PickRandom().gameObject.transform.position;
       Place(instance, vector);
     }
 
