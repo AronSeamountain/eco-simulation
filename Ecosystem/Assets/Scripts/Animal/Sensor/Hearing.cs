@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Animal.Sensor
 {
@@ -20,12 +20,21 @@ namespace Animal.Sensor
     private int Radius
     {
       get => _radius;
-      set => _radius = Mathf.Clamp(value, 0, int.MaxValue);
+      set
+      {
+        _radius = Mathf.Clamp(value, 0, int.MaxValue);
+        updateScale();
+      }
+    }
+
+    private void updateScale()
+    {
+      transform.localScale = new Vector3(Radius, Radius, Radius);
     }
 
     private void Start()
     {
-      Radius = _maxRadius/2;
+      updateScale();
     }
 
     private void OnTriggerEnter(Collider other)

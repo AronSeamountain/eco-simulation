@@ -726,8 +726,8 @@ namespace Animal
     {
       //calculate ratio
       var totalBits = VisionGene.Bits + HearingGene.Bits;
-      var hearingPercentage = HearingGene.Bits / totalBits;
-      var visionPercentage = VisionGene.Bits / totalBits;
+      var hearingPercentage = HearingGene.Bits * 1f / totalBits;
+      var visionPercentage = VisionGene.Bits * 1f / totalBits;
 
       //set visual area
       vision.SetLengthPercentage(visionPercentage);
