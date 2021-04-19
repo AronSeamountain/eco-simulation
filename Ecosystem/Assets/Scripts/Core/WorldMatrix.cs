@@ -8,7 +8,7 @@ namespace Core
 {
   public static class WorldMatrix
   {
-    public const int WalkablePointsAmountPerBox = 3;
+    public const int WalkablePointsAmountPerBox = 5;
     public const int WalkableMatrixBoxSize = 25;
     public static IList<MonoBehaviour> WalkablePoints;
     private static Terrain terrain;
