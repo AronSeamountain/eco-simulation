@@ -259,7 +259,7 @@ namespace Animal
       }
       if (OptionsMenu.World == "Medium-scene")
       {
-        if (IsCarnivore) _timeUntilRememberWater += 3;
+        if (IsCarnivore) _timeUntilRememberWater += 70;
         else _timeUntilRememberWater += 1;
       }
       KnowsWaterLocation = false;
