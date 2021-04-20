@@ -92,7 +92,7 @@ namespace Animal.Sensor
     {
       Height = _maxHeight;
       Width = _maxWidth;
-      Length = _maxLength/2;
+      AdjustScaleAndPosition();
     }
 
     private void OnTriggerEnter(Collider other)
