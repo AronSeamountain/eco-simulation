@@ -133,8 +133,8 @@ namespace Core
 
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
+      child.MomUuid = parent.Uuid;
       CountAnimal(child, true);
-
       ObserveAnimal(child, true);
     }
 

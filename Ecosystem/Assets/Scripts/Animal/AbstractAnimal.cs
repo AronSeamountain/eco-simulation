@@ -174,6 +174,8 @@ namespace Animal
     /// </summary>
     public IEnumerable<FoodManager.FoodMemory> KnownFoods => foodManager.KnownFoodMemories;
 
+    public string MomUuid { get; set; }
+
     private void Awake()
     {
       _nourishmentDelegate = new NourishmentDelegate();
