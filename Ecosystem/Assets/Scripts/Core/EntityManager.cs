@@ -41,6 +41,11 @@ namespace Core
       LogMenuOverride = true;
       OptionsMenu.World = "LargeWorld";
     }
+    
+    private void LoopRestart()
+    {
+      SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
     private const float HoursPerDay = 24;
     public static int InitialWolves = 25;
@@ -51,6 +56,7 @@ namespace Core
     [SerializeField] private bool log;
     [SerializeField] private bool performanceMode;
     [SerializeField] private bool overlappableAnimals;
+    [SerializeField] private bool shouldLoop;
     private float _hoursPassed;
     private float _hourTicker;
     private ILogger _logger;
@@ -155,6 +161,11 @@ namespace Core
         case Carnivore _:
           CarnivoreCount += toAdd;
           break;
+      }
+
+      if (shouldLoop && HerbivoreCount == 0 && CarnivoreCount == 0)
+      {
+        LoopRestart();
       }
     }
 
