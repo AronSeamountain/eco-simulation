@@ -86,12 +86,15 @@ namespace Logger.ConcreteLogger
           Directory.CreateDirectory(newDirName);
         MoveTo(newDirName);
       }
+
       Clear();
     }
 
     public void MoveTo(string newDirName)
     {
-      File.Move(Path, newDirName + FileName);
+      var target = newDirName + "/" + FileName;
+      if (!File.Exists(target))
+        File.Move(Path, target);
     }
 
     private void AppendHeader()

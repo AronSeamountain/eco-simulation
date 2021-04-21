@@ -90,7 +90,9 @@ namespace Logger.ConcreteLogger
 
     public void MoveTo(string newDirName)
     {
-      File.Move(Path, newDirName + FileName);
+      var target = newDirName + "/" + FileName;
+      if (!File.Exists(target))
+        File.Move(Path, target);
     }
 
     /**
