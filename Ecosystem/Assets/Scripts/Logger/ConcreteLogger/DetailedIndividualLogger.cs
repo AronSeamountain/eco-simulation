@@ -98,6 +98,8 @@ namespace Logger.ConcreteLogger
       public float visionPercentage;
       public float hearingPercentage;
       public string uuid;
+      public string momUuid;
+      public string gender;
 
       public AnimalSnapshot(AbstractAnimal animal, int day)
       {
@@ -113,6 +115,8 @@ namespace Logger.ConcreteLogger
         hearingPercentage = animal.HearingGene.Bits * 100f / totalAnimalBits;
         this.day = day;
         uuid = animal.Uuid;
+        momUuid = animal.MomUuid;
+        gender = animal.Gender.ToString();
       }
     }
   }

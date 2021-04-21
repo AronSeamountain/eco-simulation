@@ -56,7 +56,9 @@ namespace Core
     private ILogger _logger;
     public DayTick DayTickListeners;
     public Tick HourTickListeners;
-    private int plantCount;
+    private int _plantCount;
+    private const int DaysBetweenLogs = 3;
+    private int _daysSinceLastLog;
 
     public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
@@ -76,7 +78,7 @@ namespace Core
       SpawnAndAddWalkablePoints();
       Log = log || LogMenuOverride;
       PerformanceMode = performanceMode || PerformanceModeMenuOverride;
-      
+
       AnimalPool.OverlappableAnimals = overlappableAnimals || OverlappableAnimalsMenuOverride;
 
       FpsDelegate = new FpsDelegate();
@@ -93,9 +95,8 @@ namespace Core
       {
         SpawnAndAddInitialAnimals();
         SpawnAndAddInitialPlants();
-       
       }
-      
+
       SpawnAndAddWalkablePoints();
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
@@ -133,8 +134,8 @@ namespace Core
 
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
+      child.MomUuid = parent.Uuid;
       CountAnimal(child, true);
-
       ObserveAnimal(child, true);
     }
 
@@ -188,15 +189,13 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      
       SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
-      
 
       SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
       CarnivoreCount += InitialWolves;
-      
+
       InitAnimalGameObejcts();
     }
 
@@ -251,8 +250,8 @@ namespace Core
         var z = Random.Range(zMin, zMax);
         var vector = new Vector3(x, 0, z);
         var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
-        
-        Place(instance,vector);
+
+        Place(instance, vector);
         list?.Add(instance);
       }
     }
@@ -348,45 +347,52 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
+
           if (Log)
           {
+            _daysSinceLastLog++;
+
             _logger.Snapshot(this);
-            _logger.Persist();
             FpsDelegate.Reset();
+
+            if (_daysSinceLastLog >= DaysBetweenLogs)
+            {
+              _daysSinceLastLog = 0;
+              _logger.Persist();
+            }
           }
         }
       }
     }
-    
+
     private void InitEvadeScene()
     {
-     
-        var pool = AnimalPool.SharedInstance;
-      
-        var wolf = pool.Get(AnimalSpecies.Wolf);
-        var vector = new Vector3(5,0,5);
-        Place(wolf,vector);
-        Animals?.Add(wolf);
-       
-        var rabbit = pool.Get(AnimalSpecies.Rabbit);
-        var vector2 = new Vector3(5,0,10);
-        Place(rabbit,vector2);
-        Animals?.Add(rabbit);
-        
-        InitAnimalGameObejcts();
-        wolf.GetNourishmentDelegate().Saturation = 0;
-        rabbit.SpeedModifier = 1;
-        wolf.SpeedModifier = 1.3f;
-        GeneralTestInit();
+      var pool = AnimalPool.SharedInstance;
+
+      var wolf = pool.Get(AnimalSpecies.Wolf);
+      var vector = new Vector3(5, 0, 5);
+      Place(wolf, vector);
+      Animals?.Add(wolf);
+
+      var rabbit = pool.Get(AnimalSpecies.Rabbit);
+      var vector2 = new Vector3(5, 0, 10);
+      Place(rabbit, vector2);
+      Animals?.Add(rabbit);
+
+      InitAnimalGameObejcts();
+      wolf.GetNourishmentDelegate().Saturation = 0;
+      rabbit.SpeedModifier = 1;
+      wolf.SpeedModifier = 1.3f;
+      GeneralTestInit();
     }
 
     private void GeneralTestInit()
     {
       PerformanceMode = false;
       Log = false;
-      foreach(var animal in Animals)
+      foreach (var animal in Animals)
       {
-        if(animal.Species == AnimalSpecies.Rabbit)
+        if (animal.Species == AnimalSpecies.Rabbit)
           HerbivoreCount++;
         if (animal.Species == AnimalSpecies.Wolf)
           CarnivoreCount++;
