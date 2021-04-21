@@ -163,7 +163,7 @@ namespace Core
           break;
       }
 
-      if (shouldLoop && HerbivoreCount == 0 && CarnivoreCount == 0)
+      if (shouldLoop && (HerbivoreCount == 0 || CarnivoreCount == 0))
       {
         LoopRestart();
       }
