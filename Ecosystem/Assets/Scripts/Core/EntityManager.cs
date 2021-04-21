@@ -42,8 +42,12 @@ namespace Core
       OptionsMenu.World = "LargeWorld";
     }
     
+    /// <summary>
+    /// Reloads the scene
+    /// </summary>
     private void LoopRestart()
     {
+      _logger.Reset(Days);
       SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -163,7 +167,7 @@ namespace Core
           break;
       }
 
-      if (shouldLoop && (HerbivoreCount == 0 || CarnivoreCount == 0))
+      if (shouldLoop && (Days > 1000 || (HerbivoreCount == 0 || CarnivoreCount == 0)))
       {
         LoopRestart();
       }

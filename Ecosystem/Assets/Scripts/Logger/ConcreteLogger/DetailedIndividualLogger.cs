@@ -13,6 +13,7 @@ namespace Logger.ConcreteLogger
   /// </summary>
   public sealed class DetailedIndividualLogger : ILogger
   {
+    private const String FileName = "detailed.json";
     private const string Path = "Assets/Logs/detailed.json";
     private bool _firstLog;
     private IList<string> _snapshots;
@@ -71,7 +72,25 @@ namespace Logger.ConcreteLogger
 
     public void Clear()
     {
-      File.WriteAllText(Path, string.Empty);
+      File.Create(Path).Dispose();
+    }
+
+    public void Reset(int days)
+    {
+      if (File.Exists(Path))
+      {
+        var time = DateTime.Now;
+        var newDirName = time.Month + "-" + time.Day + "_" + time.Hour + time.Minute + "_" + days + "Days";
+        if (!Directory.Exists(newDirName))
+          Directory.CreateDirectory(newDirName);
+        MoveTo(newDirName);
+      }
+      Clear();
+    }
+
+    public void MoveTo(string newDirName)
+    {
+      File.Move(Path, newDirName + FileName);
     }
 
     /**

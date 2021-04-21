@@ -6,6 +6,7 @@ namespace Logger.ConcreteLogger
   {
     public OverviewLogger()
     {
+      FileName = "overview.csv";
       Path = "Assets/Logs/overview.csv";
     }
 

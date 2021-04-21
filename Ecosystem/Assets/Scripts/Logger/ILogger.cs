@@ -19,5 +19,17 @@ namespace Logger
     ///   Clears the log file.
     /// </summary>
     void Clear();
+
+    /// <summary>
+    /// reset the files. 
+    /// </summary>
+    /// <param name="days"></param>
+    void Reset(int days);
+
+    /// <summary>
+    /// moves the data to a folder
+    /// </summary>
+    /// <param name="newDirName"></param>
+    void MoveTo(string newDirName);
   }
 }
