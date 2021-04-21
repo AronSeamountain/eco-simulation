@@ -99,6 +99,7 @@ namespace Logger.ConcreteLogger
       public float hearingPercentage;
       public string uuid;
       public string momUuid;
+      public string gender;
 
       public AnimalSnapshot(AbstractAnimal animal, int day)
       {
@@ -115,6 +116,7 @@ namespace Logger.ConcreteLogger
         this.day = day;
         uuid = animal.Uuid;
         momUuid = animal.MomUuid;
+        gender = animal.Gender.ToString();
       }
     }
   }
