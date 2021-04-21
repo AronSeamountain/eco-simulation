@@ -9,25 +9,25 @@ data = json.load(f)
 
 animal_uuids = extract_unique('uuid', data)
 
-animal_map = {}
 counted = {}
 for uuid in animal_uuids:
-    animal_map[uuid] = 0
     counted[uuid] = False
+
+males = 0
+females = 0
 
 for row in data:
     uuid = row['uuid']
+
     if not counted[uuid]:
         counted['uuid'] = True
 
-        if row['momUuid'] != '':
-            animal_map[uuid] = animal_map[uuid] + 1
+        if row['gender'] == 'Male':
+            males = males + 1
+        else:
+            females = females + 1
 
-srtd = {key: value for key, value in sorted(animal_map.items(), key=lambda item: item[1])}
+total = males + females
 
-f = open("children.txt", "a")
-
-for ani in srtd:
-    f.write(ani + '       ' + str(animal_map[ani]) + '\n')
-
-f.close()
+print('Males: ' + str(males) + '. Males %: ' + str(males / total))
+print('Females: ' + str(females) + '. Females %: ' + str(females / total))
