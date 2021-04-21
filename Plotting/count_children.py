@@ -7,6 +7,23 @@ full_path = get_full_path('detailed.json')
 f = open(full_path)
 data = json.load(f)
 
-all_animals = extract_unique('uuid', data)
+animal_uuids = extract_unique('uuid', data)
 
-print(all_animals)
+animal_map = {}
+counted = {}
+for uuid in animal_uuids:
+    animal_map[uuid] = 0
+    counted[uuid] = False
+
+for row in data:
+    uuid = row['uuid']
+    if not counted[uuid]:
+        counted['uuid'] = True
+
+        if row['momUuid'] != '':
+            animal_map[uuid] = animal_map[uuid] + 1
+
+srtd = {key: value for key, value in sorted(animal_map.items(), key=lambda item: item[1])}
+
+for ani in srtd:
+    print(ani + '       ' + str(animal_map[ani]))
