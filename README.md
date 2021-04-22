@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/AronSeamountain/eco-simulation">
-    <img alt="logo" src="Meta/logo.png">
+    <img alt="logo" src="Meta/logo.png" width=85%>
   </a>
 </div>
 
