@@ -29,7 +29,7 @@ app.layout = html.Div(
 )
 
 
-def create_scatter(data, species, days_to_average, color):
+def create_scatter_3d(data, species, days_to_average, color):
     day_counter = 0
 
     all_days = extract_unique('day', data)
@@ -58,10 +58,9 @@ def create_scatter(data, species, days_to_average, color):
             day_sequence_size = []
             day_sequence_speed = []
 
-    return go.Scatter3d(
+    return go.Scatter(
         x=days,
         y=sizes,
-        z=speeds,
         marker=dict(
             color=color,
             size=7
@@ -80,11 +79,11 @@ def update_graph_live(days_to_average):
     fig = go.Figure()
 
     fig.add_trace(
-        create_scatter(data, 'Rabbit', days_to_average, 'royalblue')
+        create_scatter_3d(data, 'Rabbit', days_to_average, 'royalblue')
     )
 
     fig.add_trace(
-        create_scatter(data, 'Wolf', days_to_average, 'red')
+        create_scatter_3d(data, 'Wolf', days_to_average, 'red')
     )
 
     fig.update_layout(
@@ -92,7 +91,6 @@ def update_graph_live(days_to_average):
         scene=dict(
             xaxis_title='day',
             yaxis_title='fully grown size',
-            zaxis_title='fully grown speed'
         )
     )
 
