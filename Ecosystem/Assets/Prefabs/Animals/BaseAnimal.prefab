@@ -5007,6 +5007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vision: {fileID: 4998598217190196007}
+  hearing: {fileID: 5299853235773772219}
 --- !u!65 &3909594730175147418
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -28,6 +28,7 @@ namespace Animal.AnimalStates
       if (_animal.KnowsWaterLocation || _animal.HasForgottenWater)
       {
         _animal.ForgetWaterLocationForSomeTime();
+        _animal.ForgetFoodLocations();
       }
 
     }

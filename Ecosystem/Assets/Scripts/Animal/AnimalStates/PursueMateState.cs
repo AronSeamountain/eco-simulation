@@ -40,7 +40,7 @@ namespace Animal.AnimalStates
       
       var mateTarget = _animal.GetMateTarget();
       if (mateTarget.DoesNotExist()) return AnimalState.Wander;
-      if (!mateTarget.Fertile || !mateTarget.IsSatisfied)
+      if (!mateTarget.Fertile || !mateTarget.IsSatisfied || !_animal.Fertile)
       {
         _animal.ClearMateTarget();
         return AnimalState.Wander;
@@ -52,15 +52,29 @@ namespace Animal.AnimalStates
       var reachesMate = Vector3.Distance(position, closestPoint) < _animal.Reach;
       if (reachesMate)
       {
-        _animal.StopMoving();
-        mateTarget.StopMoving();
+
+        AbstractAnimal female;
+        AbstractAnimal male;
+
+        if (_animal.Gender == Gender.Female)
+        {
+          female = _animal;
+          male = mateTarget;
+        }
+        else
+        {
+          female = mateTarget;
+          male = _animal;
+        }
+        male.StopMoving();
+        female.StopMoving();
         // visual cue
-        _animal.EmitMatingCue();
-        mateTarget.EmitMatingCue();
+        male.EmitMatingCue();
+        female.EmitMatingCue();
         
-        mateTarget.Mate(_animal);
+        female.Mate(male);
         _animal.ClearMateTarget();
-        _animal.Children++; // TODO: Small possibility that female dies before birthing
+        male.Children++; // TODO: Small possibility that female dies before birthing
         return AnimalState.Wander;
       }
 

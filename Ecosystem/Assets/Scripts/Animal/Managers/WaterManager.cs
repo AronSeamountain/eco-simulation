@@ -7,7 +7,8 @@ namespace Animal.Managers
   public class WaterManager : MonoBehaviour
   {
     public delegate void KnownClosestWaterChanged(Water water);
-
+    
+    private AbstractAnimal _animal;
     [SerializeField] private Vision vision;
 
     public KnownClosestWaterChanged WaterUpdateListeners;
@@ -17,14 +18,19 @@ namespace Animal.Managers
     private void Start()
     {
       vision.WaterFoundListeners += OnWaterFound;
+      
     }
 
+    public void InitWaterManager(AbstractAnimal animal)
+    {
+      _animal = animal;
+    }
     private void OnWaterFound(Water water)
     {
       if (water == null) return;
       if (!ClosestKnownWater)
         ClosestKnownWater = water;
-      else if (DistanceTo(water) < DistanceTo(ClosestKnownWater))
+      else if (DistanceTo(water) < DistanceTo(ClosestKnownWater) || _animal.HasForgottenWater)
         ClosestKnownWater = water;
       else
         return;

@@ -7,6 +7,7 @@ using Animal.Sensor;
 using Animal.WorldPointFinders;
 using Core;
 using Foods;
+using Menu;
 using Pools;
 using UI;
 using UI.Properties;
@@ -253,8 +254,16 @@ namespace Animal
     /// </summary>
     public void ForgetWaterLocationForSomeTime()
     {
-      if (IsCarnivore) _timeUntilRememberWater += 66;
-      else _timeUntilRememberWater += 1;
+      if (OptionsMenu.World == "World")
+      {
+        if (IsCarnivore) _timeUntilRememberWater += 66;
+        else _timeUntilRememberWater += 1;
+      }
+      if (OptionsMenu.World == "Medium-scene")
+      {
+        if (IsCarnivore) _timeUntilRememberWater += 20;
+        else _timeUntilRememberWater += 1;
+      }
       KnowsWaterLocation = false;
       HasForgottenWater = true;
     }
@@ -399,11 +408,14 @@ namespace Animal
       var sameTypeOfAnimal = animal.Species == Species;
       var oppositeGender = animal.Gender != Gender;
       var fertile = animal.Fertile;
+     
+      
       var dead = animal.Dead;
-
       if (sameTypeOfAnimal && oppositeGender && fertile && !dead &&
           (_mateTarget.DoesNotExist() || IsCloserThanPreviousMateTarget(animal)))
+      {
         _mateTarget = animal;
+      }
     }
 
     private bool IsCloserThanPreviousMateTarget(AbstractAnimal newTarget)
@@ -436,6 +448,12 @@ namespace Animal
       KnowsFoodLocation = foods.Any();
     }
 
+    //Experimental method to make rabbits explore the map more
+    public void ForgetFoodLocations()
+    {
+      foodManager.ClearFoodMemory();
+      KnowsFoodLocation = false;
+    }
     /// <summary>
     ///   Eats the provided food.
     ///   Can only take bites proportionally to it's size and cannot eat more than there is room.
@@ -444,10 +462,15 @@ namespace Animal
     public void Eat(IEatable food)
     {
       //full bite or what is left for a full stomach
-      var biteSize = Math.Min(20 * SizeModifier * SizeModifier,
-        _nourishmentDelegate.SaturationFromFull());
+      var biteSize = GetBiteSize();
       SwallowEat(food.Consume(biteSize * Time.deltaTime));
       EmitMouthParticle();
+    }
+
+    public virtual float GetBiteSize()
+    {
+      return Math.Min(20 * SizeModifier * SizeModifier,
+        _nourishmentDelegate.SaturationFromFull());
     }
 
     // List of visual cues to be emitted:
@@ -633,7 +656,7 @@ namespace Animal
     /// </summary>
     public void Decay()
     {
-      NutritionalValue -= Time.deltaTime * 5;
+      NutritionalValue -= Time.deltaTime * 15;
     }
 
     public virtual bool SafeDistanceFromEnemy()
@@ -766,7 +789,7 @@ namespace Animal
 
     public bool NeedsNourishment()
     {
-      return (IsThirsty && !KnowsWaterLocation) || (IsHungry && !KnowsFoodLocation);
+      return (IsThirsty && !KnowsWaterLocation) || (IsHungry);
     }
 
     #region ResetSetup
@@ -775,7 +798,8 @@ namespace Animal
     {
       Gender = Random.Range(0f, 1f) > 0.5 ? Gender.Male : Gender.Female;
       RenderAnimalSpecificColors();
-      if (Gender == Gender.Male) matingManager.MateListeners += OnMateFound;
+      matingManager.MateListeners += OnMateFound;
+      matingManager.SetGender(Gender);
     }
 
     private void ResetProperties()
@@ -816,6 +840,7 @@ namespace Animal
       hearing.AnimalHeardListeners += OnAnimalHeard;
       foodManager.KnownFoodMemoriesChangedListeners += OnKnownFoodLocationsChanged;
       waterManager.WaterUpdateListeners += OnWaterLocationChanged;
+      waterManager.InitWaterManager(this);
       vision.EnemySeenListeners += OnEnemySeen;
       _staminaDelegate.StaminaZeroListeners += StaminaZero;
     }
