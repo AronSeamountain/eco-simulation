@@ -17,6 +17,7 @@ namespace Logger.ConcreteLogger
     private readonly IList<LoggableColumn> _loggableColumns;
     private bool _firstLog;
     private IList<string> _snapshots;
+    protected string FileName;
     protected string Path;
     protected readonly CultureInfo LoggerCultureInfo;
 
@@ -72,7 +73,28 @@ namespace Logger.ConcreteLogger
 
     public void Clear()
     {
-      File.WriteAllText(Path, string.Empty);
+      File.Create(Path).Dispose();
+    }
+
+    public void Reset(int days)
+    {
+      if (File.Exists(Path))
+      {
+        var time = DateTime.Now;
+        var newDirName = time.Month + "-" + time.Day + "_" + time.Hour + time.Minute + "_" + days + "Days";
+        if (!Directory.Exists(newDirName))
+          Directory.CreateDirectory(newDirName);
+        MoveTo(newDirName);
+      }
+
+      Clear();
+    }
+
+    public void MoveTo(string newDirName)
+    {
+      var target = newDirName + "/" + FileName;
+      if (!File.Exists(target))
+        File.Move(Path, target);
     }
 
     private void AppendHeader()
