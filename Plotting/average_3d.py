@@ -29,45 +29,50 @@ app.layout = html.Div(
 )
 
 
-def create_scatter(data, species, days_to_average, y_column, legend_name, color):
+def create_scatter(data, species, days_to_average, color):
     day_counter = 0
 
     all_days = extract_unique('day', data)
     days = []
-    column_values = []
+    sizes = []
+    speeds = []
 
-    column_sequence_size = []
+    day_sequence_size = []
+    day_sequence_speed = []
 
     for day in all_days:
         day_counter = day_counter + 1
 
         day_species_data = [i for i in data if i['species'] == species and i['day'] == day]
-        column_sequence_size = column_sequence_size + [i[y_column] for i in day_species_data]
+        day_sequence_size = day_sequence_size + [i['fullyGrownSize'] for i in day_species_data]
+        day_sequence_speed = day_sequence_speed + [i['fullyGrownSpeed'] for i in day_species_data]
 
         if day_counter == days_to_average:
             day_counter = 0
 
-            if len(column_sequence_size) != 0:
+            if len(day_sequence_size) != 0:
                 days.append(day)
-                column_values.append(np.mean(column_sequence_size))
+                sizes.append(np.mean(day_sequence_size))
+                speeds.append(np.mean(day_sequence_speed))
 
-            column_sequence_size = []
+            day_sequence_size = []
+            day_sequence_speed = []
 
-    return go.Scatter(
+    return go.Scatter3d(
         x=days,
-        y=column_values,
-        name='something',
+        y=sizes,
+        z=speeds,
         marker=dict(
-            color=color
-        )
+            color=color,
+            size=7
+        ),
+        name=species
     )
 
 
 @app.callback(Output('live-update-graph', 'figure'),
               Input('slider', 'value'))
 def update_graph_live(days_to_average):
-    y_column = 'fullyGrownSize'
-
     full_path = get_full_path('detailed.json')
     f = open(full_path)
     data = json.load(f)
@@ -75,20 +80,20 @@ def update_graph_live(days_to_average):
     fig = go.Figure()
 
     fig.add_trace(
-        create_scatter(
-            data=data,
-            species='Rabbit',
-            days_to_average=days_to_average,
-            y_column='fullyGrownSize',
-            legend_name='first thing',
-            color='blue'
-        )
+        create_scatter(data, 'Rabbit', days_to_average, 'royalblue')
+    )
+
+    fig.add_trace(
+        create_scatter(data, 'Wolf', days_to_average, 'red')
     )
 
     fig.update_layout(
         title_text='Average Values by Species',
-        xaxis_title="days",
-        yaxis_title=y_column,
+        scene=dict(
+            xaxis_title='day',
+            yaxis_title='fully grown size',
+            zaxis_title='fully grown speed'
+        )
     )
 
     return fig
