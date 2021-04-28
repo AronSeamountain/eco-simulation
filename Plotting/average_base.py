@@ -96,7 +96,7 @@ def update_graph_live(days_to_average):
     )
 
     fig.update_layout(
-        title_text=title,
+        title_text=title + ' (' + full_path + ')',
         xaxis_title='days',
         yaxis_title=y_column,
     )

@@ -42,7 +42,7 @@ def plot():
 
     fig.update_layout(
         showlegend=True,
-        title = 'Distribution of eyesight and hearing power',
+        title = 'Distribution of eyesight and hearing power (' + full_path + ')',
     )
     
     fig.update_yaxes(

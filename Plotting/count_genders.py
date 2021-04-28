@@ -29,5 +29,6 @@ for row in data:
 
 total = males + females
 
+print('Data source: ' + full_path)
 print('Males: ' + str(males) + '. Males %: ' + str(males / total))
 print('Females: ' + str(females) + '. Females %: ' + str(females / total))

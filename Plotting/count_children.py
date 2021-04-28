@@ -27,6 +27,8 @@ srtd = {key: value for key, value in sorted(animal_map.items(), key=lambda item:
 
 f = open("children.txt", "a")
 
+f.write('Data source: ' + full_path + '\n')
+
 for ani in srtd:
     f.write(ani + '       ' + str(animal_map[ani]) + '\n')
 
