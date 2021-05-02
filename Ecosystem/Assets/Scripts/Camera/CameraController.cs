@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace Camera
 {
   public sealed class CameraController : MonoBehaviour
   {
     private const int RotationSpeed = 10;
-    private const int CameraLookAcceleration = 1;
+    private const float CameraLookAcceleration = 1.5f;
     private const int FreeMovementStandardSpeed = 10;
     private const int FreeMovementFastSpeed = 30;
     private const int FixedTargetSpeed = 1;
@@ -36,7 +37,7 @@ namespace Camera
       }
     }
 
-    private const float CameraLookFriction = 3f;
+    private const float CameraLookFriction = 20f;
 
     /// <summary>
     ///   The distance in the x-z plane to the target
@@ -91,6 +92,8 @@ namespace Camera
       _controls.CameraMovement.ZoomIn.performed += OnZoomIn;
       _controls.CameraMovement.ZoomOut.performed += OnZoomOut;
       _controls.CameraMovement.Restart.performed += OnRestart;
+      _controls.CameraMovement.IncreaseFov.performed += OnIncreaseFov;
+      _controls.CameraMovement.DecreaseFov.performed += OnDecreaseFov;
     }
 
     private static void OnRestart(InputAction.CallbackContext obj)
@@ -122,6 +125,16 @@ namespace Camera
       _controls.Disable();
     }
 
+    private void OnIncreaseFov(InputAction.CallbackContext _)
+    {
+      ChangeFov(true);
+    }
+
+    private void OnDecreaseFov(InputAction.CallbackContext _)
+    {
+      ChangeFov(false);
+    }
+
     private void OnZoomIn(InputAction.CallbackContext _)
     {
       ChangeZoom(true);
@@ -130,6 +143,12 @@ namespace Camera
     private void OnZoomOut(InputAction.CallbackContext _)
     {
       ChangeZoom(false);
+    }
+
+    private void ChangeFov(bool increase)
+    {
+      var delta = increase ? -5 : 5;
+      mainCamera.fieldOfView += delta;
     }
 
     private void ChangeZoom(bool increase)
@@ -219,8 +238,6 @@ namespace Camera
       {
         LookVelocity -= new Vector2(0, CameraLookFriction) * Time.deltaTime;
       }
-      
-      Debug.Log(LookVelocity);
     }
 
     private void OnCancelTarget(InputAction.CallbackContext _)
