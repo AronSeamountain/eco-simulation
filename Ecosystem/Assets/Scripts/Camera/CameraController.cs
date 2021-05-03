@@ -195,7 +195,6 @@ namespace Camera
     private void Rotate()
     {
       if (!_rotate) return;
-      print(LookVelocity);
 
       var deltaMouse = _controls.CameraMovement.View.ReadValue<Vector2>();
       deltaMouse *= -1; // Flip
@@ -204,8 +203,6 @@ namespace Camera
         Mathf.Clamp(deltaMouse.x, -1, 1),
         Mathf.Clamp(deltaMouse.y, -1, 1)
       );
-
-      print("Delta Mouse: " + deltaMouse);
 
       var oldV = LookVelocity;
       LookVelocity += deltaMouse;
