@@ -1,15 +1,17 @@
-﻿using Core;
+﻿using System;
+using Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace Camera
 {
   public sealed class CameraController : MonoBehaviour
   {
     private const int RotationSpeed = 10;
-    private const int ViewSpeed = 10;
+    private const float CameraLookAcceleration = 1.5f;
     private const int FreeMovementStandardSpeed = 10;
     private const int FreeMovementFastSpeed = 30;
     private const int FixedTargetSpeed = 1;
@@ -21,6 +23,22 @@ namespace Camera
     private bool _rotate;
     private Transform _target;
 
+    public Vector2 LookVelocity
+    {
+      get => _lookVelocity;
+      private set
+      {
+        const float maxLookSpeed = 100f;
+
+        var x = Mathf.Clamp(value.x, -maxLookSpeed, maxLookSpeed);
+        var y = Mathf.Clamp(value.y, -maxLookSpeed, maxLookSpeed);
+
+        _lookVelocity = new Vector2(x, y);
+      }
+    }
+
+    private const float CameraLookFriction = 20f;
+
     /// <summary>
     ///   The distance in the x-z plane to the target
     /// </summary>
@@ -30,6 +48,8 @@ namespace Camera
     ///   The height we want the camera to be above the target
     /// </summary>
     private int DistanceOver = 5;
+
+    private Vector2 _lookVelocity;
 
     private int FreeMovementSpeed => _moveFast ? FreeMovementFastSpeed : FreeMovementStandardSpeed;
 
@@ -72,6 +92,8 @@ namespace Camera
       _controls.CameraMovement.ZoomIn.performed += OnZoomIn;
       _controls.CameraMovement.ZoomOut.performed += OnZoomOut;
       _controls.CameraMovement.Restart.performed += OnRestart;
+      _controls.CameraMovement.IncreaseFov.performed += OnIncreaseFov;
+      _controls.CameraMovement.DecreaseFov.performed += OnDecreaseFov;
     }
 
     private static void OnRestart(InputAction.CallbackContext obj)
@@ -103,6 +125,16 @@ namespace Camera
       _controls.Disable();
     }
 
+    private void OnIncreaseFov(InputAction.CallbackContext _)
+    {
+      ChangeFov(true);
+    }
+
+    private void OnDecreaseFov(InputAction.CallbackContext _)
+    {
+      ChangeFov(false);
+    }
+
     private void OnZoomIn(InputAction.CallbackContext _)
     {
       ChangeZoom(true);
@@ -111,6 +143,12 @@ namespace Camera
     private void OnZoomOut(InputAction.CallbackContext _)
     {
       ChangeZoom(false);
+    }
+
+    private void ChangeFov(bool increase)
+    {
+      var delta = increase ? -5 : 5;
+      mainCamera.fieldOfView += delta;
     }
 
     private void ChangeZoom(bool increase)
@@ -148,6 +186,7 @@ namespace Camera
       else if (context.canceled)
       {
         _rotate = false;
+        LookVelocity = new Vector3();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
       }
@@ -156,17 +195,49 @@ namespace Camera
     private void Rotate()
     {
       if (!_rotate) return;
+      print(LookVelocity);
 
       var deltaMouse = _controls.CameraMovement.View.ReadValue<Vector2>();
       deltaMouse *= -1; // Flip
 
+      deltaMouse = new Vector2(
+        Mathf.Clamp(deltaMouse.x, -1, 1),
+        Mathf.Clamp(deltaMouse.y, -1, 1)
+      );
+
+      print("Delta Mouse: " + deltaMouse);
+
+      var oldV = LookVelocity;
+      LookVelocity += deltaMouse;
+      var newV = LookVelocity;
+
+      var lerp = Vector2.Lerp(oldV, newV, 4f);
+
       _camTransform.Rotate(
-        new Vector3(1, 0, 0), deltaMouse.y * ViewSpeed * Time.deltaTime
+        new Vector3(1, 0, 0), lerp.y * CameraLookAcceleration * Time.deltaTime
       );
 
       _camTransform.Rotate(
-        new Vector3(0, 1, 0), -deltaMouse.x * ViewSpeed * Time.deltaTime, Space.World
+        new Vector3(0, 1, 0), -lerp.x * CameraLookAcceleration * Time.deltaTime, Space.World
       );
+
+      if (LookVelocity.x < 0)
+      {
+        LookVelocity += new Vector2(CameraLookFriction, 0) * Time.deltaTime;
+      }
+      else
+      {
+        LookVelocity -= new Vector2(CameraLookFriction, 0) * Time.deltaTime;
+      }
+
+      if (LookVelocity.y < 0)
+      {
+        LookVelocity += new Vector2(0, CameraLookFriction) * Time.deltaTime;
+      }
+      else
+      {
+        LookVelocity -= new Vector2(0, CameraLookFriction) * Time.deltaTime;
+      }
     }
 
     private void OnCancelTarget(InputAction.CallbackContext _)
