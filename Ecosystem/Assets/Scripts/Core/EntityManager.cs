@@ -81,6 +81,8 @@ namespace Core
     public static bool OverlappableAnimalsMenuOverride = false;
     public static bool LogMenuOverride = true;
     public bool Log { get; private set; }
+    
+    public IList<DeathShot> DeadAnimals { get; private set; }
 
 
     private void Awake()
@@ -96,6 +98,8 @@ namespace Core
       // Lists
       Animals = new List<AbstractAnimal>();
       Plants = new List<Plant>();
+      DeadAnimals = new List<DeathShot>();
+      
       var sceneName = SceneManager.GetActiveScene().name;
       if (sceneName.Equals("EvadeScene"))
       {
@@ -119,7 +123,8 @@ namespace Core
 
       // Logger
       _logger = new MultiLogger(
-        DetailedIndividualLogger.Instance,
+        new DetailedIndividualLogger(),
+        new DeathCauseLogger(),
         new OverviewLogger(),
         new FpsLogger()
       );
@@ -344,6 +349,7 @@ namespace Core
     private void OnAnimalDied(AbstractAnimal animal)
     {
       CountAnimal(animal, false);
+      DeadAnimals.Add(new DeathShot(animal, "swa", Days));
     }
 
     private void UpdateTick()
@@ -368,6 +374,7 @@ namespace Core
             _daysSinceLastLog++;
 
             _logger.Snapshot(this);
+            DeadAnimals.Clear();
             FpsDelegate.Reset();
 
             if (_daysSinceLastLog >= DaysBetweenLogs)
@@ -412,6 +419,24 @@ namespace Core
         if (animal.Species == AnimalSpecies.Wolf)
           CarnivoreCount++;
       }
+    }
+
+    [Serializable]
+    public struct DeathShot
+    {
+      public string species;
+      public int day;
+      public string cause;
+      public string uuid;
+
+      public DeathShot(AbstractAnimal animal, string cause, int day)
+      {
+        species = animal.Species.ToString();
+        this.day = day;
+        uuid = animal.Uuid;
+        this.cause = cause;
+      }
+
     }
   }
 }
