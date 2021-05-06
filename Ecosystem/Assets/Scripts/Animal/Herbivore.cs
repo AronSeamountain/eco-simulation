@@ -57,6 +57,10 @@ namespace Animal
     public void TakeDamage(float damage)
     {
       _healthDelegate.DecreaseHealth(damage);
+      if (Dead)
+      {
+        DeathCause = "eaten";
+      }
     }
 
     private bool WolfDiscovered(AbstractAnimal animal)

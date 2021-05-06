@@ -349,7 +349,7 @@ namespace Core
     private void OnAnimalDied(AbstractAnimal animal)
     {
       CountAnimal(animal, false);
-      DeadAnimals.Add(new DeathShot(animal, "swa", Days));
+      DeadAnimals.Add(new DeathShot(animal, Days));
     }
 
     private void UpdateTick()
@@ -428,13 +428,19 @@ namespace Core
       public int day;
       public string cause;
       public string uuid;
-
-      public DeathShot(AbstractAnimal animal, string cause, int day)
+      public float thirstPercentage;
+      public float hungerPercentage;
+      
+      
+      public DeathShot(AbstractAnimal animal, int day)
       {
+        var nourishmentDelegate = animal.GetNourishmentDelegate();
         species = animal.Species.ToString();
         this.day = day;
         uuid = animal.Uuid;
-        this.cause = cause;
+        cause = animal.DeathCause;
+        thirstPercentage = nourishmentDelegate.Hydration/nourishmentDelegate.MaxHydration;
+        hungerPercentage = nourishmentDelegate.Saturation/nourishmentDelegate.MaxSaturation;
       }
 
     }

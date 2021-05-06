@@ -1,9 +1,10 @@
 import sys
+import json
 
 import pandas as pd
 import plotly.graph_objects as go
 
-from util.file_finder import get_full_paths
+from util.file_finder import get_full_paths, get_full_path
 
 
 def plot():
@@ -22,6 +23,19 @@ def plot():
         print('Plotting first overview.csv found')
         plot_this(full_paths[0])
 
+def get_death_cause_data(path):
+    f = open(path)
+    data = json.load(f)
+
+    rabbits = [i for i in data if i['species'] == "Rabbit" and i['cause'] == "eaten"]
+
+    maxDay = data[len(data) - 1]['day']
+    count = [0] * maxDay
+
+    for day in range(1, maxDay + 1):
+        count[day - 1] = len([i for i in rabbits if i['day'] == day])
+
+    return count
 
 def plot_this(full_path):
     df = pd.read_csv(full_path)
@@ -39,11 +53,24 @@ def plot_this(full_path):
         )
     )
 
+    death_cause_path = get_full_path('deathCause.json')
+    death_array = get_death_cause_data(death_cause_path)
+
+    fig.add_trace(
+        go.Scatter(
+            x=df['day'], y=death_array, name='# eaten rabbits', line=dict(color='black', width=4)
+        )
+    )
+
     fig.update_layout(
-        title='Amount of Animals (' + full_path + ')',
+        title='Amount of Animals (' + full_path + ')' + ' (' + death_cause_path + ')',
         xaxis_title='day',
         yaxis_title='amount'
     )
+
+    print('R correlation wolves and eaten rabbits: ' + str(pd.Series(death_array).corr(pd.Series(df['amount_wolfs']))))
+    print('R correlation wolves and rabbits: ' + str(pd.Series(df['amount_rabbits']).corr(pd.Series(df['amount_wolfs']))))
+    print('R correlation rabbits and eaten rabbits: ' + str(pd.Series(death_array).corr(pd.Series(df['amount_rabbits']))))
 
     fig.show()
 
