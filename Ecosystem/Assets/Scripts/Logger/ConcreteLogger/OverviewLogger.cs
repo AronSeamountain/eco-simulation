@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Foods.Plants;
 
 namespace Logger.ConcreteLogger
 {
@@ -26,6 +27,9 @@ namespace Logger.ConcreteLogger
         new LoggableColumn("amount_wolfs", (day, animals, em) =>
           em.CarnivoreCount.ToString()
         ),
+        new LoggableColumn("plants", (day, plants, em) =>
+          em.MaturePlants.ToString()
+        ),  
         new LoggableColumn(
           "saturation",
           (day, animals, em) => CalcAverage(animals, animal => animal.GetSaturation())

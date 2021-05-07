@@ -53,24 +53,32 @@ def plot_this(full_path):
         )
     )
 
-    death_cause_path = get_full_path('deathCause.json')
-    death_array = get_death_cause_data(death_cause_path)
-
     fig.add_trace(
         go.Scatter(
-            x=df['day'], y=death_array, name='# eaten rabbits', line=dict(color='black', width=4)
+            x=df['day'], y=df['plants'], name='# mature plants', line=dict(color='green', width=4)
         )
     )
 
+    ##death_cause_path = get_full_path('deathCause.json')
+    #death_array = get_death_cause_data(death_cause_path)
+
+    #fig.add_trace(
+       # go.Scatter(
+           # x=df['day'], y=death_array, name='# eaten rabbits', line=dict(color='black', width=4)
+        #)
+    #)
+
     fig.update_layout(
-        title='Amount of Animals (' + full_path + ')' + ' (' + death_cause_path + ')',
+        title='Amount of Animals and Plants (' + full_path + ')', #+ ' (' + death_cause_path + ')'
         xaxis_title='day',
         yaxis_title='amount'
     )
 
-    print('R correlation wolves and eaten rabbits: ' + str(pd.Series(death_array).corr(pd.Series(df['amount_wolfs']))))
+   # print('R correlation wolves and eaten rabbits: ' + str(pd.Series(death_array).corr(pd.Series(df['amount_wolfs']))))
     print('R correlation wolves and rabbits: ' + str(pd.Series(df['amount_rabbits']).corr(pd.Series(df['amount_wolfs']))))
-    print('R correlation rabbits and eaten rabbits: ' + str(pd.Series(death_array).corr(pd.Series(df['amount_rabbits']))))
+    print('R correlation plants and rabbits: ' + str(pd.Series(df['amount_rabbits']).corr(pd.Series(df['plants']))))
+    print('R correlation plants and wolves: ' + str(pd.Series(df['amount_wolfs']).corr(pd.Series(df['plants']))))
+    #print('R correlation rabbits and eaten rabbits: ' + str(pd.Series(death_array).corr(pd.Series(df['amount_rabbits']))))
 
     fig.show()
 

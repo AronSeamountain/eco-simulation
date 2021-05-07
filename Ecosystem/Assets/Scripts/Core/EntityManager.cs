@@ -73,6 +73,8 @@ namespace Core
     public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
+
+    public int MaturePlants { get; private set; } = InitialPlants;
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
     public FpsDelegate FpsDelegate { get; private set; }
@@ -117,6 +119,7 @@ namespace Core
 
       foreach (var plant in Plants)
       {
+        plant.StateChangedListeners += OnPlantStateChanged;
         DayTickListeners += plant.DayTick;
         HourTickListeners += plant.HourTick;
       }
@@ -130,6 +133,14 @@ namespace Core
       );
 
       _logger.Clear();
+    }
+
+    private void OnPlantStateChanged(string state)
+    {
+      if (state.Equals(PlantState.Seed.ToString()))
+        MaturePlants--;
+      else if (state.Equals(PlantState.Mature.ToString()))
+        MaturePlants++;
     }
 
     private void Update()
