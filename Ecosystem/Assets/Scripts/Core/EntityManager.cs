@@ -73,6 +73,8 @@ namespace Core
     public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
+
+    public int MaturePlants { get; private set; } = InitialPlants;
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
     public FpsDelegate FpsDelegate { get; private set; }
@@ -81,6 +83,8 @@ namespace Core
     public static bool OverlappableAnimalsMenuOverride = false;
     public static bool LogMenuOverride = true;
     public bool Log { get; private set; }
+    
+    public IList<DeathShot> DeadAnimals { get; private set; }
 
 
     private void Awake()
@@ -96,6 +100,8 @@ namespace Core
       // Lists
       Animals = new List<AbstractAnimal>();
       Plants = new List<Plant>();
+      DeadAnimals = new List<DeathShot>();
+      
       var sceneName = SceneManager.GetActiveScene().name;
       if (sceneName.Equals("EvadeScene"))
       {
@@ -113,18 +119,28 @@ namespace Core
 
       foreach (var plant in Plants)
       {
+        plant.StateChangedListeners += OnPlantStateChanged;
         DayTickListeners += plant.DayTick;
         HourTickListeners += plant.HourTick;
       }
 
       // Logger
       _logger = new MultiLogger(
-        DetailedIndividualLogger.Instance,
+        new DetailedIndividualLogger(),
+        new DeathCauseLogger(),
         new OverviewLogger(),
         new FpsLogger()
       );
 
       _logger.Clear();
+    }
+
+    private void OnPlantStateChanged(string state)
+    {
+      if (state.Equals(PlantState.Seed.ToString()))
+        MaturePlants--;
+      else if (state.Equals(PlantState.Mature.ToString()))
+        MaturePlants++;
     }
 
     private void Update()
@@ -344,6 +360,7 @@ namespace Core
     private void OnAnimalDied(AbstractAnimal animal)
     {
       CountAnimal(animal, false);
+      DeadAnimals.Add(new DeathShot(animal, Days));
     }
 
     private void UpdateTick()
@@ -368,6 +385,7 @@ namespace Core
             _daysSinceLastLog++;
 
             _logger.Snapshot(this);
+            DeadAnimals.Clear();
             FpsDelegate.Reset();
 
             if (_daysSinceLastLog >= DaysBetweenLogs)
@@ -412,6 +430,30 @@ namespace Core
         if (animal.Species == AnimalSpecies.Wolf)
           CarnivoreCount++;
       }
+    }
+
+    [Serializable]
+    public struct DeathShot
+    {
+      public string species;
+      public int day;
+      public string cause;
+      public string uuid;
+      public float thirstPercentage;
+      public float hungerPercentage;
+      
+      
+      public DeathShot(AbstractAnimal animal, int day)
+      {
+        var nourishmentDelegate = animal.GetNourishmentDelegate();
+        species = animal.Species.ToString();
+        this.day = day;
+        uuid = animal.Uuid;
+        cause = animal.DeathCause;
+        thirstPercentage = nourishmentDelegate.Hydration/nourishmentDelegate.MaxHydration;
+        hungerPercentage = nourishmentDelegate.Saturation/nourishmentDelegate.MaxSaturation;
+      }
+
     }
   }
 }

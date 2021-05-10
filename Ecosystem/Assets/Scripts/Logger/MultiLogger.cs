@@ -38,11 +38,8 @@ namespace Logger
         Directory.CreateDirectory(newDirName);
       foreach (var logger in _loggers)
       {
-        Debug.Log("Folder "  + newDirName);
         logger.MoveTo(newDirName);
         logger.Clear();
-      }
-      {
       }
     }
 

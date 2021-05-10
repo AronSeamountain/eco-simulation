@@ -99,6 +99,7 @@ namespace Animal
     public Gene VisionGene;
     public Gene HearingGene;
     public StateChanged StateChangedListeners;
+    public string DeathCause { get; protected set; } 
     public bool IsChild { get; private set; }
     public string Uuid { get; private set; }
     public bool IsPregnant { get; private set; }
@@ -284,6 +285,7 @@ namespace Animal
     public void ResetGameObject()
     {
       Uuid = Guid.NewGuid().ToString();
+      DeathCause = "starvation/dehydration";
 
       ResetWorldPointFinder();
       ResetGender();
