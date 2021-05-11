@@ -73,7 +73,7 @@ def inject_traces(fig, full_path, highlighted=True):
     wolf_color = 'red' if highlighted else 'lightpink'
     rabbit_color = 'royalblue' if highlighted else 'lightblue'
 
-    width = 4 if highlighted else 4
+    width = 3 if highlighted else 3
     opacity = 1 if highlighted else 0.5
 
     fig.add_trace(
