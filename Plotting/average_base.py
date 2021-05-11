@@ -34,7 +34,7 @@ title = 'Title'
 start = -1
 
 
-def create_scatter(data, species, days_to_average, legend_name, color):
+def create_scatter(data, species, days_to_average, legend_name, color, highlighted=True):
     day_counter = 0
 
     all_days = extract_unique('day', data)
@@ -73,10 +73,13 @@ def create_scatter(data, species, days_to_average, legend_name, color):
     return go.Scatter(
         x=days,
         y=column_values,
+        opacity=1 if highlighted else 0.5,
         name=legend_name,
         marker=dict(
             color=color
-        )
+        ),
+        line=dict(color=color, width=3),
+        showlegend=highlighted
     )
 
 
@@ -87,45 +90,71 @@ def update_graph_live(days_to_average):
     fig = go.Figure()
     n = len(full_paths)
 
+    max_day = 0
+    max_day_path = ':^)'
+
+    for full_path in full_paths:
+        data = json.load(open(full_path))
+        day = data[-1]['day']
+
+        if day > max_day:
+            max_day = day
+            max_day_path = full_path
+
     i = 1
     for full_path in full_paths:
+        if full_path == max_day_path:
+            print('Skipping max day file')
+            i = i + 1
+            continue
+
         print('Plotting ' + str(i) + '/' + str(n) + ' (' + full_path + ')')
         tic = time.perf_counter()
 
         f = open(full_path)
         data = json.load(f)
 
-        fig.add_trace(
-            create_scatter(
-                data=data,
-                species='Rabbit',
-                days_to_average=days_to_average,
-                legend_name='Rabbits',
-                color='blue'
-            )
-        )
-
-        fig.add_trace(
-            create_scatter(
-                data=data,
-                species='Wolf',
-                days_to_average=days_to_average,
-                legend_name='Wolves',
-                color='red'
-            )
-        )
-
-        fig.update_layout(
-            title_text=title + ' (' + full_path + ')',
-            xaxis_title='days',
-            yaxis_title=y_column,
-        )
+        inject_plots(fig, data, days_to_average, False)
 
         print('Finished #' + str(i) + ', took: ' + str(time.perf_counter() - tic) + ' seconds')
 
         i = i + 1
 
+    print('Started plotting max day')
+    inject_plots(fig, json.load(open(max_day_path)), days_to_average, True)
+    print('Finished plotting max day')
+
+    fig.update_layout(
+        title_text=title,
+        xaxis_title='days',
+        yaxis_title=y_column,
+    )
+
     return fig
+
+
+def inject_plots(fig, data, days_to_average, highlighted):
+    fig.add_trace(
+        create_scatter(
+            data=data,
+            species='Rabbit',
+            days_to_average=days_to_average,
+            legend_name='Rabbits',
+            color='blue',
+            highlighted=highlighted
+        )
+    )
+
+    fig.add_trace(
+        create_scatter(
+            data=data,
+            species='Wolf',
+            days_to_average=days_to_average,
+            legend_name='Wolves',
+            color='red',
+            highlighted=highlighted
+        )
+    )
 
 
 def run():
