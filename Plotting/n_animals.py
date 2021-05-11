@@ -11,6 +11,7 @@ def plot():
     full_paths = get_full_paths('overview.csv')
     plot_all = False
     avg = False
+    all_longest = False
 
     if len(sys.argv) >= 2 and str(sys.argv[1]) == 'all':
         plot_all = True
@@ -18,11 +19,18 @@ def plot():
     if len(sys.argv) >= 2 and str(sys.argv[1]) == 'avg':
         avg = True
 
+    if len(sys.argv) >= 2 and str(sys.argv[1]) == 'all-longest':
+        all_longest = True
+
     if plot_all:
         print('Plotting all overview.csv files')
 
         for full_path in full_paths:
             plot_this(full_path)
+
+    elif all_longest:
+        print('Plot All Highlight Longest')
+        plot_all_longest(full_paths)
 
     elif avg:
         print('Averaging')
@@ -56,37 +64,70 @@ def plot_this(full_path):
     fig.show()
 
 
-def inject_traces(fig, full_path):
+def inject_traces(fig, full_path, highlighted=True):
     df = pd.read_csv(full_path)
 
+    print('Plotting: ' + full_path)
+
+    plant_color = 'forestgreen' if highlighted else 'palegreen'
+    wolf_color = 'red' if highlighted else 'lightpink'
+    rabbit_color = 'royalblue' if highlighted else 'lightblue'
+
     fig.add_trace(
         go.Scatter(
-            x=df['day'], y=df['amount_wolfs'], name='# wolfs', line=dict(color='lightpink', width=4)
+            x=df['day'], y=df['amount_wolfs'], name='# wolfs', line=dict(color=wolf_color, width=4),
+            showlegend=highlighted
         )
     )
 
     fig.add_trace(
         go.Scatter(
-            x=df['day'], y=df['amount_rabbits'], name='# rabbits', line=dict(color='lightblue', width=4)
+            x=df['day'], y=df['amount_rabbits'], name='# rabbits', line=dict(color=rabbit_color, width=4),
+            showlegend=highlighted
         )
     )
 
     fig.add_trace(
         go.Scatter(
-            x=df['day'], y=df['plants'], name='# mature plants', line=dict(color='palegreen', width=4)
+            x=df['day'], y=df['plants'], name='# mature plants', line=dict(color=plant_color, width=4),
+            showlegend=highlighted
         )
     )
 
     fig.update_layout(
-        title='Amount of Animals and Plants (' + full_path + ')',  # + ' (' + death_cause_path + ')'
+        title='Amount of Animals and Plants (' + full_path + ')',
         xaxis_title='day',
         yaxis_title='amount'
     )
 
-    print(
-        'R correlation wolves and rabbits: ' + str(pd.Series(df['amount_rabbits']).corr(pd.Series(df['amount_wolfs']))))
-    print('R correlation plants and rabbits: ' + str(pd.Series(df['amount_rabbits']).corr(pd.Series(df['plants']))))
-    print('R correlation plants and wolves: ' + str(pd.Series(df['amount_wolfs']).corr(pd.Series(df['plants']))))
+    if highlighted:
+        print('R correlation wolves and rabbits: ' + str(
+            pd.Series(df['amount_rabbits']).corr(pd.Series(df['amount_wolfs']))))
+        print('R correlation plants and rabbits: ' + str(pd.Series(df['amount_rabbits']).corr(pd.Series(df['plants']))))
+        print('R correlation plants and wolves: ' + str(pd.Series(df['amount_wolfs']).corr(pd.Series(df['plants']))))
+
+
+def plot_all_longest(full_paths):
+    fig = go.Figure()
+
+    max_day = 0
+    max_day_path = ': - )'
+
+    for full_path in full_paths:
+        df = pd.read_csv(full_path)
+        day = df['day'].tolist()[-1]
+
+        if day > max_day:
+            max_day = day
+            max_day_path = full_path
+
+    for full_path in full_paths:
+        if full_path == max_day_path: continue
+        inject_traces(fig, full_path, highlighted=False)
+
+    inject_traces(fig, max_day_path, highlighted=True)
+
+    fig.show()
 
 
 def plot_avg(full_paths):
