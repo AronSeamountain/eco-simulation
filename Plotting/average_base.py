@@ -89,7 +89,7 @@ def update_graph_live(days_to_average):
 
     i = 1
     for full_path in full_paths:
-        print('Plotting ' + str(i) + ' (' + full_path + ')')
+        print('Plotting ' + str(i) + '/' + str(n) + ' (' + full_path + ')')
         tic = time.perf_counter()
 
         f = open(full_path)
