@@ -1,4 +1,5 @@
 import json
+import time
 
 import dash
 import dash_core_components as dcc
@@ -30,6 +31,7 @@ app.layout = html.Div(
 
 y_column = ''
 title = 'Title'
+start = -1
 
 
 def create_scatter(data, species, days_to_average, legend_name, color):
@@ -41,10 +43,22 @@ def create_scatter(data, species, days_to_average, legend_name, color):
 
     column_sequence_size = []
 
+    prefiltered_data = [i for i in data if i['species'] == species]
+
+    i = 0
     for day in all_days:
         day_counter = day_counter + 1
 
-        day_species_data = [i for i in data if i['species'] == species and i['day'] == day]
+        day_species_data = []
+
+        while i < len(prefiltered_data):
+            if prefiltered_data[i]['day'] == day:
+                day_species_data.append(prefiltered_data[i])
+                i = i + 1
+                continue
+
+            break
+
         column_sequence_size = column_sequence_size + [i[y_column] for i in day_species_data]
 
         if day_counter == days_to_average:
@@ -71,9 +85,12 @@ def create_scatter(data, species, days_to_average, legend_name, color):
 def update_graph_live(days_to_average):
     full_paths = get_full_paths('detailed.json')
     fig = go.Figure()
+    n = len(full_paths)
 
+    i = 1
     for full_path in full_paths:
-        print(full_path)
+        print('Plotting ' + str(i) + ' (' + full_path + ')')
+        tic = time.perf_counter()
 
         f = open(full_path)
         data = json.load(f)
@@ -103,6 +120,10 @@ def update_graph_live(days_to_average):
             xaxis_title='days',
             yaxis_title=y_column,
         )
+
+        print('Finished #' + str(i) + ', took: ' + str(time.perf_counter() - tic) + ' seconds')
+
+        i = i + 1
 
     return fig
 
