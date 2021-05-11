@@ -7,7 +7,7 @@ import numpy as np
 import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 
-from util.file_finder import get_full_path
+from util.file_finder import get_full_paths
 from util.json_extracter import extract_unique
 
 app = dash.Dash()
@@ -69,37 +69,40 @@ def create_scatter(data, species, days_to_average, legend_name, color):
 @app.callback(Output('live-update-graph', 'figure'),
               Input('slider', 'value'))
 def update_graph_live(days_to_average):
-    full_path = get_full_path('detailed.json')
-    f = open(full_path)
-    data = json.load(f)
-
+    full_paths = get_full_paths('detailed.json')
     fig = go.Figure()
 
-    fig.add_trace(
-        create_scatter(
-            data=data,
-            species='Rabbit',
-            days_to_average=days_to_average,
-            legend_name='Rabbits',
-            color='blue'
-        )
-    )
+    for full_path in full_paths:
+        print(full_path)
 
-    fig.add_trace(
-        create_scatter(
-            data=data,
-            species='Wolf',
-            days_to_average=days_to_average,
-            legend_name='Wolves',
-            color='red'
-        )
-    )
+        f = open(full_path)
+        data = json.load(f)
 
-    fig.update_layout(
-        title_text=title + ' (' + full_path + ')',
-        xaxis_title='days',
-        yaxis_title=y_column,
-    )
+        fig.add_trace(
+            create_scatter(
+                data=data,
+                species='Rabbit',
+                days_to_average=days_to_average,
+                legend_name='Rabbits',
+                color='blue'
+            )
+        )
+
+        fig.add_trace(
+            create_scatter(
+                data=data,
+                species='Wolf',
+                days_to_average=days_to_average,
+                legend_name='Wolves',
+                color='red'
+            )
+        )
+
+        fig.update_layout(
+            title_text=title + ' (' + full_path + ')',
+            xaxis_title='days',
+            yaxis_title=y_column,
+        )
 
     return fig
 
