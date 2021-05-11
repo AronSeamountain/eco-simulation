@@ -73,24 +73,30 @@ def inject_traces(fig, full_path, highlighted=True):
     wolf_color = 'red' if highlighted else 'lightpink'
     rabbit_color = 'royalblue' if highlighted else 'lightblue'
 
+    width = 4 if highlighted else 4
+    opacity = 1 if highlighted else 0.5
+
     fig.add_trace(
         go.Scatter(
-            x=df['day'], y=df['amount_wolfs'], name='# wolfs', line=dict(color=wolf_color, width=4),
-            showlegend=highlighted
+            x=df['day'], y=df['amount_wolfs'], name='# wolfs', line=dict(color=wolf_color, width=width),
+            showlegend=highlighted,
+            opacity=opacity
         )
     )
 
     fig.add_trace(
         go.Scatter(
-            x=df['day'], y=df['amount_rabbits'], name='# rabbits', line=dict(color=rabbit_color, width=4),
-            showlegend=highlighted
+            x=df['day'], y=df['amount_rabbits'], name='# rabbits', line=dict(color=rabbit_color, width=width),
+            showlegend=highlighted,
+            opacity=opacity
         )
     )
 
     fig.add_trace(
         go.Scatter(
-            x=df['day'], y=df['plants'], name='# mature plants', line=dict(color=plant_color, width=4),
-            showlegend=highlighted
+            x=df['day'], y=df['plants'], name='# mature plants', line=dict(color=plant_color, width=width),
+            showlegend=highlighted,
+            opacity=opacity
         )
     )
 
