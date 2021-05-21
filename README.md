@@ -5,8 +5,18 @@
 </div>
 
 <h2 align="center">
-  Ecosystem - A bachelor thesis project.
+   Simulation an Ecosystem 
 </h2>
+<h3 align="center"> Implementing natural selecetion in a prey-predator environment</h3>
+
+<h4>Aron Sjöberg</h4>
+<h4>Emil Wingårdh</h4>
+<h4>Erik Söderpalm</h4>
+<h4>Theo Wiik</h4>
+<h4>Viktor Fredholm</h4>
+<h4>Yvonne Hansson</h4>
+
+
 This is a simulation contains rabbits and wolves in a natural environment. This readme covers the following sections:
 
 - [Dev Tools](#dev-tools)
