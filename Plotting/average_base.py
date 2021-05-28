@@ -1,4 +1,5 @@
 import json
+import time
 
 import dash
 import dash_core_components as dcc
@@ -7,7 +8,7 @@ import numpy as np
 import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 
-from util.file_finder import get_full_path
+from util.file_finder import get_full_paths
 from util.json_extracter import extract_unique
 
 app = dash.Dash()
@@ -30,9 +31,10 @@ app.layout = html.Div(
 
 y_column = ''
 title = 'Title'
+start = -1
 
 
-def create_scatter(data, species, days_to_average, legend_name, color):
+def create_scatter(data, species, days_to_average, legend_name, color, highlighted=True):
     day_counter = 0
 
     all_days = extract_unique('day', data)
@@ -41,10 +43,22 @@ def create_scatter(data, species, days_to_average, legend_name, color):
 
     column_sequence_size = []
 
+    prefiltered_data = [i for i in data if i['species'] == species]
+
+    i = 0
     for day in all_days:
         day_counter = day_counter + 1
 
-        day_species_data = [i for i in data if i['species'] == species and i['day'] == day]
+        day_species_data = []
+
+        while i < len(prefiltered_data):
+            if prefiltered_data[i]['day'] == day:
+                day_species_data.append(prefiltered_data[i])
+                i = i + 1
+                continue
+
+            break
+
         column_sequence_size = column_sequence_size + [i[y_column] for i in day_species_data]
 
         if day_counter == days_to_average:
@@ -59,29 +73,75 @@ def create_scatter(data, species, days_to_average, legend_name, color):
     return go.Scatter(
         x=days,
         y=column_values,
+        opacity=1 if highlighted else 0.5,
         name=legend_name,
         marker=dict(
             color=color
-        )
+        ),
+        line=dict(color=color, width=3),
+        showlegend=highlighted
     )
 
 
 @app.callback(Output('live-update-graph', 'figure'),
               Input('slider', 'value'))
 def update_graph_live(days_to_average):
-    full_path = get_full_path('detailed.json')
-    f = open(full_path)
-    data = json.load(f)
-
+    full_paths = get_full_paths('detailed.json')
     fig = go.Figure()
+    n = len(full_paths)
 
+    max_day = 0
+    max_day_path = ':^)'
+
+    for full_path in full_paths:
+        data = json.load(open(full_path))
+        day = data[-1]['day']
+
+        if day > max_day:
+            max_day = day
+            max_day_path = full_path
+
+    i = 1
+    for full_path in full_paths:
+        if full_path == max_day_path:
+            print('Skipping max day file')
+            i = i + 1
+            continue
+
+        print('Plotting ' + str(i) + '/' + str(n) + ' (' + full_path + ')')
+        tic = time.perf_counter()
+
+        f = open(full_path)
+        data = json.load(f)
+
+        inject_plots(fig, data, days_to_average, False)
+
+        print('Finished #' + str(i) + ', took: ' + str(time.perf_counter() - tic) + ' seconds')
+
+        i = i + 1
+
+    print('Started plotting max day')
+    inject_plots(fig, json.load(open(max_day_path)), days_to_average, True)
+    print('Finished plotting max day')
+
+    fig.update_layout(
+        title_text=title,
+        xaxis_title='days',
+        yaxis_title=y_column,
+    )
+
+    return fig
+
+
+def inject_plots(fig, data, days_to_average, highlighted):
     fig.add_trace(
         create_scatter(
             data=data,
             species='Rabbit',
             days_to_average=days_to_average,
             legend_name='Rabbits',
-            color='blue'
+            color='blue',
+            highlighted=highlighted
         )
     )
 
@@ -91,17 +151,10 @@ def update_graph_live(days_to_average):
             species='Wolf',
             days_to_average=days_to_average,
             legend_name='Wolves',
-            color='red'
+            color='red',
+            highlighted=highlighted
         )
     )
-
-    fig.update_layout(
-        title_text=title + ' (' + full_path + ')',
-        xaxis_title='days',
-        yaxis_title=y_column,
-    )
-
-    return fig
 
 
 def run():

@@ -184,7 +184,7 @@ namespace Core
           break;
       }
 
-      if (shouldLoop && (Days > 1000 || (HerbivoreCount == 0 || CarnivoreCount == 0)))
+      if (shouldLoop && (Days > 500 || (HerbivoreCount == 0)))
       {
         LoopRestart();
       }
