@@ -121,6 +121,7 @@ def update_graph_live(days_to_average):
         i = i + 1
 
     print('Started plotting max day')
+    print('MAX DAY: ' + max_day_path)
     inject_plots(fig, json.load(open(max_day_path)), days_to_average, True)
     print('Finished plotting max day')
 

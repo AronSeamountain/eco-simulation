@@ -131,6 +131,7 @@ def plot_all_longest(full_paths):
         if full_path == max_day_path: continue
         inject_traces(fig, full_path, highlighted=False)
 
+    print('MAX DAY: ' + max_day_path)
     inject_traces(fig, max_day_path, highlighted=True)
 
     fig.show()
