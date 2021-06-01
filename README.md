@@ -17,7 +17,11 @@
 <h4>Yvonne Hansson</h4>
 
 
-This is a simulation contains rabbits and wolves in a natural environment. This readme covers the following sections:
+This is a simulation contains rabbits and wolves in a natural environment. 
+
+This was created as a part of our Bachelor's thesis project. More information about this can be found in our report found here: [CSE_Bachelor_s_Thesis.pdf](https://github.com/AronSeamountain/eco-simulation/files/6575265/CSE_Bachelor_s_Thesis.pdf)
+
+This readme covers the following sections:
 
 - [Dev Tools](#dev-tools)
   - [Plot Data](#plot-data)
