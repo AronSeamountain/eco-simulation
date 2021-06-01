@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using UnityEngine;
 using Utils;
 
@@ -27,10 +27,7 @@ namespace Animal.AnimalStates
       _carnivore.IsRunning = true;
       _carnivore.SetSpeed();
       _carnivore.IsHunting = true;
-      if (_carnivore.KnowsWaterLocation || _carnivore.HasForgottenWater)
-      {
-        _carnivore.ForgetWaterLocationForSomeTime();
-      }
+     
     }
 
     public AnimalState Execute()
@@ -59,7 +56,7 @@ namespace Animal.AnimalStates
       _carnivore.GoTo(closestPoint);
       
 
-      if (!(_targetPoint == closestPoint))
+      if (!Vector3Util.InRange(_targetPoint,closestPoint,_carnivore.ChangeTargetThreshold/2))
       {
         _carnivore.GoTo(closestPoint);
         _targetPoint = closestPoint; 

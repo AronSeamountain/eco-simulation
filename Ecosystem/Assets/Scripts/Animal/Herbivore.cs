@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Animal.AnimalStates;
 using Animal.Managers;
@@ -56,6 +57,10 @@ namespace Animal
     public void TakeDamage(float damage)
     {
       _healthDelegate.DecreaseHealth(damage);
+      if (Dead)
+      {
+        DeathCause = "eaten";
+      }
     }
 
     private bool WolfDiscovered(AbstractAnimal animal)
@@ -93,22 +98,27 @@ namespace Animal
 
     protected override void IncreaseStaminaIfNotRunning()
     {
-      if (!EnemyToFleeFrom && Alive) _staminaDelegate.IncreaseStamina(3);
+      if (!EnemyToFleeFrom && Alive) _staminaDelegate.IncreaseStamina(5);
     }
 
     protected override void DecreaseStaminaIfRunning()
     {
-      if (IsRunning && EnemyToFleeFrom) _staminaDelegate.DecreaseStamina(5);
+      if (IsRunning && EnemyToFleeFrom) _staminaDelegate.DecreaseStamina(4);
     }
     
     public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor / 2.5f;
+      return decreaseFactor / 3.5f;
     }
     
     public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
     {
       return decreaseFactor / 3f;
+    }
+    public override float GetBiteSize()
+    {
+      return Math.Min(160 * SizeModifier * SizeModifier,
+        _nourishmentDelegate.SaturationFromFull());
     }
   }
 }

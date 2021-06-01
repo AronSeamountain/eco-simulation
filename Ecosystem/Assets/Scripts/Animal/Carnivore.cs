@@ -10,10 +10,10 @@ namespace Animal
   public sealed class Carnivore : AbstractAnimal
   {
     private const float HuntRange = 15;
-    private const float BaseAttackDamage = 2;
+    private const float BaseAttackDamage = 15;
     private const float DeadNutritionPriority = 30;
     private bool _animalOfSameType;
-    public override float RunningSpeedFactor { get; } = 5f;
+    public override float RunningSpeedFactor { get; } = 3.8f;
 
     private bool _hearsHerbivore;
     private Texture _tex;
@@ -79,9 +79,10 @@ namespace Animal
       return Vector3Util.InRange(gameObject, carnivoreTarget.gameObject, HuntRange);
     }
 
-    public bool ShouldStartHunt(Herbivore carnivoretarget)
+    public bool ShouldStartHunt(Herbivore carnivoreTarget)
     {
-      return GetStaminaDelegate().HasMaxStamina && ShouldHunt(carnivoretarget);
+      if (carnivoreTarget && carnivoreTarget.Dead && ShouldHunt(carnivoreTarget)) return true;
+      return GetStaminaDelegate().HasMaxStamina && ShouldHunt(carnivoreTarget);
     }
     public void AttackTarget(Herbivore carnivoreTarget)
     {
@@ -118,12 +119,12 @@ namespace Animal
     
     public override float GetHydrationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor /3f;
+      return decreaseFactor /4f;
     }
     
     public override float GetSaturationDecreaseAmountPerHour(float decreaseFactor)
     {
-      return decreaseFactor/4f;
+      return decreaseFactor/1.8f;
     }
   }
 }

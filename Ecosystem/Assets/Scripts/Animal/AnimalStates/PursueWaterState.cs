@@ -38,7 +38,7 @@ namespace Animal.AnimalStates
       if (_animal is Carnivore carnivore)
       {
         var target = carnivore.Target;
-        if (target && carnivore.ShouldHunt(target) && carnivore.ShouldStartHunt(target) &&
+        if (target && carnivore.ShouldStartHunt(target) &&
             carnivore.GetSaturation() + carnivore.GetMaxSaturation() * 0.2 < carnivore.GetHydration() ) return AnimalState.Hunt;
       }
       if (_animal.IsHerbivore && _animal.KnowsFoodLocation && _animal.IsHungry &&
@@ -51,7 +51,8 @@ namespace Animal.AnimalStates
       var closestPoint = _waterTarget.GetComponent<Collider>().ClosestPoint(position);
       if (Vector3.Distance(position, closestPoint) < _animal.Reach) return AnimalState.Drink;
 
-      if (closestPoint == _targetPoint) return AnimalState.PursueWater;
+      //makes sure goto is not called every frame
+      if (Vector3Util.InRange(closestPoint,_targetPoint,_animal.ChangeTargetThreshold )) return AnimalState.PursueWater;
       _targetPoint = closestPoint;
       _animal.GoTo(closestPoint);
 

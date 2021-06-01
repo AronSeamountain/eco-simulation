@@ -7,6 +7,7 @@ namespace Logger.ConcreteLogger
   {
     public FpsLogger()
     {
+      FileName = "fps.csv";
       Path = "Assets/Logs/fps.csv";
     }
 

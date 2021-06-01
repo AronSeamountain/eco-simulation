@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Core;
+using UnityEngine;
 
 namespace Logger
 {
@@ -25,6 +28,25 @@ namespace Logger
     public void Clear()
     {
       foreach (var logger in _loggers) logger.Clear();
+    }
+
+    public void Reset(int days)
+    {
+      var time = DateTime.Now;
+      var newDirName = time.Month + "-" + time.Day + "_" + time.Hour + time.Minute + "_" + days + "Days";
+      if (!Directory.Exists(newDirName))
+        Directory.CreateDirectory(newDirName);
+      foreach (var logger in _loggers)
+      {
+        logger.MoveTo(newDirName);
+        logger.Clear();
+      }
+    }
+
+    public void MoveTo(string newDirName)
+    {
+      foreach (var logger in _loggers)
+        logger.MoveTo(newDirName);
     }
   }
 }

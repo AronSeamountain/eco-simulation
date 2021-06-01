@@ -89,6 +89,22 @@ public class @CameraControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""IncreaseFov"",
+                    ""type"": ""Button"",
+                    ""id"": ""dea1cb5c-561c-4e13-b75c-d0384c635a10"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""DecreaseFov"",
+                    ""type"": ""Button"",
+                    ""id"": ""51096e1c-ff80-438e-b9fd-21ebdf97c7c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -234,6 +250,28 @@ public class @CameraControls : IInputActionCollection, IDisposable
                     ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c92d2837-9212-4a8f-9746-e0bd3cdf0bfa"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""IncreaseFov"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bb9f795f-3da7-4d60-88ef-235e9eef494c"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DecreaseFov"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -251,6 +289,8 @@ public class @CameraControls : IInputActionCollection, IDisposable
         m_CameraMovement_ZoomOut = m_CameraMovement.FindAction("ZoomOut", throwIfNotFound: true);
         m_CameraMovement_ZoomIn = m_CameraMovement.FindAction("ZoomIn", throwIfNotFound: true);
         m_CameraMovement_Restart = m_CameraMovement.FindAction("Restart", throwIfNotFound: true);
+        m_CameraMovement_IncreaseFov = m_CameraMovement.FindAction("IncreaseFov", throwIfNotFound: true);
+        m_CameraMovement_DecreaseFov = m_CameraMovement.FindAction("DecreaseFov", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -309,6 +349,8 @@ public class @CameraControls : IInputActionCollection, IDisposable
     private readonly InputAction m_CameraMovement_ZoomOut;
     private readonly InputAction m_CameraMovement_ZoomIn;
     private readonly InputAction m_CameraMovement_Restart;
+    private readonly InputAction m_CameraMovement_IncreaseFov;
+    private readonly InputAction m_CameraMovement_DecreaseFov;
     public struct CameraMovementActions
     {
         private @CameraControls m_Wrapper;
@@ -322,6 +364,8 @@ public class @CameraControls : IInputActionCollection, IDisposable
         public InputAction @ZoomOut => m_Wrapper.m_CameraMovement_ZoomOut;
         public InputAction @ZoomIn => m_Wrapper.m_CameraMovement_ZoomIn;
         public InputAction @Restart => m_Wrapper.m_CameraMovement_Restart;
+        public InputAction @IncreaseFov => m_Wrapper.m_CameraMovement_IncreaseFov;
+        public InputAction @DecreaseFov => m_Wrapper.m_CameraMovement_DecreaseFov;
         public InputActionMap Get() { return m_Wrapper.m_CameraMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -358,6 +402,12 @@ public class @CameraControls : IInputActionCollection, IDisposable
                 @Restart.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnRestart;
                 @Restart.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnRestart;
                 @Restart.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnRestart;
+                @IncreaseFov.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnIncreaseFov;
+                @IncreaseFov.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnIncreaseFov;
+                @IncreaseFov.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnIncreaseFov;
+                @DecreaseFov.started -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnDecreaseFov;
+                @DecreaseFov.performed -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnDecreaseFov;
+                @DecreaseFov.canceled -= m_Wrapper.m_CameraMovementActionsCallbackInterface.OnDecreaseFov;
             }
             m_Wrapper.m_CameraMovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -389,6 +439,12 @@ public class @CameraControls : IInputActionCollection, IDisposable
                 @Restart.started += instance.OnRestart;
                 @Restart.performed += instance.OnRestart;
                 @Restart.canceled += instance.OnRestart;
+                @IncreaseFov.started += instance.OnIncreaseFov;
+                @IncreaseFov.performed += instance.OnIncreaseFov;
+                @IncreaseFov.canceled += instance.OnIncreaseFov;
+                @DecreaseFov.started += instance.OnDecreaseFov;
+                @DecreaseFov.performed += instance.OnDecreaseFov;
+                @DecreaseFov.canceled += instance.OnDecreaseFov;
             }
         }
     }
@@ -404,5 +460,7 @@ public class @CameraControls : IInputActionCollection, IDisposable
         void OnZoomOut(InputAction.CallbackContext context);
         void OnZoomIn(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
+        void OnIncreaseFov(InputAction.CallbackContext context);
+        void OnDecreaseFov(InputAction.CallbackContext context);
     }
 }

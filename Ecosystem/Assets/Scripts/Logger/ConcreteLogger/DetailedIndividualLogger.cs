@@ -1,35 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System;
 using Animal;
 using Core;
 using UnityEngine;
 
 namespace Logger.ConcreteLogger
 {
-  /// <summary>
-  ///   Logs all individual animals.
-  /// </summary>
-  public sealed class DetailedIndividualLogger : ILogger
+  public class DetailedIndividualLogger : AbstractJsonLogger
   {
-    private const string Path = "Assets/Logs/detailed.json";
-    private bool _firstLog;
-    private IList<string> _snapshots;
 
-    static DetailedIndividualLogger()
+    public DetailedIndividualLogger()
     {
+      FileName = "detailed.json";
+      Path = "Assets/Logs/detailed.json";
     }
-
-    private DetailedIndividualLogger()
-    {
-      _snapshots = new List<string>();
-      _firstLog = true;
-    }
-
-    public static DetailedIndividualLogger Instance { get; } = new DetailedIndividualLogger();
-
-    public void Snapshot(EntityManager entityManager)
+    public override void Snapshot(EntityManager entityManager)
     {
       var animals = entityManager.Animals;
 
@@ -40,48 +24,7 @@ namespace Logger.ConcreteLogger
         _snapshots.Add(snapshotJson);
       }
     }
-
-    public void Persist()
-    {
-      if (_firstLog)
-        Clear();
-      else
-        RemoveClosingBracket();
-
-      var writer = File.AppendText(Path);
-      if (_firstLog) writer.WriteLine("[");
-
-      foreach (var snapshot in _snapshots)
-        if (_firstLog)
-        {
-          _firstLog = false;
-          writer.WriteLine(snapshot);
-        }
-        else
-        {
-          writer.WriteLine("," + snapshot);
-        }
-
-      writer.WriteLine("]");
-      writer.Close();
-
-      _snapshots = new List<string>();
-      _firstLog = false;
-    }
-
-    public void Clear()
-    {
-      File.WriteAllText(Path, string.Empty);
-    }
-
-    /**
-     * Removes the ending "]" from the json object file.
-     */
-    private void RemoveClosingBracket()
-    {
-      File.WriteAllLines(Path, File.ReadLines(Path).Where(l => l != "]").ToList());
-    }
-
+    
     /// <summary>
     ///   A snapshot of an animal. Does only contain relevant fields.
     /// </summary>
@@ -98,6 +41,8 @@ namespace Logger.ConcreteLogger
       public float visionPercentage;
       public float hearingPercentage;
       public string uuid;
+      public string momUuid;
+      public string gender;
 
       public AnimalSnapshot(AbstractAnimal animal, int day)
       {
@@ -113,6 +58,8 @@ namespace Logger.ConcreteLogger
         hearingPercentage = animal.HearingGene.Bits * 100f / totalAnimalBits;
         this.day = day;
         uuid = animal.Uuid;
+        momUuid = animal.MomUuid;
+        gender = animal.Gender.ToString();
       }
     }
   }

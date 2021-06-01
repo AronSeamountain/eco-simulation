@@ -88,7 +88,7 @@ def update_graph_live(days_to_average):
     )
 
     fig.update_layout(
-        title_text='Average Values by Species',
+        title_text='Average Values by Species (' + full_path + ')',
         scene=dict(
             xaxis_title='day',
             yaxis_title='fully grown size',

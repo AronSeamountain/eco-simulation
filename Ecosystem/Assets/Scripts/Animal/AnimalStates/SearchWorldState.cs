@@ -35,6 +35,14 @@ namespace Animal.AnimalStates
 
       _destination = walkablePoint.gameObject;
       _animal.GoTo(_destination.transform.position);
+      if (_animal is Carnivore _carnivore)
+      {
+        if ((_carnivore.KnowsWaterLocation || _carnivore.HasForgottenWater) && !_carnivore.IsThirsty)
+        {
+          _carnivore.ForgetWaterLocationForSomeTime();
+        }
+      }
+     
     }
 
     public AnimalState Execute()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Animal;
@@ -41,6 +41,15 @@ namespace Core
       LogMenuOverride = true;
       OptionsMenu.World = "LargeWorld";
     }
+    
+    /// <summary>
+    /// Reloads the scene
+    /// </summary>
+    private void LoopRestart()
+    {
+      _logger.Reset(Days);
+      SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
     private const float HoursPerDay = 24;
     public static int InitialWolves = 25;
@@ -51,16 +60,21 @@ namespace Core
     [SerializeField] private bool log;
     [SerializeField] private bool performanceMode;
     [SerializeField] private bool overlappableAnimals;
+    [SerializeField] private bool shouldLoop;
     private float _hoursPassed;
     private float _hourTicker;
     private ILogger _logger;
     public DayTick DayTickListeners;
     public Tick HourTickListeners;
-    private int plantCount;
+    private int _plantCount;
+    private const int DaysBetweenLogs = 3;
+    private int _daysSinceLastLog;
 
     public IList<AbstractAnimal> Animals { get; private set; }
     public int Days { get; private set; }
     public IList<Plant> Plants { get; private set; }
+
+    public int MaturePlants { get; private set; } = InitialPlants;
     public int HerbivoreCount { get; private set; }
     public int CarnivoreCount { get; private set; }
     public FpsDelegate FpsDelegate { get; private set; }
@@ -69,15 +83,16 @@ namespace Core
     public static bool OverlappableAnimalsMenuOverride = false;
     public static bool LogMenuOverride = true;
     public bool Log { get; private set; }
+    
+    public IList<DeathShot> DeadAnimals { get; private set; }
 
 
     private void Awake()
     {
-
-     
+      SpawnAndAddWalkablePoints();
       Log = log || LogMenuOverride;
       PerformanceMode = performanceMode || PerformanceModeMenuOverride;
-      
+
       AnimalPool.OverlappableAnimals = overlappableAnimals || OverlappableAnimalsMenuOverride;
 
       FpsDelegate = new FpsDelegate();
@@ -85,6 +100,8 @@ namespace Core
       // Lists
       Animals = new List<AbstractAnimal>();
       Plants = new List<Plant>();
+      DeadAnimals = new List<DeathShot>();
+      
       var sceneName = SceneManager.GetActiveScene().name;
       if (sceneName.Equals("EvadeScene"))
       {
@@ -94,27 +111,36 @@ namespace Core
       {
         SpawnAndAddInitialAnimals();
         SpawnAndAddInitialPlants();
-       
       }
-      
+
       SpawnAndAddWalkablePoints();
       foreach (var animal in Animals)
         ObserveAnimal(animal, false);
 
       foreach (var plant in Plants)
       {
+        plant.StateChangedListeners += OnPlantStateChanged;
         DayTickListeners += plant.DayTick;
         HourTickListeners += plant.HourTick;
       }
 
       // Logger
       _logger = new MultiLogger(
-        DetailedIndividualLogger.Instance,
+        new DetailedIndividualLogger(),
+        new DeathCauseLogger(),
         new OverviewLogger(),
         new FpsLogger()
       );
 
       _logger.Clear();
+    }
+
+    private void OnPlantStateChanged(string state)
+    {
+      if (state.Equals(PlantState.Seed.ToString()))
+        MaturePlants--;
+      else if (state.Equals(PlantState.Mature.ToString()))
+        MaturePlants++;
     }
 
     private void Update()
@@ -134,8 +160,8 @@ namespace Core
 
     private void OnChildSpawned(AbstractAnimal child, AbstractAnimal parent)
     {
+      child.MomUuid = parent.Uuid;
       CountAnimal(child, true);
-
       ObserveAnimal(child, true);
     }
 
@@ -156,6 +182,11 @@ namespace Core
         case Carnivore _:
           CarnivoreCount += toAdd;
           break;
+      }
+
+      if (shouldLoop && (Days > 500 || (HerbivoreCount == 0)))
+      {
+        LoopRestart();
       }
     }
 
@@ -189,15 +220,13 @@ namespace Core
     /// </summary>
     private void SpawnAndAddInitialAnimals()
     {
-      
       SpawnAndAddSpecies(InitialRabbits, AnimalSpecies.Rabbit, Animals);
       HerbivoreCount += InitialRabbits;
 
-      
 
       SpawnAndAddSpecies(InitialWolves, AnimalSpecies.Wolf, Animals);
       CarnivoreCount += InitialWolves;
-      
+
       InitAnimalGameObejcts();
     }
 
@@ -252,16 +281,21 @@ namespace Core
         var z = Random.Range(zMin, zMax);
         var vector = new Vector3(x, 0, z);
         var instance = Instantiate(prefab, vector, Quaternion.identity).GetComponent<T>();
-        
-        Place(instance,vector);
+
+        Place(instance, vector);
         list?.Add(instance);
       }
     }
 
     private void Place<T>(T instance) where T : MonoBehaviour
     {
-      var vector = NavMeshUtil.GetRandomLocation();
-      Place(instance, vector);
+      const int maxOffset = 20;
+
+      var points = WorldMatrix.WalkablePoints;
+      var walkablePoint = points.PickRandom().gameObject.transform.position;
+
+      var spawnPoint = walkablePoint + Random.onUnitSphere * Random.Range(-maxOffset, maxOffset);
+      Place(instance, spawnPoint);
     }
 
     private void Place<T>(T instance, Vector3 v) where T : MonoBehaviour
@@ -326,6 +360,7 @@ namespace Core
     private void OnAnimalDied(AbstractAnimal animal)
     {
       CountAnimal(animal, false);
+      DeadAnimals.Add(new DeathShot(animal, Days));
     }
 
     private void UpdateTick()
@@ -344,49 +379,81 @@ namespace Core
           Days++;
 
           DayTickListeners?.Invoke();
+
           if (Log)
           {
+            _daysSinceLastLog++;
+
             _logger.Snapshot(this);
-            _logger.Persist();
+            DeadAnimals.Clear();
             FpsDelegate.Reset();
+
+            if (_daysSinceLastLog >= DaysBetweenLogs)
+            {
+              _daysSinceLastLog = 0;
+              _logger.Persist();
+            }
           }
         }
       }
     }
-    
+
     private void InitEvadeScene()
     {
-     
-        var pool = AnimalPool.SharedInstance;
-      
-        var wolf = pool.Get(AnimalSpecies.Wolf);
-        var vector = new Vector3(5,0,5);
-        Place(wolf,vector);
-        Animals?.Add(wolf);
-       
-        var rabbit = pool.Get(AnimalSpecies.Rabbit);
-        var vector2 = new Vector3(5,0,10);
-        Place(rabbit,vector2);
-        Animals?.Add(rabbit);
-        
-        InitAnimalGameObejcts();
-        wolf.GetNourishmentDelegate().Saturation = 0;
-        rabbit.SpeedModifier = 1;
-        wolf.SpeedModifier = 1.3f;
-        GeneralTestInit();
+      var pool = AnimalPool.SharedInstance;
+
+      var wolf = pool.Get(AnimalSpecies.Wolf);
+      var vector = new Vector3(5, 0, 5);
+      Place(wolf, vector);
+      Animals?.Add(wolf);
+
+      var rabbit = pool.Get(AnimalSpecies.Rabbit);
+      var vector2 = new Vector3(5, 0, 10);
+      Place(rabbit, vector2);
+      Animals?.Add(rabbit);
+
+      InitAnimalGameObejcts();
+      wolf.GetNourishmentDelegate().Saturation = 0;
+      rabbit.SpeedModifier = 1;
+      wolf.SpeedModifier = 1.3f;
+      GeneralTestInit();
     }
 
     private void GeneralTestInit()
     {
       PerformanceMode = false;
       Log = false;
-      foreach(var animal in Animals)
+      foreach (var animal in Animals)
       {
-        if(animal.Species == AnimalSpecies.Rabbit)
+        if (animal.Species == AnimalSpecies.Rabbit)
           HerbivoreCount++;
         if (animal.Species == AnimalSpecies.Wolf)
           CarnivoreCount++;
       }
+    }
+
+    [Serializable]
+    public struct DeathShot
+    {
+      public string species;
+      public int day;
+      public string cause;
+      public string uuid;
+      public float thirstPercentage;
+      public float hungerPercentage;
+      
+      
+      public DeathShot(AbstractAnimal animal, int day)
+      {
+        var nourishmentDelegate = animal.GetNourishmentDelegate();
+        species = animal.Species.ToString();
+        this.day = day;
+        uuid = animal.Uuid;
+        cause = animal.DeathCause;
+        thirstPercentage = nourishmentDelegate.Hydration/nourishmentDelegate.MaxHydration;
+        hungerPercentage = nourishmentDelegate.Saturation/nourishmentDelegate.MaxSaturation;
+      }
+
     }
   }
 }

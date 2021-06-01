@@ -7,6 +7,7 @@ namespace Animal.AnimalStates
   public class PursueMateState : IState<AnimalState>
   {
     private readonly AbstractAnimal _animal;
+    private Vector3 _mateTargetPos;
 
     public PursueMateState(AbstractAnimal animal)
     {
@@ -39,7 +40,7 @@ namespace Animal.AnimalStates
       
       var mateTarget = _animal.GetMateTarget();
       if (mateTarget.DoesNotExist()) return AnimalState.Wander;
-      if (!mateTarget.Fertile || !mateTarget.IsSatisfied)
+      if (!mateTarget.Fertile || !mateTarget.IsSatisfied || !_animal.Fertile)
       {
         _animal.ClearMateTarget();
         return AnimalState.Wander;
@@ -47,22 +48,40 @@ namespace Animal.AnimalStates
 
       var position = _animal.transform.position;
       var closestPoint = mateTarget.animalCollider.ClosestPointOnBounds(position);
-
+      
       var reachesMate = Vector3.Distance(position, closestPoint) < _animal.Reach;
       if (reachesMate)
       {
-        _animal.StopMoving();
-        mateTarget.StopMoving();
+
+        AbstractAnimal female;
+        AbstractAnimal male;
+
+        if (_animal.Gender == Gender.Female)
+        {
+          female = _animal;
+          male = mateTarget;
+        }
+        else
+        {
+          female = mateTarget;
+          male = _animal;
+        }
+        male.StopMoving();
+        female.StopMoving();
         // visual cue
-        _animal.EmitMatingCue();
-        mateTarget.EmitMatingCue();
+        male.EmitMatingCue();
+        female.EmitMatingCue();
         
-        mateTarget.Mate(_animal);
+        female.Mate(male);
         _animal.ClearMateTarget();
-        _animal.Children++; // TODO: Small possibility that female dies before birthing
+        male.Children++; // TODO: Small possibility that female dies before birthing
         return AnimalState.Wander;
       }
 
+      if (Vector3Util.InRange(_mateTargetPos, closestPoint, _animal.ChangeTargetThreshold))
+        return AnimalState.PursueMate;;
+      
+      _mateTargetPos = closestPoint;
       _animal.GoTo(mateTarget.transform.position);
 
       return AnimalState.PursueMate;
